@@ -14,7 +14,7 @@
 		},
 		{
 			"name": "WSL-Debug",
-			"generator": "Unix Makefiles",
+			"generator": "Ninja",
 			"configurationType": "Debug",
 			"buildRoot": "${projectDir}\\out\\build\\${name}",
 			"installRoot": "${projectDir}\\out\\install\\${name}",

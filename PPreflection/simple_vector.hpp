@@ -3,75 +3,79 @@
 #include <utility>
 #include <algorithm>
 #include <memory>
-#include "unique_ptr.hpp"
+#include "simple_vector.h"
 
 template <typename T>
-class simple_vector
+constexpr unique_ptr<T[]> simple_vector<T>::allocate()
 {
-	std::size_t capacity_;
-	std::size_t count_;
-	unique_ptr<T[]> ptr;
+	return unique_ptr<T[]>(new T[capacity_]);
+}
 
-	constexpr auto allocate()
+template <typename T>
+constexpr T* simple_vector<T>::release_ptr() const noexcept
+{
+	return std::exchange(ptr, nullptr);
+}
+
+template <typename T>
+constexpr simple_vector<T>::simple_vector() noexcept(noexcept(T()))
+	: capacity_(16)
+	, count_(0)
+	, ptr(allocate())
+{}
+
+template <typename T>
+template <typename U>
+constexpr void simple_vector<T>::push_back(U&& value)
+{
+	if (count_ == capacity_)
 	{
-		return unique_ptr<T[]>(new T[capacity_]);
+		capacity_ *= 2;
+		auto new_buffer = allocate();
+
+		std::move(begin(), end(), new_buffer.get());
+
+		ptr = std::move(new_buffer);
 	}
 
-	constexpr auto release_ptr() const noexcept
-	{
-		return std::exchange(ptr, nullptr);
-	}
+	ptr[count_] = std::forward<U>(value);
+	++count_;
+}
 
-public:
-	constexpr simple_vector() noexcept(noexcept(T()))
-		: capacity_(16)
-		, count_(0)
-		, ptr(allocate())
-	{}
+template <typename T>
+constexpr void simple_vector<T>::clear() noexcept
+{
+	capacity_ = 16;
+	count_ = 0;
+	ptr = allocate();
+}
 
-	template <typename U>
-	constexpr void push_back(U&& value) //noexcept(noexcept(std::declval<T>() = std::forward<U>(value)))
-	{
-		if (count_ == capacity_)
-		{
-			capacity_ *= 2;
-			auto new_buffer = allocate();
+template <typename T>
+constexpr T* simple_vector<T>::begin() noexcept
+{
+	return ptr.get();
+}
 
-			std::move(begin(), end(), new_buffer.get());
+template <typename T>
+constexpr T* simple_vector<T>::end() noexcept
+{
+	return ptr.get() + count_;
+}
 
-			ptr = std::move(new_buffer);
-		}
+template <typename T>
+constexpr const T* simple_vector<T>::begin() const noexcept
+{
+	return ptr.get();
+}
 
-		ptr[count_] = std::forward<U>(value);
-		++count_;
-	}
+template <typename T>
+constexpr const T* simple_vector<T>::end() const noexcept
+{
+	return ptr.get() + count_;
+}
 
-	constexpr void clear() noexcept
-	{
-		capacity_ = 16;
-		count_ = 0;
-		ptr = allocate();
-	}
-
-	constexpr T* begin() noexcept
-	{
-		return ptr.get();
-	}
-	constexpr T* end() noexcept
-	{
-		return ptr.get() + count_;
-	}
-	constexpr const T* begin() const noexcept
-	{
-		return ptr.get();
-	}
-	constexpr const T* end() const noexcept
-	{
-		return ptr.get() + count_;
-	}
-
-	constexpr auto count() const noexcept
-	{
-		return count_;
-	}
-};
+template <typename T>
+constexpr std::size_t simple_vector<T>::count() const noexcept
+{
+	return count_;
+}

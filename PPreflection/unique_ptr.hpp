@@ -1,61 +1,87 @@
 #pragma once
-#include <utility>
+#include "unique_ptr.h"
 
-template <typename T>
-class unique_ptr
+template <typename T, typename Deleter>
+constexpr void unique_ptr<T, Deleter>::delete_ptr() noexcept
 {
-	static constexpr bool is_array_type = std::is_array_v<T>;
+	if (get())
+		get_deleter()(get());
+}
 
-	using ptr_base_t = std::conditional_t<is_array_type, std::remove_extent_t<T>, T>;
+template <typename T, typename Deleter>
+constexpr unique_ptr<T, Deleter>::unique_ptr() noexcept
+	: p{ nullptr, {} }
+{}
 
-	ptr_base_t* ptr;
+template <typename T, typename Deleter>
+constexpr unique_ptr<T, Deleter>::unique_ptr(ptr_base_t* ptr) noexcept
+	: p{ ptr, {} }
+{}
 
-	constexpr void delete_ptr() noexcept
-	{
-		if constexpr (!is_array_type)
-			delete ptr;
-		else
-			delete[] ptr;
-	}
+template <typename T, typename Deleter>
+template <typename D>
+constexpr unique_ptr<T, Deleter>::unique_ptr(ptr_base_t* ptr, D&& deleter) noexcept
+	: p{ ptr, std::forward<D>(deleter) }
+{}
 
-public:
-	constexpr unique_ptr(ptr_base_t* ptr) noexcept
-		: ptr(ptr)
-	{}
+template <typename T, typename Deleter>
+constexpr unique_ptr<T, Deleter>::unique_ptr(unique_ptr&& other) noexcept
+	: p{ std::exchange(other.p.first, nullptr), std::move(other.get_deleter()) }
+{}
 
-	unique_ptr(const unique_ptr&) = delete;
-	void operator=(const unique_ptr&) = delete;
+template <typename T, typename Deleter>
+constexpr auto& unique_ptr<T, Deleter>::operator=(unique_ptr&& other) noexcept
+{
+	delete_ptr();
+	p = { std::exchange(other.p.first, nullptr), std::move(other.get_deleter()) };
+	return *this;
+}
 
-	constexpr unique_ptr(unique_ptr&& other) noexcept
-		: ptr(std::exchange(other.ptr, nullptr))
-	{}
+template <typename T, typename Deleter>
+constexpr auto unique_ptr<T, Deleter>::get() const noexcept
+{
+	return p.first;
+}
 
-	auto& operator=(unique_ptr&& other) noexcept
-	{
-		delete_ptr();
-		ptr = std::exchange(other.ptr, nullptr);
-		return *this;
-	}
+template <typename T, typename Deleter>
+constexpr auto& unique_ptr<T, Deleter>::get_deleter() const noexcept
+{
+	return p.second;
+}
 
-	constexpr auto get() const noexcept
-	{
-		return ptr;
-	}
+template <typename T, typename Deleter>
+constexpr auto unique_ptr<T, Deleter>::release() noexcept
+{
+	auto ptr = get();
+	p.first = nullptr;
+}
 
-	constexpr auto& operator*() const noexcept
-	{
-		return *ptr;
-	}
-	constexpr auto operator->() const noexcept
-	{
-		return ptr;
-	}
-	constexpr decltype(auto) operator[](std::size_t index) const noexcept
-	{
-		return ptr[index];
-	}
-	constexpr ~unique_ptr()
-	{
-		delete_ptr();
-	}
-};
+template <typename T, typename Deleter>
+constexpr unique_ptr<T, Deleter>::operator bool() const noexcept
+{
+	return get();
+}
+
+template <typename T, typename Deleter>
+constexpr auto& unique_ptr<T, Deleter>::operator*() const noexcept
+{
+	return *get();
+}
+
+template <typename T, typename Deleter>
+constexpr auto unique_ptr<T, Deleter>::operator->() const noexcept
+{
+	return get();
+}
+
+template <typename T, typename Deleter>
+constexpr decltype(auto) unique_ptr<T, Deleter>::operator[](std::size_t index) const noexcept
+{
+	return get()[index];
+}
+
+template <typename T, typename Deleter>
+constexpr unique_ptr<T, Deleter>::~unique_ptr()
+{
+	delete_ptr();
+}
