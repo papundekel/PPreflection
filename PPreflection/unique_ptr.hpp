@@ -54,6 +54,7 @@ constexpr auto unique_ptr<T, Deleter>::release() noexcept
 {
 	auto ptr = get();
 	p.first = nullptr;
+	return ptr;
 }
 
 template <typename T, typename Deleter>

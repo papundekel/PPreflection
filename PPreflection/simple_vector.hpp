@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <memory>
 #include "simple_vector.h"
+#include "unique_ptr.h"
 
 template <typename T>
 constexpr unique_ptr<T[]> simple_vector<T>::allocate()

@@ -1,11 +1,19 @@
 #pragma once
-#include "simple_ostream.hpp"
+#include "descriptor.h"
+#include "simple_ostream.h"
+#include "reflect.h"
 
-class descriptor
+template <typename T>
+constexpr std::string_view descriptor::reflect_name() noexcept
 {
-public:
-	constexpr virtual void print_name(simple_ostream& out) const noexcept = 0;
-	constexpr virtual bool has_name(std::string_view name) const noexcept = 0;
-};
+	return reflect<detail::name_wrap<T>, std::string_view>();
+}
 
-std::ostream& operator<<(std::ostream& out, const descriptor& d);
+template <typename Descriptor>
+constexpr const Descriptor* descriptor::get_descriptor(std::string_view name, simple_range<const cref_t<Descriptor>> descriptors) noexcept
+{
+	for (const descriptor& d : descriptors)
+		if (d.has_name(name))
+			return &(const Descriptor&)d;
+	return nullptr;
+}

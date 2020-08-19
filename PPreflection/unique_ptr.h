@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include "../Papo/Papo/Papo.hpp"
 
 template <typename T, typename Deleter = std::default_delete<T>>
@@ -10,15 +11,16 @@ class unique_ptr
 
 	constexpr void delete_ptr() noexcept;
 
+	constexpr unique_ptr(const unique_ptr&) = delete;
+	constexpr void operator=(const unique_ptr&) = delete;
+
 public:
 	constexpr unique_ptr() noexcept;
 
 	constexpr unique_ptr(ptr_base_t* ptr) noexcept;
+
 	template <typename D>
 	constexpr unique_ptr(ptr_base_t* ptr, D&& deleter) noexcept;
-
-	constexpr unique_ptr(const unique_ptr&) = delete;
-	constexpr void operator=(const unique_ptr&) = delete;
 
 	constexpr unique_ptr(unique_ptr&& other) noexcept;
 

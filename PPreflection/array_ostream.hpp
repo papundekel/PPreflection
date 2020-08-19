@@ -1,7 +1,7 @@
 #pragma once
 #include <cstring>
 #include <algorithm>
-#include "simple_ostream.hpp"
+#include "simple_ostream.h"
 #include "array_ostream.h"
 
 template <std::size_t count>

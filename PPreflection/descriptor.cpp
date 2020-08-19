@@ -1,5 +1,10 @@
-#include "descriptor.hpp"
+#include "descriptor.h"
+#include "unique_ptr.hpp"
+#include "simple_vector.hpp"
+#include "to_chars.hpp"
+#include "simple_ostream.hpp"
 #include "array_ostream.hpp"
+#include "to_chars.hpp"
 
 std::ostream& operator<<(std::ostream& out, const descriptor& d)
 {

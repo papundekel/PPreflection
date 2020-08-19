@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <initializer_list>
+#include "cref_t.h"
 
 template <typename T>
 class simple_range
@@ -18,10 +19,11 @@ public:
 
 	constexpr simple_range(const std::initializer_list<std::remove_const_t<T>>& list) noexcept;
 
-	constexpr auto begin() noexcept;
-	constexpr auto end() noexcept;
-	constexpr auto count() noexcept;
-	constexpr auto& operator[](std::size_t index) noexcept;
+	constexpr auto begin() const noexcept;
+	constexpr auto end() const noexcept;
+	constexpr auto count() const noexcept;
+	constexpr bool empty() const noexcept;
+	constexpr auto& operator[](std::size_t index) const noexcept;
 };
 
 template <typename T, std::size_t count>

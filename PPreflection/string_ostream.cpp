@@ -1,4 +1,8 @@
+#include "unique_ptr.hpp"
+#include "simple_vector.hpp"
+#include "simple_ostream.hpp"
 #include "string_ostream.hpp"
+#include "to_chars.hpp"
 
 void string_ostream::write_to_ostream(std::ostream& out) noexcept
 {

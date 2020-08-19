@@ -1,7 +1,7 @@
 #pragma once
 #include <array>
 #include "simple_ostream.h"
-#include "to_chars.hpp"
+#include "to_chars.h"
 
 constexpr void simple_ostream::write(std::size_t x) noexcept
 {
