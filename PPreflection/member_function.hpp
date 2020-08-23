@@ -1,9 +1,9 @@
 #pragma once
 #include "member_function.h"
-#include "dynamic_ptr.h"
+#include "dynamic_ref.h"
 #include "function.h"
 
-constexpr bool member_function::can_invoke(const dynamic_ptr& caller_arg) const noexcept
+constexpr bool member_function::can_invoke(const dynamic_reference& caller_arg) const noexcept
 {
 	const type& caller_par_type = get_caller_parameter_type();
 	const type& caller_arg_type = caller_arg.get_type();
@@ -14,25 +14,25 @@ constexpr bool member_function::can_invoke(const dynamic_ptr& caller_arg) const 
 		return caller_arg_type.can_reference_initialize(caller_par_type);
 }
 
-constexpr void member_function::invoke_implementation(void* result, const dynamic_ptr* args) const noexcept
+constexpr void member_function::invoke_implementation(void* result, const dynamic_reference* args) const noexcept
 {
 	invoke_implementation_member(result, args[0], args + 1);
 }
 
-constexpr bool member_function::can_invoke(simple_range<const dynamic_ptr> args) const noexcept
+constexpr bool member_function::can_invoke(simple_range<const dynamic_reference> args) const noexcept
 {
 	return !args.empty() && can_invoke(args[0]) && function::can_invoke(simple_range(args.begin() + 1, args.end()));
 }
 
-constexpr dynamic_wrap member_function::invoke_unsafe(const dynamic_ptr& caller, simple_range<const dynamic_ptr> args) const
+constexpr dynamic_object member_function::invoke_unsafe(const dynamic_reference& caller, simple_range<const dynamic_reference> args) const
 {
-	return dynamic_wrap(return_type(), [this, &caller, args](void* ptr) { invoke_implementation_member(ptr, caller, args.begin()); });
+	return dynamic_object(return_type(), [this, &caller, args](void* ptr) { invoke_implementation_member(ptr, caller, args.begin()); });
 }
 
-constexpr dynamic_wrap member_function::invoke(const dynamic_ptr& caller, simple_range<const dynamic_ptr> args) const
+constexpr dynamic_object member_function::invoke(const dynamic_reference& caller, simple_range<const dynamic_reference> args) const
 {
 	if (can_invoke(caller) && function::can_invoke(args))
 		return invoke_unsafe(caller, args);
 	else
-		throw 0; //TODO
+		throw 0;
 }

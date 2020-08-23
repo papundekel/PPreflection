@@ -13,6 +13,6 @@ namespace detail
 	protected:
 		using ParameterTypes = typename basic_static_function_base<Overload, f, Base>::ParameterTypes;
 
-		constexpr void invoke_implementation(void* result, const dynamic_ptr* args) const noexcept override final;
+		constexpr void invoke_implementation(void* result, const dynamic_reference* args) const noexcept override final;
 	};
 }

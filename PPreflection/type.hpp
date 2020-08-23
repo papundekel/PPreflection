@@ -7,6 +7,7 @@
 #include "simple_range.h"
 #include "map_pack.h"
 #include "get_value.h"
+#include "function.h"
 #include "../Papo/Papo/algorithm/any_of.hpp"
 
 constexpr cv_qualifier type::get_cv_qualifier() const noexcept
@@ -47,19 +48,12 @@ constexpr bool type::is_reference() const noexcept
 	return get_ref_qualifier() != ref_qualifier::none;
 }
 
-constexpr bool type::can_reference_initialize_no_user_conversion_inner(const type& ref_type) const noexcept
+constexpr bool type::can_pointer_like_initialize_inner(const type& other) const noexcept
 {
-	const type* this_ = &remove_reference();
-	const type* ref_type_ = &ref_type.remove_reference();
-	if (this_->cv_at_most(*ref_type_))
-	{
-		this_ = &this_->remove_cv();
-		ref_type_ = &ref_type_->remove_cv();
-		if (this_->is_derived_from(*ref_type_))
-			return true;
-	}
-
-	return false;
+	return
+		cv_at_most(other)
+		&&
+		remove_cv().is_derived_from(other.remove_cv());
 }
 
 constexpr bool type::can_reference_initialize_no_user_conversion(const type& ref_type) const noexcept
@@ -91,7 +85,7 @@ constexpr bool type::can_reference_initialize_no_user_conversion(const type& ref
 	)
 	&&
 	// x Br = y Dr where x >= y and B is base of D
-	can_reference_initialize_no_user_conversion_inner(ref_type);
+	remove_reference().can_pointer_like_initialize_inner(ref_type.remove_reference());
 }
 constexpr bool type::can_reference_initialize(const type& ref_type) const noexcept
 {
@@ -104,6 +98,20 @@ constexpr bool type::can_initialize(const type& parameter_type) const noexcept
 		return can_reference_initialize(parameter_type);
 	else
 		return false;
+}
+
+constexpr bool type::L1(const type& par_type) const noexcept
+{
+	return
+		get_ref_qualifier() == ref_qualifier::lvalue
+		&&
+		remove_reference().can_pointer_like_initialize_inner(par_type.remove_reference());
+}
+
+constexpr const conversion_function* type::L2(const type& par_type) const noexcept
+{
+	//TODO
+	return nullptr;
 }
 
 constexpr bool operator==(const type& a, const type& b) noexcept
@@ -157,6 +165,12 @@ constexpr const type& type::add_reference() const noexcept
 		return add_rreference();
 	else
 		return add_lreference();
+}
+
+template <bool rvalue>
+constexpr const type& type::make_reference() const noexcept
+{
+	return remove_reference().add_reference<rvalue>();
 }
 
 constexpr const overloaded_member_function* type::get_member_function(std::string_view name) const noexcept

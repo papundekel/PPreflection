@@ -9,7 +9,7 @@
 #include "overloaded_function.h"
 
 template <typename Overload, auto mf>
-constexpr void detail::basic_member_function<Overload, mf>::invoke_implementation_member(void* result, const dynamic_ptr& caller, const dynamic_ptr* args) const noexcept
+constexpr void detail::basic_member_function<Overload, mf>::invoke_implementation_member(void* result, const dynamic_reference& caller, const dynamic_reference* args) const noexcept
 {
 	this->invoke_(result,
 		[&caller, args]()
@@ -17,7 +17,7 @@ constexpr void detail::basic_member_function<Overload, mf>::invoke_implementatio
 			return get_value<apply_pack<function::invoke_helper_t, typename B::ParameterTypes>>()(
 				[&caller]<typename... T>(T&&... xs)
 				{
-					return (caller.cast<CallerParameterType>().*mf)(std::forward<T>(xs)...);
+					return (caller.cast_unsafe<CallerParameterType>().*mf)(std::forward<T>(xs)...);
 				}, args);
 		});
 }

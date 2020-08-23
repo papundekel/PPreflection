@@ -1,4 +1,5 @@
 #pragma once
+#include "value_t.h"
 #include "type_pack.h"
 #include "get_value.h"
 #include "get_type.h"
@@ -10,7 +11,7 @@ namespace detail
 	struct apply_pack__isnt_pack_error {};
 
 	template <template <typename...> typename, typename>
-	struct apply_pack_helper : value_t<detail::apply_pack__isnt_pack_error{}>
+	struct apply_pack_helper : value_t<apply_pack__isnt_pack_error{}>
 	{};
 	template <template <typename...> typename A, typename... T>
 	struct apply_pack_helper<A, type_pack<T...>> : extract_value<A<T...>>

@@ -10,7 +10,7 @@ constexpr const type* namespace_t::get_type(std::string_view name) const noexcep
 	return get_descriptor(name, get_types());
 }
 
-constexpr const namespace_function* namespace_t::get_function(std::string_view name) const noexcept
+constexpr const overloaded_namespace_function* namespace_t::get_function(std::string_view name) const noexcept
 {
 	return get_descriptor(name, get_functions());
 }

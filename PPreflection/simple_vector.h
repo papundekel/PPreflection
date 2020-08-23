@@ -3,21 +3,23 @@
 #include <utility>
 #include <algorithm>
 #include <memory>
-#include "unique_ptr.h"
+#include "dynamic_block.h"
 
 template <typename T>
 class simple_vector
 {
-	std::size_t capacity_;
+	static constexpr std::size_t default_capacity = 16;
+
 	std::size_t count_;
-	unique_ptr<T[]> ptr;
+	dynamic_block<T> block;
 
-	constexpr unique_ptr<T[]> allocate();
-
-	constexpr T* release_ptr() const noexcept;
+	constexpr void destroy_all() noexcept;
 
 public:
-	constexpr simple_vector() noexcept(noexcept(T()));
+	explicit constexpr simple_vector(std::size_t capacity) noexcept;
+	constexpr simple_vector() noexcept;
+
+	constexpr ~simple_vector();
 
 	template <typename U>
 	constexpr void push_back(U&& value);
@@ -30,4 +32,5 @@ public:
 	constexpr const T* end() const noexcept;
 
 	constexpr std::size_t count() const noexcept;
+	constexpr std::size_t capacity() const noexcept;
 };

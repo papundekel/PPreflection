@@ -1,9 +1,11 @@
 #pragma once
 #include <type_traits>
+#include <vector>
 #include "function.h"
-#include "dynamic_wrap.h"
+#include "dynamic_object.h"
 #include "type.h"
 #include "get_value.h"
+#include "conversion_function.h"
 
 template <typename... Parameters>
 constexpr typename function::invoke_helper_t<Parameters...>::x function::invoke_helper_t<Parameters...>::value_f() noexcept
@@ -12,19 +14,19 @@ constexpr typename function::invoke_helper_t<Parameters...>::x function::invoke_
 }
 template <typename... Parameters>
 template <typename F, std::size_t... I>
-constexpr decltype(auto) function::invoke_helper_t<Parameters...>::x::helper(F&& f, const dynamic_ptr* args, std::index_sequence<I...>) noexcept
+constexpr decltype(auto) function::invoke_helper_t<Parameters...>::x::helper(F&& f, const dynamic_reference* args, std::index_sequence<I...>) noexcept
 {
-	return std::forward<F>(f)(args[I].cast<Parameters>()...);
+	return std::forward<F>(f)(args[I].cast_unsafe<Parameters>()...);
 }
 
 template <typename... Parameters>
 template <typename F>
-constexpr decltype(auto) function::invoke_helper_t<Parameters...>::x::operator()(F&& f, const dynamic_ptr* args) const noexcept
+constexpr decltype(auto) function::invoke_helper_t<Parameters...>::x::operator()(F&& f, const dynamic_reference* args) const noexcept
 {
 	return helper(std::forward<F>(f), args, std::index_sequence_for<Parameters...>{});
 }
 
-constexpr bool function::can_invoke(simple_range<const dynamic_ptr> args) const noexcept
+constexpr bool function::can_invoke(simple_range<const dynamic_reference> args) const noexcept
 {
 	auto ps = parameter_types();
 
@@ -39,12 +41,55 @@ constexpr bool function::can_invoke(simple_range<const dynamic_ptr> args) const 
 	return true;
 }
 
-constexpr dynamic_wrap function::invoke_unsafe(simple_range<const dynamic_ptr> args) const noexcept
+constexpr dynamic_object function::invoke_unsafe(simple_range<const dynamic_reference> args) const noexcept
 {
-	return dynamic_wrap(return_type(), [this, args](void* ptr) { invoke_implementation(ptr, args.begin()); });
+	return dynamic_object(return_type(),
+		[this, args](void* ptr)
+		{
+			/*simple_range<const cref_t<type>> pt = parameter_types();
+
+			int pc = pt.count();
+			int ac = args.count();
+
+			if (pt.count() != args.count())
+				throw 0;
+
+			std::vector<dynamic_object> temps;
+			std::vector<dynamic_reference> converted_args;
+
+			{
+				auto p = pt.begin();
+				for (auto a = args.begin(); a != args.end(); ++a, ++p)
+				{
+					const type& at = a->get_type();
+					const type& pt = *p;
+
+					if (auto parameter_ref_q = pt.get_ref_qualifier(); parameter_ref_q == ref_qualifier::lvalue)
+					{
+						if (at.L1(pt))
+							converted_args.push_back(std::move(*a));
+						else if (const conversion_function* conversion = at.L2(pt); conversion)
+						{
+							temps.push_back(conversion->invoke_unsafe(*a));
+							converted_args.push_back(temps.back());
+						}
+						else
+							throw 1;
+					}
+					else if (parameter_ref_q == ref_qualifier::rvalue)
+					{
+
+					}
+					else
+						converted_args.push_back(std::move(*a));
+				}
+			}*/
+
+			invoke_implementation(ptr, args.begin());
+		});
 }
 
-constexpr dynamic_wrap function::invoke(simple_range<const dynamic_ptr> args) const
+constexpr dynamic_object function::invoke(simple_range<const dynamic_reference> args) const
 {
 	if (can_invoke(args))
 		return invoke_unsafe(args);

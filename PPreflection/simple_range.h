@@ -14,8 +14,8 @@ public:
 
 	constexpr simple_range() noexcept;
 
-	template <std::size_t c>
-	constexpr simple_range(const std::array<std::remove_const_t<T>, c>& array) noexcept;
+	template <typename Container>
+	constexpr simple_range(const Container& container) noexcept;
 
 	constexpr simple_range(const std::initializer_list<std::remove_const_t<T>>& list) noexcept;
 
@@ -25,9 +25,6 @@ public:
 	constexpr bool empty() const noexcept;
 	constexpr auto& operator[](std::size_t index) const noexcept;
 };
-
-template <typename T, std::size_t count>
-simple_range(const std::array<T, count>&) -> simple_range<const T>;
 
 template <typename T>
 simple_range(const std::initializer_list<T>&) -> simple_range<const T>;

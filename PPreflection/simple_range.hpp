@@ -14,9 +14,9 @@ constexpr simple_range<T>::simple_range() noexcept
 {}
 
 template <typename T>
-template <std::size_t c>
-constexpr simple_range<T>::simple_range(const std::array<std::remove_const_t<T>, c> & array) noexcept
-	: simple_range(array.data(), array.data() + array.size())
+template <typename Container>
+constexpr simple_range<T>::simple_range(const Container& container) noexcept
+	: simple_range(std::begin(container), std::end(container))
 {}
 
 template <typename T>

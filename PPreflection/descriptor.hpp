@@ -12,7 +12,7 @@ constexpr std::string_view descriptor::reflect_name() noexcept
 template <typename Descriptor>
 constexpr const Descriptor* descriptor::get_descriptor(std::string_view name, simple_range<const cref_t<Descriptor>> descriptors) noexcept
 {
-	for (const descriptor& d : descriptors)
+	for (const Descriptor& d : descriptors)
 		if (d.has_name(name))
 			return &(const Descriptor&)d;
 	return nullptr;

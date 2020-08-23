@@ -1,17 +1,16 @@
 #include <iostream>
-
-#include "value_pack.h"
-#include "overload_cast.h"
-#include "append_pack.h"
-#include "map_pack.h"
-#include "apply_pack.h"
+#include <variant>
 
 #include "get_value.hpp"
 
-#include "reflect.hpp"
-#include "reflect_fundamentals.hpp"
+#include "value_pack.h"
+#include "apply_pack.h"
+#include "map_pack.h"
+#include "append_pack.h"
+#include "overload_cast.h"
 
-#include "unique_ptr.hpp"
+
+#include "unique_pointer.hpp"
 #include "simple_vector.hpp"
 #include "to_chars.hpp"
 
@@ -21,18 +20,21 @@
 
 #include "cref_t.hpp"
 #include "simple_range.hpp"
-#include "dynamic_ptr.hpp"
-#include "dynamic_wrap.hpp"
-#include "descriptor.hpp"
+#include "dynamic_ref.hpp"
+#include "dynamic_object.hpp"
 
 #include "function.hpp"
+#include "type.hpp"
 #include "member_function.hpp"
 #include "member_like_function.hpp"
 #include "namespace_function.hpp"
 #include "namespace_t.hpp"
+#include "conversion_function.hpp"
+#include "one_parameter_constructor.hpp"
 
 #include "overloaded_function.hpp"
 #include "overloaded_member_function.hpp"
+#include "descriptor.hpp"
 
 #include "basic_namespace.hpp"
 #include "basic_function.hpp"
@@ -56,6 +58,10 @@
 
 #include "fundamental_type_pack.h"
 
+#include "array_vector.hpp"
+#include "unique_raw_pointer.hpp"
+#include "dynamic_block.hpp"
+
 struct X
 {
 	int x;
@@ -76,18 +82,44 @@ struct X
 	{
 		std::cout << x + y << "const& noexcept\n";
 	}
+
+	~X()
+	{
+		std::cout << "dead, " << x << '\n';
+	}
 };
 
-int f(X& x) noexcept
+X double_(const int& x) noexcept
 {
-	return x.x;
+	return X(2 * x);
 }
+
+namespace detail
+{
+	struct reflect__unspecialized_error {};
+
+	template <typename T>
+	constexpr inline reflect__unspecialized_error reflect_owning = {};
+}
+
+#include "reflect.hpp"
+#include "reflect_fundamentals.hpp"
 
 template <typename T> constexpr inline auto detail::reflect_owning<detail::basic_type_wrap<T>> = detail::basic_type<T>{};
 
+namespace overload { struct global_double_ {}; }
+template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<overload::global_double_>> = std::string_view("double_");
+template <> constexpr inline auto detail::reflect_owning<overload::global_double_>
+	= detail::basic_overloaded_namespace_function<overload::global_double_, namespace_t::global, value_pack<
+		double_>>{};
+
+template <> constexpr inline auto detail::reflect_owning<value_t<double_>> = detail::basic_namespace_function<overload::global_double_, double_>{};
+
 template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<namespace_t::global>> = std::string_view("global'");
 template <> constexpr inline auto detail::reflect_owning<namespace_t::global> =
-	detail::basic_namespace<namespace_t::global, fundamental_type_pack,	value_pack<>>{};
+	detail::basic_namespace<namespace_t::global, get_type<append_pack<fundamental_type_pack,
+	type_pack<X>>>,
+	type_pack<overload::global_double_>>{};
 
 namespace overload
 {
@@ -125,22 +157,37 @@ template <> constexpr inline auto detail::reflect_owning<value_t<overload::caste
 template <> constexpr inline auto detail::reflect_owning<value_t<overload::caster<overload::X_f, 2>(&X::f)>>
 	= detail::basic_member_function<overload::X_f, overload::caster<overload::X_f, 2>(&X::f)>{};
 
-namespace overload { struct global_f {}; }
-template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<overload::global_f>> = std::string_view("f");
-template <> constexpr inline auto detail::reflect_owning<overload::global_f>
-	= detail::basic_overloaded_namespace_function<overload::global_f, namespace_t::global, value_pack<
-		f>>{};
+struct convertor
+{
+	std::variant<const conversion_function*, const one_parameter_constructor*> ptr;
 
-template <> constexpr inline auto detail::reflect_owning<value_t<f>> = detail::basic_namespace_function<overload::global_f, f>{};
+	dynamic_object convert(const dynamic_reference& arg)
+	{
+		return std::visit(
+			[&arg](const auto* x)
+			{
+				return x->invoke(arg);
+			}, ptr);
+	}
+};
 
 int main()
 {
-	const type& x = reflect<X, type>();
-	if (auto* f = x.get_member_function("f"); f)
+	simple_vector<dynamic_object> objects;
+
+	auto* doubler = reflect<namespace_t::global, namespace_t>().get_function("double_");
+
+	if (doubler)
 	{
-		const X x(78);
-		f->invoke(x, { 8 });
+		objects.push_back(doubler->invoke({  7 }));
+		objects.push_back(doubler->invoke({ 20 }));
+		objects.push_back(doubler->invoke({ -5 }));
+
+		for (auto&& o : objects)
+			std::cout << o.operator dynamic_reference().cast<const X&>().x << '\n';
 	}
+
+	objects.clear();
 
 	std::cout.flush();
 	return 0;

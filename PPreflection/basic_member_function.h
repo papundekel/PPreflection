@@ -18,7 +18,7 @@ namespace detail
 		using CallerParameterType = typename get_member_function_info<decltype(mf)>::caller_type;
 
 	protected:
-		constexpr void invoke_implementation_member(void* result, const dynamic_ptr& caller, const dynamic_ptr* args) const noexcept override final;
+		constexpr void invoke_implementation_member(void* result, const dynamic_reference& caller, const dynamic_reference* args) const noexcept override final;
 
 		constexpr const type& get_pointer_type() const noexcept override final;
 		

@@ -6,14 +6,6 @@
 #include "get_value.h"
 #include "cref_t.h"
 
-namespace detail
-{
-	struct reflect__unspecialized_error {};
-
-	template <typename T>
-	constexpr inline reflect__unspecialized_error reflect_owning = {};
-}
-
 template <typename ResultType>
 template <typename T>
 constexpr const ResultType& detail::reflector<ResultType>::reflect<T>::value_f() noexcept

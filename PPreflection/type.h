@@ -15,6 +15,8 @@ class overloaded_member_function;
 class member_like_function;
 template <typename Function>
 class overloaded_member_like_function;
+class function;
+class conversion_function;
 
 namespace detail
 {
@@ -27,6 +29,9 @@ class type : public descriptor
 	template <typename T>
 	friend class detail::basic_type;
 
+	friend class dynamic_reference;
+	friend class dynamic_object;
+
 public:
 	enum compound_category
 	{
@@ -38,7 +43,7 @@ public:
 		array,
 	};
 
-	constexpr bool can_reference_initialize_no_user_conversion_inner(const type& ref_type) const noexcept;
+	constexpr bool can_pointer_like_initialize_inner(const type& ref_type) const noexcept;
 
 protected:
 	constexpr virtual void print_name_first(simple_ostream& out) const noexcept = 0;
@@ -96,7 +101,13 @@ public:
 	template <bool rvalue = false>
 	constexpr const type& add_reference() const noexcept;
 
+	template <bool rvalue>
+	constexpr const type& make_reference() const noexcept;
+
 	constexpr bool cv_at_most(const type& other) const noexcept;
+
+	constexpr bool L1(const type&) const noexcept;
+	constexpr const conversion_function* L2(const type&) const noexcept;
 
 	constexpr bool can_reference_initialize_no_user_conversion(const type& ref_type) const noexcept;
 	constexpr bool can_reference_initialize(const type& ref_type) const noexcept;
