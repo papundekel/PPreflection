@@ -47,10 +47,8 @@ constexpr void detail::basic_type<T>::print_name_first(simple_ostream& out) cons
 template <typename T>
 constexpr void detail::basic_type<T>::print_name_second(simple_ostream& out) const noexcept
 {
-	if constexpr (std::is_const_v<T>)
-		reflect<std::remove_const_t<T>, type>().print_name_second(out);
-	else if constexpr (std::is_volatile_v<T>)
-		reflect<std::remove_volatile_t<T>, type>().print_name_second(out);
+	if constexpr (std::is_const_v<T> || std::is_volatile_v<T>)
+		reflect<std::remove_cv_t<T>, type>().print_name_second(out);
 	else if constexpr (std::is_function_v<T>)
 	{
 		out.write("(");

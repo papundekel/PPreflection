@@ -156,6 +156,8 @@ struct convertor
 
 int main()
 {
+	
+
 	Papo::simple_vector<dynamic_object> objects;
 
 	auto* doubler = reflect<namespace_t::global, namespace_t>().get_function("double_");
@@ -180,8 +182,6 @@ int main()
 			x = !x;
 		}
 	}
-
-	objects.clear();
 
 	std::cout.flush();
 	return 0;

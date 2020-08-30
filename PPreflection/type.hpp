@@ -36,7 +36,7 @@ constexpr bool type::is_derived_from(const type& base) const noexcept
 	if (!is_pointer_like() && *this == base)
 		return true;
 
-	return any_of(get_direct_bases(),
+	return Papo::any_of(get_direct_bases(),
 		[&base](const type& direct_base)
 		{
 			return direct_base.is_derived_from(base);

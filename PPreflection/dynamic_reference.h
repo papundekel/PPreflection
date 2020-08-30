@@ -1,5 +1,6 @@
 #pragma once
 #include <type_traits>
+#include "../Papo/Papo/different_cvref.hpp"
 
 class type;
 
@@ -15,9 +16,8 @@ class dynamic_reference
 public:
 	constexpr dynamic_reference(const dynamic_reference&) noexcept = default;
 
-	template <typename T>
-	requires (!std::is_same_v<std::remove_cvref_t<T>, dynamic_reference>)
-	constexpr dynamic_reference(T&& rvalue) noexcept;
+	template <Papo::different_cvref<dynamic_reference> R>
+	constexpr dynamic_reference(R&& reference) noexcept;
 
 	constexpr const type& get_type() const noexcept;
 
