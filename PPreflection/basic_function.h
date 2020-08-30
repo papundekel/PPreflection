@@ -1,7 +1,7 @@
 #pragma once
 #include <string_view>
 #include "simple_ostream.h"
-#include "simple_range.h"
+#include "pointer_view.hpp"
 #include "cref_t.h"
 
 class type;
@@ -20,7 +20,7 @@ namespace detail
 		constexpr bool has_name(std::string_view name) const noexcept override final;
 
 		constexpr const type& return_type() const noexcept override final;
-		constexpr simple_range<const cref_t<type>> parameter_types() const noexcept override final;
+		constexpr pointer_view<const cref_t<type>> parameter_types() const noexcept override final;
 
 		constexpr bool is_noexcept() const noexcept override final;
 	};

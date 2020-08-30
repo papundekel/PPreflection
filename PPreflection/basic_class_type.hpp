@@ -5,7 +5,7 @@
 #include "function.h"
 
 template <typename Namespace, typename T, typename MemberFunctions, typename Bases>
-constexpr simple_range<const cref_t<type>> detail::basic_class_type<Namespace, T, MemberFunctions, Bases>::get_direct_bases() const noexcept
+constexpr pointer_view<const cref_t<type>> detail::basic_class_type<Namespace, T, MemberFunctions, Bases>::get_direct_bases() const noexcept
 {
 	return reflect_many<Bases, type>();
 }
@@ -15,7 +15,7 @@ constexpr const namespace_t* detail::basic_class_type<Namespace, T, MemberFuncti
 	return &reflect<Namespace, namespace_t>();
 }
 template <typename Namespace, typename T, typename MemberFunctions, typename Bases>
-constexpr simple_range<const cref_t<overloaded_member_function>> detail::basic_class_type<Namespace, T, MemberFunctions, Bases>::get_member_functions() const noexcept
+constexpr pointer_view<const cref_t<overloaded_member_function>> detail::basic_class_type<Namespace, T, MemberFunctions, Bases>::get_member_functions() const noexcept
 {
 	return reflect_many<MemberFunctions, overloaded_member_function>();
 }

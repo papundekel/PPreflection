@@ -26,27 +26,27 @@ constexpr decltype(auto) function::invoke_helper_t<Parameters...>::x::operator()
 	return helper(std::forward<F>(f), args, std::index_sequence_for<Parameters...>{});
 }
 
-constexpr bool function::can_invoke(simple_range<const dynamic_reference> args) const noexcept
+constexpr bool function::can_invoke(pointer_view<const dynamic_reference> args) const noexcept
 {
 	auto ps = parameter_types();
 
-	if (ps.count() != args.count())
+	if (Papo::count(ps) != Papo::count(args))
 		return false;
 
-	auto a = args.begin();
-	for (auto p = ps.begin(); p != ps.end(); ++p, ++a)
+	auto a = Papo::begin(args);
+	for (auto p = Papo::begin(ps); p != Papo::end(ps); ++p, ++a)
 		if (!a->get_type().can_initialize(p->get()))
 			return false;
 	
 	return true;
 }
 
-constexpr dynamic_object function::invoke_unsafe(simple_range<const dynamic_reference> args) const noexcept
+constexpr dynamic_object function::invoke_unsafe(pointer_view<const dynamic_reference> args) const noexcept
 {
 	return dynamic_object(return_type(),
 		[this, args](void* ptr)
 		{
-			/*simple_range<const cref_t<type>> pt = parameter_types();
+			/*pointer_view<const cref_t<type>> pt = parameter_types();
 
 			int pc = pt.count();
 			int ac = args.count();
@@ -89,7 +89,7 @@ constexpr dynamic_object function::invoke_unsafe(simple_range<const dynamic_refe
 		});
 }
 
-constexpr dynamic_object function::invoke(simple_range<const dynamic_reference> args) const
+constexpr dynamic_object function::invoke(pointer_view<const dynamic_reference> args) const
 {
 	if (can_invoke(args))
 		return invoke_unsafe(args);

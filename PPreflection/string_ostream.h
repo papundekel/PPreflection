@@ -1,10 +1,10 @@
 #pragma once
 #include "simple_ostream.h"
-#include "simple_vector.h"
+#include "../Papo/Papo/simple_vector.hpp"
 
 class string_ostream final : public simple_ostream
 {
-	simple_vector<char> buffer;
+	Papo::simple_vector<char> buffer;
 
 public:
 	constexpr void write(std::string_view s) noexcept override final;

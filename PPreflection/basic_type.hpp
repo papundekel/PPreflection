@@ -133,7 +133,7 @@ void detail::basic_type<T>::destroy(void* ptr) const noexcept
 		std::destroy_at(reinterpret_cast<T*>(ptr));
 }
 template <typename T>
-constexpr simple_range<const cref_t<type>> detail::basic_type<T>::get_direct_bases() const noexcept
+constexpr pointer_view<const cref_t<type>> detail::basic_type<T>::get_direct_bases() const noexcept
 {
 	return {};
 }
@@ -220,7 +220,7 @@ constexpr bool detail::basic_type<T>::is_void() const noexcept
 	return std::is_void_v<T>;
 }
 template <typename T>
-constexpr simple_range<const cref_t<type>> detail::basic_type<T>::parameter_types() const noexcept
+constexpr pointer_view<const cref_t<type>> detail::basic_type<T>::parameter_types() const noexcept
 {
 	if constexpr (std::is_function_v<T>)
 		return reflect_many<typename get_function_info<T>::parameter_types, type>();
@@ -298,7 +298,7 @@ constexpr type::compound_category detail::basic_type<T>::get_category() const no
 }
 
 template <typename T>
-constexpr simple_range<const cref_t<overloaded_member_function>> detail::basic_type<T>::get_member_functions() const noexcept
+constexpr pointer_view<const cref_t<overloaded_member_function>> detail::basic_type<T>::get_member_functions() const noexcept
 {
 	return {};
 }

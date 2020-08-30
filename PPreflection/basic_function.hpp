@@ -18,7 +18,7 @@ constexpr const type& detail::basic_function<Overload, ParameterTypes, ReturnTyp
 	return reflect<ReturnType, type>();
 }
 template <typename Overload, typename ParameterTypes, typename ReturnType, bool Noexcept, typename Base>
-constexpr simple_range<const cref_t<type>> detail::basic_function<Overload, ParameterTypes, ReturnType, Noexcept, Base>::parameter_types() const noexcept
+constexpr pointer_view<const cref_t<type>> detail::basic_function<Overload, ParameterTypes, ReturnType, Noexcept, Base>::parameter_types() const noexcept
 {
 	return reflect_many<ParameterTypes, type>();
 }

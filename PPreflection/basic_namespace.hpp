@@ -4,12 +4,12 @@
 #include "descriptor.h"
 
 template <typename ID, typename Types, typename Functions>
-constexpr simple_range<const cref_t<type>> detail::basic_namespace<ID, Types, Functions>::get_types() const noexcept
+constexpr pointer_view<const cref_t<type>> detail::basic_namespace<ID, Types, Functions>::get_types() const noexcept
 {
 	return reflect_many<Types, type>();
 }
 template <typename ID, typename Types, typename Functions>
-constexpr simple_range<const cref_t<overloaded_namespace_function>> detail::basic_namespace<ID, Types, Functions>::get_functions() const noexcept
+constexpr pointer_view<const cref_t<overloaded_namespace_function>> detail::basic_namespace<ID, Types, Functions>::get_functions() const noexcept
 {
 	return reflect_many<Functions, overloaded_namespace_function>();
 }

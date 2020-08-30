@@ -19,17 +19,17 @@ constexpr void member_function::invoke_implementation(void* result, const dynami
 	invoke_implementation_member(result, args[0], args + 1);
 }
 
-constexpr bool member_function::can_invoke(simple_range<const dynamic_reference> args) const noexcept
+constexpr bool member_function::can_invoke(pointer_view<const dynamic_reference> args) const noexcept
 {
-	return !args.empty() && can_invoke(args[0]) && function::can_invoke(simple_range(args.begin() + 1, args.end()));
+	return (Papo::begin(args) != Papo::end(args)) && can_invoke(Papo::begin(args)[0]) && function::can_invoke({ Papo::begin(args) + 1, Papo::end(args) });
 }
 
-constexpr dynamic_object member_function::invoke_unsafe(const dynamic_reference& caller, simple_range<const dynamic_reference> args) const
+constexpr dynamic_object member_function::invoke_unsafe(const dynamic_reference& caller, pointer_view<const dynamic_reference> args) const
 {
 	return dynamic_object(return_type(), [this, &caller, args](void* ptr) { invoke_implementation_member(ptr, caller, args.begin()); });
 }
 
-constexpr dynamic_object member_function::invoke(const dynamic_reference& caller, simple_range<const dynamic_reference> args) const
+constexpr dynamic_object member_function::invoke(const dynamic_reference& caller, pointer_view<const dynamic_reference> args) const
 {
 	if (can_invoke(caller) && function::can_invoke(args))
 		return invoke_unsafe(caller, args);

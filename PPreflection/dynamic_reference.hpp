@@ -17,7 +17,7 @@ constexpr const type& dynamic_reference::get_type() const noexcept
 }
 
 template <typename T>
-//requires (!std::is_same_v<std::remove_cvref_t<T>, dynamic_reference>)
+requires (!std::is_same_v<std::remove_cvref_t<T>, dynamic_reference>)
 constexpr dynamic_reference::dynamic_reference(T&& rvalue) noexcept
 	: ptr(const_cast<std::remove_const_t<std::remove_reference_t<T>>*>(&rvalue))
 	, t(reflect<T&&, type>())

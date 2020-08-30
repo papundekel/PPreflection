@@ -4,11 +4,10 @@
 #include "type.h"
 #include "reflect.h"
 #include "descriptor.h"
-#include "simple_range.h"
 #include "map_pack.h"
 #include "get_value.h"
 #include "function.h"
-#include "../Papo/Papo/algorithm/any_of.hpp"
+#include "../Papo/Papo/any_of.hpp"
 
 constexpr cv_qualifier type::get_cv_qualifier() const noexcept
 {

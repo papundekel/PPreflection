@@ -5,7 +5,7 @@
 #include "get_value.h"
 
 template <typename ID, typename Functions>
-constexpr simple_range<const cref_t<member_function>> detail::basic_overloaded_member_function<ID, Functions>::get_overloads() const noexcept
+constexpr pointer_view<const cref_t<member_function>> detail::basic_overloaded_member_function<ID, Functions>::get_overloads() const noexcept
 {
 	return reflect_many<Functions, member_function>();
 }

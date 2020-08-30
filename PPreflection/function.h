@@ -1,7 +1,7 @@
 #pragma once
 #include <type_traits>
 #include "descriptor.h"
-#include "simple_range.h"
+#include "pointer_view.hpp"
 #include "cref_t.h"
 #include "dynamic_object.h"
 
@@ -16,9 +16,9 @@ class function : public descriptor
 
 protected:
 	constexpr virtual void invoke_implementation(void* result, const dynamic_reference* args) const noexcept = 0;
-	constexpr virtual bool can_invoke(simple_range<const dynamic_reference> args) const noexcept;
+	constexpr virtual bool can_invoke(pointer_view<const dynamic_reference> args) const noexcept;
 
-	constexpr dynamic_object invoke_unsafe(simple_range<const dynamic_reference> args) const noexcept;
+	constexpr dynamic_object invoke_unsafe(pointer_view<const dynamic_reference> args) const noexcept;
 
 	template <typename... Parameters>
 	struct invoke_helper_t
@@ -39,9 +39,9 @@ protected:
 
 public:
 	constexpr virtual const type& return_type() const noexcept = 0;
-	constexpr virtual simple_range<const cref_t<type>> parameter_types() const noexcept = 0;
+	constexpr virtual pointer_view<const cref_t<type>> parameter_types() const noexcept = 0;
 
 	constexpr virtual bool is_noexcept() const noexcept = 0;
 
-	constexpr dynamic_object invoke(simple_range<const dynamic_reference> args = {}) const;
+	constexpr dynamic_object invoke(pointer_view<const dynamic_reference> args = {}) const;
 };

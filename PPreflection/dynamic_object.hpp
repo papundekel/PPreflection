@@ -2,7 +2,6 @@
 #include <utility>
 #include "dynamic_object.h"
 #include "type.h"
-#include "unique_pointer.h"
 #include "dynamic_reference.h"
 #include "reflect.h"
 
