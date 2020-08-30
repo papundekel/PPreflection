@@ -1,6 +1,6 @@
 #pragma once
 #include "member_function.h"
-#include "dynamic_ref.h"
+#include "dynamic_reference.h"
 #include "function.h"
 
 constexpr bool member_function::can_invoke(const dynamic_reference& caller_arg) const noexcept

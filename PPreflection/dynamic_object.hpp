@@ -2,8 +2,8 @@
 #include <utility>
 #include "dynamic_object.h"
 #include "type.h"
-#include "unique_pointer.hpp"
-#include "dynamic_ref.h"
+#include "unique_pointer.h"
+#include "dynamic_reference.h"
 #include "reflect.h"
 
 constexpr dynamic_object::dynamic_object() noexcept

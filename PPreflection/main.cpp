@@ -9,9 +9,6 @@
 #include "append_pack.h"
 #include "overload_cast.h"
 
-
-#include "unique_pointer.hpp"
-#include "simple_vector.hpp"
 #include "to_chars.hpp"
 
 #include "simple_ostream.hpp"
@@ -19,8 +16,8 @@
 #include "string_ostream.hpp"
 
 #include "cref_t.hpp"
-#include "simple_range.hpp"
-#include "dynamic_ref.hpp"
+
+#include "dynamic_reference.hpp"
 #include "dynamic_object.hpp"
 
 #include "function.hpp"
@@ -58,10 +55,6 @@
 
 #include "fundamental_type_pack.h"
 
-#include "array_vector.hpp"
-#include "unique_raw_pointer.hpp"
-#include "dynamic_block.hpp"
-
 struct X
 {
 	int x;
@@ -70,17 +63,13 @@ struct X
 		: x(x)
 	{}
 
-	void f(const int& y) &&
+	void f() &
 	{
-		std::cout << x + y << "&&\n";
+		std::cout << x << "&\n";
 	}
-	void f(const int& y) &
+	void f() &&
 	{
-		std::cout << x + y << "&\n";
-	}
-	void f(const int& y) const& noexcept
-	{
-		std::cout << x + y << "const& noexcept\n";
+		std::cout << x << "&&\n";
 	}
 
 	~X()
@@ -130,9 +119,8 @@ namespace overload
 namespace overload
 {
 	struct X_f {};
-	template <>	constexpr inline auto caster<X_f, 0> = overload_member_caster<cv_qualifier::none, ref_qualifier::rvalue, const int&>;
-	template <>	constexpr inline auto caster<X_f, 1> = overload_member_caster<cv_qualifier::none, ref_qualifier::lvalue, const int&>;
-	template <>	constexpr inline auto caster<X_f, 2> = overload_member_caster<cv_qualifier::const_, ref_qualifier::lvalue, const int&>;
+	template <>	constexpr inline auto caster<X_f, 0> = overload_member_caster<cv_qualifier::none, ref_qualifier::rvalue>;
+	template <>	constexpr inline auto caster<X_f, 1> = overload_member_caster<cv_qualifier::none, ref_qualifier::lvalue>;
 }
 
 template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<X>> = std::string_view("X");
@@ -145,17 +133,12 @@ template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<overl
 template <> constexpr inline auto detail::reflect_owning<overload::X_f>
 	= detail::basic_overloaded_member_function<overload::X_f, value_pack<
 		overload::caster<overload::X_f, 0>(&X::f),
-		overload::caster<overload::X_f, 1>(&X::f),
-		overload::caster<overload::X_f, 2>(&X::f)>>{};
+		overload::caster<overload::X_f, 1>(&X::f)>>{};
 
 template <> constexpr inline auto detail::reflect_owning<value_t<overload::caster<overload::X_f, 0>(&X::f)>>
 	= detail::basic_member_function<overload::X_f, overload::caster<overload::X_f, 0>(&X::f)>{};
-
 template <> constexpr inline auto detail::reflect_owning<value_t<overload::caster<overload::X_f, 1>(&X::f)>>
 	= detail::basic_member_function<overload::X_f, overload::caster<overload::X_f, 1>(&X::f)>{};
-
-template <> constexpr inline auto detail::reflect_owning<value_t<overload::caster<overload::X_f, 2>(&X::f)>>
-	= detail::basic_member_function<overload::X_f, overload::caster<overload::X_f, 2>(&X::f)>{};
 
 struct convertor
 {
@@ -173,7 +156,7 @@ struct convertor
 
 int main()
 {
-	simple_vector<dynamic_object> objects;
+	Papo::simple_vector<dynamic_object> objects;
 
 	auto* doubler = reflect<namespace_t::global, namespace_t>().get_function("double_");
 
@@ -183,8 +166,19 @@ int main()
 		objects.push_back(doubler->invoke({ 20 }));
 		objects.push_back(doubler->invoke({ -5 }));
 
-		for (auto&& o : objects)
-			std::cout << o.operator dynamic_reference().cast<const X&>().x << '\n';
+		const overloaded_member_function* ff = objects.begin()->get_type().get_member_function("f");
+
+		bool x = true;
+
+		for (dynamic_reference r : objects)
+		{
+			if (x)
+				ff->invoke(r.move());
+			else
+				ff->invoke(r);
+
+			x = !x;
+		}
 	}
 
 	objects.clear();

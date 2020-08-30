@@ -15,7 +15,7 @@ constexpr void array_ostream<count>::write(std::string_view s) noexcept
 {
 	if (position != buffer.size())
 	{
-		auto c = std::min(buffer.size() - position - 1, s.length());
+		auto c = std::min(s.length(), buffer.size() - position);
 		std::memcpy(buffer.data() + position, s.data(), c);
 		position += c;
 	}
