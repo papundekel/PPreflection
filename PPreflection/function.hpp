@@ -6,6 +6,7 @@
 #include "type.h"
 #include "get_value.h"
 #include "conversion_function.h"
+#include "dynamic_reference.h"
 
 template <typename... Parameters>
 constexpr typename function::invoke_helper_t<Parameters...>::x function::invoke_helper_t<Parameters...>::value_f() noexcept
@@ -28,17 +29,9 @@ constexpr decltype(auto) function::invoke_helper_t<Parameters...>::x::operator()
 
 constexpr bool function::can_invoke(pointer_view<const dynamic_reference> args) const noexcept
 {
-	auto ps = parameter_types();
-
-	if (Papo::count(ps) != Papo::count(args))
-		return false;
-
-	auto a = Papo::begin(args);
-	for (auto p = Papo::begin(ps); p != Papo::end(ps); ++p, ++a)
-		if (!a->get_type().can_initialize(p->get()))
-			return false;
-	
-	return true;
+	return type::can_initialize_arguments(
+		parameter_types(),
+		args | Papo::transform([](const dynamic_reference& r) -> const type& { return r.get_type(); }));
 }
 
 constexpr dynamic_object function::invoke_unsafe(pointer_view<const dynamic_reference> args) const noexcept

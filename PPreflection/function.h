@@ -4,6 +4,8 @@
 #include "pointer_view.hpp"
 #include "cref_t.h"
 #include "dynamic_object.h"
+#include "../Papo/Papo/transform_view.hpp"
+#include "../Papo/Papo/id.hpp"
 
 class type;
 class dynamic_reference;
@@ -37,9 +39,14 @@ protected:
 		static constexpr x value_f() noexcept;
 	};
 
+	constexpr virtual pointer_view<const cref_t<type>> parameter_types_implementation() const noexcept = 0;
+
 public:
+	constexpr Papo::view auto parameter_types() const noexcept
+	{
+		return parameter_types_implementation() | Papo::transform(Papo::id<const type&>);
+	}
 	constexpr virtual const type& return_type() const noexcept = 0;
-	constexpr virtual pointer_view<const cref_t<type>> parameter_types() const noexcept = 0;
 
 	constexpr virtual bool is_noexcept() const noexcept = 0;
 

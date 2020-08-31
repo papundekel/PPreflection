@@ -30,6 +30,7 @@
 
 #include "overloaded_function.hpp"
 #include "overloaded_member_function.hpp"
+#include "overloaded_namespace_function.h"
 #include "descriptor.hpp"
 
 #include "basic_namespace.h"
@@ -180,7 +181,7 @@ struct convertor
 
 int main()
 {
-	const type* X_ = reflect<namespace_t::global, namespace_t>().get_type("X");
+	auto* X_ = reflect<namespace_t::global, namespace_t>().get_type("X");
 	if (X_)
 	{
 		auto x1 = X_->create_instance({ 7 });
