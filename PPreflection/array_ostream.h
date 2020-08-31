@@ -1,16 +1,16 @@
 #pragma once
-#include "simple_ostream.h"
+#include "../Papo/Papo/array_vector.hpp"
+#include "basic_ostream.h"
+
+namespace detail
+{
+	template <std::size_t count>
+	struct array_ostream_helper
+	{
+		template <typename T>
+		using help = Papo::array_vector<T, count, true>;
+	};
+}
 
 template <std::size_t count>
-class array_ostream final : public simple_ostream
-{
-	std::array<char, count> buffer;
-	std::size_t position;
-
-public:
-	constexpr array_ostream() noexcept;
-
-	constexpr void write(std::string_view s) noexcept override final;
-
-	void write_to_ostream(std::ostream& out) noexcept override final;
-};
+using array_ostream = basic_ostream<detail::array_ostream_helper<count>::template help>;

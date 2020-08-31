@@ -176,3 +176,11 @@ constexpr const overloaded_member_function* type::get_member_function(std::strin
 {
 	return descriptor::get_descriptor(name, get_member_functions());
 }
+
+constexpr dynamic_object type::create_instance(pointer_view<const dynamic_reference> args) const
+{
+	if (auto* ctrs = get_constructors(); ctrs)
+		return ctrs->invoke(args);
+	else
+		throw 0;
+}

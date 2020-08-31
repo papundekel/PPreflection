@@ -3,11 +3,20 @@
 #include "overloaded_member_like_function.h"
 #include "member_like_function.h"
 
-template <typename ID, typename Class, typename Functions>
-class basic_overloaded_static_member_function : public basic_overloaded_function<ID, overloaded_member_like_function<member_like_function>>
+namespace detail
 {
-public:
-	constexpr pointer_view<const cref_t<member_like_function>> get_overloads() const noexcept override final;
+	template <typename ID, typename Class, typename Functions>
+	class basic_overloaded_static_member_function : public basic_overloaded_function<ID, overloaded_member_like_function<member_like_function>>
+	{
+	public:
+		constexpr pointer_view<const cref_t<member_like_function>> get_overloads() const noexcept override final
+		{
+			return reflect_many<Functions, member_like_function>();
+		}
 
-	constexpr const type& get_enclosing_class() const noexcept override final;
-};
+		constexpr const type& get_enclosing_class() const noexcept override final
+		{
+			return reflect<Class, type>();
+		}
+	};
+}

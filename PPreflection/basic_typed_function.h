@@ -20,6 +20,23 @@ namespace detail
 		using B = basic_typed_function_base<Overload, F, Base>;
 
 		template <typename T>
-		static constexpr void invoke_(void* result, T&& t) noexcept;
+		static constexpr void invoke_(void* result, T&& t) noexcept
+		{
+			using R = B::ReturnType;
+
+			if constexpr (!std::is_void_v<R>)
+			{
+				if constexpr (!std::is_reference_v<R>)
+					new (result) R(std::forward<T>(t)());
+				else
+				{
+					auto&& x = std::forward<T>(t)();
+					new (result) std::remove_reference_t<R>*(&x);
+				}
+			}
+			else
+				std::forward<T>(t)();
+		}
+
 	};
 }

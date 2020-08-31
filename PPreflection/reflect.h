@@ -11,6 +11,9 @@ namespace detail
 	template <typename T>
 	struct basic_type_wrap {};
 
+	template <typename T>
+	struct constructor_wrap {};
+
 	template <typename ResultType>
 	struct reflector
 	{
@@ -26,6 +29,11 @@ namespace detail
 		};
 		template <typename T>
 		struct reflect<id_wrap<T>>
+		{
+			static constexpr const ResultType& value_f() noexcept;
+		};
+		template <typename T>
+		struct reflect<constructor_wrap<T>>
 		{
 			static constexpr const ResultType& value_f() noexcept;
 		};

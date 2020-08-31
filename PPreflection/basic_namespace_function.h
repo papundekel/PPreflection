@@ -8,6 +8,9 @@ namespace detail
 	class basic_namespace_function : public basic_static_function<Overload, f, namespace_function>
 	{
 	public:
-		constexpr const overloaded_namespace_function& get_overloaded_function() const noexcept override final;
+		constexpr const overloaded_namespace_function& get_overloaded_function() const noexcept override final
+		{
+			return reflect<Overload, overloaded_namespace_function>();
+		}
 	};
 }

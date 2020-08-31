@@ -17,6 +17,7 @@ template <typename Function>
 class overloaded_member_like_function;
 class function;
 class conversion_function;
+class dynamic_object;
 
 namespace detail
 {
@@ -115,7 +116,9 @@ public:
 	constexpr virtual pointer_view<const cref_t<overloaded_member_function>> get_member_functions() const noexcept = 0;
 	constexpr const overloaded_member_function* get_member_function(std::string_view name) const noexcept;
 
-	//constexpr virtual const overloaded_member_like_function<member_like_function>& get_constructors() const noexcept = 0;
+	constexpr virtual const overloaded_member_like_function<member_like_function>* get_constructors() const noexcept = 0;
 
 	friend constexpr bool operator==(const type& a, const type& b) noexcept;
+
+	constexpr dynamic_object create_instance(pointer_view<const dynamic_reference> args = {}) const;
 };

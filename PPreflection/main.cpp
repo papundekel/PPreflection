@@ -12,8 +12,7 @@
 #include "to_chars.hpp"
 
 #include "simple_ostream.hpp"
-#include "array_ostream.hpp"
-#include "string_ostream.hpp"
+#include "basic_ostream.hpp"
 
 #include "cref_t.hpp"
 
@@ -26,42 +25,52 @@
 #include "member_like_function.hpp"
 #include "namespace_function.hpp"
 #include "namespace_t.hpp"
-#include "conversion_function.hpp"
+#include "conversion_function.h"
 #include "one_parameter_constructor.hpp"
 
 #include "overloaded_function.hpp"
 #include "overloaded_member_function.hpp"
 #include "descriptor.hpp"
 
-#include "basic_namespace.hpp"
-#include "basic_function.hpp"
-#include "basic_class_constructor.hpp"
-#include "basic_class_type.hpp"
+#include "basic_namespace.h"
+#include "basic_function.h"
+#include "basic_class_constructor.h"
+#include "basic_class_type.h"
 #include "basic_type.hpp"
-#include "basic_typed_function.hpp"
-#include "basic_static_function.hpp"
-#include "basic_member_function.hpp"
-#include "basic_namespace_function.hpp"
-#include "basic_static_member_function.hpp"
+#include "basic_typed_function.h"
+#include "basic_static_function.h"
+#include "basic_member_function.h"
+#include "basic_namespace_function.h"
 
-#include "basic_overloaded_constructor.hpp"
-#include "basic_overloaded_function.hpp"
-#include "basic_overloaded_namespace_function.hpp"
-#include "basic_overloaded_member_function.hpp"
-#include "basic_overloaded_static_member_function.hpp"
+#include "basic_overloaded_constructor.h"
+#include "basic_overloaded_conversion_function.h"
+#include "basic_overloaded_function.h"
+#include "basic_overloaded_member_function.h"
+#include "basic_overloaded_namespace_function.h"
+#include "basic_overloaded_static_member_function.h"
 
 #include "prepend_pack.h"
 #include "filter_pack.h"
 
 #include "fundamental_type_pack.h"
 
+#include "constructor_info.h"
+
 struct X
 {
 	int x;
 
-	X(int x)
+	X(const int& x)
 		: x(x)
-	{}
+	{
+		std::cout << "int ctr\n";
+	}
+
+	X(const double& y)
+		: x(y)
+	{
+		std::cout << "double ctr\n";
+	}
 
 	void f() &
 	{
@@ -70,6 +79,11 @@ struct X
 	void f() &&
 	{
 		std::cout << x << "&&\n";
+	}
+
+	operator int()
+	{
+		return 7;
 	}
 
 	~X()
@@ -95,6 +109,10 @@ namespace detail
 #include "reflect_fundamentals.hpp"
 
 template <typename T> constexpr inline auto detail::reflect_owning<detail::basic_type_wrap<T>> = detail::basic_type<T>{};
+
+template <typename Class, typename... Args>
+constexpr inline auto detail::reflect_owning<constructor_info<Class, Args...>>
+	= detail::basic_class_constructor<Class, type_pack<Args...>>{};
 
 namespace overload { struct global_double_ {}; }
 template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<overload::global_double_>> = std::string_view("double_");
@@ -122,6 +140,9 @@ namespace overload
 	template <>	constexpr inline auto caster<X_f, 0> = overload_member_caster<cv_qualifier::none, ref_qualifier::rvalue>;
 	template <>	constexpr inline auto caster<X_f, 1> = overload_member_caster<cv_qualifier::none, ref_qualifier::lvalue>;
 }
+
+template <> constexpr inline auto detail::reflect_owning<detail::constructor_wrap<X>>
+	= detail::basic_overloaded_constructor<X, type_pack<type_pack<const int&>, type_pack<const double&>>>{};
 
 template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<X>> = std::string_view("X");
 template <> constexpr inline auto detail::reflect_owning<detail::id_wrap<X>> = std::size_t(1);
@@ -154,9 +175,19 @@ struct convertor
 	}
 };
 
+#include "../Papo/Papo/unique.hpp"
+#include "../Papo/Papo/simple_vector.hpp"
+
 int main()
 {
-	
+	const type* X_ = reflect<namespace_t::global, namespace_t>().get_type("X");
+	if (X_)
+	{
+		auto x1 = X_->create_instance({ 7 });
+		auto x2 = X_->create_instance({ 5. });
+	}
+
+	std::cout << "\n";
 
 	Papo::simple_vector<dynamic_object> objects;
 
@@ -182,6 +213,8 @@ int main()
 			x = !x;
 		}
 	}
+
+	objects.clear();
 
 	std::cout.flush();
 	return 0;

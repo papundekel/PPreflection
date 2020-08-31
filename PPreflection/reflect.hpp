@@ -22,12 +22,17 @@ constexpr const ResultType& detail::reflector<ResultType>::reflect<detail::id_wr
 {
 	return detail::reflect_owning<detail::id_wrap<T>>;
 }
-
 template <typename ResultType>
 template <typename T>
 constexpr const ResultType& detail::reflector<ResultType>::reflect<detail::name_wrap<T>>::value_f() noexcept
 {
 	return detail::reflect_owning<detail::name_wrap<T>>;
+}
+template <typename ResultType>
+template <typename T>
+constexpr const ResultType& detail::reflector<ResultType>::reflect<detail::constructor_wrap<T>>::value_f() noexcept
+{
+	return detail::reflect_owning<detail::constructor_wrap<T>>;
 }
 
 template <typename T, typename ResultType>

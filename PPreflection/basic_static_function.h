@@ -13,6 +13,14 @@ namespace detail
 	protected:
 		using ParameterTypes = typename basic_static_function_base<Overload, f, Base>::ParameterTypes;
 
-		constexpr void invoke_implementation(void* result, const dynamic_reference* args) const noexcept override final;
+		constexpr void invoke_implementation(void* result, const dynamic_reference* args) const noexcept override final
+		{
+			this->invoke_(result,
+				[args]()
+				{
+					return get_value<apply_pack<function::invoke_helper_t, ParameterTypes>>()(f, args);
+				});
+		}
+
 	};
 }

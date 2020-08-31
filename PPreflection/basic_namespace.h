@@ -1,5 +1,6 @@
 #pragma once
 #include "namespace_t.h"
+#include "reflect.h"
 
 namespace detail
 {
@@ -7,9 +8,21 @@ namespace detail
 	class basic_namespace : public namespace_t
 	{
 	public:
-		constexpr pointer_view<const cref_t<type>> get_types() const noexcept override final;
-		constexpr pointer_view<const cref_t<overloaded_namespace_function>> get_functions() const noexcept override final;
-		constexpr void print_name(simple_ostream& out) const noexcept override final;
-		constexpr bool has_name(std::string_view name) const noexcept override final;
+		constexpr pointer_view<const cref_t<type>> get_types() const noexcept override final
+		{
+			return reflect_many<Types, type>();
+		}
+		constexpr pointer_view<const cref_t<overloaded_namespace_function>> get_functions() const noexcept override final
+		{
+			return reflect_many<Functions, overloaded_namespace_function>();
+		}
+		constexpr void print_name(simple_ostream& out) const noexcept override final
+		{
+			out.write(descriptor::reflect_name<ID>());
+		}
+		constexpr bool has_name(std::string_view name) const noexcept override final
+		{
+			return descriptor::reflect_name<ID>() == name;
+		}
 	};
 }
