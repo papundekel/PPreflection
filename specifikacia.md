@@ -2,7 +2,7 @@
 
 C++ reflection knižnica.
 
-Bakalárska práca.
+Ročníkový projekt.
 
 ## Popis
 
@@ -16,6 +16,8 @@ Súčasťou knižnice bude generátor metadát. Ten vygeneruje zo zdrojového k�
 
 Cieľom je možnosť zapojiť generátor do automatizovaného buildu s čo najmenšou prácou užívateľa: zdrojový kód prejde cez generátor, ktorý vyprodukuje kód aj s metadátami; ten dostane kompilátor.
 
+Najjednoduchšie bude použiť clang nástroje, ktoré sprístupňujú AST. Iná možnosť by bola iba napísať vlastný parser.
+
 ### Framework
 
 Poskytuje rozhranie pre prístup k metadátam.
@@ -23,6 +25,12 @@ Poskytuje rozhranie pre prístup k metadátam.
 Triedy ako napr. `type` a `function` s metódami `is_derived_from(/*iný typ*/)` a `invoke(/*dynamické argumenty*/)` resp.
 
 Rieši úlohy ako: reprezentácia metadát, dynamicky vytvorené objekty cez reflexiu, implementácia pravidiel inicializácie a overload resolution.
+
+## Rozsah práce
+
+Keďže potenciálny rozsah podporovaných funckcií končí pri implementácii prakticky celého kompilátora, cieľom tejto knižnice zatiaľ **nie** je podporovať vytváranie nových tried, funckií a pod.
+
+V aktuálnom stave vývoja sa javí ako rozsahovo rozumné implementovať iba dynamické volanie funkcií a spôsoby, ktorými sa tieto funkcie dajú "objaviť" (získať členské metódy danej triedy, získať funkcie s počtom parametrov 2 v danom namespace a pod.).
 
 ## Príklad
 
