@@ -1,5 +1,5 @@
 #pragma once
-#include "../Papo/Papo/simple_view.hpp"
+#include "../Papo/PP/simple_view.hpp"
 
 template <typename T>
-using pointer_view = Papo::simple_view<T*>;
+using pointer_view = PP::simple_view<T*>;

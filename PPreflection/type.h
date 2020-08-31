@@ -9,7 +9,7 @@
 #include "cv_qualifier.h"
 #include "ref_qualifier.h"
 #include "apply_pack.h"
-#include "../Papo/Papo/view.hpp"
+#include "../Papo/PP/view.hpp"
 
 class namespace_t;
 class overloaded_member_function;
@@ -123,13 +123,13 @@ public:
 
 	constexpr dynamic_object create_instance(pointer_view<const dynamic_reference> args = {}) const;
 
-	static constexpr bool can_initialize_arguments(Papo::view auto&& parameter_types, Papo::view auto&& argument_types) noexcept
+	static constexpr bool can_initialize_arguments(PP::view auto&& parameter_types, PP::view auto&& argument_types) noexcept
 	{
-		if (Papo::count(parameter_types) != Papo::count(argument_types))
+		if (PP::count(parameter_types) != PP::count(argument_types))
 			return false;
 
-		auto a = Papo::begin(argument_types);
-		for (auto p = Papo::begin(parameter_types); p != Papo::end(parameter_types); ++p, ++a)
+		auto a = PP::begin(argument_types);
+		for (auto p = PP::begin(parameter_types); p != PP::end(parameter_types); ++p, ++a)
 			if (!a->can_initialize(*p))
 				return false;
 

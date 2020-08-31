@@ -1,7 +1,7 @@
 #pragma once
 #include <cstddef>
-#include "../Papo/Papo/scoped.hpp"
-#include "../Papo/Papo/unique.hpp"
+#include "../Papo/PP/scoped.hpp"
+#include "../Papo/PP/unique.hpp"
 
 
 class type;
@@ -16,12 +16,12 @@ class dynamic_object
 			constexpr auto operator()() const noexcept;
 		};
 
-		Papo::unique<const type*, defaulter> type_;
+		PP::unique<const type*, defaulter> type_;
 
-		constexpr void operator()(Papo::unique<std::byte*>& u) const;
+		constexpr void operator()(PP::unique<std::byte*>& u) const;
 	};
 
-	Papo::scoped<Papo::unique<std::byte*>, deleter> x;
+	PP::scoped<PP::unique<std::byte*>, deleter> x;
 
 	template <bool reference>
 	constexpr void* get_address_helper() noexcept;
@@ -29,7 +29,7 @@ class dynamic_object
 	constexpr void* get_address() noexcept;
 
 	template <bool reference>
-	static constexpr void* get_address(Papo::unique<std::byte*>& p, const type& t) noexcept;
+	static constexpr void* get_address(PP::unique<std::byte*>& p, const type& t) noexcept;
 
 	template <bool rvalue>
 	constexpr dynamic_reference reference_cast_helper() noexcept;

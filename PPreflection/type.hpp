@@ -7,7 +7,7 @@
 #include "map_pack.h"
 #include "get_value.h"
 #include "function.h"
-#include "../Papo/Papo/any_of.hpp"
+#include "../Papo/PP/any_of.hpp"
 
 constexpr cv_qualifier type::get_cv_qualifier() const noexcept
 {
@@ -36,7 +36,7 @@ constexpr bool type::is_derived_from(const type& base) const noexcept
 	if (!is_pointer_like() && *this == base)
 		return true;
 
-	return Papo::any_of(get_direct_bases(),
+	return PP::any_of(get_direct_bases(),
 		[&base](const type& direct_base)
 		{
 			return direct_base.is_derived_from(base);

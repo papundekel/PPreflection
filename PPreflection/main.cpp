@@ -176,8 +176,8 @@ struct convertor
 	}
 };
 
-#include "../Papo/Papo/unique.hpp"
-#include "../Papo/Papo/simple_vector.hpp"
+#include "../Papo/PP/unique.hpp"
+#include "../Papo/PP/simple_vector.hpp"
 
 int main()
 {
@@ -190,7 +190,7 @@ int main()
 
 	std::cout << "\n";
 
-	Papo::simple_vector<dynamic_object> objects;
+	PP::simple_vector<dynamic_object> objects;
 
 	auto* doubler = reflect<namespace_t::global, namespace_t>().get_function("double_");
 

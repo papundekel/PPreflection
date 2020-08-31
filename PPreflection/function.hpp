@@ -31,7 +31,7 @@ constexpr bool function::can_invoke(pointer_view<const dynamic_reference> args) 
 {
 	return type::can_initialize_arguments(
 		parameter_types(),
-		args | Papo::transform([](const dynamic_reference& r) -> const type& { return r.get_type(); }));
+		args | PP::transform([](const dynamic_reference& r) -> const type& { return r.get_type(); }));
 }
 
 constexpr dynamic_object function::invoke_unsafe(pointer_view<const dynamic_reference> args) const noexcept

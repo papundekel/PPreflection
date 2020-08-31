@@ -16,7 +16,7 @@ constexpr const type& dynamic_reference::get_type() const noexcept
 	return t;
 }
 
-template <Papo::different_cvref<dynamic_reference> R>
+template <PP::different_cvref<dynamic_reference> R>
 constexpr dynamic_reference::dynamic_reference(R&& reference) noexcept
 	: dynamic_reference(const_cast<std::remove_const_t<std::remove_reference_t<R>>*>(&reference), reflect<R&&, type>())
 {}

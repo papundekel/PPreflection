@@ -1,6 +1,6 @@
 #pragma once
 #include <type_traits>
-#include "../Papo/Papo/different_cvref.hpp"
+#include "../Papo/PP/different_cvref.hpp"
 
 class type;
 
@@ -16,7 +16,7 @@ class dynamic_reference
 public:
 	constexpr dynamic_reference(const dynamic_reference&) noexcept = default;
 
-	template <Papo::different_cvref<dynamic_reference> R>
+	template <PP::different_cvref<dynamic_reference> R>
 	constexpr dynamic_reference(R&& reference) noexcept;
 
 	constexpr const type& get_type() const noexcept;

@@ -1,5 +1,5 @@
 #pragma once
-#include "../Papo/Papo/array_vector.hpp"
+#include "../Papo/PP/array_vector.hpp"
 #include "basic_ostream.h"
 
 namespace detail
@@ -8,7 +8,7 @@ namespace detail
 	struct array_ostream_helper
 	{
 		template <typename T>
-		using help = Papo::array_vector<T, count, true>;
+		using help = PP::array_vector<T, count, true>;
 	};
 }
 

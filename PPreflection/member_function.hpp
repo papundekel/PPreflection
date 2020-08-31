@@ -21,7 +21,7 @@ constexpr void member_function::invoke_implementation(void* result, const dynami
 
 constexpr bool member_function::can_invoke(pointer_view<const dynamic_reference> args) const noexcept
 {
-	return !Papo::empty(args) && can_invoke(args[0]) && function::can_invoke(1 >> args);
+	return !PP::empty(args) && can_invoke(args[0]) && function::can_invoke(1 >> args);
 }
 
 constexpr dynamic_object member_function::invoke_unsafe(const dynamic_reference& caller, pointer_view<const dynamic_reference> args) const

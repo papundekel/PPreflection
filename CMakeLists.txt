@@ -13,4 +13,4 @@ target_compile_features(TestProject PUBLIC cxx_std_20)
 #set_target_properties(PPreflection PROPERTIES COMPILE_FLAGS "-fpermissive -save-temps -masm=intel -fverbose-asm") 
 
 add_dependencies(TestProject PPreflection)
-add_dependencies(PPreflection Papo)
+add_dependencies(PPreflection PP)

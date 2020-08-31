@@ -6,7 +6,7 @@
 #include "reflect.h"
 
 template <bool reference>
-constexpr void* dynamic_object::get_address(Papo::unique<std::byte*>& p, const type& t) noexcept
+constexpr void* dynamic_object::get_address(PP::unique<std::byte*>& p, const type& t) noexcept
 {
 	void* ptr = nullptr;
 
@@ -36,7 +36,7 @@ constexpr auto dynamic_object::deleter::defaulter::operator()() const noexcept
 	return &reflect<void, type>();
 }
 
-constexpr void dynamic_object::deleter::operator()(Papo::unique<std::byte*>& u) const
+constexpr void dynamic_object::deleter::operator()(PP::unique<std::byte*>& u) const
 {
 	const type& t = *type_.get();
 	auto ptr = get_address<false>(u, t);
