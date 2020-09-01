@@ -1,14 +1,17 @@
 #pragma once
 #include "type_t.h"
 
-template <typename Class, typename... Args>
+template <typename Class, bool Explicit, typename... Args>
 struct constructor_info {};
+
+template <bool Explicit, typename... Args>
+struct constructor_partial_info {};
 
 template <typename Class>
 struct make_full_info
 {
 	template <typename T>
 	struct make	{};
-	template <typename... Args>
-	struct make<type_pack<Args...>> : type_t<constructor_info<Class, Args...>> {};
+	template <bool Explicit, typename... Args>
+	struct make<constructor_partial_info<Explicit, Args...>> : type_t<constructor_info<Class, Explicit, Args...>> {};
 };

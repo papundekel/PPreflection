@@ -22,9 +22,9 @@ namespace detail
 		{
 			return reflect_many<MemberFunctions, overloaded_member_function>();
 		}
-		constexpr const overloaded_member_like_function<member_like_function>* get_constructors() const noexcept override final
+		constexpr const overloaded_constructor* get_constructors() const noexcept override final
 		{
-			return &reflect<constructor_wrap<T>, overloaded_member_like_function<member_like_function>>();
+			return &reflect<constructor_wrap<T>, overloaded_constructor>();
 		}
 	};
 }

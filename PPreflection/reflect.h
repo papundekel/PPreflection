@@ -37,6 +37,11 @@ namespace detail
 		{
 			static constexpr const ResultType& value_f() noexcept;
 		};
+		template <typename T>
+		struct reflect<name_wrap<constructor_wrap<T>>>
+		{
+			static constexpr const ResultType& value_f() noexcept;
+		};
 	};
 }
 

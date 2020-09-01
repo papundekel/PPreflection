@@ -5,10 +5,10 @@
 namespace detail
 {
 	template <typename ID, typename Namespace, typename Functions>
-	class basic_overloaded_namespace_function : public basic_overloaded_function<ID, overloaded_namespace_function>
+	class basic_overloaded_namespace_function : public basic_overloaded_function<ID, Functions, overloaded_namespace_function>
 	{
 	public:
-		constexpr pointer_view<const cref_t<namespace_function>> get_overloads() const noexcept override final
+		constexpr pointer_view<const cref_t<namespace_function>> get_namespace_overloads() const noexcept override final
 		{
 			return reflect_many<Functions, namespace_function>();
 		}

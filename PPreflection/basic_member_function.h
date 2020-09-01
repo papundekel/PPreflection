@@ -6,30 +6,17 @@
 
 namespace detail
 {
-	template <typename Overload, auto mf>
-	using basic_member_function_base = basic_typed_function<Overload, typename get_member_function_info<decltype(mf)>::function_type, member_function>;
+	template <typename Overload, auto mf, typename Base>
+	using basic_member_function_helper = basic_typed_function<Overload, typename get_member_function_info<decltype(mf)>::function_type, Base>;
 
-	template <typename Overload, auto mf>
-	class basic_member_function : public basic_member_function_base<Overload, mf>
+	template <typename Overload, auto mf, typename Base>
+	class basic_member_function_base : public basic_member_function_helper<Overload, mf, Base>
 	{
-		using B = basic_member_function_base<Overload, mf>;
-		using FunctionType = typename B::FunctionType;
+	protected:
+		using B = basic_member_function_helper<Overload, mf, Base>;
+		using FunctionType = B::FunctionType;
 		using ParentClass = typename get_member_function_info<decltype(mf)>::class_;
 		using CallerParameterType = typename get_member_function_info<decltype(mf)>::caller_type;
-
-	protected:
-		constexpr void invoke_implementation_member(void* result, const dynamic_reference& caller, const dynamic_reference* args) const noexcept override final
-		{
-			this->invoke_(result,
-				[&caller, args]()
-				{
-					return get_value<apply_pack<function::invoke_helper_t, typename B::ParameterTypes>>()(
-						[&caller]<typename... T>(T&&... xs)
-					{
-						return (caller.cast_unsafe<CallerParameterType>().*mf)(std::forward<T>(xs)...);
-					}, args);
-				});
-		}
 
 		constexpr const type& get_pointer_type() const noexcept override final
 		{
@@ -55,10 +42,25 @@ namespace detail
 		{
 			return reflect<ParentClass, type>();
 		}
+	};
 
-		constexpr const overloaded_member_function& get_overloaded_function() const noexcept override final
+	template <typename Overload, auto mf>
+	class basic_member_function : public basic_member_function_base<Overload, mf, member_function>
+	{
+		using B = basic_member_function_base<Overload, mf, member_function>;
+
+	protected:
+		constexpr void invoke_implementation_member(void* result, dynamic_reference caller, const dynamic_reference* args) const noexcept override final
 		{
-			return reflect<Overload, overloaded_member_function>();
+			this->invoke_(result,
+				[caller, args]() -> decltype(auto)
+				{
+					return get_value<apply_pack<function::invoke_helper_t, typename B::ParameterTypes>>()(
+						[caller]<typename... T>(T&&... xs) -> decltype(auto)
+					{
+						return (caller.cast_unsafe<typename B::CallerParameterType>().*mf)(std::forward<T>(xs)...);
+					}, args);
+				});
 		}
 	};
 }

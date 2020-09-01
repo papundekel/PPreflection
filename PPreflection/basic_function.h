@@ -1,8 +1,10 @@
 #pragma once
 #include <string_view>
+#include <type_traits>
 #include "simple_ostream.h"
 #include "pointer_view.hpp"
 #include "cref_t.h"
+#include "get_member_function_info.h"
 
 class type;
 
@@ -15,18 +17,26 @@ namespace detail
 		using ParameterTypes = P;
 		using ReturnType = R;
 
-		constexpr pointer_view<const cref_t<type>> parameter_types_implementation() const noexcept override final
+		using OverloadedType
+			= std::remove_cvref_t<
+				typename get_function_info<
+					typename get_member_function_info<
+						decltype(&Base::get_overloaded_function)
+					>::function_type
+				>::return_type>;
+
+		constexpr pointer_view<const cref_t<type>> parameter_types() const noexcept override final
 		{
 			return reflect_many<ParameterTypes, type>();
 		}
 	public:
 		constexpr void print_name(simple_ostream& out) const noexcept override final
 		{
-			out.write(descriptor::reflect_name<Overload>());
+			get_overloaded_function().print_name(out);
 		}
 		constexpr bool has_name(std::string_view name) const noexcept override final
 		{
-			return descriptor::reflect_name<Overload>() == name;
+			return get_overloaded_function().has_name(name);
 		}
 
 		constexpr const type& return_type() const noexcept override final
@@ -37,6 +47,11 @@ namespace detail
 		constexpr bool is_noexcept() const noexcept override final
 		{
 			return Noexcept;
+		}
+
+		constexpr const OverloadedType& get_overloaded_function() const noexcept override final
+		{
+			return reflect<Overload, OverloadedType>();
 		}
 	};
 }

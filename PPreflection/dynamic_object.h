@@ -1,7 +1,7 @@
 #pragma once
 #include <cstddef>
-#include "../Papo/PP/scoped.hpp"
-#include "../Papo/PP/unique.hpp"
+#include "../PP/PP/scoped.hpp"
+#include "../PP/PP/unique.hpp"
 
 
 class type;

@@ -301,7 +301,7 @@ constexpr pointer_view<const cref_t<overloaded_member_function>> detail::basic_t
 	return {};
 }
 template <typename T>
-constexpr const overloaded_member_like_function<member_like_function>* detail::basic_type<T>::get_constructors() const noexcept
+constexpr const overloaded_constructor* detail::basic_type<T>::get_constructors() const noexcept
 {
 	if constexpr (std::is_reference_v<T> || std::is_function_v<T>)
 		return nullptr;

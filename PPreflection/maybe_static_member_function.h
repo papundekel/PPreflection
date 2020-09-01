@@ -3,7 +3,7 @@
 
 class type;
 
-class member_like_function_base : public function
+class maybe_static_member_function : public function
 {
 public:
 	constexpr virtual const type& get_enclosing_class() const noexcept = 0;

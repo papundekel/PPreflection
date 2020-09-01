@@ -5,9 +5,11 @@
 
 namespace detail
 {
-	template <typename ID, typename Base>
+	template <typename ID, typename F, typename Base>
 	class basic_overloaded_function : public Base
 	{
+	protected:
+		using Functions = F;
 	public:
 		constexpr void print_name(simple_ostream& out) const noexcept override final
 		{
@@ -16,6 +18,10 @@ namespace detail
 		constexpr bool has_name(std::string_view name) const noexcept override final
 		{
 			return descriptor::reflect_name<ID>() == name;
+		}
+		constexpr pointer_view<const cref_t<function>> get_function_overloads() const noexcept override final
+		{
+			return reflect_many<Functions, function>();
 		}
 	};
 }

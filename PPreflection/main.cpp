@@ -19,17 +19,17 @@
 #include "dynamic_reference.hpp"
 #include "dynamic_object.hpp"
 
+#include "descriptor.hpp"
 #include "function.hpp"
 #include "type.hpp"
 #include "member_function.hpp"
-#include "member_like_function.hpp"
 #include "namespace_function.hpp"
 #include "namespace_t.hpp"
 #include "conversion_function.h"
-#include "one_parameter_constructor.hpp"
 
 #include "overloaded_function.hpp"
 #include "overloaded_member_function.hpp"
+#include "overloaded_conversion_function.hpp"
 #include "overloaded_namespace_function.h"
 #include "descriptor.hpp"
 
@@ -42,6 +42,7 @@
 #include "basic_static_function.h"
 #include "basic_member_function.h"
 #include "basic_namespace_function.h"
+#include "basic_conversion_function.h"
 
 #include "basic_overloaded_constructor.h"
 #include "basic_overloaded_conversion_function.h"
@@ -67,7 +68,7 @@ struct X
 		std::cout << "int ctr\n";
 	}
 
-	X(const double& y)
+	explicit X(const double& y)
 		: x(y)
 	{
 		std::cout << "double ctr\n";
@@ -111,9 +112,9 @@ namespace detail
 
 template <typename T> constexpr inline auto detail::reflect_owning<detail::basic_type_wrap<T>> = detail::basic_type<T>{};
 
-template <typename Class, typename... Args>
-constexpr inline auto detail::reflect_owning<constructor_info<Class, Args...>>
-	= detail::basic_class_constructor<Class, type_pack<Args...>>{};
+template <typename Class, bool Explicit, typename... Args>
+constexpr inline auto detail::reflect_owning<constructor_info<Class, Explicit, Args...>>
+	= detail::basic_class_constructor<Class, Explicit, type_pack<Args...>>{};
 
 namespace overload { struct global_double_ {}; }
 template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<overload::global_double_>> = std::string_view("double_");
@@ -140,15 +141,21 @@ namespace overload
 	struct X_f {};
 	template <>	constexpr inline auto caster<X_f, 0> = overload_member_caster<cv_qualifier::none, ref_qualifier::rvalue>;
 	template <>	constexpr inline auto caster<X_f, 1> = overload_member_caster<cv_qualifier::none, ref_qualifier::lvalue>;
+
+	struct X_operator_int {};
 }
 
 template <> constexpr inline auto detail::reflect_owning<detail::constructor_wrap<X>>
-	= detail::basic_overloaded_constructor<X, type_pack<type_pack<const int&>, type_pack<const double&>>>{};
+	= detail::basic_overloaded_constructor<X, type_pack<
+		constructor_partial_info<false, const int&>,
+		constructor_partial_info<true, const double&>>>{};
 
 template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<X>> = std::string_view("X");
 template <> constexpr inline auto detail::reflect_owning<detail::id_wrap<X>> = std::size_t(1);
 template <> constexpr inline auto detail::reflect_owning<X> = detail::basic_class_type<namespace_t::global, X,
-	type_pack<overload::X_f>,
+	type_pack<
+		overload::X_f,
+		overload::X_operator_int>,
 	type_pack<>>{};
 
 template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<overload::X_f>> = std::string_view("f");
@@ -162,37 +169,38 @@ template <> constexpr inline auto detail::reflect_owning<value_t<overload::caste
 template <> constexpr inline auto detail::reflect_owning<value_t<overload::caster<overload::X_f, 1>(&X::f)>>
 	= detail::basic_member_function<overload::X_f, overload::caster<overload::X_f, 1>(&X::f)>{};
 
-struct convertor
-{
-	std::variant<const conversion_function*, const one_parameter_constructor*> ptr;
+template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<overload::X_operator_int>> = std::string_view("operator int");
+template <> constexpr inline auto detail::reflect_owning<overload::X_operator_int>
+	= detail::basic_overloaded_conversion_function<overload::X_operator_int, value_pack<
+		&X::operator int>>{};
 
-	dynamic_object convert(const dynamic_reference& arg)
-	{
-		return std::visit(
-			[&arg](const auto* x)
-			{
-				return x->invoke(arg);
-			}, ptr);
-	}
-};
+template <> constexpr inline auto detail::reflect_owning<value_t<&X::operator int>>
+	= detail::basic_conversion_function<overload::X_operator_int, false, &X::operator int>{};
 
-#include "../Papo/PP/unique.hpp"
-#include "../Papo/PP/simple_vector.hpp"
+
+#include "../PP/PP/unique.hpp"
+#include "../PP/PP/simple_vector.hpp"
 
 int main()
 {
-	auto* X_ = reflect<namespace_t::global, namespace_t>().get_type("X");
+	const type* X_ = reflect<namespace_t::global, namespace_t>().get_type("X");
+
 	if (X_)
 	{
-		auto x1 = X_->create_instance({ 7 });
-		auto x2 = X_->create_instance({ 5. });
+		if (const overloaded_constructor* cs = X_->get_constructors(); cs)
+		{
+			for (const constructor& c : cs->get_overloads())
+			{
+				std::cout << c << std::boolalpha << "is explicit? " << c.is_explicit() << ".";
+			}
+		}
 	}
 
 	std::cout << "\n";
 
 	PP::simple_vector<dynamic_object> objects;
 
-	auto* doubler = reflect<namespace_t::global, namespace_t>().get_function("double_");
+	const overloaded_namespace_function* doubler = reflect<namespace_t::global, namespace_t>().get_function("double_");
 
 	if (doubler)
 	{

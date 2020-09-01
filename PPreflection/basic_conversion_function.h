@@ -2,23 +2,29 @@
 #include "ref_qualifier.h"
 #include "cv_qualifier.h"
 #include "conversion_function.h"
-#include "basic_typed_function.h"
+#include "basic_member_function.h"
 #include <type_traits>
 
-template <typename C, typename R, cv_qualifier c, ref_qualifier r>
-struct conversion_function_tag
+namespace detail
 {
-	using Class = C;
-	using Result = R;
-	static constexpr auto cv = c;
-	static constexpr auto ref = r;
+	template <typename Overload, bool Explicit, auto mf>
+	class basic_conversion_function : public basic_member_function_base<Overload, mf, conversion_function>
+	{
+		using B = basic_member_function_base<Overload, mf, conversion_function>;
+		using CallerParameterType = B::CallerParameterType;
 
-	static constexpr bool Noexcept = std::is_nothrow_invocable<
-};
-
-template <typename Overload, typename ID>
-class basic_conversion_function : public basic_typed_function<Overload, typename ID::Result(), conversion_function>
-{
-protected:
-	constexpr void invoke_implementation_conversion(void* result, const dynamic_reference& caller) const noexcept override final;
-};
+	protected:
+		constexpr void invoke_implementation_conversion(void* result, dynamic_reference caller) const noexcept override final
+		{
+			this->invoke_(result,
+				[caller]() -> decltype(auto)
+				{
+					return (caller.cast_unsafe<CallerParameterType>().*mf)();
+				});
+		}
+		constexpr bool is_explicit() const noexcept override final
+		{
+			return Explicit;
+		}
+	};
+}

@@ -4,16 +4,16 @@
 #include "pointer_view.hpp"
 #include "cref_t.h"
 #include "dynamic_object.h"
-#include "../Papo/PP/transform_view.hpp"
-#include "../Papo/PP/id.hpp"
+#include "../PP/PP/transform_view.hpp"
+#include "../PP/PP/id.hpp"
 
 class type;
 class dynamic_reference;
 class member_function;
+class overloaded_function;
 
 class function : public descriptor
 {
-	template <typename T>
 	friend class overloaded_function;
 
 protected:
@@ -39,13 +39,10 @@ protected:
 		static constexpr x value_f() noexcept;
 	};
 
-	constexpr virtual pointer_view<const cref_t<type>> parameter_types_implementation() const noexcept = 0;
-
 public:
-	constexpr PP::view auto parameter_types() const noexcept
-	{
-		return parameter_types_implementation() | PP::transform(PP::id<const type&>);
-	}
+	constexpr virtual const overloaded_function& get_overloaded_function() const noexcept = 0;
+
+	constexpr virtual pointer_view<const cref_t<type>> parameter_types() const noexcept = 0;
 	constexpr virtual const type& return_type() const noexcept = 0;
 
 	constexpr virtual bool is_noexcept() const noexcept = 0;

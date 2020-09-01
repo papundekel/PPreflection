@@ -51,6 +51,6 @@ namespace detail
 		constexpr virtual const namespace_t* get_namespace() const noexcept override;
 
 		constexpr pointer_view<const cref_t<overloaded_member_function>> get_member_functions() const noexcept override;
-		constexpr const overloaded_member_like_function<member_like_function>* get_constructors() const noexcept override;
+		constexpr const overloaded_constructor* get_constructors() const noexcept override;
 	};
 }

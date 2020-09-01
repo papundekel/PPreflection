@@ -1,9 +1,10 @@
 #pragma once
 #include <type_traits>
 #include "basic_function.h"
-#include "member_like_function.h"
 #include "apply_pack.h"
 #include "reflect.h"
+#include "overloaded_constructor.h"
+#include "constructor.h"
 
 namespace detail
 {
@@ -14,14 +15,14 @@ namespace detail
 		using help = value_t<std::is_nothrow_constructible_v<Class, Args...>>;
 	};
 
-	template <typename Class, typename Args>
+	template <typename Class, bool Explicit, typename Args>
 	class basic_class_constructor :
 		public basic_function
-		< Class
+		< detail::constructor_wrap<Class>
 		, Args
 		, Class
 		, get_value<apply_pack<is_nothrow_constructible_helper<Class>::template help, Args>>()
-		, member_like_function>
+		, constructor>
 	{
 	protected:
 		constexpr void invoke_implementation(void* result, const dynamic_reference* args) const noexcept override final
@@ -34,9 +35,14 @@ namespace detail
 		}
 
 	public:
-		constexpr const overloaded_member_like_function<member_like_function>& get_overloaded_function() const noexcept override final
+		constexpr bool is_explicit() const noexcept override final
 		{
-			return reflect<detail::constructor_wrap<Class>, overloaded_member_like_function<member_like_function>>();
+			return Explicit;
+		}
+
+		constexpr const type& get_enclosing_class() const noexcept override final
+		{
+			return reflect<Class, type>();
 		}
 	};
 }

@@ -2,16 +2,25 @@
 #include "dynamic_object.h"
 #include "pointer_view.hpp"
 #include "descriptor.h"
-#include "../Papo/PP/transform_view.hpp"
+#include "../PP/PP/transform_view.hpp"
+#include "../PP/PP/id.hpp"
 
-template <typename Function>
 class overloaded_function : public descriptor
 {
+protected:
+	template <typename Function, PP::view View>
+	static constexpr PP::view auto get_overloads_helper(View&& v) noexcept
+	{
+		return std::forward<View>(v) | PP::transform(PP::id<const Function&>);
+	}
+
+	constexpr virtual pointer_view<const cref_t<function>> get_function_overloads() const noexcept = 0;
+
 public:
-	using overload_type = Function;
-
-	constexpr virtual pointer_view<const cref_t<Function>> get_overloads() const noexcept = 0;
-
+	constexpr PP::view auto get_overloads() const noexcept
+	{
+		return get_overloads_helper<function>(get_function_overloads());
+	}
 	constexpr dynamic_object invoke(pointer_view<const dynamic_reference> args = {}) const;
 
 	/*constexpr const Function* select_overload(pointer_view<const type> arg_types = {}) const noexcept

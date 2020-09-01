@@ -1,10 +1,17 @@
 #pragma once
-#include "overloaded_member_like_function.h"
+#include "overloaded_maybe_static_member_function.h"
 
 class member_function;
 
-class overloaded_member_function : public overloaded_member_like_function<member_function>
+class overloaded_member_function : public overloaded_maybe_static_member_function
 {
+protected:
+	constexpr virtual pointer_view<const cref_t<member_function>> get_member_function_overloads() const noexcept = 0;
+
 public:
-	constexpr dynamic_object invoke(const dynamic_reference& caller, pointer_view<const dynamic_reference> args = {}) const;
+	constexpr PP::view auto get_overloads() const noexcept
+	{
+		return get_overloads_helper<member_function>(get_member_function_overloads());
+	}
+	constexpr dynamic_object invoke(dynamic_reference caller, pointer_view<const dynamic_reference> args = {}) const;
 };

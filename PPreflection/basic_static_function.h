@@ -16,7 +16,7 @@ namespace detail
 		constexpr void invoke_implementation(void* result, const dynamic_reference* args) const noexcept override final
 		{
 			this->invoke_(result,
-				[args]()
+				[args]() -> decltype(auto)
 				{
 					return get_value<apply_pack<function::invoke_helper_t, ParameterTypes>>()(f, args);
 				});

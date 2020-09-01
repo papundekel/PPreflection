@@ -3,7 +3,7 @@
 #include "dynamic_reference.h"
 #include "function.h"
 
-constexpr bool member_function::can_invoke(const dynamic_reference& caller_arg) const noexcept
+constexpr bool member_function::can_invoke(dynamic_reference caller_arg) const noexcept
 {
 	const type& caller_par_type = get_caller_parameter_type();
 	const type& caller_arg_type = caller_arg.get_type();
@@ -24,12 +24,12 @@ constexpr bool member_function::can_invoke(pointer_view<const dynamic_reference>
 	return !PP::empty(args) && can_invoke(args[0]) && function::can_invoke(1 >> args);
 }
 
-constexpr dynamic_object member_function::invoke_unsafe(const dynamic_reference& caller, pointer_view<const dynamic_reference> args) const
+constexpr dynamic_object member_function::invoke_unsafe(dynamic_reference caller, pointer_view<const dynamic_reference> args) const
 {
-	return dynamic_object(return_type(), [this, &caller, args](void* ptr) { invoke_implementation_member(ptr, caller, args.begin()); });
+	return dynamic_object(return_type(), [this, caller, args](void* ptr) { invoke_implementation_member(ptr, caller, args.begin()); });
 }
 
-constexpr dynamic_object member_function::invoke(const dynamic_reference& caller, pointer_view<const dynamic_reference> args) const
+constexpr dynamic_object member_function::invoke(dynamic_reference caller, pointer_view<const dynamic_reference> args) const
 {
 	if (can_invoke(caller) && function::can_invoke(args))
 		return invoke_unsafe(caller, args);
