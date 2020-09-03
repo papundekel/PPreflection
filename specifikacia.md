@@ -36,8 +36,6 @@ V aktuálnom stave vývoja sa javí ako rozsahovo rozumné implementovať iba dy
 
 ```cpp
 // declarations.hpp
-#include <string_view>
-
 struct X
 {
 	int x;
@@ -59,6 +57,7 @@ struct X
 
 // main.cpp
 #include "declarations.hpp"
+// #include "framework.hpp"
 
 // generated
 namespace reflect_detail
