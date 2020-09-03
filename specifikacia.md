@@ -146,10 +146,3 @@ int main()
 	return 0;
 }
 ```
-
-#### Výstup
-```
-hello world, abc
-~X()
-
-```
