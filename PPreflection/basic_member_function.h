@@ -7,7 +7,7 @@
 namespace detail
 {
 	template <typename Overload, auto mf, typename Base>
-	using basic_member_function_helper = basic_typed_function<Overload, typename get_member_function_info<decltype(mf)>::function_type, Base>;
+	using basic_member_function_helper = basic_typed_function<Overload, typename get_member_function_info<decltype(mf)>::Function, Base>;
 
 	template <typename Overload, auto mf, typename Base>
 	class basic_member_function_base : public basic_member_function_helper<Overload, mf, Base>
@@ -15,7 +15,7 @@ namespace detail
 	protected:
 		using B = basic_member_function_helper<Overload, mf, Base>;
 		using FunctionType = B::FunctionType;
-		using ParentClass = typename get_member_function_info<decltype(mf)>::class_;
+		using ParentClass = typename get_member_function_info<decltype(mf)>::Class;
 		using CallerParameterType = typename get_member_function_info<decltype(mf)>::caller_type;
 
 		constexpr const type& get_pointer_type() const noexcept override final

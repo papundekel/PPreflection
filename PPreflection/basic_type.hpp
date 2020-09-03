@@ -148,7 +148,7 @@ template <typename T>
 constexpr const type& detail::basic_type<T>::member_pointer_type() const noexcept
 {
 	if constexpr (std::is_member_pointer_v<T>)
-		return reflect<typename get_member_function_info<std::remove_cv_t<T>>::function_type, type>();
+		return reflect<typename get_member_function_info<std::remove_cv_t<T>>::Function, type>();
 	else
 		return *this;
 }
@@ -156,7 +156,7 @@ template <typename T>
 constexpr const type& detail::basic_type<T>::member_pointer_class() const noexcept
 {
 	if constexpr (std::is_member_pointer_v<T>)
-		return reflect<typename get_member_function_info<std::remove_cv_t<T>>::class_, type>();
+		return reflect<typename get_member_function_info<std::remove_cv_t<T>>::Class, type>();
 	else
 		return *this;
 }

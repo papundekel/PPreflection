@@ -1,7 +1,7 @@
 #pragma once
 #include "type.h"
 
-class function_type : public type
+class Function : public type
 {
 public:
 	constexpr virtual const type& return_type() const noexcept = 0;

@@ -182,14 +182,14 @@ template <> constexpr inline auto detail::reflect_owning<overloaded_conversion_f
 		conversion_function_info<false, cv_qualifier::none, ref_qualifier::none>>>{};
 
 template <> constexpr inline auto detail::reflect_owning<value_t<&X::operator int>>
-	= detail::basic_conversion_function<overloaded_conversion_function_info<X, int>, false, &X::operator int>{};
+	= detail::basic_conversion_function<&X::operator int, false>{};
 
 template <> constexpr inline auto detail::reflect_owning<overloaded_conversion_function_info<X, double>>
 	= detail::basic_overloaded_conversion_function<overloaded_conversion_function_info<X, double>, type_pack<
 		conversion_function_info<false, cv_qualifier::none, ref_qualifier::none>>>{};
 
 template <> constexpr inline auto detail::reflect_owning<value_t<&X::operator double>>
-	= detail::basic_conversion_function<overloaded_conversion_function_info<X, double>, false, &X::operator double>{};
+	= detail::basic_conversion_function<&X::operator double, false>{};
 
 
 #include "../PP/PP/unique.hpp"

@@ -21,7 +21,7 @@ namespace detail
 				typename get_function_info<
 					typename get_member_function_info<
 						decltype(&Base::get_overloaded_function)
-					>::function_type
+					>::Function
 				>::return_type>;
 
 
