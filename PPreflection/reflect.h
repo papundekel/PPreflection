@@ -1,4 +1,7 @@
 #pragma once
+#include "cref_t.h"
+#include "pointer_view.h"
+#include "../PP/PP/view.hpp"
 
 namespace detail
 {
@@ -52,4 +55,7 @@ template <auto v, typename ResultType>
 constexpr decltype(auto) reflect() noexcept;
 
 template <typename Pack, typename ResultType>
-constexpr decltype(auto) reflect_many() noexcept;
+constexpr pointer_view<const cref_t<ResultType>> reflect_many() noexcept;
+
+template <typename Pack, typename ResultType>
+constexpr PP::view auto reflect_many_view() noexcept;

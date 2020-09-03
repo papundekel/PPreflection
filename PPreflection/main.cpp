@@ -26,6 +26,7 @@
 #include "namespace_function.hpp"
 #include "namespace_t.hpp"
 #include "conversion_function.h"
+#include "constructor.h"
 
 #include "overloaded_function.hpp"
 #include "overloaded_member_function.hpp"
@@ -57,6 +58,7 @@
 #include "fundamental_type_pack.h"
 
 #include "constructor_info.h"
+#include "conversion_function_info.h"
 
 struct X
 {
@@ -111,6 +113,7 @@ namespace detail
 #include "reflect_fundamentals.hpp"
 
 template <typename T> constexpr inline auto detail::reflect_owning<detail::basic_type_wrap<T>> = detail::basic_type<T>{};
+template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<detail::empty_id>> = std::string_view();
 
 template <typename Class, bool Explicit, typename... Args>
 constexpr inline auto detail::reflect_owning<constructor_info<Class, Explicit, Args...>>
@@ -139,10 +142,8 @@ namespace overload
 namespace overload
 {
 	struct X_f {};
-	template <>	constexpr inline auto caster<X_f, 0> = overload_member_caster<cv_qualifier::none, ref_qualifier::rvalue>;
-	template <>	constexpr inline auto caster<X_f, 1> = overload_member_caster<cv_qualifier::none, ref_qualifier::lvalue>;
-
-	struct X_operator_int {};
+	template <>	constexpr inline auto caster<X_f, 0> = overload_member_caster<cv_qualifier::none, ref_qualifier::rvalue>(&X::f);
+	template <>	constexpr inline auto caster<X_f, 1> = overload_member_caster<cv_qualifier::none, ref_qualifier::lvalue>(&X::f);
 }
 
 template <> constexpr inline auto detail::reflect_owning<detail::constructor_wrap<X>>
@@ -155,27 +156,26 @@ template <> constexpr inline auto detail::reflect_owning<detail::id_wrap<X>> = s
 template <> constexpr inline auto detail::reflect_owning<X> = detail::basic_class_type<namespace_t::global, X,
 	type_pack<
 		overload::X_f,
-		overload::X_operator_int>,
+		overloaded_conversion_function_info<X, int>>,
 	type_pack<>>{};
 
 template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<overload::X_f>> = std::string_view("f");
 template <> constexpr inline auto detail::reflect_owning<overload::X_f>
 	= detail::basic_overloaded_member_function<overload::X_f, value_pack<
-		overload::caster<overload::X_f, 0>(&X::f),
-		overload::caster<overload::X_f, 1>(&X::f)>>{};
+		overload::caster<overload::X_f, 0>,
+		overload::caster<overload::X_f, 1>>>{};
 
-template <> constexpr inline auto detail::reflect_owning<value_t<overload::caster<overload::X_f, 0>(&X::f)>>
-	= detail::basic_member_function<overload::X_f, overload::caster<overload::X_f, 0>(&X::f)>{};
-template <> constexpr inline auto detail::reflect_owning<value_t<overload::caster<overload::X_f, 1>(&X::f)>>
-	= detail::basic_member_function<overload::X_f, overload::caster<overload::X_f, 1>(&X::f)>{};
+template <> constexpr inline auto detail::reflect_owning<value_t<overload::caster<overload::X_f, 0>>>
+	= detail::basic_member_function<overload::X_f, overload::caster<overload::X_f, 0>>{};
+template <> constexpr inline auto detail::reflect_owning<value_t<overload::caster<overload::X_f, 1>>>
+	= detail::basic_member_function<overload::X_f, overload::caster<overload::X_f, 1>>{};
 
-template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<overload::X_operator_int>> = std::string_view("operator int");
-template <> constexpr inline auto detail::reflect_owning<overload::X_operator_int>
-	= detail::basic_overloaded_conversion_function<overload::X_operator_int, value_pack<
-		&X::operator int>>{};
+template <> constexpr inline auto detail::reflect_owning<overloaded_conversion_function_info<X, int>>
+	= detail::basic_overloaded_conversion_function<overloaded_conversion_function_info<X, int>, type_pack<
+		conversion_function_info<false, cv_qualifier::none, ref_qualifier::none>>>{};
 
 template <> constexpr inline auto detail::reflect_owning<value_t<&X::operator int>>
-	= detail::basic_conversion_function<overload::X_operator_int, false, &X::operator int>{};
+	= detail::basic_conversion_function<overloaded_conversion_function_info<X, int>, false, &X::operator int>{};
 
 
 #include "../PP/PP/unique.hpp"
@@ -191,7 +191,8 @@ int main()
 		{
 			for (const constructor& c : cs->get_overloads())
 			{
-				std::cout << c << std::boolalpha << "is explicit? " << c.is_explicit() << ".";
+				c.parameter_types();
+				std::cout << c << std::boolalpha << " is explicit? " << c.is_explicit() << ".\n";
 			}
 		}
 	}

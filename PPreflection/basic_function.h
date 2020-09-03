@@ -2,7 +2,6 @@
 #include <string_view>
 #include <type_traits>
 #include "simple_ostream.h"
-#include "pointer_view.hpp"
 #include "cref_t.h"
 #include "get_member_function_info.h"
 
@@ -25,23 +24,15 @@ namespace detail
 					>::function_type
 				>::return_type>;
 
-		constexpr pointer_view<const cref_t<type>> parameter_types() const noexcept override final
-		{
-			return reflect_many<ParameterTypes, type>();
-		}
-	public:
-		constexpr void print_name(simple_ostream& out) const noexcept override final
-		{
-			get_overloaded_function().print_name(out);
-		}
-		constexpr bool has_name(std::string_view name) const noexcept override final
-		{
-			return get_overloaded_function().has_name(name);
-		}
 
+	public:
 		constexpr const type& return_type() const noexcept override final
 		{
 			return reflect<ReturnType, type>();
+		}
+		constexpr pointer_view<const cref_t<type>> parameter_types() const noexcept override final
+		{
+			return reflect_many<ParameterTypes, type>();
 		}
 
 		constexpr bool is_noexcept() const noexcept override final

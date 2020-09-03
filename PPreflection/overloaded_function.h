@@ -1,6 +1,6 @@
 #pragma once
 #include "dynamic_object.h"
-#include "pointer_view.hpp"
+#include "pointer_view.h"
 #include "descriptor.h"
 #include "../PP/PP/transform_view.hpp"
 #include "../PP/PP/id.hpp"

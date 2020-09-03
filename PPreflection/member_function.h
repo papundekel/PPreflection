@@ -4,7 +4,7 @@
 #include "type.h"
 #include "overloaded_member_function.h"
 
-class member_function : public maybe_static_member_function
+class member_function : public detail::maybe_static_member_function
 {
 	friend class overloaded_member_function;
 	friend class overloaded_conversion_function;

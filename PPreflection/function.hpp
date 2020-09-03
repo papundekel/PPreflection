@@ -8,6 +8,15 @@
 #include "conversion_function.h"
 #include "dynamic_reference.h"
 
+constexpr void function::print_name(simple_ostream& out) const noexcept
+{
+	get_overloaded_function().print_name(out);
+}
+constexpr bool function::has_name(std::string_view name) const noexcept
+{
+	return get_overloaded_function().has_name(name);
+}
+
 template <typename... Parameters>
 constexpr typename function::invoke_helper_t<Parameters...>::x function::invoke_helper_t<Parameters...>::value_f() noexcept
 {

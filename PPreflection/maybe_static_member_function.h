@@ -3,8 +3,11 @@
 
 class type;
 
-class maybe_static_member_function : public function
+namespace detail
 {
-public:
-	constexpr virtual const type& get_enclosing_class() const noexcept = 0;
-};
+	class maybe_static_member_function : public function
+	{
+	public:
+		constexpr virtual const type& get_enclosing_class() const noexcept = 0;
+	};
+}

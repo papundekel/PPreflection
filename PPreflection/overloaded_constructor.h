@@ -5,7 +5,7 @@
 
 class constructor;
 
-class overloaded_constructor : public overloaded_maybe_static_member_function
+class overloaded_constructor : public detail::overloaded_maybe_static_member_function
 {
 protected:
 	constexpr virtual pointer_view<const cref_t<constructor>> get_constructor_overloads() const noexcept = 0;

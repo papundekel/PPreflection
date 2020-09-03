@@ -5,6 +5,8 @@
 #include "map_pack.h"
 #include "get_value.h"
 #include "cref_t.h"
+#include "../PP/PP/transform_view.hpp"
+#include "../PP/PP/id.hpp"
 
 template <typename ResultType>
 template <typename T>
@@ -54,7 +56,13 @@ constexpr decltype(auto) reflect() noexcept
 }
 
 template <typename Pack, typename ResultType>
-constexpr decltype(auto) reflect_many() noexcept
+constexpr pointer_view<const cref_t<ResultType>> reflect_many() noexcept
 {
 	return get_value<map_pack<detail::reflector<ResultType>::template reflect, Pack, cref_t<ResultType>>>();
+}
+
+template <typename Pack, typename ResultType>
+constexpr PP::view auto reflect_many_view() noexcept
+{
+	return reflect_many<Pack, ResultType>() | PP::transform(PP::id<const ResultType&>);
 }

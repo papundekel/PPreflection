@@ -51,19 +51,7 @@ constexpr void detail::basic_type<T>::print_name_second(simple_ostream& out) con
 		reflect<std::remove_cv_t<T>, type>().print_name_second(out);
 	else if constexpr (std::is_function_v<T>)
 	{
-		out.write("(");
-		const auto& parameters = reflect_many<typename get_function_info<T>::parameter_types, type>();
-		if (!parameters.empty())
-		{
-			auto i = parameters.begin();
-			(i++)->get().print_name(out);
-			for (; i != parameters.end(); ++i)
-			{
-				out.write(", ");
-				i->get().print_name(out);
-			}
-		}
-		out.write(")");
+		type::print_parameter_types(out, reflect_many_view<typename get_function_info<T>::parameter_types, type>());
 
 		reflect<typename get_function_info<T>::return_type, type>().print_name_second(out);
 	}

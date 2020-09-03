@@ -1,7 +1,7 @@
 #pragma once
 #include <type_traits>
 #include "descriptor.h"
-#include "pointer_view.hpp"
+#include "pointer_view.h"
 #include "cref_t.h"
 #include "dynamic_object.h"
 #include "../PP/PP/transform_view.hpp"
@@ -40,6 +40,9 @@ protected:
 	};
 
 public:
+	constexpr void print_name(simple_ostream& out) const noexcept override final;
+	constexpr bool has_name(std::string_view name) const noexcept override final;
+
 	constexpr virtual const overloaded_function& get_overloaded_function() const noexcept = 0;
 
 	constexpr virtual pointer_view<const cref_t<type>> parameter_types() const noexcept = 0;

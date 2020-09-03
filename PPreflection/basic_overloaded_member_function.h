@@ -19,6 +19,6 @@ namespace detail
 	};
 
 	template <typename ID, typename Functions>
-	class basic_overloaded_member_function : public basic_overloaded_member_function_base<ID, Functions, overloaded_member_function>
+	class basic_overloaded_member_function final : public basic_overloaded_member_function_base<ID, Functions, overloaded_member_function>
 	{};
 }

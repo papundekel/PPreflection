@@ -1,7 +1,6 @@
 #pragma once
 #include "overloaded_member_function.h"
 #include "member_function.h"
-#include "pointer_view.hpp"
 
 constexpr dynamic_object overloaded_member_function::invoke(dynamic_reference caller, pointer_view<const dynamic_reference> args) const
 {

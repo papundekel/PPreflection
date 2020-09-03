@@ -3,7 +3,7 @@
 #include <array>
 #include "descriptor.h"
 #include "cref_t.h"
-#include "pointer_view.hpp"
+#include "pointer_view.h"
 #include "type_pack.h"
 #include "sizeof_many.h"
 #include "cv_qualifier.h"
@@ -136,7 +136,22 @@ public:
 				return false;
 		}
 			
-
 		return true;
+	}
+
+	static constexpr void print_parameter_types(simple_ostream& out, PP::view auto&& parameter_types) noexcept
+	{
+		out.write("(");
+		if (!PP::empty(parameter_types))
+		{
+			auto i = PP::begin(parameter_types);
+			(i++)->print_name(out);
+			for (; i != PP::end(parameter_types); ++i)
+			{
+				out.write(", ");
+				i->print_name(out);
+			}
+		}
+		out.write(")");
 	}
 };

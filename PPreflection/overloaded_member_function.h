@@ -3,7 +3,7 @@
 
 class member_function;
 
-class overloaded_member_function : public overloaded_maybe_static_member_function
+class overloaded_member_function : public detail::overloaded_maybe_static_member_function
 {
 protected:
 	constexpr virtual pointer_view<const cref_t<member_function>> get_member_function_overloads() const noexcept = 0;
