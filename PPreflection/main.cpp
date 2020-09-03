@@ -76,6 +76,12 @@ struct X
 		std::cout << "double ctr\n";
 	}
 
+	X(int a, int b)
+		: x(a * b)
+	{
+		std::cout << "X::X(int, int)\n";
+	}
+
 	void f() &
 	{
 		std::cout << x << "&\n";
@@ -85,16 +91,15 @@ struct X
 		std::cout << x << "&&\n";
 	}
 
-	operator int()
+	explicit operator int()
 	{
 		std::cout << "operator int\n";
-		return 7;
+		return 1;
 	}
-
-	operator double()
+	operator int() const
 	{
-		std::cout << "operator double\n";
-		return 8.0;
+		std::cout << "operator int const\n";
+		return 0;
 	}
 
 	~X()
@@ -107,97 +112,87 @@ X double_(const int& x) noexcept
 {
 	return X(2 * x);
 }
-
-namespace detail
+X double_(const double& x)
 {
-	struct reflect__unspecialized_error {};
-
-	template <typename T>
-	constexpr inline reflect__unspecialized_error reflect_owning = {};
+	return X(2 * x);
 }
 
 #include "reflect.hpp"
-#include "reflect_fundamentals.hpp"
 
-template <typename T> constexpr inline auto detail::reflect_owning<detail::basic_type_wrap<T>> = detail::basic_type<T>{};
-template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<detail::empty_id>> = std::string_view();
-
-template <typename Class, bool Explicit, typename... Args>
-constexpr inline auto detail::reflect_owning<constructor_info<Class, Explicit, Args...>>
-	= detail::basic_class_constructor<Class, Explicit, type_pack<Args...>>{};
-
-namespace overload { struct global_double_ {}; }
-template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<overload::global_double_>> = std::string_view("double_");
-template <> constexpr inline auto detail::reflect_owning<overload::global_double_>
-	= detail::basic_overloaded_namespace_function<overload::global_double_, namespace_t::global, value_pack<
-		double_>>{};
-
-template <> constexpr inline auto detail::reflect_owning<value_t<double_>> = detail::basic_namespace_function<overload::global_double_, double_>{};
-
-template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<namespace_t::global>> = std::string_view("global'");
-template <> constexpr inline auto detail::reflect_owning<namespace_t::global> =
-	detail::basic_namespace<namespace_t::global, get_type<append_pack<fundamental_type_pack,
-	type_pack<X>>>,
-	type_pack<overload::global_double_>>{};
-
-namespace overload
-{
-	template <typename Overload, std::size_t Index>
-	constexpr inline auto caster = nullptr;
-}
-
-namespace overload
+namespace reflect_detail
 {
 	struct X_f {};
-	template <>	constexpr inline auto caster<X_f, 0> = overload_member_caster<cv_qualifier::none, ref_qualifier::rvalue>(&X::f);
-	template <>	constexpr inline auto caster<X_f, 1> = overload_member_caster<cv_qualifier::none, ref_qualifier::lvalue>(&X::f);
+	struct global_double_ {};
 }
 
-template <> constexpr inline auto detail::reflect_owning<detail::constructor_wrap<X>>
+template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<namespace_t::global>> = std::string_view("global'");
+template <> constexpr inline auto detail::reflect_metadata<namespace_t::global> =
+detail::basic_namespace<namespace_t::global, append_pack<fundamental_type_pack,
+	type_pack<X>>,
+	type_pack<reflect_detail::global_double_>>{};
+
+template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<X>> = std::string_view("X");
+template <> constexpr inline auto detail::reflect_metadata<detail::id_wrap<X>> = std::size_t(0);
+template <> constexpr inline auto detail::reflect_metadata<X> = detail::basic_class_type<namespace_t::global, X,
+	type_pack<
+	reflect_detail::X_f,
+	overloaded_conversion_function_info<X, int>>,
+	type_pack<>>{};
+
+template <> constexpr inline auto detail::reflect_metadata<detail::constructor_wrap<X>>
 	= detail::basic_overloaded_constructor<X, type_pack<
 		constructor_partial_info<false, const int&>,
 		constructor_partial_info<true, const double&>>>{};
 
-template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<X>> = std::string_view("X");
-template <> constexpr inline auto detail::reflect_owning<detail::id_wrap<X>> = std::size_t(1);
-template <> constexpr inline auto detail::reflect_owning<X> = detail::basic_class_type<namespace_t::global, X,
-	type_pack<
-		overload::X_f,
-		overloaded_conversion_function_info<X, int>>,
-	type_pack<>>{};
+namespace detail
+{
+	template <>	constexpr inline auto overload_caster<reflect_detail::X_f, 0> = overload_member_caster<cv_qualifier::none, ref_qualifier::rvalue>(&X::f);
+	template <>	constexpr inline auto overload_caster<reflect_detail::X_f, 1> = overload_member_caster<cv_qualifier::none, ref_qualifier::lvalue>(&X::f);
+}
 
-template <> constexpr inline auto detail::reflect_owning<detail::name_wrap<overload::X_f>> = std::string_view("f");
-template <> constexpr inline auto detail::reflect_owning<overload::X_f>
-	= detail::basic_overloaded_member_function<overload::X_f, value_pack<
-		overload::caster<overload::X_f, 0>,
-		overload::caster<overload::X_f, 1>>>{};
+template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<reflect_detail::X_f>> = std::string_view("f");
+template <> constexpr inline auto detail::reflect_metadata<reflect_detail::X_f>
+	= detail::basic_overloaded_member_function<reflect_detail::X_f, value_pack<
+		detail::overload_caster<reflect_detail::X_f, 0>,
+		detail::overload_caster<reflect_detail::X_f, 1>>>{};
 
-template <> constexpr inline auto detail::reflect_owning<value_t<overload::caster<overload::X_f, 0>>>
-	= detail::basic_member_function<overload::X_f, overload::caster<overload::X_f, 0>>{};
-template <> constexpr inline auto detail::reflect_owning<value_t<overload::caster<overload::X_f, 1>>>
-	= detail::basic_member_function<overload::X_f, overload::caster<overload::X_f, 1>>{};
+template <> constexpr inline auto detail::reflect_metadata<value_t<detail::overload_caster<reflect_detail::X_f, 0>>>
+	= detail::basic_member_function<reflect_detail::X_f, detail::overload_caster<reflect_detail::X_f, 0>>{};
+template <> constexpr inline auto detail::reflect_metadata<value_t<detail::overload_caster<reflect_detail::X_f, 1>>>
+	= detail::basic_member_function<reflect_detail::X_f, detail::overload_caster<reflect_detail::X_f, 1>>{};
 
-template <> constexpr inline auto detail::reflect_owning<overloaded_conversion_function_info<X, int>>
+template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<reflect_detail::global_double_>> = std::string_view("double_");
+template <> constexpr inline auto detail::reflect_metadata<reflect_detail::global_double_>
+	= detail::basic_overloaded_namespace_function<reflect_detail::global_double_, namespace_t::global, value_pack<
+		::overload_caster<const int&>(double_),
+		::overload_caster<const double&>(double_)>>{};
+
+template <> constexpr inline auto detail::reflect_metadata<value_t<::overload_caster<const int&>(double_)>>
+	= detail::basic_namespace_function<reflect_detail::global_double_, ::overload_caster<const int&>(double_)>{};
+template <> constexpr inline auto detail::reflect_metadata<value_t<::overload_caster<const double&>(double_)>>
+	= detail::basic_namespace_function<reflect_detail::global_double_, ::overload_caster<const double&>(double_)>{};
+
+template <> constexpr inline auto detail::reflect_metadata<overloaded_conversion_function_info<X, int>>
 	= detail::basic_overloaded_conversion_function<overloaded_conversion_function_info<X, int>, type_pack<
-		conversion_function_info<false, cv_qualifier::none, ref_qualifier::none>>>{};
+		conversion_function_info<true, cv_qualifier::none, ref_qualifier::none>,
+		conversion_function_info<false, cv_qualifier::const_, ref_qualifier::none>>>{};
 
-template <> constexpr inline auto detail::reflect_owning<value_t<&X::operator int>>
-	= detail::basic_conversion_function<&X::operator int, false>{};
+namespace detail
+{
+	template <>	constexpr inline auto overload_caster<overloaded_conversion_function_info<X, int>, 0>
+		= overload_member_caster<cv_qualifier::none, ref_qualifier::none>(&X::operator int);
+	template <>	constexpr inline auto overload_caster<overloaded_conversion_function_info<X, int>, 1>
+		= overload_member_caster<cv_qualifier::const_, ref_qualifier::none>(&X::operator int);
+}
 
-template <> constexpr inline auto detail::reflect_owning<overloaded_conversion_function_info<X, double>>
-	= detail::basic_overloaded_conversion_function<overloaded_conversion_function_info<X, double>, type_pack<
-		conversion_function_info<false, cv_qualifier::none, ref_qualifier::none>>>{};
-
-template <> constexpr inline auto detail::reflect_owning<value_t<&X::operator double>>
-	= detail::basic_conversion_function<&X::operator double, false>{};
-
-
-#include "../PP/PP/unique.hpp"
-#include "../PP/PP/simple_vector.hpp"
+template <> constexpr inline auto detail::reflect_metadata<value_t<detail::overload_caster<overloaded_conversion_function_info<X, int>, 0>>>
+	= detail::basic_conversion_function<detail::overload_caster<overloaded_conversion_function_info<X, int>, 0>, false>{};
+template <> constexpr inline auto detail::reflect_metadata<value_t<detail::overload_caster<overloaded_conversion_function_info<X, int>, 1>>>
+	= detail::basic_conversion_function<detail::overload_caster<overloaded_conversion_function_info<X, int>, 1>, false>{};
 
 int main()
 {
-
+	
 
 	std::cout.flush();
 	return 0;

@@ -1,7 +1,7 @@
 #pragma once
 #include <cstddef>
 #include "type_pack.h"
-#include "value_t"
+#include "value_t.h"
 #include "get_value.h"
 
 template <template <typename> typename Predicate>
@@ -23,3 +23,5 @@ struct find_index_pack_helper
 	};
 };
 
+template <template <typename> typename Predicate, typename Pack>
+struct find_index_pack : apply_pack<find_index_pack_helper<Predicate>::template help, Pack> {};

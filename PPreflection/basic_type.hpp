@@ -8,6 +8,9 @@
 #include "get_unqualified_function.h"
 #include "get_member_function_info.h"
 #include "reflect.h"
+#include "find_index_pack.h"
+#include "fundamental_type_pack.h"
+#include "same_type.h"
 
 template <typename T>
 constexpr void detail::basic_type<T>::print_name_first(simple_ostream& out) const noexcept
@@ -224,8 +227,12 @@ constexpr const type& detail::basic_type<T>::return_type() const noexcept
 template <typename T>
 std::size_t detail::basic_type<T>::get_id() const noexcept
 {
-	if constexpr (!std::is_const_v<T> && !std::is_volatile_v<T> && (std::is_fundamental_v<T> || std::is_class_v<T> || std::is_enum_v<T>))
-		return ::reflect<detail::id_wrap<T>, std::size_t>();
+	using U = std::remove_cvref_t<T>;
+
+	if constexpr (std::is_fundamental_v<U>)
+		return get_value<find_index_pack<same_type<U>::template get, fundamental_type_pack>>();
+	else if constexpr (std::is_class_v<U> || std::is_enum_v<U>)
+		return ::reflect<detail::id_wrap<U>, std::size_t>() + get_value<apply_pack<sizeof_many, fundamental_type_pack>>();
 	else
 		return 0;
 }
