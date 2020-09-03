@@ -67,7 +67,8 @@ namespace reflect_detail
 	struct global_double_ {};
 }
 
-template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<namespace_t::global>> = std::string_view("global'");
+template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<namespace_t::global>>
+	= std::string_view("global'");
 template <> constexpr inline auto detail::reflect_metadata<namespace_t::global> =
 	detail::basic_namespace<namespace_t::global, append_pack<fundamental_type_pack,
 		type_pack<X>>,
@@ -89,8 +90,10 @@ template <> constexpr inline auto detail::reflect_metadata<detail::constructor_w
 
 namespace detail
 {
-	template <>	constexpr inline auto overload_caster<reflect_detail::X_f, 0> = overload_member_caster<cv_qualifier::none, ref_qualifier::rvalue>(&X::f);
-	template <>	constexpr inline auto overload_caster<reflect_detail::X_f, 1> = overload_member_caster<cv_qualifier::none, ref_qualifier::lvalue>(&X::f);
+	template <>	constexpr inline auto overload_caster<reflect_detail::X_f, 0>
+		= overload_member_caster<cv_qualifier::none, ref_qualifier::rvalue>(&X::f);
+	template <>	constexpr inline auto overload_caster<reflect_detail::X_f, 1>
+		= overload_member_caster<cv_qualifier::none, ref_qualifier::lvalue>(&X::f);
 }
 
 template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<reflect_detail::X_f>> = std::string_view("f");
@@ -104,7 +107,8 @@ template <> constexpr inline auto detail::reflect_metadata<value_t<detail::overl
 template <> constexpr inline auto detail::reflect_metadata<value_t<detail::overload_caster<reflect_detail::X_f, 1>>>
 	= detail::basic_member_function<reflect_detail::X_f, detail::overload_caster<reflect_detail::X_f, 1>>{};
 
-template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<reflect_detail::global_double_>> = std::string_view("double_");
+template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<reflect_detail::global_double_>>
+	= std::string_view("double_");
 template <> constexpr inline auto detail::reflect_metadata<reflect_detail::global_double_>
 	= detail::basic_overloaded_namespace_function<reflect_detail::global_double_, namespace_t::global, value_pack<
 		::overload_caster<const int&>(double_),
