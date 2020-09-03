@@ -26,4 +26,15 @@ namespace detail
 			return reflect_many<Functions, function>();
 		}
 	};
+	template <typename F, typename Base>
+	class basic_overloaded_function<empty_id, F, Base> : public Base
+	{
+	protected:
+		using Functions = F;
+	public:
+		constexpr pointer_view<const cref_t<function>> get_function_overloads() const noexcept override final
+		{
+			return reflect_many<Functions, function>();
+		}
+	};
 }

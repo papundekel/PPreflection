@@ -27,4 +27,4 @@ struct filter_helper
 };
 
 template <template <typename> typename Predicate, typename Pack>
-struct filter_pack : apply_pack<filter_helper<Predicate>::template help, Pack> {};
+struct filter_pack : apply_pack_types<filter_helper<Predicate>::template help, Pack> {};

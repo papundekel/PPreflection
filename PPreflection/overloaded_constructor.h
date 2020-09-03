@@ -4,13 +4,23 @@
 #include "../PP/PP/id.hpp"
 
 class constructor;
+class one_parameter_converting_constructor;
 
 class overloaded_constructor : public detail::overloaded_maybe_static_member_function
 {
 protected:
 	constexpr virtual pointer_view<const cref_t<constructor>> get_constructor_overloads() const noexcept = 0;
+	constexpr virtual pointer_view<const cref_t<one_parameter_converting_constructor>> get_one_parameter_converting_constructor_overloads() const noexcept = 0;
 
 public:
+	constexpr void print_name(simple_ostream& out) const noexcept override final
+	{
+		get_enclosing_class().print_name(out);
+	}
+	constexpr bool has_name(std::string_view name) const noexcept override final
+	{
+		return get_enclosing_class().has_name(name);
+	}
 	constexpr PP::view auto get_overloads() const noexcept
 	{
 		return get_overloads_helper<constructor>(get_constructor_overloads());

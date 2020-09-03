@@ -14,4 +14,4 @@ namespace detail
 }
 
 template <typename T, typename Pack>
-struct prepend_pack : apply_pack<detail::prepend_pack_helper<T>::template help, Pack> {};
+struct prepend_pack : apply_pack_types<detail::prepend_pack_helper<T>::template help, Pack> {};

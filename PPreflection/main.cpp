@@ -87,7 +87,14 @@ struct X
 
 	operator int()
 	{
+		std::cout << "operator int\n";
 		return 7;
+	}
+
+	operator double()
+	{
+		std::cout << "operator double\n";
+		return 8.0;
 	}
 
 	~X()
@@ -177,54 +184,20 @@ template <> constexpr inline auto detail::reflect_owning<overloaded_conversion_f
 template <> constexpr inline auto detail::reflect_owning<value_t<&X::operator int>>
 	= detail::basic_conversion_function<overloaded_conversion_function_info<X, int>, false, &X::operator int>{};
 
+template <> constexpr inline auto detail::reflect_owning<overloaded_conversion_function_info<X, double>>
+	= detail::basic_overloaded_conversion_function<overloaded_conversion_function_info<X, double>, type_pack<
+		conversion_function_info<false, cv_qualifier::none, ref_qualifier::none>>>{};
+
+template <> constexpr inline auto detail::reflect_owning<value_t<&X::operator double>>
+	= detail::basic_conversion_function<overloaded_conversion_function_info<X, double>, false, &X::operator double>{};
+
 
 #include "../PP/PP/unique.hpp"
 #include "../PP/PP/simple_vector.hpp"
 
 int main()
 {
-	const type* X_ = reflect<namespace_t::global, namespace_t>().get_type("X");
 
-	if (X_)
-	{
-		if (const overloaded_constructor* cs = X_->get_constructors(); cs)
-		{
-			for (const constructor& c : cs->get_overloads())
-			{
-				c.parameter_types();
-				std::cout << c << std::boolalpha << " is explicit? " << c.is_explicit() << ".\n";
-			}
-		}
-	}
-
-	std::cout << "\n";
-
-	PP::simple_vector<dynamic_object> objects;
-
-	const overloaded_namespace_function* doubler = reflect<namespace_t::global, namespace_t>().get_function("double_");
-
-	if (doubler)
-	{
-		objects.push_back(doubler->invoke({  7 }));
-		objects.push_back(doubler->invoke({ 20 }));
-		objects.push_back(doubler->invoke({ -5 }));
-
-		const overloaded_member_function* ff = objects.begin()->get_type().get_member_function("f");
-
-		bool x = true;
-
-		for (dynamic_reference r : objects)
-		{
-			if (x)
-				ff->invoke(r.move());
-			else
-				ff->invoke(r);
-
-			x = !x;
-		}
-	}
-
-	objects.clear();
 
 	std::cout.flush();
 	return 0;
