@@ -7,8 +7,8 @@ namespace detail
 	class basic_type : public type
 	{
 	protected:
-		constexpr void print_name_first(simple_ostream& out) const noexcept override final;
-		constexpr void print_name_second(simple_ostream& out) const noexcept override final;
+		constexpr void print_name_prefix(simple_ostream& out) const noexcept override final;
+		constexpr void print_name_suffix(simple_ostream& out) const noexcept override final;
 	public:
 		constexpr bool has_name(std::string_view name) const noexcept override final;
 
@@ -47,7 +47,7 @@ namespace detail
 
 		constexpr pointer_view<const cref_t<type>> parameter_types() const noexcept override final;
 		constexpr const type& return_type() const noexcept override final;
-		std::size_t get_id() const noexcept override final;
+		constexpr std::size_t get_id() const noexcept override final;
 		constexpr virtual const namespace_t* get_namespace() const noexcept override;
 
 		constexpr pointer_view<const cref_t<overloaded_member_function>> get_member_functions() const noexcept override;

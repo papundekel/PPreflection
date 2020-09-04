@@ -13,60 +13,60 @@
 #include "same_type.h"
 
 template <typename T>
-constexpr void detail::basic_type<T>::print_name_first(simple_ostream& out) const noexcept
+constexpr void detail::basic_type<T>::print_name_prefix(simple_ostream& out) const noexcept
 {
 	if constexpr (std::is_const_v<T>)
 	{
-		reflect<std::remove_const_t<T>, type>().print_name_first(out);
+		reflect<std::remove_const_t<T>, type>().print_name_prefix(out);
 		out.write(" const");
 	}
 	else if constexpr (std::is_volatile_v<T>)
 	{
-		reflect<std::remove_volatile_t<T>, type>().print_name_first(out);
+		reflect<std::remove_volatile_t<T>, type>().print_name_prefix(out);
 		out.write(" volatile");
 	}
 	else if constexpr (std::is_fundamental_v<T> || std::is_class_v<T>)
 		out.write(descriptor::reflect_name<T>());
 	else if constexpr (std::is_function_v<T>)
-		reflect<typename get_function_info<T>::return_type, type>().print_name_first(out);
+		reflect<typename get_function_info<T>::return_type, type>().print_name_prefix(out);
 	else if constexpr (std::is_pointer_v<T>)
 	{
-		reflect<std::remove_pointer_t<T>, type>().print_name_first(out);
+		reflect<std::remove_pointer_t<T>, type>().print_name_prefix(out);
 		out.write("(*");
 	}
 	else if constexpr (std::is_lvalue_reference_v<T>)
 	{
-		reflect<std::remove_reference_t<T>, type>().print_name_first(out);
+		reflect<std::remove_reference_t<T>, type>().print_name_prefix(out);
 		out.write("(&");
 	}
 	else if constexpr (std::is_rvalue_reference_v<T>)
 	{
-		reflect<std::remove_reference_t<T>, type>().print_name_first(out);
+		reflect<std::remove_reference_t<T>, type>().print_name_prefix(out);
 		out.write("(&&");
 	}
 	else if constexpr (std::is_array_v<T>)
-		reflect<std::remove_extent_t<T>, type>().print_name_first(out);
+		reflect<std::remove_extent_t<T>, type>().print_name_prefix(out);
 }
 template <typename T>
-constexpr void detail::basic_type<T>::print_name_second(simple_ostream& out) const noexcept
+constexpr void detail::basic_type<T>::print_name_suffix(simple_ostream& out) const noexcept
 {
 	if constexpr (std::is_const_v<T> || std::is_volatile_v<T>)
-		reflect<std::remove_cv_t<T>, type>().print_name_second(out);
+		reflect<std::remove_cv_t<T>, type>().print_name_suffix(out);
 	else if constexpr (std::is_function_v<T>)
 	{
 		type::print_parameter_types(out, reflect_many_view<typename get_function_info<T>::parameter_types, type>());
 
-		reflect<typename get_function_info<T>::return_type, type>().print_name_second(out);
+		reflect<typename get_function_info<T>::return_type, type>().print_name_suffix(out);
 	}
 	else if constexpr (std::is_pointer_v<T>)
 	{
 		out.write(")");
-		reflect<std::remove_pointer_t<T>, type>().print_name_second(out);
+		reflect<std::remove_pointer_t<T>, type>().print_name_suffix(out);
 	}
 	else if constexpr (std::is_reference_v<T>)
 	{
 		out.write(")");
-		reflect<std::remove_reference_t<T>, type>().print_name_second(out);
+		reflect<std::remove_reference_t<T>, type>().print_name_suffix(out);
 	}
 	else if constexpr (std::is_array_v<T>)
 	{
@@ -74,7 +74,7 @@ constexpr void detail::basic_type<T>::print_name_second(simple_ostream& out) con
 		if constexpr (std::is_bounded_array_v<T>)
 			out.write(std::extent_v<T>);
 		out.write("]");
-		reflect<std::remove_extent_t<T>, type>().print_name_second(out);
+		reflect<std::remove_extent_t<T>, type>().print_name_suffix(out);
 	}
 }
 template <typename T>
@@ -225,7 +225,7 @@ constexpr const type& detail::basic_type<T>::return_type() const noexcept
 		return *this;
 }
 template <typename T>
-std::size_t detail::basic_type<T>::get_id() const noexcept
+constexpr std::size_t detail::basic_type<T>::get_id() const noexcept
 {
 	using U = std::remove_cvref_t<T>;
 
@@ -240,10 +240,7 @@ std::size_t detail::basic_type<T>::get_id() const noexcept
 template <typename T>
 constexpr const namespace_t* detail::basic_type<T>::get_namespace() const noexcept
 {
-	if constexpr (!std::is_const_v<T> && !std::is_volatile_v<T> && std::is_fundamental_v<T>)
-		return &::reflect<namespace_t::global, namespace_t>();
-	else
-		return nullptr;
+	return nullptr;
 }
 template <typename T>
 constexpr std::size_t detail::basic_type<T>::get_extent() const noexcept

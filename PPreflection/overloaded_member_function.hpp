@@ -8,12 +8,5 @@ constexpr dynamic_object overloaded_member_function::invoke(dynamic_reference ca
 		if (f.can_invoke(caller) && f.function::can_invoke(args))
 			return f.invoke_unsafe(caller, args);
 
-	// weird workaround, compiler won't allow a throw expression in a constexpr function
-	return [](bool x)
-	{
-		if (x)
-			throw 0;
-		else
-			return dynamic_object{};
-	}(true);
+	return dynamic_object::create_invalid();
 }

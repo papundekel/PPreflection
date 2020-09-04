@@ -9,7 +9,9 @@ namespace detail
 	struct overload_caster_helper
 	{
 		template <typename Return>
-		constexpr auto& operator()(Return(&x)(Args...)) const noexcept { return x; }
+		constexpr auto operator()(Return(*x)(Args...)) const noexcept { return x; }
+		template <typename Return>
+		constexpr auto operator()(Return(*x)(Args...) noexcept) const noexcept { return x; }
 	};
 
 	template <cv_qualifier cv, ref_qualifier ref, typename... Args>

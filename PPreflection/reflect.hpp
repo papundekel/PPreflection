@@ -7,51 +7,76 @@
 #include "cref_t.h"
 #include "../PP/PP/transform_view.hpp"
 #include "../PP/PP/id.hpp"
+#include "basic_type.h"
+#include "basic_class_constructor.h"
+#include "basic_fundamental_type.h"
+#include "basic_overloaded_fundamental_constructor.h"
+#include "type_t.h"
 
 namespace detail
 {
+	template <typename Overload, std::size_t Index>
+	constexpr inline auto overload_caster = nullptr;
+
 	struct reflect__unspecialized_error {};
 
 	template <typename T>
 	constexpr inline reflect__unspecialized_error reflect_metadata = {};
 
-	template <typename Overload, std::size_t Index>
-	constexpr inline auto overload_caster = nullptr;
+	constexpr inline const type& reflect_metadata_void = detail::basic_type<void>{};
+
+	template <typename T>
+	constexpr inline const type& reflect_metadata_fundamental_nonvoid = detail::basic_fundamental_type<T>{};
+
+	template <typename T>
+	constexpr inline const type& reflect_metadata_odd_type = detail::basic_type<T>{};
+
+	template <typename T>
+	constexpr inline const overloaded_constructor& reflect_metadata_fundamental_constructor
+		= detail::basic_overloaded_fundamental_constructor<T>{};
+
+	struct is_and_get_template__error {};
+
+	template <template <typename> typename, typename>
+	struct is_and_get_template : value_t<false>, type_t<is_and_get_template__error> {};
+	template <template <typename> typename Template, typename T>
+	struct is_and_get_template<Template, Template<T>> : value_t<true>, type_t<T> {};
 }
 
 template <typename ResultType>
 template <typename T>
 constexpr const ResultType& detail::reflector<ResultType>::reflect<T>::value_f() noexcept
 {
-	if constexpr (!std::is_const_v<T> && !std::is_volatile_v<T> && (std::is_class_v<T> || std::is_enum_v<T>))
+	using NW = detail::is_and_get_template<detail::name_wrap, T>;
+	using CW = detail::is_and_get_template<detail::constructor_wrap, T>;
+	using IW = detail::is_and_get_template<detail::id_wrap, T>;
+
+	if constexpr (get_value<CW>())
+	{
+		using CT = get_type<CW>;
+		if constexpr (std::is_fundamental_v<CT>)
+			return detail::reflect_metadata_fundamental_constructor<CT>;
+		else
+			return detail::reflect_metadata<T>;
+	}
+	else if constexpr (get_value<NW>() || get_value<IW>())
 		return detail::reflect_metadata<T>;
 	else
-		return detail::reflect_metadata<detail::basic_type_wrap<T>>;
-}
-
-template <typename ResultType>
-template <typename T>
-constexpr const ResultType& detail::reflector<ResultType>::reflect<detail::id_wrap<T>>::value_f() noexcept
-{
-	return detail::reflect_metadata<detail::id_wrap<T>>;
-}
-template <typename ResultType>
-template <typename T>
-constexpr const ResultType& detail::reflector<ResultType>::reflect<detail::name_wrap<T>>::value_f() noexcept
-{
-	return detail::reflect_metadata<detail::name_wrap<T>>;
-}
-template <typename ResultType>
-template <typename T>
-constexpr const ResultType& detail::reflector<ResultType>::reflect<detail::constructor_wrap<T>>::value_f() noexcept
-{
-	return detail::reflect_metadata<detail::constructor_wrap<T>>;
-}
-template <typename ResultType>
-template <typename T>
-constexpr const ResultType& detail::reflector<ResultType>::reflect<detail::name_wrap<detail::constructor_wrap<T>>>::value_f() noexcept
-{
-	return detail::reflect_metadata<detail::name_wrap<T>>;
+	{
+		if constexpr (!std::is_const_v<T> && !std::is_volatile_v<T>)
+		{
+			if constexpr (std::is_class_v<T> || std::is_enum_v<T>)
+				return detail::reflect_metadata<T>;
+			else if constexpr (std::is_void_v<T>)
+				return detail::reflect_metadata_void;
+			else if constexpr (std::is_fundamental_v<T>)
+				return detail::reflect_metadata_fundamental_nonvoid<T>;
+			else
+				return detail::reflect_metadata_odd_type<T>;
+		}
+		else
+			return detail::reflect_metadata_odd_type<T>;
+	}
 }
 
 template <typename T, typename ResultType>
@@ -61,7 +86,7 @@ constexpr const ResultType& reflect() noexcept
 }
 
 template <auto v, typename ResultType>
-constexpr decltype(auto) reflect() noexcept
+constexpr const ResultType& reflect() noexcept
 {
 	return reflect<value_t<v>, ResultType>();
 }
@@ -78,15 +103,9 @@ constexpr PP::view auto reflect_many_view() noexcept
 	return reflect_many<Pack, ResultType>() | PP::transform(PP::id<const ResultType&>);
 }
 
-#include "basic_type.h"
-#include "basic_class_constructor.h"
-
-template <typename T> constexpr inline auto detail::reflect_metadata<detail::basic_type_wrap<T>> = detail::basic_type<T>{};
-template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<detail::empty_id>> = std::string_view();
-
 template <typename Class, bool Explicit, typename... Args>
 constexpr inline auto detail::reflect_metadata<constructor_info<Class, Explicit, Args...>>
-= detail::basic_class_constructor<Class, Explicit, type_pack<Args...>>{};
+	= detail::basic_class_constructor<Class, Explicit, type_pack<Args...>>{};
 
 template <> constexpr inline std::string_view detail::reflect_metadata<detail::name_wrap<void					>> = "void";
 template <> constexpr inline std::string_view detail::reflect_metadata<detail::name_wrap<decltype(nullptr)		>> = "std::nullptr_t";

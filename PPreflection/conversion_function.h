@@ -31,6 +31,6 @@ public:
 		if (can_invoke(caller))
 			return invoke_unsafe(caller);
 		else
-			throw 0;
+			return dynamic_object::create_invalid();
 	}
 };

@@ -8,12 +8,5 @@ constexpr dynamic_object overloaded_conversion_function::invoke(dynamic_referenc
 		if (f.can_invoke(caller))
 			return f.invoke_unsafe(caller);
 
-	// weird workaround, compiler won't allow a throw expression in a constexpr function
-	return [](bool x)
-	{
-		if (x)
-			throw 0;
-		else
-			return dynamic_object{};
-	}(true);
+	return dynamic_object::create_invalid();
 }

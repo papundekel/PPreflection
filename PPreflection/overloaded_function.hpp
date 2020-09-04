@@ -9,12 +9,5 @@ constexpr dynamic_object overloaded_function::invoke(pointer_view<const dynamic_
 		if (f.can_invoke(args))
 			return f.invoke_unsafe(args);
 
-	// weird workaround, compiler won't allow a throw expression in a constexpr function
-	return [](bool x)
-	{
-		if (x)
-			throw 0;
-		else
-			return dynamic_object{};
-	}(true);
+	return dynamic_object::create_invalid();
 }

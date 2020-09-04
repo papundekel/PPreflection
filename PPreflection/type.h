@@ -47,8 +47,8 @@ public:
 	constexpr bool can_pointer_like_initialize_inner(const type& ref_type) const noexcept;
 
 protected:
-	constexpr virtual void print_name_first(simple_ostream& out) const noexcept = 0;
-	constexpr virtual void print_name_second(simple_ostream& out) const noexcept = 0;
+	constexpr virtual void print_name_prefix(simple_ostream& out) const noexcept = 0;
+	constexpr virtual void print_name_suffix(simple_ostream& out) const noexcept = 0;
 
 public:
 	constexpr void print_name(simple_ostream& out) const noexcept override final;
@@ -91,7 +91,7 @@ public:
 
 
 
-	virtual std::size_t get_id() const noexcept = 0;
+	constexpr virtual std::size_t get_id() const noexcept = 0;
 
 	constexpr cv_qualifier get_cv_qualifier() const noexcept;
 	constexpr bool is_pointer_like() const noexcept;

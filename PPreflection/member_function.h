@@ -24,6 +24,9 @@ protected:
 	constexpr virtual const type& get_caller_parameter_type() const noexcept = 0;
 
 public:
+	constexpr void print_name(simple_ostream& out) const noexcept override final;
+	constexpr bool has_name(std::string_view name) const noexcept override final;
+
 	constexpr const overloaded_member_function& get_overloaded_function() const noexcept override = 0;
 		
 	constexpr virtual ref_qualifier get_ref_qualifier() const noexcept = 0;

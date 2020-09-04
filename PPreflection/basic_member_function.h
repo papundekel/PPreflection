@@ -15,7 +15,7 @@ namespace detail
 	protected:
 		using B = basic_member_function_helper<Overload, mf, Base>;
 		using FunctionType = B::FunctionType;
-		using ParentClass = typename get_member_function_info<decltype(mf)>::Class;
+		//using ParentClass = typename get_member_function_info<decltype(mf)>::Class;
 		using CallerParameterType = typename get_member_function_info<decltype(mf)>::caller_type;
 
 		constexpr const type& get_pointer_type() const noexcept override final
@@ -36,11 +36,6 @@ namespace detail
 		constexpr cv_qualifier get_cv_qualifier() const noexcept override final
 		{
 			return get_function_info<FunctionType>::cv;
-		}
-
-		constexpr const type& get_enclosing_class() const noexcept override final
-		{
-			return reflect<ParentClass, type>();
 		}
 	};
 

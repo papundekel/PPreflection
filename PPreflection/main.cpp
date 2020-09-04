@@ -22,6 +22,7 @@
 #include "descriptor.hpp"
 #include "function.hpp"
 #include "type.hpp"
+#include "maybe_static_member_function.hpp"
 #include "member_function.hpp"
 #include "namespace_function.hpp"
 #include "namespace_t.hpp"
@@ -39,13 +40,14 @@
 #include "basic_class_constructor.h"
 #include "basic_class_type.h"
 #include "basic_type.hpp"
+#include "basic_fundamental_type.hpp"
 #include "basic_typed_function.h"
 #include "basic_static_function.h"
 #include "basic_member_function.h"
 #include "basic_namespace_function.h"
 #include "basic_conversion_function.h"
 
-#include "basic_overloaded_constructor.h"
+#include "basic_overloaded_class_constructor.h"
 #include "basic_overloaded_conversion_function.h"
 #include "basic_overloaded_function.h"
 #include "basic_overloaded_member_function.h"
@@ -140,14 +142,14 @@ template <> constexpr inline auto detail::reflect_metadata<X> = detail::basic_cl
 	type_pack<>>{};
 
 template <> constexpr inline auto detail::reflect_metadata<detail::constructor_wrap<X>>
-	= detail::basic_overloaded_constructor<X, type_pack<
+	= detail::basic_overloaded_class_constructor<X, type_pack<
 		constructor_partial_info<false, const int&>,
 		constructor_partial_info<true, const double&>>>{};
 
 namespace detail
 {
-	template <>	constexpr inline auto overload_caster<reflect_detail::X_f, 0> = overload_member_caster<cv_qualifier::none, ref_qualifier::rvalue>(&X::f);
-	template <>	constexpr inline auto overload_caster<reflect_detail::X_f, 1> = overload_member_caster<cv_qualifier::none, ref_qualifier::lvalue>(&X::f);
+	template <>	constexpr inline auto overload_caster<reflect_detail::X_f, 0> = overload_member_caster<cv_qualifier::none, ref_qualifier::lvalue>(&X::f);
+	template <>	constexpr inline auto overload_caster<reflect_detail::X_f, 1> = overload_member_caster<cv_qualifier::none, ref_qualifier::rvalue>(&X::f);
 }
 
 template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<reflect_detail::X_f>> = std::string_view("f");
@@ -192,6 +194,44 @@ template <> constexpr inline auto detail::reflect_metadata<value_t<detail::overl
 
 int main()
 {
+	auto int_type = reflect<namespace_t::global, namespace_t>().get_type("int");
+	if (int_type)
+	{
+		auto instance = int_type->create_instance();
+		if (instance)
+			std::cout << "cool.\n";
+		else
+			std::cout << "not.\n";
+	}
+
+	/*std::cout << "Enter a global namespace class: ";
+
+	std::string class_name;
+
+	std::cin >> class_name;
+
+	auto X_ = reflect<namespace_t::global, namespace_t>().get_type(class_name);
+	if (X_)
+	{
+		std::cout << "Creating " << class_name << "(int&&)\n";
+		auto x = X_->create_instance({ 5 });
+
+		if (x)
+			std::cout << "Successfully created an instance of " << class_name << " from int&&\n";
+		else
+			std::cout << "Failure.\n";
+
+		std::cout << "Creating " << class_name << "(double&&)\n";
+		auto x = X_->create_instance({ 6. });
+
+		if (x)
+			std::cout << "Successfully created an instance of " << class_name << " from double&&\n";
+		else
+			std::cout << "Failure.\n";
+	}
+	else
+		std::cout << "there is no class '::" << class_name << "'\n";
+		*/
 	
 
 	std::cout.flush();

@@ -17,16 +17,13 @@ namespace detail
 	{
 		using MappedFunctions = basic_overloaded_conversion_function_helper<ID, Functions>::Functions;
 
+	protected:
+		constexpr const type& return_type() const noexcept override final
+		{
+			return reflect<typename ID::Result, type>();
+		}
+
 	public:
-		constexpr void print_name(simple_ostream& out) const noexcept override final
-		{
-			out.write("operator ");
-			out.write(descriptor::reflect_name<typename ID::Result>());
-		}
-		constexpr bool has_name(std::string_view name) const noexcept override final
-		{
-			return name.starts_with("operator ") && name.substr(9) == descriptor::reflect_name<typename ID::Result>();
-		}
 		constexpr pointer_view<const cref_t<conversion_function>> get_conversion_overloads() const noexcept override final
 		{
 			return reflect_many<MappedFunctions, conversion_function>();

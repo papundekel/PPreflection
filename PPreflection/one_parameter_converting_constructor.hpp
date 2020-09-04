@@ -12,5 +12,5 @@ constexpr dynamic_object one_parameter_converting_constructor::invoke(dynamic_re
 				invoke_implementation_one_parameter(ptr, arg);
 			});
 	else
-		throw 0;
+		dynamic_object::create_invalid();
 }

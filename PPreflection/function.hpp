@@ -8,9 +8,22 @@
 #include "conversion_function.h"
 #include "dynamic_reference.h"
 
-constexpr void function::print_name(simple_ostream& out) const noexcept
+constexpr void function::print_name_basic(simple_ostream& out) const noexcept
 {
 	get_overloaded_function().print_name(out);
+	type::print_parameter_types(out, parameter_types());
+}
+
+constexpr void function::print_noexcept(simple_ostream& out) const noexcept
+{
+	if (is_noexcept())
+		out.write(" noexcept");
+}
+
+constexpr void function::print_name(simple_ostream& out) const noexcept
+{
+	print_name_basic(out);
+	print_noexcept(out);
 }
 constexpr bool function::has_name(std::string_view name) const noexcept
 {
@@ -96,5 +109,5 @@ constexpr dynamic_object function::invoke(pointer_view<const dynamic_reference> 
 	if (can_invoke(args))
 		return invoke_unsafe(args);
 	else
-		throw 0;
+		dynamic_object::create_invalid();
 }

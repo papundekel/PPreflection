@@ -3,7 +3,6 @@
 #include "../PP/PP/scoped.hpp"
 #include "../PP/PP/unique.hpp"
 
-
 class type;
 class dynamic_reference;
 
@@ -36,7 +35,13 @@ class dynamic_object
 
 	static constexpr std::byte* allocate(const type& t) noexcept;
 
+	explicit constexpr dynamic_object(std::nullptr_t) noexcept;
+
+	constexpr const type* get_type_helper() noexcept;
+
 public:
+	static constexpr dynamic_object create_invalid() noexcept;
+
 	constexpr dynamic_object() = default;
 
 	template <typename Initializer>
@@ -46,4 +51,6 @@ public:
 
 	constexpr operator dynamic_reference() & noexcept;
 	constexpr operator dynamic_reference() && noexcept;
+
+	constexpr explicit operator bool() noexcept;
 };

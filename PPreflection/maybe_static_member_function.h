@@ -1,5 +1,6 @@
 #pragma once
 #include "function.h"
+#include "overloaded_maybe_static_member_function.h"
 
 class type;
 
@@ -8,6 +9,8 @@ namespace detail
 	class maybe_static_member_function : public function
 	{
 	public:
-		constexpr virtual const type& get_enclosing_class() const noexcept = 0;
+		constexpr const overloaded_maybe_static_member_function& get_overloaded_function() const noexcept override = 0;
+
+		constexpr const type& get_enclosing_class() const noexcept;
 	};
 }

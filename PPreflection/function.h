@@ -39,13 +39,21 @@ protected:
 		static constexpr x value_f() noexcept;
 	};
 
+	constexpr void print_name_basic(simple_ostream& out) const noexcept;
+	constexpr void print_noexcept(simple_ostream& out) const noexcept;
+
+	constexpr virtual pointer_view<const cref_t<type>> parameter_types_implementation() const noexcept = 0;
+
 public:
-	constexpr void print_name(simple_ostream& out) const noexcept override final;
-	constexpr bool has_name(std::string_view name) const noexcept override final;
+	constexpr void print_name(simple_ostream& out) const noexcept override;
+	constexpr bool has_name(std::string_view name) const noexcept override;
 
 	constexpr virtual const overloaded_function& get_overloaded_function() const noexcept = 0;
 
-	constexpr virtual pointer_view<const cref_t<type>> parameter_types() const noexcept = 0;
+	constexpr PP::view auto parameter_types() const noexcept
+	{
+		return parameter_types_implementation() | PP::transform(PP::id<const type&>);
+	}
 	constexpr virtual const type& return_type() const noexcept = 0;
 
 	constexpr virtual bool is_noexcept() const noexcept = 0;

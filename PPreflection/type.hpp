@@ -23,8 +23,8 @@ constexpr cv_qualifier type::get_cv_qualifier() const noexcept
 }
 constexpr void type::print_name(simple_ostream& out) const noexcept
 {
-	print_name_first(out);
-	print_name_second(out);
+	print_name_prefix(out);
+	print_name_suffix(out);
 }
 
 constexpr bool type::is_pointer_like() const noexcept
@@ -183,5 +183,5 @@ constexpr dynamic_object type::create_instance(pointer_view<const dynamic_refere
 	if (auto* ctrs = get_constructors(); ctrs)
 		return ctrs->invoke(args);
 	else
-		throw 0;
+		return dynamic_object::create_invalid();
 }

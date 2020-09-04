@@ -17,24 +17,17 @@ namespace detail
 	};
 
 	template <typename Class, typename Args, typename Base>
-	class basic_class_constructor_base :
-		public basic_function
-		< detail::constructor_wrap<Class>
-		, Args
-		, Class
-		, get_value<apply_pack<is_nothrow_constructible_helper<Class>::template help, Args>>()
-		, Base>
-	{
-	public:
-		constexpr const type& get_enclosing_class() const noexcept override final
-		{
-			return reflect<Class, type>();
-		}
-	};
+	using basic_constructor_base
+		= basic_function
+			< constructor_wrap<Class>
+			, Args
+			, Class
+			, get_value<apply_pack<is_nothrow_constructible_helper<Class>::template help, Args>>()
+			, Base>;
 
 	template <typename Class, bool Explicit, typename Args>
 	class basic_class_constructor final
-		: public basic_class_constructor_base<Class, Args, constructor>
+		: public basic_constructor_base<Class, Args, constructor>
 	{
 	protected:
 		constexpr void invoke_implementation(void* result, const dynamic_reference* args) const noexcept override final
@@ -51,12 +44,11 @@ namespace detail
 		{
 			return Explicit;
 		}
-
 	};
 
 	template <typename Class, typename Arg>
 	class basic_class_constructor<Class, false, type_pack<Arg>> final
-		: public basic_class_constructor_base<Class, type_pack<Arg>, one_parameter_converting_constructor>
+		: public basic_constructor_base<Class, type_pack<Arg>, one_parameter_converting_constructor>
 	{
 	protected:
 		constexpr void invoke_implementation_one_parameter(void* result, dynamic_reference arg) const noexcept override final

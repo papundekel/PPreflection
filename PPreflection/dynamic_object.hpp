@@ -5,6 +5,11 @@
 #include "dynamic_reference.h"
 #include "reflect.h"
 
+constexpr dynamic_object dynamic_object::create_invalid() noexcept
+{
+	return dynamic_object(nullptr);
+}
+
 template <bool reference>
 constexpr void* dynamic_object::get_address(PP::unique<std::byte*>& p, const type& t) noexcept
 {
@@ -58,16 +63,22 @@ constexpr std::byte* dynamic_object::allocate(const type& t) noexcept
 	else
 		return new std::byte[size];
 }
+constexpr dynamic_object::dynamic_object(std::nullptr_t) noexcept
+	: x({}, deleter(nullptr))
+{}
 template <typename Initializer>
 constexpr dynamic_object::dynamic_object(const type& type, Initializer&& initializer)
 	: x(allocate(type), deleter(&type))
 {
 	std::forward<Initializer>(initializer)(get_address_helper<false>());
 }
-
+constexpr const type* dynamic_object::get_type_helper() noexcept
+{
+	return x.get_destructor().type_.get();
+}
 constexpr const type& dynamic_object::get_type() noexcept
 {
-	return *x.get_destructor().type_.get();
+	return *get_type_helper();
 }
 
 constexpr void* dynamic_object::get_address() noexcept
@@ -86,4 +97,8 @@ constexpr dynamic_object::operator dynamic_reference() & noexcept
 constexpr dynamic_object::operator dynamic_reference() && noexcept
 {
 	return reference_cast_helper<true>();
+}
+constexpr dynamic_object::operator bool() noexcept
+{
+	return get_type_helper();
 }

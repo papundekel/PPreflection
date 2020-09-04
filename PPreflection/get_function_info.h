@@ -9,7 +9,7 @@ struct function_info
 {
 	using return_type = Return;
 	using parameter_types = type_pack<Parameters...>;
-	static constexpr auto Noexcept = N;
+	static constexpr bool Noexcept = N;
 	static constexpr auto cv = CV;
 	static constexpr auto ref = R;
 };

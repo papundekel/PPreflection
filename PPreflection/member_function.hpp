@@ -3,6 +3,36 @@
 #include "dynamic_reference.h"
 #include "function.h"
 
+constexpr void member_function::print_name(simple_ostream& out) const noexcept
+{
+	print_name_basic(out);
+
+	switch (get_cv_qualifier())
+	{
+	case cv_qualifier::const_:
+		out.write(" const"); break;
+	case cv_qualifier::volatile_: break;
+		out.write(" volatile"); break;
+	case cv_qualifier::const_volatile:
+		out.write(" const volatile"); break;
+	}
+
+	switch (get_ref_qualifier())
+	{
+	case ref_qualifier::lvalue:
+		out.write("&"); break;
+	case ref_qualifier::rvalue:
+		out.write("&&"); break;
+	}
+
+	print_noexcept(out);
+}
+constexpr bool member_function::has_name(std::string_view name) const noexcept
+{
+	// TODO
+	return false;
+}
+
 constexpr bool member_function::can_invoke(dynamic_reference caller_arg) const noexcept
 {
 	const type& caller_par_type = get_caller_parameter_type();
@@ -34,5 +64,5 @@ constexpr dynamic_object member_function::invoke(dynamic_reference caller, point
 	if (can_invoke(caller) && function::can_invoke(args))
 		return invoke_unsafe(caller, args);
 	else
-		throw 0;
+		dynamic_object::create_invalid();
 }

@@ -83,7 +83,7 @@ template <> constexpr inline auto detail::reflect_metadata<X>
 		type_pack<>>{};
 
 template <> constexpr inline auto detail::reflect_metadata<detail::constructor_wrap<X>>
-	= detail::basic_overloaded_constructor<X, type_pack<
+	= detail::basic_overloaded_class_constructor<X, type_pack<
 		constructor_partial_info<false, const int&>,
 		constructor_partial_info<true, const double&>>>{};
 
