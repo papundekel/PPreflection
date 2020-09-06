@@ -12,6 +12,7 @@
 #include "basic_fundamental_type.h"
 #include "basic_overloaded_fundamental_constructor.h"
 #include "type_t.h"
+#include "constructor_info.h"
 
 namespace detail
 {

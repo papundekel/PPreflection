@@ -86,11 +86,11 @@ struct X
 
 	void f() &
 	{
-		std::cout << x << "&\n";
+		std::cout << x << "f&\n";
 	}
 	void f() &&
 	{
-		std::cout << x << "&&\n";
+		std::cout << x << "f&&\n";
 	}
 
 	explicit operator int()
@@ -213,7 +213,15 @@ int main()
 				std::cout << "Success.\n";
 				std::cout << "Trying to create " << *X_type << " from " << *Y_type << "&...\n";
 				if (auto X_instance = X_type->create_instance({ Y_instance }); X_instance)
+				{
 					std::cout << "Success.\n";
+
+					std::cout << "Trying to call member function f with no argumemts on " << *X_type << " instance\n";
+					if (auto f_mf = X_type->get_member_function("f"); f_mf && f_mf->invoke(X_instance))
+						std::cout << "Success.\n";
+					else
+						std::cout << "Failure.\n";
+				}
 				else
 					std::cout << "Failure.\n";
 			}

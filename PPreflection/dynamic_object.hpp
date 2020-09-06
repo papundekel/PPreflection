@@ -36,11 +36,6 @@ constexpr void* dynamic_object::get_address(PP::unique<std::byte*>& p, const typ
 	return ptr;
 }
 
-constexpr auto dynamic_object::deleter::defaulter::operator()() const noexcept
-{
-	return &reflect<void, type>();
-}
-
 constexpr void dynamic_object::deleter::operator()(PP::unique<std::byte*>& u) const
 {
 	const type* t = type_.get();

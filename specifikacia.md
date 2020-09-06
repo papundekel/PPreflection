@@ -55,6 +55,37 @@ struct X
 	~X();
 };
 
+// implementations.cpp
+#include "declarations.hpp"
+
+X::X(const int& x)
+	: x(x)
+{
+	std::cout << "int ctr\n";
+}
+
+X::X(const double& y)
+	: x(y)
+{
+	std::cout << "double ctr\n";
+}
+
+void X::f() &
+{
+	std::cout << x << "f&\n";
+}
+void X::f() &&
+{
+	std::cout << x << "f&&\n";
+}
+
+X::~X()
+{
+	std::cout << "dead, " << x << '\n';
+}
+
+// other implementations...
+
 // main.cpp
 #include "declarations.hpp"
 // #include "framework.hpp"
@@ -140,8 +171,87 @@ template <> constexpr inline auto detail::reflect_metadata<value_t<detail::overl
 
 int main()
 {
-	
+	std::string name;
 
+	std::cout << "Enter a global namespace class: ";
+	std::cin >> name;
+
+	if (auto X_type = reflect<namespace_t::global, namespace_t>().get_type(name); X_type)
+	{
+		std::cout << "Enter another global namespace class: ";
+		std::cin >> name;
+
+		if (auto Y_type = reflect<namespace_t::global, namespace_t>().get_type(name); Y_type)
+		{
+			std::cout << "Trying to default construct " << *Y_type << "...\n";
+
+			if (auto Y_instance = Y_type->create_instance(); Y_instance)
+			{
+				std::cout << "Success.\n";
+				std::cout << "Trying to create " << *X_type << " from " << *Y_type << "&...\n";
+				if (auto X_instance = X_type->create_instance({ Y_instance }); X_instance)
+				{
+					std::cout << "Success.\n";
+					
+					std::cout << "Trying to call member function f with no argumemts on " << *X_type << " instance\n";
+					if (auto f_mf = X_type->get_member_function("f"); f_mf && f_mf->invoke(X_instance))
+						std::cout << "Success.\n";
+					else
+						std::cout << "Failure.\n";
+				}
+				else
+					std::cout << "Failure.\n";
+			}
+			else
+				std::cout << *Y_type << " is not default constructible.\n";
+		}
+		else
+			std::cout << "there is no class ::" << name << ".\n";
+	}
+	else
+		std::cout << "there is no class ::" << name << ".\n";
+
+	std::cout.flush();
 	return 0;
 }
+```
+
+### Výstup 1
+
+```
+Enter a global namespace class: int
+Enter another global namespace class: double
+Trying to default construct double...
+Success.
+Trying to create int from double&...
+Failure.
+```
+
+### Výstup 2
+
+```
+Enter a global namespace class: int
+Enter another global namespace class: int
+Trying to default construct int...
+Success.
+Trying to create int from int&...
+Success.
+Trying to call member function f with no argumemts on int instance
+Failure.
+```
+
+### Výstup 3
+
+```
+Enter a global namespace class: X
+Enter another global namespace class: int
+Trying to default construct int...
+Success.
+Trying to create X from int&...
+int ctr
+Success.
+Trying to call member function f with no argumemts on X instance
+0f&
+Success.
+dead, 0
 ```

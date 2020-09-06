@@ -10,12 +10,7 @@ class dynamic_object
 {
 	struct deleter
 	{
-		struct defaulter
-		{
-			constexpr auto operator()() const noexcept;
-		};
-
-		PP::unique<const type*, defaulter> type_;
+		PP::unique<const type*> type_;
 
 		constexpr void operator()(PP::unique<std::byte*>& u) const;
 	};
