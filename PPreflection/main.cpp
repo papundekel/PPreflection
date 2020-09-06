@@ -194,45 +194,37 @@ template <> constexpr inline auto detail::reflect_metadata<value_t<detail::overl
 
 int main()
 {
-	auto int_type = reflect<namespace_t::global, namespace_t>().get_type("int");
-	if (int_type)
+	std::string name;
+
+	std::cout << "Enter a global namespace class: ";
+	std::cin >> name;
+
+	if (auto X_type = reflect<namespace_t::global, namespace_t>().get_type(name); X_type)
 	{
-		auto instance = int_type->create_instance();
-		if (instance)
-			std::cout << "cool.\n";
+		std::cout << "Enter another global namespace class: ";
+		std::cin >> name;
+
+		if (auto Y_type = reflect<namespace_t::global, namespace_t>().get_type(name); Y_type)
+		{
+			std::cout << "Trying to default construct " << *Y_type << "...\n";
+
+			if (auto Y_instance = Y_type->create_instance(); Y_instance)
+			{
+				std::cout << "Success.\n";
+				std::cout << "Trying to create " << *X_type << " from " << *Y_type << "&...\n";
+				if (auto X_instance = X_type->create_instance({ Y_instance }); X_instance)
+					std::cout << "Success.\n";
+				else
+					std::cout << "Failure.\n";
+			}
+			else
+				std::cout << *Y_type << " is not default constructible.\n";
+		}
 		else
-			std::cout << "not.\n";
-	}
-
-	/*std::cout << "Enter a global namespace class: ";
-
-	std::string class_name;
-
-	std::cin >> class_name;
-
-	auto X_ = reflect<namespace_t::global, namespace_t>().get_type(class_name);
-	if (X_)
-	{
-		std::cout << "Creating " << class_name << "(int&&)\n";
-		auto x = X_->create_instance({ 5 });
-
-		if (x)
-			std::cout << "Successfully created an instance of " << class_name << " from int&&\n";
-		else
-			std::cout << "Failure.\n";
-
-		std::cout << "Creating " << class_name << "(double&&)\n";
-		auto x = X_->create_instance({ 6. });
-
-		if (x)
-			std::cout << "Successfully created an instance of " << class_name << " from double&&\n";
-		else
-			std::cout << "Failure.\n";
+			std::cout << "there is no class ::" << name << ".\n";
 	}
 	else
-		std::cout << "there is no class '::" << class_name << "'\n";
-		*/
-	
+		std::cout << "there is no class ::" << name << ".\n";
 
 	std::cout.flush();
 	return 0;

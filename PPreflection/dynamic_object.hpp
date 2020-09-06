@@ -43,11 +43,14 @@ constexpr auto dynamic_object::deleter::defaulter::operator()() const noexcept
 
 constexpr void dynamic_object::deleter::operator()(PP::unique<std::byte*>& u) const
 {
-	const type& t = *type_.get();
-	auto ptr = get_address<false>(u, t);
-	t.destroy(ptr);
+	const type* t = type_.get();
+	if (!t)
+		return;
 
-	if (t.size() > sizeof(void*))
+	auto ptr = get_address<false>(u, *t);
+	t->destroy(ptr);
+
+	if (t->size() > sizeof(void*))
 		delete[] u.get();
 }
 
