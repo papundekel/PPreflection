@@ -10,6 +10,7 @@
 #include "ref_qualifier.h"
 #include "apply_pack.h"
 #include "../PP/PP/view.hpp"
+#include "any_iterator.h"
 
 class namespace_t;
 class overloaded_member_function;
@@ -58,7 +59,7 @@ public:
 	constexpr virtual bool is_volatile() const noexcept = 0;
 	constexpr virtual std::size_t size() const noexcept = 0;
 	virtual void destroy(void* ptr) const noexcept = 0;
-	constexpr virtual pointer_view<const cref_t<type>> get_direct_bases() const noexcept = 0;
+	constexpr virtual any_view<const type&> get_direct_bases() const noexcept = 0;
 
 	constexpr virtual const namespace_t* get_namespace() const noexcept = 0;
 
@@ -80,7 +81,7 @@ public:
 	constexpr virtual std::size_t get_extent() const noexcept = 0;
 	constexpr virtual const type& remove_extent() const noexcept = 0;
 
-	constexpr virtual pointer_view<const cref_t<type>> parameter_types() const noexcept = 0;
+	constexpr virtual any_view<const type&> parameter_types() const noexcept = 0;
 	constexpr virtual const type& return_type() const noexcept = 0;
 	constexpr virtual cv_qualifier get_function_cv_qualifier() const noexcept = 0;
 	constexpr virtual ref_qualifier get_function_ref_qualifier() const noexcept = 0;
@@ -113,7 +114,7 @@ public:
 	constexpr bool can_reference_initialize_no_user_conversion(const type& ref_type) const noexcept;
 	constexpr bool can_reference_initialize(const type& ref_type) const noexcept;
 
-	constexpr virtual pointer_view<const cref_t<overloaded_member_function>> get_member_functions() const noexcept = 0;
+	constexpr virtual any_view<const overloaded_member_function&> get_member_functions() const noexcept = 0;
 	constexpr const overloaded_member_function* get_member_function(std::string_view name) const noexcept;
 
 	constexpr virtual const overloaded_constructor* get_constructors() const noexcept = 0;

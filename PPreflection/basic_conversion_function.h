@@ -25,15 +25,12 @@ namespace detail
 	{
 		using B = basic_conversion_function_helper<mf>;
 		using CallerParameterType = B::CallerParameterType;
+		using ReturnType = B::ReturnType;
 
 	protected:
-		constexpr void invoke_implementation_conversion(void* result, dynamic_reference caller) const noexcept override final
+		constexpr dynamic_object invoke_unsafe_conversion(dynamic_reference caller) const noexcept override final
 		{
-			this->invoke_(result,
-				[caller]() -> decltype(auto)
-				{
-					return (caller.cast_unsafe<CallerParameterType>().*mf)();
-				});
+			return invoke_helper<ReturnType>([&caller]() -> decltype(auto) { return (caller.cast_unsafe<CallerParameterType>().*mf)(); });
 		}
 		constexpr bool is_explicit() const noexcept override final
 		{

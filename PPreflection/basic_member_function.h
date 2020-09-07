@@ -43,19 +43,17 @@ namespace detail
 	class basic_member_function : public basic_member_function_base<Overload, mf, member_function>
 	{
 		using B = basic_member_function_base<Overload, mf, member_function>;
+		using ReturnType = typename B::ReturnType;
+		using ParameterTypes = typename B::ParameterTypes;
 
 	protected:
-		constexpr void invoke_implementation_member(void* result, dynamic_reference caller, const dynamic_reference* args) const noexcept override final
+		constexpr dynamic_object invoke_unsafe_member(dynamic_reference caller, any_iterator<const dynamic_reference&> arg_iterator) const noexcept override final
 		{
-			this->invoke_(result,
-				[caller, args]() -> decltype(auto)
+			return invoke_helper<ReturnType, ParameterTypes>(
+				[caller]<typename... T>(T&&... xs) -> decltype(auto)
 				{
-					return get_value<apply_pack<function::invoke_helper_t, typename B::ParameterTypes>>()(
-						[caller]<typename... T>(T&&... xs) -> decltype(auto)
-					{
-						return (caller.cast_unsafe<typename B::CallerParameterType>().*mf)(std::forward<T>(xs)...);
-					}, args);
-				});
+					return (caller.cast_unsafe<typename B::CallerParameterType>().*mf)(std::forward<T>(xs)...);
+				}, arg_iterator);
 		}
 	};
 }

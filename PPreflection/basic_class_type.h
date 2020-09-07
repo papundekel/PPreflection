@@ -9,7 +9,7 @@ namespace detail
 	class basic_class_type : public basic_type<T>
 	{
 	public:
-		constexpr pointer_view<const cref_t<type>> get_direct_bases() const noexcept override final
+		constexpr any_view<const type&> get_direct_bases() const noexcept override final
 		{
 			return reflect_many<Bases, type>();
 		}
@@ -18,7 +18,7 @@ namespace detail
 			return &reflect<Namespace, namespace_t>();
 		}
 
-		constexpr pointer_view<const cref_t<overloaded_member_function>> get_member_functions() const noexcept override final
+		constexpr any_view<const overloaded_member_function&> get_member_functions() const noexcept override final
 		{
 			return reflect_many<MemberFunctions, overloaded_member_function>();
 		}

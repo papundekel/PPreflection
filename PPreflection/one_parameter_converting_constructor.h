@@ -4,10 +4,10 @@
 class one_parameter_converting_constructor : public constructor
 {
 protected:
-	constexpr virtual void invoke_implementation_one_parameter(void* result, dynamic_reference arg) const noexcept = 0;
-	constexpr void invoke_implementation(void* result, const dynamic_reference* args) const noexcept override final
+	constexpr virtual dynamic_object invoke_unsafe_one_parameter(dynamic_reference arg) const noexcept = 0;
+	constexpr dynamic_object invoke_unsafe(any_iterator<const dynamic_reference&> arg_iterator) const noexcept override final
 	{
-		invoke_implementation_one_parameter(result, args[0]);
+		return invoke_unsafe_one_parameter(arg_iterator[0]);
 	}
 
 public:

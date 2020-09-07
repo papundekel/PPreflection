@@ -40,7 +40,7 @@
 #include "basic_class_constructor.h"
 #include "basic_class_type.h"
 #include "basic_type.hpp"
-#include "basic_fundamental_type.hpp"
+#include "basic_fundamental_type.h"
 #include "basic_typed_function.h"
 #include "basic_static_function.h"
 #include "basic_member_function.h"
@@ -69,7 +69,7 @@ struct X
 	X(const int& x)
 		: x(x)
 	{
-		std::cout << "int ctr\n";
+		std::cout << "int ctr " << x << "\n";
 	}
 
 	explicit X(const double& y)
@@ -194,45 +194,11 @@ template <> constexpr inline auto detail::reflect_metadata<value_t<detail::overl
 
 int main()
 {
-	std::string name;
-
-	std::cout << "Enter a global namespace class: ";
-	std::cin >> name;
-
-	if (auto X_type = reflect<namespace_t::global, namespace_t>().get_type(name); X_type)
+	auto double_f = reflect<namespace_t::global, namespace_t>().get_function("double_");
+	if (double_f)
 	{
-		std::cout << "Enter another global namespace class: ";
-		std::cin >> name;
-
-		if (auto Y_type = reflect<namespace_t::global, namespace_t>().get_type(name); Y_type)
-		{
-			std::cout << "Trying to default construct " << *Y_type << "...\n";
-
-			if (auto Y_instance = Y_type->create_instance(); Y_instance)
-			{
-				std::cout << "Success.\n";
-				std::cout << "Trying to create " << *X_type << " from " << *Y_type << "&...\n";
-				if (auto X_instance = X_type->create_instance({ Y_instance }); X_instance)
-				{
-					std::cout << "Success.\n";
-
-					std::cout << "Trying to call member function f with no argumemts on " << *X_type << " instance\n";
-					if (auto f_mf = X_type->get_member_function("f"); f_mf && f_mf->invoke(X_instance))
-						std::cout << "Success.\n";
-					else
-						std::cout << "Failure.\n";
-				}
-				else
-					std::cout << "Failure.\n";
-			}
-			else
-				std::cout << *Y_type << " is not default constructible.\n";
-		}
-		else
-			std::cout << "there is no class ::" << name << ".\n";
+		auto x = double_f->invoke({ 5 });
 	}
-	else
-		std::cout << "there is no class ::" << name << ".\n";
 
 	std::cout.flush();
 	return 0;

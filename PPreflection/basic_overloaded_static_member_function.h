@@ -8,7 +8,7 @@ namespace detail
 	class basic_overloaded_static_member_function final : public basic_overloaded_function<ID, Functions, overloaded_static_member_function>
 	{
 	public:
-		constexpr pointer_view<const cref_t<static_member_function>> get_static_member_overloads() const noexcept override final
+		constexpr any_view<const static_member_function&> get_static_member_overloads() const noexcept override final
 		{
 			return reflect_many<Functions, static_member_function>();
 		}

@@ -24,15 +24,14 @@ namespace detail
 					>::Function
 				>::return_type>;
 
-		constexpr pointer_view<const cref_t<type>> parameter_types_implementation() const noexcept override final
-		{
-			return reflect_many<ParameterTypes, type>();
-		}
-
 	public:
 		constexpr const type& return_type() const noexcept override final
 		{
 			return reflect<ReturnType, type>();
+		}
+		constexpr any_view<const type&> parameter_types() const noexcept override final
+		{
+			return reflect_many<ParameterTypes, type>();
 		}
 		constexpr bool is_noexcept() const noexcept override final
 		{

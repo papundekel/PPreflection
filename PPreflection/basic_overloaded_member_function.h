@@ -1,5 +1,7 @@
 #pragma once
 #include "basic_overloaded_function.h"
+#include "first_pack.h"
+#include "get_member_function_info.h"
 
 namespace detail
 {
@@ -7,14 +9,14 @@ namespace detail
 	class basic_overloaded_member_function_base : public basic_overloaded_function<ID, Functions, Base>
 	{
 	public:
-		constexpr pointer_view<const cref_t<member_function>> get_member_function_overloads() const noexcept override final
+		constexpr any_view<const member_function&> get_member_function_overloads() const noexcept override final
 		{
 			return reflect_many<Functions, member_function>();
 		}
 
 		constexpr const type& get_enclosing_class() const noexcept override final
 		{
-			return get_member_function_overloads().begin()->get().get_enclosing_class();
+			return reflect<typename get_member_function_info<decltype(get_value<get_type<first_pack<Functions>>>())>::Class, type>();
 		}
 	};
 

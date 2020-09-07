@@ -20,7 +20,7 @@ namespace detail
 
 		void destroy(void* ptr) const noexcept override final;
 
-		constexpr pointer_view<const cref_t<type>> get_direct_bases() const noexcept override;
+		constexpr any_view<const type&> get_direct_bases() const noexcept override;
 
 		constexpr const type& remove_cv() const noexcept override final;
 		constexpr const type& remove_const() const noexcept override final;
@@ -45,12 +45,12 @@ namespace detail
 
 		constexpr compound_category get_category() const noexcept override final;
 
-		constexpr pointer_view<const cref_t<type>> parameter_types() const noexcept override final;
+		constexpr any_view<const type&> parameter_types() const noexcept override final;
 		constexpr const type& return_type() const noexcept override final;
 		constexpr std::size_t get_id() const noexcept override final;
 		constexpr virtual const namespace_t* get_namespace() const noexcept override;
 
-		constexpr pointer_view<const cref_t<overloaded_member_function>> get_member_functions() const noexcept override;
+		constexpr any_view<const overloaded_member_function&> get_member_functions() const noexcept override;
 		constexpr const overloaded_constructor* get_constructors() const noexcept override;
 	};
 }

@@ -13,7 +13,7 @@ namespace detail
 	protected:
 		using Functions = F;
 	public:
-		constexpr pointer_view<const cref_t<function>> get_function_overloads() const noexcept override final
+		constexpr any_view<const function&> get_function_overloads() const noexcept override final
 		{
 			return reflect_many<Functions, function>();
 		}

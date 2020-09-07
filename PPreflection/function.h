@@ -6,6 +6,8 @@
 #include "dynamic_object.h"
 #include "../PP/PP/transform_view.hpp"
 #include "../PP/PP/id.hpp"
+#include "any_iterator.h"
+#include "invoke.h"
 
 class type;
 class dynamic_reference;
@@ -17,10 +19,9 @@ class function : public descriptor
 	friend class overloaded_function;
 
 protected:
-	constexpr virtual void invoke_implementation(void* result, const dynamic_reference* args) const noexcept = 0;
-	constexpr virtual bool can_invoke(pointer_view<const dynamic_reference> args) const noexcept;
+	constexpr virtual dynamic_object invoke_unsafe(any_iterator<const dynamic_reference&> arg_iterator) const noexcept = 0;
 
-	constexpr dynamic_object invoke_unsafe(pointer_view<const dynamic_reference> args) const noexcept;
+	constexpr virtual bool can_invoke(any_view<const type&> argument_types) const noexcept;
 
 	template <typename... Parameters>
 	struct invoke_helper_t
@@ -28,21 +29,61 @@ protected:
 		class x
 		{
 			template <typename F, std::size_t... I>
-			static constexpr decltype(auto) helper(F&& f, const dynamic_reference* args, std::index_sequence<I...>) noexcept;
+			static constexpr decltype(auto) helper(F&& f, any_iterator<const dynamic_reference&> arg_iterator, std::index_sequence<I...>) noexcept;
 
 		public:
 			template <typename F>
-			constexpr decltype(auto) operator()(F&& f, const dynamic_reference* args) const noexcept;
-
+			static constexpr decltype(auto) value_f(F&& f, any_iterator<const dynamic_reference&> arg_iterator) noexcept;
 		};
 
-		static constexpr x value_f() noexcept;
+		using type = x;
 	};
+
+	template <typename ParameterTypes, typename F>
+	static constexpr decltype(auto) invoke_helper_helper(F&& f, any_iterator<const dynamic_reference&> arg_iterator) noexcept
+	{
+		return ::invoke<get_type<apply_pack_types<function::invoke_helper_t, ParameterTypes>>>(std::forward<F>(f), arg_iterator);
+	}
+
+	template <typename ReturnType, typename F>
+	static constexpr dynamic_object invoke_helper_helper_helper(F&& f) noexcept
+	{
+		if constexpr (std::is_void_v<ReturnType>)
+		{
+			std::forward<F>(f)();
+			return dynamic_object::create_void();
+		}
+		else
+			return dynamic_object(reflect<ReturnType, type>(),
+				[&f](void* ptr)
+				{
+					if constexpr (std::is_reference_v<ReturnType>)
+					{
+						auto&& x = std::forward<F>(f)();
+						new (ptr) std::remove_reference_t<ReturnType>*(&x);
+					}
+					else
+						new (ptr) ReturnType(std::forward<F>(f)());
+				});
+	}
+
+	template <typename ReturnType, typename ParameterTypes, typename F>
+	static constexpr dynamic_object invoke_helper(F&& f, any_iterator<const dynamic_reference&> arg_iterator) noexcept
+	{
+		return invoke_helper_helper_helper<ReturnType>(
+			[&f, arg_iterator]() -> decltype(auto)
+			{
+				return invoke_helper_helper<ParameterTypes>(std::forward<F>(f), arg_iterator);
+			});
+	}
+	template <typename ReturnType, typename F>
+	static constexpr dynamic_object invoke_helper(F&& f) noexcept
+	{
+		return invoke_helper_helper_helper<ReturnType>(std::forward<F>(f));
+	}
 
 	constexpr void print_name_basic(simple_ostream& out) const noexcept;
 	constexpr void print_noexcept(simple_ostream& out) const noexcept;
-
-	constexpr virtual pointer_view<const cref_t<type>> parameter_types_implementation() const noexcept = 0;
 
 public:
 	constexpr void print_name(simple_ostream& out) const noexcept override;
@@ -50,13 +91,13 @@ public:
 
 	constexpr virtual const overloaded_function& get_overloaded_function() const noexcept = 0;
 
-	constexpr PP::view auto parameter_types() const noexcept
-	{
-		return parameter_types_implementation() | PP::transform(PP::id<const type&>);
-	}
 	constexpr virtual const type& return_type() const noexcept = 0;
 
 	constexpr virtual bool is_noexcept() const noexcept = 0;
 
 	constexpr dynamic_object invoke(pointer_view<const dynamic_reference> args = {}) const;
+
+	constexpr virtual const descriptor& get_parent() const noexcept = 0;
+
+	constexpr virtual any_view<const type&> parameter_types() const noexcept = 0;
 };

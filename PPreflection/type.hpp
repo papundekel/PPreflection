@@ -9,6 +9,7 @@
 #include "function.h"
 #include "overloaded_constructor.h"
 #include "../PP/PP/any_of.hpp"
+#include "../PP/PP/equal.hpp"
 
 constexpr cv_qualifier type::get_cv_qualifier() const noexcept
 {
@@ -146,7 +147,7 @@ constexpr bool operator==(const type& a, const type& b) noexcept
 				a.return_type() == b.return_type() &&
 				a.get_function_cv_qualifier() == b.get_function_cv_qualifier() &&
 				a.get_function_ref_qualifier() == b.get_function_ref_qualifier() &&
-				std::equal(a.parameter_types().begin(), a.parameter_types().end(), b.parameter_types().begin(), b.parameter_types().end());
+				PP::equal(a.parameter_types(), b.parameter_types());
 		}
 	}
 

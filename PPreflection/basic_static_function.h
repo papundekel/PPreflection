@@ -11,16 +11,13 @@ namespace detail
 	class basic_static_function : public basic_static_function_base<Overload, f, Base>
 	{
 	protected:
-		using ParameterTypes = typename basic_static_function_base<Overload, f, Base>::ParameterTypes;
+		using B = basic_static_function_base<Overload, f, Base>;
+		using ReturnType = typename B::ReturnType;
+		using ParameterTypes = typename B::ParameterTypes;
 
-		constexpr void invoke_implementation(void* result, const dynamic_reference* args) const noexcept override final
+		constexpr dynamic_object invoke_unsafe(any_iterator<const dynamic_reference&> arg_iterator) const noexcept override final
 		{
-			this->invoke_(result,
-				[args]() -> decltype(auto)
-				{
-					return get_value<apply_pack<function::invoke_helper_t, ParameterTypes>>()(f, args);
-				});
+			return invoke_helper<ReturnType, ParameterTypes>(f, arg_iterator);
 		}
-
 	};
 }

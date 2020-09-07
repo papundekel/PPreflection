@@ -54,7 +54,7 @@ constexpr void detail::basic_type<T>::print_name_suffix(simple_ostream& out) con
 		reflect<std::remove_cv_t<T>, type>().print_name_suffix(out);
 	else if constexpr (std::is_function_v<T>)
 	{
-		type::print_parameter_types(out, reflect_many_view<typename get_function_info<T>::parameter_types, type>());
+		type::print_parameter_types(out, reflect_many<typename get_function_info<T>::parameter_types, type>());
 
 		reflect<typename get_function_info<T>::return_type, type>().print_name_suffix(out);
 	}
@@ -122,7 +122,7 @@ void detail::basic_type<T>::destroy(void* ptr) const noexcept
 		std::destroy_at(reinterpret_cast<T*>(ptr));
 }
 template <typename T>
-constexpr pointer_view<const cref_t<type>> detail::basic_type<T>::get_direct_bases() const noexcept
+constexpr any_view<const type&> detail::basic_type<T>::get_direct_bases() const noexcept
 {
 	return {};
 }
@@ -209,7 +209,7 @@ constexpr bool detail::basic_type<T>::is_void() const noexcept
 	return std::is_void_v<T>;
 }
 template <typename T>
-constexpr pointer_view<const cref_t<type>> detail::basic_type<T>::parameter_types() const noexcept
+constexpr any_view<const type&> detail::basic_type<T>::parameter_types() const noexcept
 {
 	if constexpr (std::is_function_v<T>)
 		return reflect_many<typename get_function_info<T>::parameter_types, type>();
@@ -288,7 +288,7 @@ constexpr type::compound_category detail::basic_type<T>::get_category() const no
 }
 
 template <typename T>
-constexpr pointer_view<const cref_t<overloaded_member_function>> detail::basic_type<T>::get_member_functions() const noexcept
+constexpr any_view<const overloaded_member_function&> detail::basic_type<T>::get_member_functions() const noexcept
 {
 	return {};
 }

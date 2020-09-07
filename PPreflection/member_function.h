@@ -9,15 +9,13 @@ class member_function : public detail::maybe_static_member_function
 	friend class overloaded_member_function;
 	friend class overloaded_conversion_function;
 
-	constexpr dynamic_object invoke_unsafe(dynamic_reference caller, pointer_view<const dynamic_reference> args) const;
+	constexpr virtual dynamic_object invoke_unsafe_member(dynamic_reference caller, any_iterator<const dynamic_reference&> arg_iterator) const = 0;
 
 protected:
-	constexpr bool can_invoke(dynamic_reference caller) const noexcept;
+	constexpr bool can_invoke(const type& caller_arg_type) const noexcept;
 
-	constexpr virtual void invoke_implementation_member(void* result, dynamic_reference caller, const dynamic_reference* args) const noexcept = 0;
-
-	constexpr void invoke_implementation(void* result, const dynamic_reference* args) const noexcept override final;
-	constexpr bool can_invoke(pointer_view<const dynamic_reference> args) const noexcept override final;
+	constexpr dynamic_object invoke_unsafe(any_iterator<const dynamic_reference&> arg_iterator) const noexcept override final;
+	constexpr bool can_invoke(any_view<const type&> argument_types) const noexcept override final;
 
 	constexpr virtual const type& get_pointer_type() const noexcept = 0;
 

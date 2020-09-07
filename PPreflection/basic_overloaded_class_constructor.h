@@ -20,11 +20,11 @@ namespace detail
 		using OneParameterConvertingConstructors = filter_pack<is_one_p_conversion_info, MappedConstructors>;
 
 	public:
-		constexpr pointer_view<const cref_t<constructor>> get_constructor_overloads() const noexcept override final
+		constexpr any_view<const constructor&> get_constructor_overloads() const noexcept override final
 		{
 			return reflect_many<MappedConstructors, constructor>();
 		}
-		constexpr pointer_view<const cref_t<one_parameter_converting_constructor>> get_one_parameter_converting_constructor_overloads() const noexcept override final
+		constexpr any_view<const one_parameter_converting_constructor&> get_one_parameter_converting_constructor_overloads() const noexcept override final
 		{
 			return reflect_many<OneParameterConvertingConstructors, one_parameter_converting_constructor>();
 		}

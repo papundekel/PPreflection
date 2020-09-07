@@ -6,7 +6,7 @@ class conversion_function;
 class overloaded_conversion_function : public overloaded_member_function
 {
 protected:
-	constexpr virtual pointer_view<const cref_t<conversion_function>> get_conversion_overloads() const noexcept = 0;
+	constexpr virtual any_view<const conversion_function&> get_conversion_overloads() const noexcept = 0;
 	constexpr virtual const type& return_type() const noexcept = 0;
 
 public:
@@ -28,6 +28,6 @@ public:
 	}
 	constexpr PP::view auto get_overloads() const noexcept
 	{
-		return get_overloads_helper<conversion_function>(get_conversion_overloads());
+		return get_conversion_overloads();
 	}
 };

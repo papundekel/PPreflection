@@ -8,6 +8,8 @@ class dynamic_reference;
 
 class dynamic_object
 {
+	struct void_tag {};
+
 	struct deleter
 	{
 		PP::unique<const type*> type_;
@@ -28,14 +30,21 @@ class dynamic_object
 	template <bool rvalue>
 	constexpr dynamic_reference reference_cast_helper() noexcept;
 
-	static constexpr std::byte* allocate(const type& t) noexcept;
+	static constexpr std::byte* allocate(const type& type) noexcept;
 
-	explicit constexpr dynamic_object(std::nullptr_t) noexcept;
+	template <typename Initializer>
+	constexpr void initialize(Initializer&& initializer) noexcept;
+
+	explicit constexpr dynamic_object(const type* t) noexcept;
 
 	constexpr const type* get_type_helper() noexcept;
 
 public:
 	static constexpr dynamic_object create_invalid() noexcept;
+	static constexpr dynamic_object create_void() noexcept;
+
+	template <typename T, typename... Args>
+	static constexpr dynamic_object create(Args&&... args);
 
 	constexpr dynamic_object() = default;
 

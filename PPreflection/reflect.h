@@ -32,7 +32,4 @@ template <auto v, typename ResultType>
 constexpr const ResultType& reflect() noexcept;
 
 template <typename Pack, typename ResultType>
-constexpr pointer_view<const cref_t<ResultType>> reflect_many() noexcept;
-
-template <typename Pack, typename ResultType>
-constexpr PP::view auto reflect_many_view() noexcept;
+constexpr PP::view auto reflect_many() noexcept;

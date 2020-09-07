@@ -32,10 +32,6 @@ namespace detail
 	template <typename T>
 	constexpr inline const type& reflect_metadata_odd_type = detail::basic_type<T>{};
 
-	template <typename T>
-	constexpr inline const overloaded_constructor& reflect_metadata_fundamental_constructor
-		= detail::basic_overloaded_fundamental_constructor<T>{};
-
 	struct is_and_get_template__error {};
 
 	template <template <typename> typename, typename>
@@ -56,7 +52,7 @@ constexpr const ResultType& detail::reflector<ResultType>::reflect<T>::value_f()
 	{
 		using CT = get_type<CW>;
 		if constexpr (std::is_fundamental_v<CT>)
-			return detail::reflect_metadata_fundamental_constructor<CT>;
+			return detail::basic_fundamental_type<CT>::constructors;
 		else
 			return detail::reflect_metadata<T>;
 	}
@@ -93,15 +89,10 @@ constexpr const ResultType& reflect() noexcept
 }
 
 template <typename Pack, typename ResultType>
-constexpr pointer_view<const cref_t<ResultType>> reflect_many() noexcept
+constexpr PP::view auto reflect_many() noexcept
 {
-	return get_value<map_pack<detail::reflector<ResultType>::template reflect, Pack, cref_t<ResultType>>>();
-}
-
-template <typename Pack, typename ResultType>
-constexpr PP::view auto reflect_many_view() noexcept
-{
-	return reflect_many<Pack, ResultType>() | PP::transform(PP::id<const ResultType&>);
+	return get_value<map_pack<detail::reflector<ResultType>::template reflect, Pack, cref_t<ResultType>>>() 
+		| PP::transform(PP::id<const ResultType&>);
 }
 
 template <typename Class, bool Explicit, typename... Args>

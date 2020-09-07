@@ -13,4 +13,4 @@ namespace detail
 }
 
 template <typename Pack>
-struct first_pack : apply_pack<detail::first_pack_helper, Pack> {};
+using first_pack = apply_pack_types<detail::first_pack_helper, Pack>;

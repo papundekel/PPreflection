@@ -8,11 +8,11 @@ namespace detail
 	class basic_namespace : public namespace_t
 	{
 	public:
-		constexpr pointer_view<const cref_t<type>> get_types() const noexcept override final
+		constexpr any_view<const type&> get_types() const noexcept override final
 		{
 			return reflect_many<Types, type>();
 		}
-		constexpr pointer_view<const cref_t<overloaded_namespace_function>> get_functions() const noexcept override final
+		constexpr any_view<const overloaded_namespace_function&> get_functions() const noexcept override final
 		{
 			return reflect_many<Functions, overloaded_namespace_function>();
 		}

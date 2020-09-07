@@ -7,29 +7,21 @@ class conversion_function : public member_function
 	friend class overloaded_conversion_function;
 
 protected:
-	constexpr virtual void invoke_implementation_conversion(void* result, dynamic_reference caller) const noexcept = 0;
+	constexpr virtual dynamic_object invoke_unsafe_conversion(dynamic_reference caller) const noexcept = 0;
 
-	constexpr void invoke_implementation_member(void* result, dynamic_reference caller, const dynamic_reference* args) const noexcept override final
+	constexpr dynamic_object invoke_unsafe_member(dynamic_reference caller, any_iterator<const dynamic_reference&>) const noexcept override final
 	{
-		invoke_implementation_conversion(result, caller);
+		return invoke_unsafe_conversion(caller);
 	}
 public:
 	constexpr const overloaded_conversion_function& get_overloaded_function() const noexcept override = 0;
 
 	constexpr virtual bool is_explicit() const noexcept = 0;
 
-	constexpr dynamic_object invoke_unsafe(dynamic_reference caller) const noexcept
-	{
-		return dynamic_object(return_type(),
-			[this, caller](void* ptr)
-			{
-				invoke_implementation_conversion(ptr, caller);
-			});
-	}
 	constexpr dynamic_object invoke(dynamic_reference caller) const
 	{
-		if (can_invoke(caller))
-			return invoke_unsafe(caller);
+		if (can_invoke(caller.get_type()))
+			return invoke_unsafe_conversion(caller);
 		else
 			return dynamic_object::create_invalid();
 	}

@@ -30,13 +30,13 @@ namespace detail
 		: public basic_constructor_base<Class, Args, constructor>
 	{
 	protected:
-		constexpr void invoke_implementation(void* result, const dynamic_reference* args) const noexcept override final
+		constexpr dynamic_object invoke_unsafe(any_iterator<const dynamic_reference&> arg_iterator) const noexcept override final
 		{
-			new (result) Class(get_value<apply_pack<function::invoke_helper_t, Args>>()(
+			return invoke_helper<Class, Args>(
 				[]<typename... T>(T&&... xs)
-			{
-				return Class(std::forward<T>(xs)...);
-			}, args));
+				{
+					return Class(std::forward<T>(xs)...);
+				}, arg_iterator);
 		}
 
 	public:
@@ -51,9 +51,9 @@ namespace detail
 		: public basic_constructor_base<Class, type_pack<Arg>, one_parameter_converting_constructor>
 	{
 	protected:
-		constexpr void invoke_implementation_one_parameter(void* result, dynamic_reference arg) const noexcept override final
+		constexpr dynamic_object invoke_unsafe_one_parameter(dynamic_reference arg) const noexcept override final
 		{
-			new (result) Class(arg.cast_unsafe<Arg>());
+			return dynamic_object::create<Class>(arg.cast_unsafe<Arg>());
 		}
 	public:
 		constexpr const type& get_parameter_type() const noexcept override final

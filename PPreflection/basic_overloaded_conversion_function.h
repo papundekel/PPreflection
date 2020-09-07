@@ -24,7 +24,7 @@ namespace detail
 		}
 
 	public:
-		constexpr pointer_view<const cref_t<conversion_function>> get_conversion_overloads() const noexcept override final
+		constexpr any_view<const conversion_function&> get_conversion_overloads() const noexcept override final
 		{
 			return reflect_many<MappedFunctions, conversion_function>();
 		}
