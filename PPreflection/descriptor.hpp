@@ -1,6 +1,5 @@
 #pragma once
 #include "descriptor.h"
-#include "simple_ostream.h"
 #include "reflect.h"
 
 template <typename T>

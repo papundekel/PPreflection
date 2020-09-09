@@ -1,11 +1,11 @@
 #pragma once
 #include <variant>
-#include "cref_t.hpp"
+#include "../PP/PP/reference_wrapper.hpp"
 
 template <typename... TypeClasses>
 class type_disjunction_reference
 {
-	std::variant<cref_t<TypeClasses>...> variant;
+	std::variant<PP::cref_t<TypeClasses>...> variant;
 
 public:
 	template <typename T>
@@ -16,11 +16,11 @@ public:
 	template <typename T>
 	constexpr bool holds_alternative() const noexcept
 	{
-		return std::holds_alternative<cref_t<T>>(variant);
+		return std::holds_alternative<PP::cref_t<T>>(variant);
 	}
 
 	template <typename F>
-	constexpr decltype(auto) visit(F&& f) const noexcept(std::visit(std::forward<F>(f), variant))
+	constexpr decltype(auto) visit(F&& f) const
 	{
 		return std::visit(std::forward<F>(f), variant);
 	}

@@ -4,7 +4,6 @@
 #include "function.h"
 #include "dynamic_object.h"
 #include "types/type.h"
-#include "get_value.h"
 #include "conversion_function.h"
 #include "dynamic_reference.h"
 

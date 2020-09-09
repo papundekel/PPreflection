@@ -1,7 +1,7 @@
 #pragma once
 #include <string_view>
-#include "simple_ostream.h"
 #include "descriptor.h"
+#include "../PP/PP/any_iterator.hpp"
 
 namespace detail
 {
@@ -13,7 +13,7 @@ namespace detail
 	protected:
 		using Functions = F;
 	public:
-		constexpr any_view<const function&> get_function_overloads() const noexcept override final
+		constexpr PP::any_view<const function&> get_function_overloads() const noexcept override final
 		{
 			return reflect_many<Functions, function>();
 		}
@@ -23,7 +23,7 @@ namespace detail
 	class basic_overloaded_function : public basic_overloaded_function_base<F, Base>
 	{
 	public:
-		constexpr void print_name(simple_ostream& out) const noexcept override
+		constexpr void print_name(PP::simple_ostream& out) const noexcept override
 		{
 			out.write(descriptor::reflect_name<ID>());
 		}

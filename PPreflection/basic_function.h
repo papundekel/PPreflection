@@ -1,9 +1,7 @@
 #pragma once
 #include <string_view>
 #include <type_traits>
-#include "simple_ostream.h"
-#include "cref_t.h"
-#include "get_member_function_info.h"
+#include "../PP/PP/get_member_function_info.hpp"
 
 class type;
 
@@ -18,8 +16,8 @@ namespace detail
 
 		using OverloadedType
 			= std::remove_cvref_t<
-				typename get_function_info<
-					typename get_member_function_info<
+				typename PP::get_function_info<
+					typename PP::get_member_function_info<
 						decltype(&Base::get_overloaded_function)
 					>::Function
 				>::return_type>;

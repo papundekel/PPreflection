@@ -1,16 +1,13 @@
 #pragma once
 #include <type_traits>
 #include "reflect.h"
-#include "value_t.h"
-#include "map_pack.h"
-#include "get_value.h"
-#include "cref_t.h"
 #include "../PP/PP/transform_view.hpp"
 #include "../PP/PP/id.hpp"
 #include "basic_class_constructor.h"
-#include "type_t.h"
 #include "constructor_info.h"
 #include "is_user_defined_type.h"
+#include "../PP/PP/value_t.hpp"
+#include "../PP/PP/type_t.hpp"
 
 namespace detail
 {
@@ -28,9 +25,9 @@ namespace detail
 	struct is_and_get_template__error {};
 
 	template <template <typename> typename, typename>
-	struct is_and_get_template : value_t<false>, type_t<is_and_get_template__error> {};
+	struct is_and_get_template : PP::value_t<false>, PP::type_t<is_and_get_template__error> {};
 	template <template <typename> typename Template, typename T>
-	struct is_and_get_template<Template, Template<T>> : value_t<true>, type_t<T> {};
+	struct is_and_get_template<Template, Template<T>> : PP::value_t<true>, PP::type_t<T> {};
 }
 
 template <typename ResultType>

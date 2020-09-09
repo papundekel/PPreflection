@@ -1,7 +1,7 @@
 #pragma once
 #include <type_traits>
 #include "basic_function.h"
-#include "apply_pack.h"
+#include "../PP/PP/apply_pack.hpp"
 #include "reflect.h"
 #include "overloaded_constructor.h"
 #include "constructor.h"
@@ -22,7 +22,7 @@ namespace detail
 			< constructor_wrap<Class>
 			, Args
 			, Class
-			, get_value<apply_pack<is_nothrow_constructible_helper<Class>::template help, Args>>()
+			, PP::get_value<PP::apply_pack<is_nothrow_constructible_helper<Class>::template help, Args>>()
 			, Base>;
 
 	template <typename Class, bool Explicit, typename Args>
@@ -47,8 +47,8 @@ namespace detail
 	};
 
 	template <typename Class, typename Arg>
-	class basic_class_constructor<Class, false, type_pack<Arg>> final
-		: public basic_constructor_base<Class, type_pack<Arg>, one_parameter_converting_constructor>
+	class basic_class_constructor<Class, false, PP::type_pack<Arg>> final
+		: public basic_constructor_base<Class, PP::type_pack<Arg>, one_parameter_converting_constructor>
 	{
 	protected:
 		constexpr dynamic_object invoke_unsafe_one_parameter(dynamic_reference arg) const noexcept override final

@@ -6,10 +6,15 @@ class referencable_type;
 class reference_type : public type
 {
 public:
-	constexpr virtual const referencable_type& remove_reference() const noexcept = 0;
+	virtual const referencable_type& remove_reference() const noexcept = 0;
 
-	constexpr virtual bool is_lvalue() const noexcept = 0;
+	virtual bool is_lvalue() const noexcept = 0;
 
 	template <bool rvalue>
-	constexpr const reference_type& make_reference() const noexcept;
+	const reference_type& make_reference() const noexcept;
+
+	type_disjunction_reference<reference_type, pointable_type> reference_or_pointable() const noexcept override final
+	{
+		return *this;
+	}
 };

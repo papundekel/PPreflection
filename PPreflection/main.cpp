@@ -1,20 +1,7 @@
 #include <iostream>
 #include <variant>
 
-#include "get_value.hpp"
-
-#include "value_pack.h"
-#include "apply_pack.h"
-#include "map_pack.h"
-#include "append_pack.h"
 #include "overload_cast.h"
-
-#include "to_chars.hpp"
-
-#include "simple_ostream.hpp"
-#include "basic_ostream.hpp"
-
-#include "cref_t.hpp"
 
 #include "dynamic_reference.hpp"
 #include "dynamic_object.hpp"
@@ -48,9 +35,6 @@
 #include "basic_overloaded_member_function.h"
 #include "basic_overloaded_class_constructor.h"
 #include "basic_overloaded_static_member_function.h"
-
-#include "prepend_pack.h"
-#include "filter_pack.h"
 
 #include "fundamental_type_pack.h"
 

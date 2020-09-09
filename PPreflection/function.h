@@ -2,11 +2,10 @@
 #include <type_traits>
 #include "descriptor.h"
 #include "pointer_view.h"
-#include "cref_t.h"
 #include "dynamic_object.h"
 #include "../PP/PP/transform_view.hpp"
 #include "../PP/PP/id.hpp"
-#include "any_iterator.h"
+#include "../PP/PP/any_iterator.hpp"
 #include "invoke.h"
 
 class type;
@@ -19,9 +18,9 @@ class function : public descriptor
 	friend class overloaded_function;
 
 protected:
-	constexpr virtual dynamic_object invoke_unsafe(any_iterator<const dynamic_reference&> arg_iterator) const noexcept = 0;
+	constexpr virtual dynamic_object invoke_unsafe(PP::any_iterator<const dynamic_reference&> arg_iterator) const noexcept = 0;
 
-	constexpr virtual bool can_invoke(any_view<const type&> argument_types) const noexcept;
+	constexpr virtual bool can_invoke(PP::any_view<const type&> argument_types) const noexcept;
 
 	template <typename... Parameters>
 	struct invoke_helper_t
@@ -40,7 +39,7 @@ protected:
 	};
 
 	template <typename ParameterTypes, typename F>
-	static constexpr decltype(auto) invoke_helper_helper(F&& f, any_iterator<const dynamic_reference&> arg_iterator) noexcept
+	static constexpr decltype(auto) invoke_helper_helper(F&& f, PP::any_iterator<const dynamic_reference&> arg_iterator) noexcept
 	{
 		return ::invoke<get_type<apply_pack_types<function::invoke_helper_t, ParameterTypes>>>(std::forward<F>(f), arg_iterator);
 	}
@@ -82,8 +81,8 @@ protected:
 		return invoke_helper_helper_helper<ReturnType>(std::forward<F>(f));
 	}
 
-	constexpr void print_name_basic(simple_ostream& out) const noexcept;
-	constexpr void print_noexcept(simple_ostream& out) const noexcept;
+	constexpr void print_name_basic(PP::simple_ostream& out) const noexcept;
+	constexpr void print_noexcept(PP::simple_ostream& out) const noexcept;
 
 public:
 	constexpr virtual const descriptor& get_parent() const noexcept = 0;

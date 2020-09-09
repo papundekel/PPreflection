@@ -1,7 +1,6 @@
 #pragma once
 #include "member_function.h"
-#include "get_member_function_info.h"
-#include "get_function_info.h"
+#include "../PP/PP/get_member_function_info.hpp"
 #include "basic_typed_function.h"
 
 namespace detail
@@ -16,7 +15,7 @@ namespace detail
 		using B = basic_member_function_helper<Overload, mf, Base>;
 		using FunctionType = B::FunctionType;
 		//using ParentClass = typename get_member_function_info<decltype(mf)>::Class;
-		using CallerParameterType = typename get_member_function_info<decltype(mf)>::caller_type;
+		using CallerParameterType = typename PP::get_member_function_info<decltype(mf)>::caller_type;
 
 		constexpr const type& get_pointer_type() const noexcept override final
 		{

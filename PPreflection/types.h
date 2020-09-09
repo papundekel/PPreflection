@@ -1,6 +1,6 @@
 #pragma once
-#include "type_t.h"
 #include <type_traits>
+#include "type_t.h"
 #include "get_type.h"
 
 #include "types/non_union_class_type.h"
