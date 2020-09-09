@@ -87,12 +87,6 @@ class any_iterator
 public:
 	any_iterator() = default;
 
-	template <PP::different_cvref<any_iterator> Iterator, PP::iterator OtherIterator = std::remove_cvref_t<Iterator>>
-	requires PP::iterator<Iterator>
-	constexpr any_iterator(Iterator&& i, type_t<OtherIterator> t = {})
-		: i(new any_iterator_wrapper(std::forward<Iterator>(i), t))
-	{}
-
 	constexpr any_iterator(const any_iterator& other) noexcept
 		: i(other.i->clone())
 	{}
@@ -139,6 +133,11 @@ public:
 		copy.i->advance(offset);
 		return copy;
 	}
+	template <PP::different_cvref<any_iterator> Iterator, PP::iterator OtherIterator = std::remove_cvref_t<Iterator>>
+	requires PP::iterator<Iterator>
+		constexpr any_iterator(Iterator&& i, type_t<OtherIterator> t = {})
+		: i(new any_iterator_wrapper(std::forward<Iterator>(i), t))
+	{}
 };
 
 template <typename T>
@@ -147,17 +146,17 @@ class any_view : public PP::simple_view<any_iterator<T>>
 public:
 	any_view() = default;
 
-	template <PP::view View>
-	requires PP::different_cvref<View, any_view> && PP::different_cvref<View, PP::simple_view<any_iterator<T>>>
-	constexpr any_view(View&& v)
-		: PP::simple_view<any_iterator<T>>(
-			any_iterator<T>(PP::begin(std::forward<View>(v)), type_t<PP::end_t<View>>{}),
-			any_iterator<T>(PP::end(std::forward<View>(v)), type_t<PP::begin_t<View>>{}))
-	{}
 	constexpr any_view(const PP::simple_view<any_iterator<T>>& v)
 		: PP::simple_view<any_iterator<T>>(v)
 	{}
 	constexpr any_view(PP::simple_view<any_iterator<T>>&& v)
 		: PP::simple_view<any_iterator<T>>(std::move(v))
+	{}
+	template <PP::view View>
+	requires PP::different_cvref<View, any_view>&& PP::different_cvref<View, PP::simple_view<any_iterator<T>>>
+		constexpr any_view(View&& v)
+		: PP::simple_view<any_iterator<T>>(
+			any_iterator<T>(PP::begin(std::forward<View>(v)), type_t<PP::end_t<View>>{}),
+			any_iterator<T>(PP::end(std::forward<View>(v)), type_t<PP::begin_t<View>>{}))
 	{}
 };

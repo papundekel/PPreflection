@@ -7,12 +7,10 @@
 #include "cref_t.h"
 #include "../PP/PP/transform_view.hpp"
 #include "../PP/PP/id.hpp"
-#include "basic_type.h"
 #include "basic_class_constructor.h"
-#include "basic_fundamental_type.h"
-#include "basic_overloaded_fundamental_constructor.h"
 #include "type_t.h"
 #include "constructor_info.h"
+#include "is_user_defined_type.h"
 
 namespace detail
 {
@@ -22,15 +20,10 @@ namespace detail
 	struct reflect__unspecialized_error {};
 
 	template <typename T>
-	constexpr inline reflect__unspecialized_error reflect_metadata = {};
-
-	constexpr inline const type& reflect_metadata_void = detail::basic_type<void>{};
+	constexpr inline reflect__unspecialized_error reflect_metadata_user_defined = {};
 
 	template <typename T>
-	constexpr inline const type& reflect_metadata_fundamental_nonvoid = detail::basic_fundamental_type<T>{};
-
-	template <typename T>
-	constexpr inline const type& reflect_metadata_odd_type = detail::basic_type<T>{};
+	constexpr inline auto reflect_metadata_non_user_defined = nullptr;
 
 	struct is_and_get_template__error {};
 
@@ -51,29 +44,17 @@ constexpr const ResultType& detail::reflector<ResultType>::reflect<T>::value_f()
 	if constexpr (get_value<CW>())
 	{
 		using CT = get_type<CW>;
-		if constexpr (std::is_fundamental_v<CT>)
+		/*if constexpr (std::is_fundamental_v<CT>)
 			return detail::basic_fundamental_type<CT>::constructors;
-		else
-			return detail::reflect_metadata<T>;
+		else*/
+		return detail::reflect_metadata<T>;
 	}
 	else if constexpr (get_value<NW>() || get_value<IW>())
-		return detail::reflect_metadata<T>;
+		return detail::reflect_metadata_user_defined<T>;
+	else if constexpr (is_user_defined_type<T>)
+		return detail::reflect_metadata_user_defined<T>;
 	else
-	{
-		if constexpr (!std::is_const_v<T> && !std::is_volatile_v<T>)
-		{
-			if constexpr (std::is_class_v<T> || std::is_enum_v<T>)
-				return detail::reflect_metadata<T>;
-			else if constexpr (std::is_void_v<T>)
-				return detail::reflect_metadata_void;
-			else if constexpr (std::is_fundamental_v<T>)
-				return detail::reflect_metadata_fundamental_nonvoid<T>;
-			else
-				return detail::reflect_metadata_odd_type<T>;
-		}
-		else
-			return detail::reflect_metadata_odd_type<T>;
-	}
+		return detail::reflect_metadata_non_user_defined<T>;
 }
 
 template <typename T, typename ResultType>

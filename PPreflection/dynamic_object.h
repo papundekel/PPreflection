@@ -3,7 +3,7 @@
 #include "../PP/PP/scoped.hpp"
 #include "../PP/PP/unique.hpp"
 
-class type;
+class object_type;
 class dynamic_reference;
 
 class dynamic_object
@@ -12,7 +12,7 @@ class dynamic_object
 
 	struct deleter
 	{
-		PP::unique<const type*> type_;
+		PP::unique<const object_type*> type_;
 
 		constexpr void operator()(PP::unique<std::byte*>& u) const;
 	};
@@ -25,19 +25,19 @@ class dynamic_object
 	constexpr void* get_address() noexcept;
 
 	template <bool reference>
-	static constexpr void* get_address(PP::unique<std::byte*>& p, const type& t) noexcept;
+	static constexpr void* get_address(PP::unique<std::byte*>& p, const object_type& t) noexcept;
 
 	template <bool rvalue>
 	constexpr dynamic_reference reference_cast_helper() noexcept;
 
-	static constexpr std::byte* allocate(const type& type) noexcept;
+	static constexpr std::byte* allocate(const object_type& type) noexcept;
 
 	template <typename Initializer>
 	constexpr void initialize(Initializer&& initializer) noexcept;
 
-	explicit constexpr dynamic_object(const type* t) noexcept;
+	explicit constexpr dynamic_object(const object_type* t) noexcept;
 
-	constexpr const type* get_type_helper() noexcept;
+	constexpr const object_type* get_type_helper() noexcept;
 
 public:
 	static constexpr dynamic_object create_invalid() noexcept;
@@ -49,9 +49,9 @@ public:
 	constexpr dynamic_object() = default;
 
 	template <typename Initializer>
-	constexpr dynamic_object(const type& type, Initializer&& initializer);
+	constexpr dynamic_object(const object_type& type, Initializer&& initializer);
 
-	constexpr const type& get_type() noexcept;
+	constexpr const object_type& get_type() noexcept;
 
 	constexpr operator dynamic_reference() & noexcept;
 	constexpr operator dynamic_reference() && noexcept;

@@ -13,7 +13,7 @@ namespace detail
 			return reflect_many<Functions, namespace_function>();
 		}
 
-		constexpr const namespace_t& get_enclosing_namespace() const noexcept override final
+		constexpr const namespace_t& get_parent() const noexcept override final
 		{
 			return reflect<Namespace, namespace_t>();
 		}

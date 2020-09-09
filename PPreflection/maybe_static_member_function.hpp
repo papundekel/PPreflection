@@ -4,5 +4,5 @@
 
 constexpr const type& detail::maybe_static_member_function::get_parent() const noexcept
 {
-	return get_overloaded_function().get_enclosing_class();
+	return get_overloaded_function().get_parent();
 }

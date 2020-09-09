@@ -29,7 +29,7 @@ namespace detail
 			return reflect_many<OneParameterConvertingConstructors, one_parameter_converting_constructor>();
 		}
 
-		constexpr const type& get_enclosing_class() const noexcept override final
+		constexpr const type& get_parent() const noexcept override final
 		{
 			return reflect<Class, type>();
 		}

@@ -14,7 +14,7 @@ namespace detail
 			return reflect_many<Functions, member_function>();
 		}
 
-		constexpr const type& get_enclosing_class() const noexcept override final
+		constexpr const type& get_parent() const noexcept override final
 		{
 			return reflect<typename get_member_function_info<decltype(get_value<get_type<first_pack<Functions>>>())>::Class, type>();
 		}

@@ -15,11 +15,11 @@ protected:
 public:
 	constexpr void print_name(simple_ostream& out) const noexcept override final
 	{
-		get_enclosing_class().print_name(out);
+		get_parent().print_name(out);
 	}
 	constexpr bool has_name(std::string_view name) const noexcept override final
 	{
-		return get_enclosing_class().has_name(name);
+		return get_parent().has_name(name);
 	}
 	constexpr PP::view auto get_overloads() const noexcept
 	{

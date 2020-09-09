@@ -3,7 +3,7 @@
 #include <vector>
 #include "function.h"
 #include "dynamic_object.h"
-#include "type.h"
+#include "types/type.h"
 #include "get_value.h"
 #include "conversion_function.h"
 #include "dynamic_reference.h"
@@ -19,8 +19,11 @@ constexpr void function::print_noexcept(simple_ostream& out) const noexcept
 	if (is_noexcept())
 		out.write(" noexcept");
 }
-
-constexpr void function::print_name(simple_ostream& out) const noexcept
+constexpr void function::print_name_before_parent(simple_ostream& out) const noexcept
+{
+	return_type().print_name(out);
+}
+constexpr void function::print_name_after_parent(simple_ostream& out) const noexcept
 {
 	print_name_basic(out);
 	print_noexcept(out);

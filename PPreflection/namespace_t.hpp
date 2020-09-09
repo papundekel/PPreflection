@@ -1,7 +1,7 @@
 #pragma once
 #include <algorithm>
 #include "namespace_t.h"
-#include "type.h"
+#include "types/type.h"
 #include "descriptor.h"
 #include "namespace_function.h"
 

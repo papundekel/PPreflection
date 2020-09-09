@@ -1,7 +1,7 @@
 #pragma once
 #include <utility>
 #include "maybe_static_member_function.h"
-#include "type.h"
+#include "types/type.h"
 #include "overloaded_member_function.h"
 
 class member_function : public detail::maybe_static_member_function

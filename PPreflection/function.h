@@ -86,7 +86,18 @@ protected:
 	constexpr void print_noexcept(simple_ostream& out) const noexcept;
 
 public:
-	constexpr void print_name(simple_ostream& out) const noexcept override;
+	constexpr virtual const descriptor& get_parent() const noexcept = 0;
+
+private:
+	constexpr const descriptor* get_parent_implementation() const noexcept override final
+	{
+		return &get_parent();
+	}
+
+	constexpr void print_name_before_parent(simple_ostream& out) const noexcept override;
+	constexpr void print_name_after_parent(simple_ostream& out) const noexcept override;
+
+public:
 	constexpr bool has_name(std::string_view name) const noexcept override;
 
 	constexpr virtual const overloaded_function& get_overloaded_function() const noexcept = 0;
@@ -96,8 +107,6 @@ public:
 	constexpr virtual bool is_noexcept() const noexcept = 0;
 
 	constexpr dynamic_object invoke(pointer_view<const dynamic_reference> args = {}) const;
-
-	constexpr virtual const descriptor& get_parent() const noexcept = 0;
 
 	constexpr virtual any_view<const type&> parameter_types() const noexcept = 0;
 };

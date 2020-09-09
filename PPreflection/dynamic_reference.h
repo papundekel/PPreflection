@@ -2,24 +2,21 @@
 #include <type_traits>
 #include "../PP/PP/different_cvref.hpp"
 
-class type;
+class reference_type;
 
 class dynamic_reference
 {
 	friend class dynamic_object;
 
 	void* ptr;
-	const type& t;
+	const reference_type& t;
 
-	constexpr dynamic_reference(void* ptr, const type& t) noexcept;
+	constexpr dynamic_reference(void* ptr, const reference_type& t) noexcept;
 
 public:
 	constexpr dynamic_reference(const dynamic_reference&) noexcept = default;
 
-	template <PP::different_cvref<dynamic_reference> R>
-	constexpr dynamic_reference(R&& reference) noexcept;
-
-	constexpr const type& get_type() const noexcept;
+	constexpr const reference_type& get_type() const noexcept;
 
 	template <typename T>
 	constexpr T&& cast_unsafe() const;
@@ -37,4 +34,7 @@ public:
 	T&& get_ref() const&&;
 
 	dynamic_reference move() const;
+
+	template <PP::different_cvref<dynamic_reference> R>
+	constexpr dynamic_reference(R&& reference) noexcept;
 };

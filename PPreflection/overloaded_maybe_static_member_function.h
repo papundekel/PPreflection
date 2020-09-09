@@ -6,6 +6,6 @@ namespace detail
 	class overloaded_maybe_static_member_function : public overloaded_function
 	{
 	public:
-		constexpr virtual const type& get_enclosing_class() const noexcept = 0;
+		constexpr const type& get_parent() const noexcept override = 0;
 	};
 }

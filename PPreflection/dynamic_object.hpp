@@ -1,7 +1,7 @@
 #pragma once
 #include <utility>
 #include "dynamic_object.h"
-#include "type.h"
+#include "types/object_type.h"
 #include "dynamic_reference.h"
 #include "reflect.h"
 
@@ -20,24 +20,13 @@ constexpr dynamic_object dynamic_object::create(Args&&... args)
 }
 
 template <bool reference>
-constexpr void* dynamic_object::get_address(PP::unique<std::byte*>& p, const type& t) noexcept
+constexpr void* dynamic_object::get_address(PP::unique<std::byte*>& p, const object_type& t) noexcept
 {
 	void* ptr = nullptr;
 
 	std::byte*& buffer = p.get();
 
-	auto condition = [](const type& t)
-	{
-		if constexpr (reference)
-		{
-			if (t.is_reference())
-				return false;
-		}
-
-		return t.size() <= sizeof(void*);
-	};
-
-	if (condition(t))
+	if (t.size() <= sizeof(void*))
 		ptr = &buffer;
 	else
 		ptr = buffer;
@@ -47,7 +36,7 @@ constexpr void* dynamic_object::get_address(PP::unique<std::byte*>& p, const typ
 
 constexpr void dynamic_object::deleter::operator()(PP::unique<std::byte*>& u) const
 {
-	const type* t = type_.get();
+	const object_type* t = type_.get();
 	if (!t)
 		return;
 
@@ -63,10 +52,10 @@ constexpr void* dynamic_object::get_address_helper() noexcept
 {
 	return get_address<reference>(x.get(), get_type());
 }
-constexpr dynamic_object::dynamic_object(const type* t) noexcept
+constexpr dynamic_object::dynamic_object(const object_type* t) noexcept
 	: x({}, deleter(t))
 {}
-constexpr std::byte* dynamic_object::allocate(const type& type) noexcept
+constexpr std::byte* dynamic_object::allocate(const object_type& type) noexcept
 {
 	std::byte* ptr;
 
@@ -79,16 +68,16 @@ constexpr std::byte* dynamic_object::allocate(const type& type) noexcept
 }
 
 template <typename Initializer>
-constexpr dynamic_object::dynamic_object(const type& type, Initializer&& i)
+constexpr dynamic_object::dynamic_object(const object_type& type, Initializer&& i)
 	: x(allocate(type), deleter(&type))
 {
 	std::forward<Initializer>(i)(get_address_helper<false>());
 }
-constexpr const type* dynamic_object::get_type_helper() noexcept
+constexpr const object_type* dynamic_object::get_type_helper() noexcept
 {
 	return x.get_destructor().type_.get();
 }
-constexpr const type& dynamic_object::get_type() noexcept
+constexpr const object_type& dynamic_object::get_type() noexcept
 {
 	return *get_type_helper();
 }

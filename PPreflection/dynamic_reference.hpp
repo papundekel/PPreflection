@@ -3,23 +3,19 @@
 #include <utility>
 #include <exception>
 #include "dynamic_reference.h"
-#include "type.h"
+#include "types/reference_type.h"
 #include "reflect.h"
+#include "../PP/PP/overloaded.hpp"
 
-constexpr dynamic_reference::dynamic_reference(void* ptr, const type& t) noexcept
+constexpr dynamic_reference::dynamic_reference(void* ptr, const reference_type& t) noexcept
 	: ptr(ptr)
 	, t(t)
 {}
 
-constexpr const type& dynamic_reference::get_type() const noexcept
+constexpr const reference_type& dynamic_reference::get_type() const noexcept
 {
 	return t;
 }
-
-template <PP::different_cvref<dynamic_reference> R>
-constexpr dynamic_reference::dynamic_reference(R&& reference) noexcept
-	: dynamic_reference(const_cast<std::remove_const_t<std::remove_reference_t<R>>*>(&reference), reflect<R&&, type>())
-{}
 
 template <typename T>
 constexpr T&& dynamic_reference::cast_unsafe() const
@@ -39,7 +35,7 @@ constexpr T&& dynamic_reference::cast() const
 template <typename T>
 T* dynamic_reference::get_ptr() const
 {
-	if (t.remove_reference().can_pointer_like_initialize_inner(reflect<T, type>()))
+	if (t.remove_reference().visit(PP::overloaded{ []() {} })).can_pointer_like_initialize_inner(reflect<T, type>()))
 		return reinterpret_cast<T*>(ptr);
 	else
 		return nullptr;
@@ -61,3 +57,8 @@ dynamic_reference dynamic_reference::move() const
 {
 	return { ptr, t.make_reference<true>() };
 }
+
+template <PP::different_cvref<dynamic_reference> R>
+constexpr dynamic_reference::dynamic_reference(R&& reference) noexcept
+	: dynamic_reference(const_cast<std::remove_const_t<std::remove_reference_t<R>>*>(&reference), reflect<R&&, reference_type>())
+{}

@@ -13,10 +13,7 @@ protected:
 public:
 	constexpr dynamic_object invoke(pointer_view<const dynamic_reference> args = {}) const;
 
-	constexpr PP::view auto get_overloads() const noexcept
-	{
-		return get_function_overloads();
-	}
+	constexpr virtual const descriptor& get_parent() const noexcept = 0;
 
 	template <PP::view View>
 	constexpr const function* select_overload(View&& argument_types) const noexcept
@@ -26,5 +23,10 @@ public:
 				return &f;
 
 		return nullptr;
+	}
+
+	constexpr PP::view auto get_overloads() const noexcept
+	{
+		return get_function_overloads();
 	}
 };
