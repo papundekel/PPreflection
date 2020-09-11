@@ -23,7 +23,7 @@ namespace detail
 		constexpr auto operator()(Return(Class::* x)(Args...) noexcept) const noexcept { return x; }
 	};
 	template <typename... Args>
-	struct overload_member_caster_helper<PP::cv_qualifier::const_, PP::ref_qualifier::none, Args...>
+	struct overload_member_caster_helper<PP::cv_qualifier::Const, PP::ref_qualifier::none, Args...>
 	{
 		template <typename Return, typename Class>
 		constexpr auto operator()(Return(Class::* x)(Args...) const) const noexcept { return x; }
@@ -31,7 +31,7 @@ namespace detail
 		constexpr auto operator()(Return(Class::* x)(Args...) const noexcept) const noexcept { return x; }
 	};
 	template <typename... Args>
-	struct overload_member_caster_helper<PP::cv_qualifier::volatile_, PP::ref_qualifier::none, Args...>
+	struct overload_member_caster_helper<PP::cv_qualifier::Volatile, PP::ref_qualifier::none, Args...>
 	{
 		template <typename Return, typename Class>
 		constexpr auto operator()(Return(Class::* x)(Args...) volatile) const noexcept { return x; }
@@ -55,7 +55,7 @@ namespace detail
 		constexpr auto operator()(Return(Class::* x)(Args...) & noexcept) const noexcept { return x; }
 	};
 	template <typename... Args>
-	struct overload_member_caster_helper<PP::cv_qualifier::const_, PP::ref_qualifier::lvalue, Args...>
+	struct overload_member_caster_helper<PP::cv_qualifier::Const, PP::ref_qualifier::lvalue, Args...>
 	{
 		template <typename Return, typename Class>
 		constexpr auto operator()(Return(Class::* x)(Args...) const&) const noexcept { return x; }
@@ -63,7 +63,7 @@ namespace detail
 		constexpr auto operator()(Return(Class::* x)(Args...) const& noexcept) const noexcept { return x; }
 	};
 	template <typename... Args>
-	struct overload_member_caster_helper<PP::cv_qualifier::volatile_, PP::ref_qualifier::lvalue, Args...>
+	struct overload_member_caster_helper<PP::cv_qualifier::Volatile, PP::ref_qualifier::lvalue, Args...>
 	{
 		template <typename Return, typename Class>
 		constexpr auto operator()(Return(Class::* x)(Args...) volatile&) const noexcept { return x; }
@@ -87,7 +87,7 @@ namespace detail
 		constexpr auto operator()(Return(Class::* x)(Args...) && noexcept) const noexcept { return x; }
 	};
 	template <typename... Args>
-	struct overload_member_caster_helper<PP::cv_qualifier::const_, PP::ref_qualifier::rvalue, Args...>
+	struct overload_member_caster_helper<PP::cv_qualifier::Const, PP::ref_qualifier::rvalue, Args...>
 	{
 		template <typename Return, typename Class>
 		constexpr auto operator()(Return(Class::* x)(Args...) const&&) const noexcept { return x; }
@@ -95,7 +95,7 @@ namespace detail
 		constexpr auto operator()(Return(Class::* x)(Args...) const&& noexcept) const noexcept { return x; }
 	};
 	template <typename... Args>
-	struct overload_member_caster_helper<PP::cv_qualifier::volatile_, PP::ref_qualifier::rvalue, Args...>
+	struct overload_member_caster_helper<PP::cv_qualifier::Volatile, PP::ref_qualifier::rvalue, Args...>
 	{
 		template <typename Return, typename Class>
 		constexpr auto operator()(Return(Class::* x)(Args...) volatile&&) const noexcept { return x; }

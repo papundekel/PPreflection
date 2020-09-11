@@ -1,9 +1,11 @@
 #pragma once
 #include <cstddef>
+#include <concepts>
 #include "../PP/PP/scoped.hpp"
 #include "../PP/PP/unique.hpp"
+#include "../PP/PP/different_cvref.hpp"
 
-class object_type;
+class complete_object_type;
 class dynamic_reference;
 
 class dynamic_object
@@ -12,7 +14,7 @@ class dynamic_object
 
 	struct deleter
 	{
-		PP::unique<const object_type*> type_;
+		PP::unique<const complete_object_type*> type_;
 
 		constexpr void operator()(PP::unique<std::byte*>& u) const;
 	};
@@ -25,19 +27,19 @@ class dynamic_object
 	constexpr void* get_address() noexcept;
 
 	template <bool reference>
-	static constexpr void* get_address(PP::unique<std::byte*>& p, const object_type& t) noexcept;
+	static constexpr void* get_address(PP::unique<std::byte*>& p, const complete_object_type& t) noexcept;
 
 	template <bool rvalue>
 	constexpr dynamic_reference reference_cast_helper() noexcept;
 
-	static constexpr std::byte* allocate(const object_type& type) noexcept;
-
 	template <typename Initializer>
-	constexpr void initialize(Initializer&& initializer) noexcept;
+	static constexpr std::byte* allocate_and_initialize(Initializer&& i) noexcept;
 
-	explicit constexpr dynamic_object(const object_type* t) noexcept;
+	explicit constexpr dynamic_object(std::size_t tag) noexcept;
 
-	constexpr const object_type* get_type_helper() noexcept;
+	constexpr const complete_object_type* get_type_helper() const noexcept;
+
+	constexpr bool invalid_check_helper(std::size_t tag) const noexcept;
 
 public:
 	static constexpr dynamic_object create_invalid() noexcept;
@@ -48,13 +50,14 @@ public:
 
 	constexpr dynamic_object() = default;
 
-	template <typename Initializer>
-	constexpr dynamic_object(const object_type& type, Initializer&& initializer);
-
-	constexpr const object_type& get_type() noexcept;
+	constexpr const complete_object_type& get_type() const noexcept;
 
 	constexpr operator dynamic_reference() & noexcept;
 	constexpr operator dynamic_reference() && noexcept;
 
-	constexpr explicit operator bool() noexcept;
+	constexpr explicit operator bool() const noexcept;
+	constexpr bool is_void() noexcept;
+
+	template <std::invocable Initializer>
+	explicit constexpr dynamic_object(Initializer&& initializer);
 };

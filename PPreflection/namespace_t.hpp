@@ -3,7 +3,7 @@
 #include "namespace_t.h"
 #include "types/type.h"
 #include "descriptor.h"
-#include "namespace_function.h"
+#include "functions/namespace_function.h"
 
 constexpr const type* namespace_t::get_type(std::string_view name) const noexcept
 {

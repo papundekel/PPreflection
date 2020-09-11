@@ -12,4 +12,9 @@ public:
 	{
 		return *this;
 	}
+
+	constexpr bool can_be_pointer_initialized(const pointable_type& initializer) const noexcept
+	{
+		return true;
+	}
 };

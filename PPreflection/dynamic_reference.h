@@ -14,7 +14,9 @@ class dynamic_reference
 	constexpr dynamic_reference(void* ptr, const reference_type& t) noexcept;
 
 public:
-	constexpr dynamic_reference(const dynamic_reference&) noexcept = default;
+	struct bad_cast_exception {};
+
+	//constexpr dynamic_reference(const dynamic_reference&) noexcept = default;
 
 	constexpr const reference_type& get_type() const noexcept;
 

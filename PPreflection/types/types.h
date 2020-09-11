@@ -1,0 +1,12 @@
+#pragma once
+#include "reference_type.h"
+#include "void_type.h"
+#include "function_type.h"
+#include "unknown_bound_array_type.h"
+#include "known_bound_array_type.h"
+#include "non_void_fundamental_type.h"
+#include "pointer_type.h"
+#include "pointer_to_member_type.h"
+#include "non_union_class_type.h"
+#include "union_type.h"
+#include "enum_type.h"

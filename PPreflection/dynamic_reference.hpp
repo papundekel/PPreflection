@@ -26,16 +26,16 @@ constexpr T&& dynamic_reference::cast_unsafe() const
 template <typename T>
 constexpr T&& dynamic_reference::cast() const
 {
-	if (t.make_reference<std::is_rvalue_reference_v<T>>().can_reference_initialize_no_user_conversion(reflect<T, type>()))
+	if (type::reflect<T&&>().can_be_initialized_no_conversion(t.make_reference<std::is_rvalue_reference_v<T&&>>()))
 		return cast_unsafe<T>();
 	else
-		throw 0;
+		throw bad_cast_exception{};
 }
 
 template <typename T>
 T* dynamic_reference::get_ptr() const
 {
-	if (t.remove_reference().visit(PP::overloaded{ []() {} })).can_pointer_like_initialize_inner(reflect<T, type>()))
+	if (type::reflect<T>().can_be_pointer_initialized(t.remove_reference()))
 		return reinterpret_cast<T*>(ptr);
 	else
 		return nullptr;
@@ -60,5 +60,5 @@ dynamic_reference dynamic_reference::move() const
 
 template <PP::different_cvref<dynamic_reference> R>
 constexpr dynamic_reference::dynamic_reference(R&& reference) noexcept
-	: dynamic_reference(const_cast<std::remove_const_t<std::remove_reference_t<R>>*>(&reference), reflect<R&&, reference_type>())
+	: dynamic_reference(const_cast<std::remove_const_t<std::remove_reference_t<R>>*>(&reference), type::reflect<R&&>())
 {}
