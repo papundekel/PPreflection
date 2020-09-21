@@ -8,7 +8,7 @@
 #include "../../PP/PP/any_iterator.hpp"
 #include "../invoke.h"
 #include "../types/return_type_reference.h"
-#include "../types/function_type.h"
+#include "../types/non_member_function_type.h"
 
 class type;
 class dynamic_reference;
@@ -70,7 +70,7 @@ protected:
 public:
 	constexpr bool has_name(std::string_view name) const noexcept override;
 
-	constexpr virtual const function_type& get_function_type() const noexcept = 0;
+	constexpr virtual const non_member_function_type& get_function_type() const noexcept = 0;
 	constexpr return_type_reference return_type() const noexcept
 	{
 		return get_function_type().return_type();

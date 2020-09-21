@@ -3,7 +3,6 @@
 #include "basic_member_function.h"
 #include "../conversion_function.h"
 #include "../../overload_cast.h"
-#include "../../conversion_function_info.h"
 #include "get_member_function_info.hpp"
 
 namespace detail

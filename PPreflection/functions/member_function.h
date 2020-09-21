@@ -1,7 +1,7 @@
 #pragma once
 #include <utility>
 #include "maybe_static_member_function.h"
-#include "../types/member_function_type.h"
+#include "../types/function_type.h"
 
 class class_type;
 class reference_type;
@@ -34,7 +34,7 @@ protected:
 	constexpr  bool can_invoke(PP::any_view<const reference_type&> argument_types) const noexcept override final;
 
 public:
-	constexpr const member_function_type& get_function_type() const noexcept override = 0;
+	constexpr const function_type& get_function_type() const noexcept override = 0;
 
 	constexpr void print_name_after_parent(PP::simple_ostream& out) const noexcept override final;
 	constexpr bool has_name(std::string_view name) const noexcept override final;

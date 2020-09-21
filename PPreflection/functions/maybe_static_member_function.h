@@ -21,6 +21,5 @@ namespace detail
 		{
 			return get_overloaded_function().get_parent();
 		}
-
 	};
 }

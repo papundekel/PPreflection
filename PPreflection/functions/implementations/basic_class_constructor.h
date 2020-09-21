@@ -18,7 +18,7 @@ namespace detail
 
 	template <typename Class, typename Args, typename Base>
 	using basic_constructor_base_base = basic_function
-		< constructor_wrap<Class>
+		< overloaded_constructor_info<Class>
 		, Args
 		, Class
 		, PP::get_value<PP::apply_pack<is_nothrow_constructible_helper<Class>::template help, Args>>()

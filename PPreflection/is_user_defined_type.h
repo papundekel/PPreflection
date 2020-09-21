@@ -1,5 +1,9 @@
 #pragma once
 #include <type_traits>
+#include "map_v.hpp"
+#include "disjunction.hpp"
+#include "template_tuple.hpp"
+#include "tuple_map.hpp"
+#include "map_v.hpp"
 
-template <typename T>
-constexpr inline bool is_user_defined_type = std::is_class_v<T> || std::is_union_v<T> || std::is_enum_v<T>;
+constexpr inline auto is_user_defined_type = PP::disjunction(PP::tuple_map(PP::map_v, PP::template_tuple<std::is_class, std::is_union, std::is_enum>));

@@ -2,6 +2,10 @@
 #include "user_defined_type.h"
 #include "any_iterator.hpp"
 
+class overloaded_constructor;
+class member_function;
+class static_member_function;
+
 class class_type : public user_defined_type
 {
 public:

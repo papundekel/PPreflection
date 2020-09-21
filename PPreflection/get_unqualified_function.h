@@ -1,15 +1,14 @@
 #pragma once
-#include "apply_pack.h"
-#include "get_function_info.h"
+#include "get_function_info.hpp"
+#include "make_function_type.hpp"
+#include "functional/compose.hpp"
+#include "value_wrapper.hpp"
 
-template <typename ReturnType>
-struct make_function_type
-{
-	template <typename... ParameterTypes>
-	struct make : type_t<ReturnType(ParameterTypes...)>	{};
-};
-
-template <typename F>
-struct get_unqualified_function : apply_pack<
-		make_function_type<typename get_function_info<F>::return_type>::template make,
-		typename get_function_info<F>::parameter_types> {};
+constexpr inline auto get_unqualified_function =
+	PP::make_function_type
+	||
+	value_wrapper<
+		[]<typename Return, typename... Parameters>(PP::function_info<Return, Parameters...>)
+		{
+			return PP::function_info(PP::type_v<Return(Parameters...)>);
+		} || PP::get_function_info>;
