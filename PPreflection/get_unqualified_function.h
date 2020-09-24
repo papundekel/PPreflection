@@ -6,9 +6,9 @@
 
 constexpr inline auto get_unqualified_function =
 	PP::make_function_type
-	||
-	value_wrapper<
+	|
+	value_wrapper<compose<true, false>(
 		[]<typename Return, typename... Parameters>(PP::function_info<Return, Parameters...>)
 		{
 			return PP::function_info(PP::type_v<Return(Parameters...)>);
-		} || PP::get_function_info>;
+		}, PP::get_function_info)>;
