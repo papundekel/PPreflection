@@ -1,5 +1,5 @@
 #include <iostream>
-
+/*
 #include "overload_cast.h"
 
 #include "dynamic_reference.hpp"
@@ -90,8 +90,7 @@ X double_(const double& x)
 }
 
 #include "reflect.hpp"
-#include "append_pack.hpp"
-#include "value_pack.hpp"
+#include "value_tuple.hpp"
 
 namespace reflect_detail
 {
@@ -105,13 +104,13 @@ detail::basic_namespace<namespace_t::global, namespace_t::global, PP::append_pac
 	PP::type_pack<X>>,
 	PP::type_pack<reflect_detail::global_double_>>{};
 
-/*template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<X>> = std::string_view("X");
+template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<X>> = std::string_view("X");
 template <> constexpr inline auto detail::reflect_metadata<detail::id_wrap<X>> = std::size_t(0);
 template <> constexpr inline auto detail::reflect_metadata<X> = detail::basic_class_type<namespace_t::global, X,
 	PP::type_pack<
 	reflect_detail::X_f,
 	overloaded_conversion_function_info<X, int>>,
-	PP::type_pack<>>{};*/
+	PP::type_pack<>>{};
 
 template <> constexpr inline auto detail::reflect_metadata<overloaded_constructor_info<X>>
 	= detail::basic_overloaded_class_constructor<X, PP::type_pack<
@@ -166,14 +165,11 @@ template <> constexpr inline auto detail::reflect_metadata<PP::value_t<detail::o
 	= detail::basic_conversion_function<detail::overload_caster<overloaded_conversion_function_info<X, int>, 0>, false>{};
 template <> constexpr inline auto detail::reflect_metadata<PP::value_t<detail::overload_caster<overloaded_conversion_function_info<X, int>, 1>>>
 	= detail::basic_conversion_function<detail::overload_caster<overloaded_conversion_function_info<X, int>, 1>, false>{};
+	*/
 
 int main()
 {
-	auto double_f = reflect<namespace_t::global, namespace_t>().get_function("double_");
-	if (double_f)
-	{
-		auto x = double_f->invoke({ 5 });
-	}
+	
 
 	std::cout.flush();
 	return 0;

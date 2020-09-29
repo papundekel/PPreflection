@@ -1,7 +1,7 @@
 #pragma once
-#include "../PP/PP/type_pack.hpp"
+#include "type_tuple.hpp"
 
-using fundamental_type_pack = PP::type_pack<
+constexpr inline auto fundamental_type_pack = PP::type_tuple_v<
 	  void
 	, decltype(nullptr)
 	, float
