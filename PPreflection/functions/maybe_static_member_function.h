@@ -17,7 +17,7 @@ namespace detail
 
 		constexpr const overloaded& get_overloaded_function() const noexcept override = 0;
 
-		constexpr const class_type& get_parent() const noexcept override final
+		constexpr const class_type& get_parent() const noexcept override
 		{
 			return get_overloaded_function().get_parent();
 		}

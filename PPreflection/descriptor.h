@@ -1,8 +1,9 @@
 #pragma once
 #include <string_view>
 #include <utility>
-#include "../PP/PP/simple_ostream.hpp"
-#include "../PP/PP/view.hpp"
+#include "simple_ostream.hpp"
+#include "view.hpp"
+#include "type_t.hpp"
 
 class descriptor
 {
@@ -15,12 +16,8 @@ public:
 	constexpr void print_name(PP::simple_ostream& out) const noexcept
 	{
 		print_name_before_parent(out);
-		const descriptor* parent = this;
-		while (true)
+		if (const descriptor* parent = get_parent_implementation(); parent)
 		{
-			parent = parent->get_parent_implementation();
-			if (!parent)
-				break;
 			parent->print_name(out);
 			out.write("::");
 		}
@@ -29,12 +26,12 @@ public:
 	constexpr virtual bool has_name(std::string_view name) const noexcept = 0;
 
 	template <typename T>
-	static constexpr std::string_view reflect_name() noexcept;
+	static constexpr std::string_view reflect_name(PP::type_t<T>) noexcept;
 
-	template <PP::view View>
-	static constexpr decltype(&std::declval<PP::view_base_t<View>>()) get_descriptor(std::string_view name, View&& descriptors) noexcept
+	static constexpr auto get_descriptor(std::string_view name, PP::concepts::view auto&& descriptors) noexcept
+		-> decltype(&declval(PP::view_base(descriptors)))
 	{
-		for (auto&& d : std::forward<View>(descriptors))
+		for (auto&& d : PP_FORWARD(descriptors))
 			if (d.has_name(name))
 				return &d;
 

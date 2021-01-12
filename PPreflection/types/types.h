@@ -6,6 +6,7 @@
 #include "known_bound_array_type.h"
 #include "non_void_fundamental_type.h"
 #include "pointer_type.h"
+#include "pointable_type.hpp"
 #include "pointer_to_member_type.h"
 #include "non_union_class_type.h"
 #include "union_type.h"

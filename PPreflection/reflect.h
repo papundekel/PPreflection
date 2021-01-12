@@ -4,93 +4,56 @@
 #include "value_t.hpp"
 #include "type_t.hpp"
 #include "overload_cast.h"
+#include "tuple_map_to_array.hpp"
 
-template <typename Class>
-struct overloaded_constructor_info {};
-
-template <typename Class, typename... Args>
-struct constructor_info {};
-
-template <bool Explicit, typename... Args>
-struct constructor_partial_info {};
-
-template <typename Class>
-struct make_full_info
+namespace reflection
 {
-	template <typename T>
-	struct make {};
-	template <typename... Args>
-	struct make<PP::type_pack<Args...>> : PP::type_t<constructor_info<Class, Args...>> {};
-};
-template <typename T>
-struct strip_partial_info {};
-template <bool Explicit, typename... Args>
-struct strip_partial_info<constructor_partial_info<Explicit, Args...>> : PP::type_t<PP::type_pack<Args...>> {};
-
-template <typename Info>
-struct is_one_p_conversion_info : PP::value_t<false> {};
-template <bool Explicit, typename... Args>
-struct is_one_p_conversion_info<constructor_partial_info<Explicit, Args...>> : PP::value_t<!Explicit && sizeof...(Args) == 1> {};
-
-template <typename C, typename R>
-struct overloaded_conversion_function_info
-{
-	using Class = C;
-	using Result = R;
-};
-
-template <bool Explicit, PP::cv_qualifier cv, PP::ref_qualifier ref>
-struct conversion_function_info {};
-
-template <typename Class, typename Result>
-struct make_conversion_function
-{
-	template <typename T>
-	struct make {};
-	template <bool Explicit, PP::cv_qualifier cv, PP::ref_qualifier ref>
-	struct make<conversion_function_info<Explicit, cv, ref>>
-		: PP::type_t<PP::value_t<overload_member_caster<cv, ref>(&Class::operator Result)>> {};
-};
-
-namespace detail
-{
-	template <typename T>
-	struct name_wrap {};
-
-	template <typename T>
-	struct id_wrap {};
-
-	template <typename T>
-	struct base_classes {};
-
-	template <typename Class, typename... Args>
-	struct is_explicit_constructor {};
-
-	template <typename T>
-	struct member_functions {};
-
-	template <typename T>
-	struct static_member_functions {};
-
-	template <typename T>
-	struct nested_classes {};
-
-	template <typename ResultType>
-	struct reflector
-	{
-		template <typename T>
-		struct reflect
-		{
-			static constexpr ResultType value_f() noexcept;
-		};
-	};
+	template <typename T> struct name {};
+	template <typename T> struct id {};
+	template <typename T> struct parent {};
+	template <typename T> struct types {};
+	template <typename T> struct namespaces {};
+	template <typename T> struct functions {};
+	template <typename T> struct base_classes {};
+	template <typename T> struct nested_classes {};
+	template <typename T> struct member_functions {};
+	template <typename T> struct static_member_functions {};
+	template <typename T> struct enum_values {};
+	template <typename T> struct overloads {};
+	template <typename T> struct overload {};
+	template <typename T> struct constructors {};
+	template <typename Class, typename... Parameters> struct constructor {};
+	template <typename Class, typename... Parameters> struct is_explicit {};
+	template <typename... Parameters> struct constructor_parameters {};
+	template <typename Class, typename Return> struct conversion_function {};
 }
 
-template <typename T, typename ResultType>
-constexpr ResultType reflect() noexcept;
+template <typename T>
+constexpr auto&& reflect_helper(PP::type_t<T>) noexcept;
+template <auto v>
+constexpr auto&& reflect_helper(PP::value_t<v>) noexcept
+{
+	return reflect_helper(PP::type_v<PP::value_t<v>>);
+}
 
-template <auto v, typename ResultType>
-constexpr ResultType reflect() noexcept;
+constexpr inline auto reflect = [](auto&& x) -> decltype(auto) { return reflect_helper(std::forward<decltype(x)>(x)); };
 
-template <typename Pack, typename ResultType>
-constexpr PP::view auto reflect_many() noexcept;
+constexpr auto reflect_many(PP::tuple_like auto&& tuple, auto type) noexcept
+{
+	return PP::tuple_map_to_array(reflect, std::forward<decltype(tuple)>(tuple), type);
+}
+
+// namespace
+//
+// template <> constexpr inline auto reflection::metadata<type> = detail::basic_namespace<type>{};
+// template <> constexpr inline auto reflection::metadata<reflection::name<type>> = std::string_view(name);
+// template <> constexpr inline auto reflection::metadata<reflection::parent<type>> = PP::type_v<parent>;
+// template <> constexpr inline auto reflection::metadata<reflection::types<type>> = PP::type_tuple_v<>;
+// template <> constexpr inline auto reflection::metadata<reflection::namespaces<type>> = PP::type_tuple_v<>;
+
+// struct
+//
+// template <> constexpr inline auto reflection::metadata<reflection::name<type>> = std::string_view("S");
+// template <> constexpr inline auto reflection::metadata<reflection::parent<type>> = PP::type_v<parent>;
+// template <> constexpr inline auto reflection::metadata<reflection::nested_classes<type>> = PP::type_tuple_v<>;
+// template <> constexpr inline auto reflection::metadata<reflection::base_classes<type>> = PP::type_tuple_v<>;

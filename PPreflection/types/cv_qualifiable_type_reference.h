@@ -8,7 +8,7 @@ namespace detail
 	using cv_qualifiable_type_reference_base = type_disjunction_reference<object_type, void_type>;
 }
 
-class cv_qualifiable_type_reference : public cv_qualifiable_type_reference_base
+class cv_qualifiable_type_reference : public detail::cv_qualifiable_type_reference_base
 {
 public:
 	using detail::cv_qualifiable_type_reference_base::cv_qualifiable_type_reference_base;

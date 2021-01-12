@@ -22,6 +22,6 @@ public:
 	template <typename F>
 	constexpr decltype(auto) visit(F&& f) const
 	{
-		return std::visit(std::forward<F>(f), variant);
+		return std::visit([&f](auto reference) -> decltype(auto) { return std::forward<F>(f)(reference.get()); }, variant);
 	}
 };

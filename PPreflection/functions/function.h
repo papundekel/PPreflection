@@ -3,12 +3,17 @@
 #include "../descriptor.h"
 #include "../pointer_view.h"
 #include "../dynamic_variable.h"
-#include "../../PP/PP/transform_view.hpp"
-#include "../../PP/PP/id.hpp"
-#include "../../PP/PP/any_iterator.hpp"
+#include "transform_view.hpp"
+#include "functional/id.hpp"
+#include "any_iterator.hpp"
 #include "../invoke.h"
 #include "../types/return_type_reference.h"
-#include "../types/non_member_function_type.h"
+#include "../types/function_type.h"
+#include "type_tuple.hpp"
+#include "tuple_index_sequence_for.hpp"
+#include "view_tuple.hpp"
+#include "tuple_zip_with.hpp"
+#include "forward.hpp"
 
 class type;
 class dynamic_reference;
@@ -24,41 +29,19 @@ protected:
 
 	constexpr virtual bool can_invoke(PP::any_view<const reference_type&> argument_types) const noexcept;
 
-	template <typename... Parameters>
-	struct invoke_helper_t
+	static inline dynamic_variable invoke_helper(auto&& f, PP::any_iterator<const dynamic_reference&> arg_iterator, auto parameter_types) noexcept
 	{
-		class x
-		{
-			template <typename F, std::size_t... I>
-			static constexpr decltype(auto) helper(F&& f, PP::any_iterator<const dynamic_reference&> arg_iterator, std::index_sequence<I...>) noexcept;
-
-		public:
-			template <typename F>
-			static constexpr decltype(auto) value_f(F&& f, PP::any_iterator<const dynamic_reference&> arg_iterator) noexcept;
-		};
-
-		using type = x;
-	};
-
-	template <typename ParameterTypes, typename F>
-	static constexpr decltype(auto) invoke_helper_helper(F&& f, PP::any_iterator<const dynamic_reference&> arg_iterator) noexcept
-	{
-		return ::invoke<PP::get_type<PP::apply_pack_types<function::invoke_helper_t, ParameterTypes>>>(std::forward<F>(f), arg_iterator);
-	}
-
-	template <typename ParameterTypes, typename F>
-	static inline dynamic_variable invoke_helper(F&& f, PP::any_iterator<const dynamic_reference&> arg_iterator) noexcept
-	{
-		return dynamic_variable::create(
-			[&f, arg_iterator]() -> decltype(auto)
+		/*return dynamic_variable::create(
+			[&f, arg_iterator, parameter_types]() -> decltype(auto)
 			{
-				return invoke_helper_helper<ParameterTypes>(std::forward<F>(f), arg_iterator);
-			});
-	}
-	template <typename ReturnType, typename F>
-	static inline dynamic_variable invoke_helper(F&& f) noexcept
-	{
-		return dynamic_variable::create(std::forward<F>(f));
+				return PP::tuple_apply(PP_FORWARD(f), PP::tuple_zip_with(
+					[](auto ref, auto t) -> decltype(auto)
+					{
+						return ref.cast_unsafe(t);
+					}, std::make_pair(PP::view_tuple(arg_iterator), parameter_types)));
+			});*/
+
+		return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
 	}
 
 	constexpr void print_name_basic(PP::simple_ostream& out) const noexcept;
@@ -70,20 +53,22 @@ protected:
 public:
 	constexpr bool has_name(std::string_view name) const noexcept override;
 
-	constexpr virtual const non_member_function_type& get_function_type() const noexcept = 0;
+	constexpr virtual const function_type& get_function_type() const noexcept = 0;
 	constexpr return_type_reference return_type() const noexcept
 	{
 		return get_function_type().return_type();
 	}
-	constexpr PP::any_view<parameter_type_reference> parameter_types() const noexcept
+	constexpr auto parameter_types() const noexcept
 	{
 		return get_function_type().parameter_types();
 	}
 
-	constexpr virtual bool is_noexcept() const noexcept = 0;
+	constexpr bool is_noexcept() const noexcept
+	{
+		return get_function_type().is_noexcept();
+	}
 
 	inline dynamic_variable invoke(pointer_view<const dynamic_reference> args = {}) const;
-
 
 	using overloaded = overloaded_function;
 
@@ -111,11 +96,10 @@ public:
 
 	constexpr virtual const descriptor& get_parent() const noexcept = 0;
 
-	template <PP::view View>
-	constexpr const function* select_overload(View&& argument_types) const noexcept
+	constexpr const function* select_overload(PP::view auto&& argument_types) const noexcept
 	{
 		for (const function& f : get_overloads())
-			if (f.can_invoke(std::forward<View>(argument_types)))
+			if (f.can_invoke(PP_FORWARD(argument_types)))
 				return &f;
 
 		return nullptr;

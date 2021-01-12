@@ -1,21 +1,27 @@
 #pragma once
 #include "basic_overloaded_function.h"
+#include "basic_overloaded_named_function.h"
 #include "../namespace_function.h"
 
 namespace detail
 {
-	template <typename ID, typename Namespace, typename Functions>
-	class basic_overloaded_namespace_function final : public basic_overloaded_function<ID, Functions, namespace_function>
+	template <typename ID>
+	class basic_overloaded_namespace_function final : public
+		basic_overloaded_named_function<ID, basic_overloaded_function<ID, namespace_function>>
 	{
+		static constexpr auto namespace_overloads = reflect_many(
+			basic_overloaded_function<ID, namespace_function>::raw_overloads,
+			PP::type_v<const namespace_function&>);
+
 	public:
 		constexpr PP::any_view<const namespace_function&> get_namespace_overloads() const noexcept override final
 		{
-			return reflect_many<Functions, const namespace_function&>();
+			return namespace_overloads;
 		}
 
-		constexpr const namespace_t& get_parent() const noexcept override final
+		constexpr const Namespace& get_parent() const noexcept override final
 		{
-			return reflect<Namespace, namespace_t>();
+			return reflect(reflect(PP::type_v<reflection::parent<ID>>));
 		}
 	};
 }

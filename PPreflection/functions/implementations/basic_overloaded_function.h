@@ -5,34 +5,19 @@
 
 namespace detail
 {
-	struct empty_id {};
-
-	template <typename F, typename Base>
-	class basic_overloaded_function_base : public Base::overloaded
+	template <typename ID, typename Base>
+	class basic_overloaded_function : public Base::overloaded
 	{
 	protected:
-		using Functions = F;
+		static constexpr auto raw_overloads = reflect(PP::type_v<reflection::overloads<ID>>);
+
+		static constexpr auto function_overloads =
+			reflect_many(raw_overloads, PP::type_v<const function&>);
+
 	public:
 		constexpr PP::any_view<const function&> get_function_overloads() const noexcept override final
 		{
-			return reflect_many<Functions, const function&>();
+			return function_overloads;
 		}
 	};
-
-	template <typename ID, typename F, typename Base>
-	class basic_overloaded_function : public basic_overloaded_function_base<F, Base>
-	{
-	public:
-		constexpr void print_name_after_parent(PP::simple_ostream& out) const noexcept override
-		{
-			out.write(descriptor::reflect_name<ID>());
-		}
-		constexpr bool has_name(std::string_view name) const noexcept override
-		{
-			return descriptor::reflect_name<ID>() == name;
-		}
-	};
-	template <typename F, typename Base>
-	class basic_overloaded_function<empty_id, F, Base> : public basic_overloaded_function_base<F, Base>
-	{};
 }

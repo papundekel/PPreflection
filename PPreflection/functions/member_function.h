@@ -34,8 +34,6 @@ protected:
 	constexpr  bool can_invoke(PP::any_view<const reference_type&> argument_types) const noexcept override final;
 
 public:
-	constexpr const function_type& get_function_type() const noexcept override = 0;
-
 	constexpr void print_name_after_parent(PP::simple_ostream& out) const noexcept override final;
 	constexpr bool has_name(std::string_view name) const noexcept override final;
 	
@@ -54,4 +52,6 @@ public:
 	friend overloaded_member_function;
 
 	constexpr const overloaded& get_overloaded_function() const noexcept override = 0;
+
+	constexpr const class_type& get_parent() const noexcept override = 0;
 };

@@ -1,20 +1,17 @@
 #pragma once
 #include "pointable_type.h"
 
-class reference_type;
+class dynamic_reference_type;
+class dynamic_lvalue_reference_type;
+class dynamic_rvalue_reference_type;
 
 class referencable_type : public pointable_type
 {
-	constexpr virtual const reference_type& make_lreference() const noexcept = 0;
-	constexpr virtual const reference_type& make_rreference() const noexcept = 0;
+	constexpr dynamic_lvalue_reference_type make_lreference() const noexcept;
+	constexpr dynamic_rvalue_reference_type make_rreference() const noexcept;
 
 public:
 	template <bool rvalue>
-	constexpr const reference_type& make_reference() const noexcept
-	{
-		if constexpr (rvalue)
-			return make_rreference();
-		else
-			return make_lreference();
-	}
+	constexpr auto make_reference() const noexcept;
+	constexpr dynamic_reference_type make_reference(bool lvalue) const noexcept;
 };

@@ -10,14 +10,9 @@ namespace detail
 	public:
 		constexpr PP::cv_qualifier get_cv_qualifier() const noexcept override final
 		{
-			if constexpr (std::is_const_v<T> && std::is_volatile_v<T>)
-				return PP::cv_qualifier::const_volatile;
-			else if constexpr (std::is_const_v<T>)
-				return PP::cv_qualifier::Const;
-			else if constexpr (std::is_volatile_v<T>)
-				return PP::cv_qualifier::Volatile;
-			else
-				return PP::cv_qualifier::none;
+			int c = PP::is_const_v(PP::type_v<T>);
+			int v = PP::is_volatile_v(PP::type_v<T>) << 1;
+			return PP::cv_qualifier(c | v);
 		}
 	};
 }

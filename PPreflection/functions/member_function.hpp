@@ -41,12 +41,13 @@ constexpr bool member_function::can_invoke(const reference_type& caller_arg_type
 
 	switch (get_ref_qualifier())
 	{
-	case PP::ref_qualifier::none:
-		return caller_par_type.make_reference<false>().can_be_initialized(caller_arg_type) || caller_par_type.make_reference<true>().can_be_initialized(caller_arg_type);
+	//case PP::ref_qualifier::none:
 	case PP::ref_qualifier::lvalue:
 		return caller_par_type.make_reference<false>().can_be_initialized(caller_arg_type);
 	case PP::ref_qualifier::rvalue:
 		return caller_par_type.make_reference<true>().can_be_initialized(caller_arg_type);
+	default:
+		return caller_par_type.make_reference<false>().can_be_initialized(caller_arg_type) || caller_par_type.make_reference<true>().can_be_initialized(caller_arg_type);
 	}
 }
 
@@ -65,7 +66,7 @@ inline dynamic_variable member_function::invoke(dynamic_reference caller, pointe
 	if (can_invoke(caller.get_type()) && function::can_invoke(args | PP::transform([](const dynamic_reference& r) -> const reference_type& { return r.get_type(); })))
 		return invoke_unsafe_member(caller, PP::begin(args));
 	else
-		return dynamic_variable::create_invalid();
+		return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
 }
 
 inline dynamic_variable overloaded_member_function::invoke(dynamic_reference caller, pointer_view<const dynamic_reference> args) const
@@ -74,5 +75,5 @@ inline dynamic_variable overloaded_member_function::invoke(dynamic_reference cal
 		if (f.can_invoke(caller.get_type()) && f.function::can_invoke(args | PP::transform([](const dynamic_reference& r) -> const reference_type& { return r.get_type(); })))
 			return f.invoke_unsafe_member(caller, PP::begin(args));
 
-	return dynamic_variable::create_invalid();
+	return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
 }

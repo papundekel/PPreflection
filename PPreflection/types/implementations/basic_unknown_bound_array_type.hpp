@@ -7,5 +7,7 @@ namespace detail
 {
 	template <typename T>
 	class basic_unknown_bound_array_type final : public basic_array_type<T, basic_object_type<T, unknown_bound_array_type>>
-	{};
+	{
+		static_assert(std::is_unbounded_array_v<T>);
+	};
 }

@@ -7,5 +7,7 @@ namespace detail
 {
 	template <typename T>
 	class basic_union_type final : public basic_class_type<T, union_type>
-	{};
+	{
+		static_assert(std::is_union_v<T>);
+	};
 }

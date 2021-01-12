@@ -1,30 +1,30 @@
 #pragma once
-#include <type_traits>
-#include "../PP/PP/different_cvref.hpp"
+#include "concepts/same_except_cvref.hpp"
+#include "types/dynamic_reference_type.h"
+#include "type_t.hpp"
 
 class reference_type;
+class dynamic_variable;
 
 class dynamic_reference
 {
 	friend class dynamic_object;
 
 	void* ptr;
-	const reference_type& t;
+	dynamic_reference_type t;
 
-	constexpr dynamic_reference(void* ptr, const reference_type& t) noexcept;
+	constexpr dynamic_reference(const void* ptr, const reference_type& t) noexcept;
 
 public:
 	struct bad_cast_exception {};
 
-	//constexpr dynamic_reference(const dynamic_reference&) noexcept = default;
-
 	constexpr const reference_type& get_type() const noexcept;
 
 	template <typename T>
-	constexpr T&& cast_unsafe() const;
+	constexpr T&& cast_unsafe(PP::type_t<T> = {}) const noexcept;
 
 	template <typename T>
-	constexpr T&& cast() const;
+	constexpr T&& cast(PP::type_t<T> = {}) const;
 
 	template <typename T>
 	T* get_ptr() const;
@@ -35,8 +35,9 @@ public:
 	template <typename T>
 	T&& get_ref() const&&;
 
-	dynamic_reference move() const;
-
-	template <PP::different_cvref<dynamic_reference> R>
-	constexpr dynamic_reference(R&& reference) noexcept;
+	constexpr dynamic_reference(auto&& reference) noexcept
+		requires
+		PP::concepts::different_except_cvref<dynamic_reference>, R> &&
+		PP::concepts::different_except_cvref<dynamic_object>, R> &&
+		PP::concepts::different_except_cvref<dynamic_variable>, R>;
 };

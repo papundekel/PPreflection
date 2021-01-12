@@ -47,7 +47,7 @@ public:
 		if (can_invoke(caller.get_type()))
 			return invoke_unsafe_conversion(caller);
 		else
-			return dynamic_variable::create_invalid();
+			return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
 	}
 
 	using overloaded = overloaded_conversion_function;

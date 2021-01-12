@@ -1,8 +1,30 @@
 #pragma once
+#include "array_type.h"
 #include "complete_object_type.h"
 
-class known_bound_array_type : public complete_object_type
+class known_bound_array_type : public detail::array_type<complete_object_type>
 {
 public:
-	constexpr virtual const complete_object_type& remove_extent() const noexcept = 0;
+	constexpr virtual std::size_t get_extent() const noexcept = 0;
+
+    constexpr bool has_name(std::string_view name) const noexcept override final
+    {
+        return false;
+    }
+    constexpr void print_name_prefix(PP::simple_ostream& out) const noexcept override final
+    {
+        remove_extent().print_name_prefix(out);
+    }
+    constexpr void print_name_suffix(PP::simple_ostream& out) const noexcept override final
+    {
+        out.write("[");
+        out.write(get_extent());
+        out.write("]");
+        remove_extent().print_name_suffix(out);
+    }
+	constexpr std::size_t size() const noexcept override final
+	{
+		return get_extent() * remove_extent().size();
+	}
+	void destroy(void* ptr) const noexcept override final;
 };

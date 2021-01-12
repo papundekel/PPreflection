@@ -6,12 +6,12 @@
 namespace detail
 {
 	template <typename T, typename Base>
-	class basic_array_type final : public Base
+	class basic_array_type : public Base
 	{
 	public:
 		constexpr const complete_object_type& remove_extent() const noexcept
 		{
-			return type::reflect<std::remove_extent_t<T>>();
+			return type::reflect(PP::type_v<std::remove_extent_t<T>>);
 		}
 	};
 }

@@ -1,27 +1,34 @@
 #pragma once
 #include "basic_overloaded_function.h"
 #include "../member_function.h"
-#include "first_pack.hpp"
-#include "get_member_function_info.hpp"
+#include "basic_overloaded_named_function.h"
 
 namespace detail
 {
-	template <typename ID, typename Functions, typename Base>
-	class basic_overloaded_member_function_base : public basic_overloaded_function<ID, Functions, Base>
+	template <typename ID, typename Base>
+	class basic_overloaded_member_function_base : public basic_overloaded_function<ID, Base>
 	{
-	public:
+	protected:
+		static constexpr auto member_function_base_overloads = reflect_many(
+			basic_overloaded_function<ID, Base>::raw_overloads,
+			PP::type_v<const Base&>);
+
 		constexpr PP::any_view<const member_function&> get_member_function_overloads() const noexcept override final
 		{
-			return reflect_many<Functions, const member_function&>();
-		}
-
-		constexpr const class_type& get_parent() const noexcept override final
-		{
-			return type::reflect<typename PP::get_member_function_info<decltype(PP::get_value<PP::get_type<PP::first_pack<Functions>>>())>::Class>();
+			return member_function_base_overloads;
 		}
 	};
 
-	template <typename ID, typename Functions>
-	class basic_overloaded_member_function final : public basic_overloaded_member_function_base<ID, Functions, member_function>
-	{};
+	template <typename ID>
+	class basic_overloaded_member_function final
+		: public basic_overloaded_named_function<ID, basic_overloaded_member_function_base<ID, member_function>>
+	{
+		constexpr const class_type& get_parent() const noexcept override final
+		{
+			for (const member_function& mf : this->get_member_function_overloads())
+				return mf.get_parent();
+
+			std::terminate();
+		}
+	};
 }

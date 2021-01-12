@@ -5,26 +5,40 @@
 #include "dynamic_reference.h"
 #include "reflect.h"
 
-constexpr dynamic_object dynamic_object::create_invalid() noexcept
+constexpr dynamic_object dynamic_object::create_invalid(invalid_code code) noexcept
 {
-	return dynamic_object(0);
+	return dynamic_object(code);
 }
 constexpr dynamic_object dynamic_object::create_void() noexcept
 {
-	return dynamic_object(1);
+	return dynamic_object(invalid_code::none);
 }
 template <typename T, typename... Args>
 constexpr dynamic_object dynamic_object::create(Args&&... args)
 {
-	return dynamic_object(reflect<T, type>(), [&args...](void* ptr) { new (ptr) T(std::forward<Args>(args)...); });
+	return dynamic_object([&args...]() { return T(std::forward<Args>(args)...); });
 }
 
 template <bool reference>
-constexpr void* dynamic_object::get_address(PP::unique<std::byte*>& p, const complete_object_type& t) noexcept
+constexpr void* dynamic_object::get_address(PP::unique<data>& p, const complete_object_type& t) noexcept
 {
 	void* ptr = nullptr;
 
-	std::byte*& buffer = p.get();
+	std::byte*& buffer = p.inner().ptr;
+
+	if (t.size() <= sizeof(void*))
+		ptr = &buffer;
+	else
+		ptr = buffer;
+
+	return ptr;
+}
+template <bool reference>
+constexpr const void* dynamic_object::get_address(const PP::unique<data>& p, const complete_object_type& t) noexcept
+{
+	const void* ptr = nullptr;
+
+	std::byte* const& buffer = p.inner().ptr;
 
 	if (t.size() <= sizeof(void*))
 		ptr = &buffer;
@@ -34,9 +48,9 @@ constexpr void* dynamic_object::get_address(PP::unique<std::byte*>& p, const com
 	return ptr;
 }
 
-constexpr void dynamic_object::deleter::operator()(PP::unique<std::byte*>& u) const
+constexpr void dynamic_object::deleter::operator()(PP::unique<data>& u) const
 {
-	const complete_object_type* t = type_.get();
+	const complete_object_type* t = type_.inner();
 	if (!t)
 		return;
 
@@ -44,16 +58,21 @@ constexpr void dynamic_object::deleter::operator()(PP::unique<std::byte*>& u) co
 	t->destroy(ptr);
 
 	if (t->size() > sizeof(void*))
-		delete[] u.get();
+		operator delete(u.inner().ptr);
 }
 
 template <bool reference>
 constexpr void* dynamic_object::get_address_helper() noexcept
 {
-	return get_address<reference>(x.get(), get_type());
+	return get_address<reference>(x.inner(), get_type());
 }
-constexpr dynamic_object::dynamic_object(std::size_t tag) noexcept
-	: x((std::byte*)tag, deleter(nullptr))
+template <bool reference>
+constexpr const void* dynamic_object::get_address_helper() const noexcept
+{
+	return get_address<reference>(x.inner(), get_type());
+}
+constexpr dynamic_object::dynamic_object(invalid_code code) noexcept
+	: x(data(code), deleter(nullptr))
 {}
 template <typename Initializer>
 constexpr std::byte* dynamic_object::allocate_and_initialize(Initializer&& i) noexcept
@@ -68,7 +87,7 @@ constexpr std::byte* dynamic_object::allocate_and_initialize(Initializer&& i) no
 		allocate_memory = &ptr;
 	else
 	{
-		ptr = new std::byte[sizeof(R)];
+		ptr = operator new(sizeof(R), std::align_val_t{ alignof(R) });
 		allocate_memory = ptr;
 	}
 
@@ -79,23 +98,31 @@ constexpr std::byte* dynamic_object::allocate_and_initialize(Initializer&& i) no
 
 constexpr const complete_object_type* dynamic_object::get_type_helper() const noexcept
 {
-	return x.get_destructor().type_.get();
+	return x.get_destructor().type_.inner();
 }
 constexpr const complete_object_type& dynamic_object::get_type() const noexcept
 {
 	return *get_type_helper();
 }
-
 constexpr void* dynamic_object::get_address() noexcept
+{
+	return get_address_helper<true>();
+}
+constexpr const void* dynamic_object::get_address() const noexcept
 {
 	return get_address_helper<true>();
 }
 template <bool rvalue>
 constexpr dynamic_reference dynamic_object::reference_cast_helper() noexcept
 {
-	return { get_address(), get_type().make_reference<rvalue>() };
+	return dynamic_reference(get_address(), get_type().make_reference<rvalue>());
 }
-constexpr dynamic_object::operator dynamic_reference() & noexcept
+template <bool rvalue>
+constexpr dynamic_reference dynamic_object::reference_cast_helper() const noexcept
+{
+	return dynamic_reference(get_address(), get_type().make_reference<rvalue>());
+}
+constexpr dynamic_object::operator dynamic_reference() &  noexcept
 {
 	return reference_cast_helper<false>();
 }
@@ -103,20 +130,31 @@ constexpr dynamic_object::operator dynamic_reference() && noexcept
 {
 	return reference_cast_helper<true>();
 }
-constexpr bool dynamic_object::invalid_check_helper(std::size_t tag) const noexcept
+constexpr dynamic_object::operator dynamic_reference() const&  noexcept
 {
-	return get_type_helper() && (std::size_t)(x.get().get()) == tag;
+	return reference_cast_helper<false>();
+}
+constexpr dynamic_object::operator dynamic_reference() const&& noexcept
+{
+	return reference_cast_helper<true>();
 }
 constexpr dynamic_object::operator bool() const noexcept
 {
-	return invalid_check_helper(0);
+	return get_error_code() == invalid_code::none;
 }
-constexpr bool dynamic_object::is_void() noexcept
+constexpr dynamic_object::invalid_code dynamic_object::get_error_code() const noexcept
 {
-	return invalid_check_helper(1);
+	if (get_type_helper())
+		return invalid_code::none;
+	else
+		return x.inner().inner().code;
+}
+constexpr bool dynamic_object::is_void() const noexcept
+{
+	return !get_type_helper() && (bool)*this;
 }
 
 template <std::invocable Initializer>
 constexpr dynamic_object::dynamic_object(Initializer&& i)
-	: x(allocate_and_initialize(std::forward<Initializer>(i)), deleter(&type::reflect<decltype(std::forward<Initializer>(i)())>))
+	: x(data(allocate_and_initialize(std::forward<Initializer>(i))), deleter(&type::reflect(PP::type_v<decltype(std::forward<Initializer>(i)())>)))
 {}

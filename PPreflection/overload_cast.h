@@ -1,7 +1,7 @@
 #pragma once
-#include "../PP/PP/cv_qualifier.hpp"
-#include "../PP/PP/ref_qualifier.hpp"
-#include "../PP/PP/add_function_cvrefn.hpp"
+#include "cv_qualifier.hpp"
+#include "ref_qualifier.hpp"
+#include "add_function_cvrefn.hpp"
 
 namespace detail
 {

@@ -12,7 +12,7 @@ namespace detail
 
 		constexpr const referencable_type& remove_reference() const noexcept override final
 		{
-			return type::reflect<std::remove_reference_t<T>>();
+			return type::reflect(PP::type_v<std::remove_reference_t<T>>);
 		}
 
 		constexpr bool is_lvalue() const noexcept override final

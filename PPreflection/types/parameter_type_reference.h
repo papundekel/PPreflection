@@ -1,8 +1,9 @@
 #pragma once
 #include "../type_disjunction_reference.hpp"
-#include "../../PP/PP/view.hpp"
+#include "view.hpp"
 #include "reference_type.h"
 #include "non_array_object_type.h"
+#include "functional/id.hpp"
 
 namespace detail
 {
@@ -21,7 +22,7 @@ public:
 
 	constexpr bool can_be_initialized(const reference_type& initializer) const noexcept
 	{
-		return visit([&initializer](const auto& x) { return x.get().can_be_initialized(initializer); });
+		return visit([&initializer](const auto& x) { return x.can_be_initialized(initializer); });
 	}
 
 	constexpr operator const type&() const

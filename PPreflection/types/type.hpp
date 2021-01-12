@@ -1,10 +1,11 @@
 #pragma once
 #include "type.h"
-#include "../types.h"
+#include "types.h"
 #include "../reflect.h"
+#include <type_traits>
 
 template <typename T>
-constexpr const auto& type::reflect() noexcept
+constexpr const type::get_class<T>& type::reflect_helper(PP::type_t<T>) noexcept
 {
-	return ::reflect<T, const get_class<T>&>();
+	return ::reflect(PP::type_v<T>);
 }
