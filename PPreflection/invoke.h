@@ -4,5 +4,5 @@
 template <typename T>
 constexpr decltype(auto) invoke(auto&&... args)
 {
-	return T::value_f(std::forward<decltype(args)>(args)...);
+	return T::value_f(PP_FORWARD(args)...);
 }

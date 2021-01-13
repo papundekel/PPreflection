@@ -35,13 +35,13 @@ class dynamic_enum_type final : public detail::dynamic_user_defined_type<enum_ty
 public:
 	inline explicit dynamic_enum_type(
 			std::string_view name,
-			PP::view auto&& values,
+			PP::concepts::view auto&& values,
 			parent_descriptor_reference parent,
 			PP::cv_qualifier cv = PP::cv_qualifier::none) noexcept
 		: dynamic_user_defined_type<enum_type>(name, parent, cv)
 		, values(
-			PP::begin(std::forward<decltype(values)>(values)),
-			PP::  end(std::forward<decltype(values)>(values)))
+			PP::begin(PP_FORWARD(values)),
+			PP::  end(PP_FORWARD(values)))
 	{}
 
 	constexpr PP::any_view<const enum_value&> get_values() const noexcept override final

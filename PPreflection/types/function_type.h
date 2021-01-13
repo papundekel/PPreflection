@@ -54,6 +54,6 @@ public:
 
 	static constexpr auto reflect_parameter_types(PP::tuple_like auto&& types)
 	{
-		return PP::tuple_map_to_array(type::reflect, std::forward<decltype(types)>(types), PP::type_v<parameter_type_reference>);
+		return PP::tuple_map_to_array(type::reflect, PP_FORWARD(types), PP::type_v<parameter_type_reference>);
 	}
 };

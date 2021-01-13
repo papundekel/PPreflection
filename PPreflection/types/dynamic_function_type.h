@@ -20,8 +20,8 @@ public:
 			PP::ref_qualifier ref = PP::ref_qualifier::none) noexcept
 		: return_type_(return_type)
 		, parameter_types_(
-			PP::begin(std::forward<decltype(parameter_types)>(parameter_types)),
-			PP::end  (std::forward<decltype(parameter_types)>(parameter_types)))
+			PP::begin(PP_FORWARD(parameter_types)),
+			PP::end  (PP_FORWARD(parameter_types)))
 		, cv(cv)
 		, ref(ref)
 		, Noexcept(Noexcept)

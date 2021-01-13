@@ -36,11 +36,11 @@ constexpr auto&& reflect_helper(PP::value_t<v>) noexcept
 	return reflect_helper(PP::type_v<PP::value_t<v>>);
 }
 
-constexpr inline auto reflect = [](auto&& x) -> decltype(auto) { return reflect_helper(std::forward<decltype(x)>(x)); };
+constexpr inline auto reflect = [](auto&& x) -> decltype(auto) { return reflect_helper(PP_FORWARD(x)); };
 
 constexpr auto reflect_many(PP::tuple_like auto&& tuple, auto type) noexcept
 {
-	return PP::tuple_map_to_array(reflect, std::forward<decltype(tuple)>(tuple), type);
+	return PP::tuple_map_to_array(reflect, PP_FORWARD(tuple), type);
 }
 
 // namespace

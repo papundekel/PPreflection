@@ -13,7 +13,7 @@ namespace detail
 
 	public:
 		constexpr dynamic_named_descriptor(std::string_view name, auto&&... b) noexcept
-			: Base(std::forward<decltype(b)>(b)...)
+			: Base(PP_FORWARD(b)...)
 			, name_(name)
 		{}
 

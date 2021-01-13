@@ -112,7 +112,7 @@ public:
 		out.write("(");
 		if (!PP::empty(parameter_types))
 		{
-			auto [i, end] = PP::begin_end(std::forward<decltype(parameter_types)>(parameter_types));
+			auto [i, end] = PP::begin_end(PP_FORWARD(parameter_types));
 			(i++)->print_name(out);
 			for (; i != end; ++i)
 			{
@@ -132,7 +132,7 @@ public:
 	static constexpr auto reflect_helper(PP::tuple_like auto&& types) noexcept
 	{
 		constexpr auto super_class = PP::type_v<super_class_type>;
-		auto class_types = PP::tuple_map(get_type_class_type, std::forward<decltype(types)>(types));
+		auto class_types = PP::tuple_map(get_type_class_type, PP_FORWARD(types));
 		auto common_class = PP::tuple_foldr(common_type_class, super_class, class_types);
 
 		if constexpr (decltype(common_class){} == super_class)
@@ -141,10 +141,10 @@ public:
 			return PP::tuple_map_to_array(
 				[](auto&& x) -> decltype(auto)
 				{
-					return reflect_helper(std::forward<decltype(x)>(x));
-				}, std::forward<decltype(types)>(types),
+					return reflect_helper(PP_FORWARD(x));
+				}, PP_FORWARD(types),
 					PP::map_v(PP::template_v<std::add_lvalue_reference>, PP::map_v(PP::template_v<std::add_const>, common_class)));
 	}
 
-	static constexpr auto reflect = [](auto&& x) -> decltype(auto) { return reflect_helper(std::forward<decltype(x)>(x)); };
+	static constexpr auto reflect = [](auto&& x) -> decltype(auto) { return reflect_helper(PP_FORWARD(x)); };
 };
