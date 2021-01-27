@@ -7,7 +7,7 @@ namespace detail
 	class basic_function : public Base
 	{
 	private:
-		static constexpr auto function_type_ = PP::type_v<F>;
+		static constexpr auto function_type_ = PP::type<F>;
 		static constexpr auto info = PP::function_info(function_type_);
 
 	protected:

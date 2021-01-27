@@ -55,7 +55,7 @@ namespace reflection
 {
 	template <typename T>
 	constexpr inline auto metadata =
-		PP::get_type<decltype(PP::apply_template(get(PP::value_v<(std::size_t)get_type_class(PP::type_v<T>)>, detail::basic_types), PP::type_v<T>))>{};
+		PP::get_type<decltype(PP::apply_template(get(PP::value<(std::size_t)get_type_class(PP::type<T>)>, detail::basic_types), PP::type<T>))>{};
 }
 
 template <typename T>

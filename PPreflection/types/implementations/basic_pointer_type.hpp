@@ -12,7 +12,7 @@ namespace detail
 
 		constexpr const pointable_type& remove_pointer() const noexcept override final
 		{
-			return type::reflect(PP::type_v<std::remove_pointer_t<T>>);
+			return type::reflect(PP::type<std::remove_pointer_t<T>>);
 		}
 	};
 }

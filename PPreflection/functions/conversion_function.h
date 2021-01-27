@@ -24,7 +24,7 @@ public:
 
 	inline dynamic_variable invoke(dynamic_reference caller) const;
 
-	constexpr PP::view auto get_overloads() const noexcept
+	constexpr PP::concepts::view auto get_overloads() const noexcept
 	{
 		return get_conversion_overloads();
 	}

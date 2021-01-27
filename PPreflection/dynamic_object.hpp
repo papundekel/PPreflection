@@ -156,5 +156,5 @@ constexpr bool dynamic_object::is_void() const noexcept
 
 template <std::invocable Initializer>
 constexpr dynamic_object::dynamic_object(Initializer&& i)
-	: x(data(allocate_and_initialize(std::forward<Initializer>(i))), deleter(&type::reflect(PP::type_v<decltype(std::forward<Initializer>(i)())>)))
+	: x(data(allocate_and_initialize(std::forward<Initializer>(i))), deleter(&type::reflect(PP::type<decltype(std::forward<Initializer>(i)())>)))
 {}

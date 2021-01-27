@@ -3,3 +3,4 @@ out
 *.exe
 build/
 cpp.hint
+CMakeSettings.json

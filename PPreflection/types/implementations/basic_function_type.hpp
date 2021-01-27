@@ -12,7 +12,7 @@ namespace detail
 	{
 		static_assert(std::is_function_v<T>);
 
-		static constexpr auto info = PP::get_function_info(PP::type_v<T>);
+		static constexpr auto info = PP::get_function_info(PP::type<T>);
 
 		static constexpr auto parameter_types_ = function_type::reflect_parameter_types(info.parameter_types);
 

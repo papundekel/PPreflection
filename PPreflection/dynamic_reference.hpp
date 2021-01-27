@@ -27,7 +27,7 @@ constexpr T&& dynamic_reference::cast_unsafe(PP::type_t<T>) const noexcept
 template <typename T>
 constexpr T&& dynamic_reference::cast(PP::type_t<T>) const
 {
-	if (type::reflect(PP::type_v<T&&>).can_be_initialized(t.make_reference<std::is_rvalue_reference_v<T&&>>()))
+	if (type::reflect(PP::type<T&&>).can_be_initialized(t.make_reference<std::is_rvalue_reference_v<T&&>>()))
 		return cast_unsafe<T>();
 	else
 		throw bad_cast_exception{};
@@ -36,7 +36,7 @@ constexpr T&& dynamic_reference::cast(PP::type_t<T>) const
 template <typename T>
 T* dynamic_reference::get_ptr() const
 {
-	if (type::reflect(PP::type_v<T>).can_be_pointer_initialized(t.remove_reference()))
+	if (type::reflect(PP::type<T>).can_be_pointer_initialized(t.remove_reference()))
 		return reinterpret_cast<T*>(ptr);
 	else
 		return nullptr;
@@ -59,5 +59,5 @@ requires PP::different_cvref<dynamic_reference, R>
 	&& PP::different_cvref<dynamic_object, R>
 	&& PP::different_cvref<dynamic_variable, R>
 constexpr dynamic_reference::dynamic_reference(R&& reference) noexcept
-	: dynamic_reference(&reference, type::reflect(PP::type_v<R&&>))
+	: dynamic_reference(&reference, type::reflect(PP::type<R&&>))
 {}

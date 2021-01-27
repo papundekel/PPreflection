@@ -9,7 +9,7 @@ namespace detail
 	{
 		constexpr const static_member_function::overloaded& get_overloaded_function() const noexcept override final
 		{
-			return reflect(reflect(PP::type_v<reflection::overloads<PP::value_t<f>>>));
+			return reflect(reflect(PP::type<reflection::overloads<PP::value_t<f>>>));
 		}
 	};
 }

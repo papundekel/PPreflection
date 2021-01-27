@@ -11,7 +11,7 @@ namespace detail
 	public:
 		constexpr const complete_object_type& remove_extent() const noexcept
 		{
-			return type::reflect(PP::type_v<std::remove_extent_t<T>>);
+			return type::reflect(PP::type<std::remove_extent_t<T>>);
 		}
 	};
 }

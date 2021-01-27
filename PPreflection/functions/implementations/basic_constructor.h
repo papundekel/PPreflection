@@ -17,7 +17,7 @@ namespace detail
 {
 	template <typename Class, typename Base, typename... Parameters>
 	using basic_constructor_base_base = basic_function<
-		PP::get_v_type<PP::add_function_cvrefn(PP::type_v<Class(Parameters...)>, PP::value_v<std::is_nothrow_constructible_v<Class, Parameters...>>)>,
+		PP::get_v_type<PP::add_function_cvrefn(PP::type<Class(Parameters...)>, PP::value<std::is_nothrow_constructible_v<Class, Parameters...>>)>,
 		Base>;
 
 	template <typename Class, typename Base, typename... Parameters>
@@ -25,7 +25,7 @@ namespace detail
 	{
 		constexpr const overloaded_constructor& get_overloaded_function() const noexcept override final
 		{
-			return reflect(PP::type_v<reflection::constructors<Class>>);
+			return reflect(PP::type<reflection::constructors<Class>>);
 		}
 	};
 
@@ -36,14 +36,14 @@ namespace detail
 		dynamic_variable invoke_unsafe(PP::any_iterator<const dynamic_reference&> arg_iterator) const noexcept override final
 		{
 			if constexpr (std::is_destructible_v<Class>)
-				return this->invoke_helper(PP::construct(PP::type_v<Class>), arg_iterator, this->parameter_types);
+				return this->invoke_helper(PP::construct(PP::type<Class>), arg_iterator, this->parameter_types);
 			else
 				return dynamic_variable::create_invalid(dynamic_object::invalid_code::indestructible_return_value);
 		}
 
 		constexpr bool is_explicit() const noexcept override final
 		{
-			return reflect(PP::type_v<reflection::is_explicit<Class, Parameters...>>);
+			return reflect(PP::type<reflection::is_explicit<Class, Parameters...>>);
 		}
 	};
 
@@ -58,19 +58,19 @@ namespace detail
 
 		constexpr const type& get_parameter_type() const noexcept override final
 		{
-			return type::reflect(PP::type_v<Parameter>);
+			return type::reflect(PP::type<Parameter>);
 		}
 	};
 
 	template <typename Class, typename... Parameters>
-	constexpr inline auto basic_constructor_helper = PP::type_v<basic_constructor_general<Class, Parameters...>>;
+	constexpr inline auto basic_constructor_helper = PP::type<basic_constructor_general<Class, Parameters...>>;
 
 	template <typename Class, typename Parameter>
 	constexpr inline auto basic_constructor_helper<Class, Parameter> =
 		PP::conditional(
-			PP::value_v<reflect(PP::type_v<reflection::is_explicit<Class, Parameter>>)>,
-			PP::type_v<basic_constructor_general<Class, Parameter>>,
-			PP::type_v<basic_constructor_opc<Class, Parameter>>);
+			PP::value<reflect(PP::type<reflection::is_explicit<Class, Parameter>>)>,
+			PP::type<basic_constructor_general<Class, Parameter>>,
+			PP::type<basic_constructor_opc<Class, Parameter>>);
 
 	template <typename Class, typename... Parameters>
 	using basic_constructor = PP::get_v_type<basic_constructor_helper<Class, Parameters...>>;

@@ -11,7 +11,7 @@ namespace detail
 	{
 		constexpr return_type_reference return_type() const noexcept override final
 		{
-			return type::reflect(PP::type_v<Return>);
+			return type::reflect(PP::type<Return>);
 		}
 
 		constexpr PP::any_view<const conversion_function&> get_conversion_overloads() const noexcept override final
@@ -21,7 +21,7 @@ namespace detail
 
 		constexpr const class_type& get_parent() const noexcept override final
 		{
-			return type::reflect(PP::type_v<Class>);
+			return type::reflect(PP::type<Class>);
 		}
 	};
 }

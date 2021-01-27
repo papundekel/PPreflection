@@ -36,7 +36,7 @@ public:
 		return &t;
 	}
 
-	static constexpr bool can_initialize_many(PP::view auto&& parameter_types, PP::view auto&& argument_types) noexcept
+	static constexpr bool can_initialize_many(PP::concepts::view auto&& parameter_types, PP::concepts::view auto&& argument_types) noexcept
 	{
 		if (PP::count(parameter_types) != PP::count(argument_types))
 			return false;

@@ -31,10 +31,10 @@ public:
 
 const std::array<const pointer_type*, 4> void_type::types =
 {
-	&type::reflect(PP::type_v<void*>),
-	&type::reflect(PP::type_v<const void*>),
-	&type::reflect(PP::type_v<volatile void*>),
-	&type::reflect(PP::type_v<const volatile void*>),
+	&type::reflect(PP::type<void*>),
+	&type::reflect(PP::type<const void*>),
+	&type::reflect(PP::type<volatile void*>),
+	&type::reflect(PP::type<const volatile void*>),
 };
 
 const std::array<std::string_view, 4> void_type::names =

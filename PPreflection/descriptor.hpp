@@ -5,5 +5,5 @@
 template <typename T>
 constexpr std::string_view descriptor::reflect_name(PP::type_t<T>) noexcept
 {
-	return ::reflect(PP::type_v<reflection::name<T>>);
+	return ::reflect(PP::type<reflection::name<T>>);
 }

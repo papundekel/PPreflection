@@ -12,7 +12,7 @@ protected:
 public:
 	constexpr const Namespace& get_parent() const noexcept override = 0;
 
-	constexpr PP::view auto get_overloads() const noexcept
+	constexpr PP::concepts::view auto get_overloads() const noexcept
 	{
 		return get_namespace_overloads();
 	}

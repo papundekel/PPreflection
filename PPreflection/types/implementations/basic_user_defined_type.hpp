@@ -12,7 +12,7 @@ namespace detail
 	{
 		constexpr parent_descriptor_reference get_parent() const noexcept override final
 		{
-			return ::reflect(::reflect(PP::type_v<reflection::parent<T>>));
+			return ::reflect(::reflect(PP::type<reflection::parent<T>>));
 		}
 	};
 }

@@ -1,17 +1,16 @@
 #pragma once
-#include <type_traits>
 #include "../descriptor.h"
-#include "../type_disjunction_reference.hpp"
-#include "view.hpp"
-#include "get_type.hpp"
-#include "tuple_get.hpp"
-#include "type_tuple.hpp"
 #include "../get_type_class.hpp"
-#include "tuple_map_to_array.hpp"
+#include "../type_disjunction_reference.hpp"
+#include "get_type.hpp"
 #include "same.hpp"
-#include "tuple_filter.hpp"
-#include "tuple_foldr.hpp"
+#include "tuple_find_index.hpp"
+#include "tuple_fold.hpp"
+#include "tuple_get.hpp"
 #include "tuple_map.hpp"
+#include "tuple_to_array.hpp"
+#include "type_tuple.hpp"
+#include "view.hpp"
 
 class reference_type;
 class void_type;
@@ -34,9 +33,9 @@ class non_array_object_type;
 class user_defined_type;
 class class_type;
 
-struct super_class_type {};
+class super_class_type;
 
-constexpr inline auto type_classes = PP::type_tuple_v<
+constexpr inline auto type_classes = PP::type_tuple<
 	reference_type,
 	void_type,
 	function_type,
@@ -60,31 +59,32 @@ constexpr inline auto type_classes = PP::type_tuple_v<
 	super_class_type>;
 
 
-constexpr inline auto get_type_class_type =
-	[]<typename T>(T)
-	{
-		return get(PP::value_v<get_type_class(T{})>, type_classes);
-	};
+PP_FUNCTOR(get_type_class_type, PP::concepts::type auto t)
+{
+	return type_classes[PP::value<get_type_class(PP_COPY_TYPE(t))>];
+};
 
 constexpr inline auto common_type_class =
-	[]<typename T, typename U>(PP::type_t<T> a, PP::type_t<U> b)
+	[](PP::concepts::type auto t, PP::concepts::type auto u)
 	{
-		if constexpr (PP::concepts::same<super_class_type, T>)
-			return b;
-		else if constexpr (PP::concepts::same<super_class_type, U>)
-			return a;
-		else if constexpr (PP::concepts::same<T, U>)
-			return a;
+		constexpr auto T = PP_COPY_TYPE(t);
+		constexpr auto U = PP_COPY_TYPE(u);
+	
+		if constexpr (T == PP::type<super_class_type>)
+			return u;
+		else if constexpr (U == PP::type<super_class_type>)
+			return t;
+		else if constexpr (T == U)
+			return t;
 		else
 		{
-			auto filtered =
-				PP::tuple_filter < []<typename X>(X)
+			constexpr auto i = PP::tuple_find_index([T, U]
+			(PP::concepts::type auto V)
 			{
-				using Y = PP::get_type<X>;
-				return std::is_base_of_v<Y, T> && std::is_base_of_v<Y, U>;
-			} > (type_classes);
+				return PP::is_derived_from(T, V) && PP::is_derived_from(U, V);
+			}, type_classes);
 
-			return get(PP::value_v<0>, filtered);
+			return type_classes[PP::value<i>];
 		}
 	};
 
@@ -107,7 +107,7 @@ public:
 
 	constexpr virtual type_disjunction_reference<reference_type, pointable_type> reference_or_pointable() const noexcept = 0;
 
-	static constexpr void print_parameter_types(PP::simple_ostream& out, PP::view auto&& parameter_types) noexcept
+	static constexpr void print_parameter_types(PP::simple_ostream& out, PP::concepts::view auto&& parameter_types) noexcept
 	{
 		out.write("(");
 		if (!PP::empty(parameter_types))
@@ -124,14 +124,14 @@ public:
 	}
 
 	template <typename T>
-	using get_class = PP::get_type<decltype(get(PP::value_v<(std::size_t)get_type_class(PP::type_v<T>)>, type_classes))>;
+	using get_class = PP::get_type<decltype(get(PP::value<(std::size_t)get_type_class(PP::type<T>)>, type_classes))>;
 
 	template <typename T>
 	static constexpr const get_class<T>& reflect_helper(PP::type_t<T>) noexcept;
 
-	static constexpr auto reflect_helper(PP::tuple_like auto&& types) noexcept
+	static constexpr auto reflect_helper(PP::concepts::tuple auto&& types) noexcept
 	{
-		constexpr auto super_class = PP::type_v<super_class_type>;
+		constexpr auto super_class = PP::type<super_class_type>;
 		auto class_types = PP::tuple_map(get_type_class_type, PP_FORWARD(types));
 		auto common_class = PP::tuple_foldr(common_type_class, super_class, class_types);
 
@@ -143,7 +143,7 @@ public:
 				{
 					return reflect_helper(PP_FORWARD(x));
 				}, PP_FORWARD(types),
-					PP::map_v(PP::template_v<std::add_lvalue_reference>, PP::map_v(PP::template_v<std::add_const>, common_class)));
+					PP::map_v(PP::Template<std::add_lvalue_reference>, PP::map_v(PP::Template<std::add_const>, common_class)));
 	}
 
 	static constexpr auto reflect = [](auto&& x) -> decltype(auto) { return reflect_helper(PP_FORWARD(x)); };

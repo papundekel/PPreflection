@@ -11,7 +11,7 @@ namespace detail
 	{
 		static constexpr auto static_member_overloads = reflect_many(
 			basic_overloaded_function<ID, static_member_function>::raw_overloads,
-			PP::type_v<const static_member_function&>);
+			PP::type<const static_member_function&>);
 
 	public:
 		constexpr PP::any_view<const static_member_function&> get_static_member_overloads() const noexcept override final
@@ -21,7 +21,7 @@ namespace detail
 
 		constexpr const class_type& get_parent() const noexcept override final
 		{
-			return reflect(reflect(PP::type_v<reflection::parent<ID>>));
+			return reflect(reflect(PP::type<reflection::parent<ID>>));
 		}
 	};
 }

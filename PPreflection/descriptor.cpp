@@ -1,5 +1,5 @@
-#include "descriptor.h"
 #include "../PP/PP/array_ostream.hpp"
+#include "descriptor.h"
 
 std::ostream& operator<<(std::ostream& out, const descriptor& d)
 {

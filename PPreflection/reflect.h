@@ -1,10 +1,10 @@
 #pragma once
-#include "pointer_view.h"
-#include "view.hpp"
-#include "value_t.hpp"
-#include "type_t.hpp"
 #include "overload_cast.h"
-#include "tuple_map_to_array.hpp"
+#include "pointer_view.h"
+#include "tuple_to_array.hpp"
+#include "type_t.hpp"
+#include "value_t.hpp"
+#include "view.hpp"
 
 namespace reflection
 {
@@ -33,12 +33,12 @@ constexpr auto&& reflect_helper(PP::type_t<T>) noexcept;
 template <auto v>
 constexpr auto&& reflect_helper(PP::value_t<v>) noexcept
 {
-	return reflect_helper(PP::type_v<PP::value_t<v>>);
+	return reflect_helper(PP::type<PP::value_t<v>>);
 }
 
 constexpr inline auto reflect = [](auto&& x) -> decltype(auto) { return reflect_helper(PP_FORWARD(x)); };
 
-constexpr auto reflect_many(PP::tuple_like auto&& tuple, auto type) noexcept
+constexpr auto reflect_many(PP::concepts::tuple auto&& tuple, auto type) noexcept
 {
 	return PP::tuple_map_to_array(reflect, PP_FORWARD(tuple), type);
 }
@@ -47,13 +47,13 @@ constexpr auto reflect_many(PP::tuple_like auto&& tuple, auto type) noexcept
 //
 // template <> constexpr inline auto reflection::metadata<type> = detail::basic_namespace<type>{};
 // template <> constexpr inline auto reflection::metadata<reflection::name<type>> = std::string_view(name);
-// template <> constexpr inline auto reflection::metadata<reflection::parent<type>> = PP::type_v<parent>;
+// template <> constexpr inline auto reflection::metadata<reflection::parent<type>> = PP::type<parent>;
 // template <> constexpr inline auto reflection::metadata<reflection::types<type>> = PP::type_tuple_v<>;
 // template <> constexpr inline auto reflection::metadata<reflection::namespaces<type>> = PP::type_tuple_v<>;
 
 // struct
 //
 // template <> constexpr inline auto reflection::metadata<reflection::name<type>> = std::string_view("S");
-// template <> constexpr inline auto reflection::metadata<reflection::parent<type>> = PP::type_v<parent>;
+// template <> constexpr inline auto reflection::metadata<reflection::parent<type>> = PP::type<parent>;
 // template <> constexpr inline auto reflection::metadata<reflection::nested_classes<type>> = PP::type_tuple_v<>;
 // template <> constexpr inline auto reflection::metadata<reflection::base_classes<type>> = PP::type_tuple_v<>;

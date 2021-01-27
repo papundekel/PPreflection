@@ -10,7 +10,7 @@ namespace detail
 	protected:
 		constexpr std::string_view get_name() const noexcept
 		{
-			return this->reflect_name(PP::type_v<std::remove_cv_t<ID>>);
+			return this->reflect_name(PP::type<std::remove_cv_t<ID>>);
 		}
 
 	private:

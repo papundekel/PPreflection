@@ -17,7 +17,7 @@ protected:
 public:
 	inline dynamic_variable invoke(dynamic_reference caller, pointer_view<const dynamic_reference> args = {}) const;
 
-	constexpr PP::view auto get_overloads() const noexcept
+	constexpr PP::concepts::view auto get_overloads() const noexcept
 	{
 		return get_member_function_overloads();
 	}

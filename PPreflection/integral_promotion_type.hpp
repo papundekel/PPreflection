@@ -12,5 +12,5 @@ class integral_promotion_type
 	static constexpr unsigned long long helper(unsigned long long);
 
 public:
-	static constexpr auto value_f() noexcept { return PP::type_v<decltype(helper(Holdee{}))>; }
+	static constexpr auto value_f() noexcept { return PP::type<decltype(helper(Holdee{}))>; }
 };

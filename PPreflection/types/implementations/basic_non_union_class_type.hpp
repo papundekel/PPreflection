@@ -11,7 +11,7 @@ namespace detail
 		static_assert(std::is_class_v<T>);
 
 		static constexpr auto base_classes =
-			reflect_many(::reflect(PP::type_v<reflection::base_classes<T>>), PP::type_v<const non_union_class_type&>);
+			reflect_many(::reflect(PP::type<reflection::base_classes<T>>), PP::type<const non_union_class_type&>);
 
 		constexpr PP::any_view<const non_union_class_type&> get_base_classes() const noexcept override final
 		{

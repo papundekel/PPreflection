@@ -9,19 +9,19 @@ namespace detail
 	class basic_namespace : public Namespace
 	{
 		static constexpr auto types =
-			PP::tuple_map_to_array(::reflect, ::reflect(PP::type_v<reflection::types<ID>>), PP::type_v<const user_defined_type&>);
+			PP::tuple_map_to_array(::reflect, ::reflect(PP::type<reflection::types<ID>>), PP::type<const user_defined_type&>);
 
 		static constexpr auto namespaces =
-			PP::tuple_map_to_array(::reflect, ::reflect(PP::type_v<reflection::namespaces<ID>>), PP::type_v<const Namespace&>);
+			PP::tuple_map_to_array(::reflect, ::reflect(PP::type<reflection::namespaces<ID>>), PP::type<const Namespace&>);
 
 		static constexpr auto functions =
-			PP::tuple_map_to_array(::reflect, ::reflect(PP::type_v<reflection::functions<ID>>), PP::type_v<const overloaded_namespace_function&>);
+			PP::tuple_map_to_array(::reflect, ::reflect(PP::type<reflection::functions<ID>>), PP::type<const overloaded_namespace_function&>);
 
 	public:
 		constexpr const Namespace* get_parent() const noexcept override final
 		{
 			if constexpr (!std::is_same_v<ID, Namespace::global>)
-				return &::reflect(::reflect(PP::type_v<reflection::parent<ID>>));
+				return &::reflect(::reflect(PP::type<reflection::parent<ID>>));
 			else
 				return nullptr;
 		}
@@ -39,7 +39,7 @@ namespace detail
 		}
 		constexpr std::string_view get_name() const noexcept override final
 		{
-			return descriptor::reflect_name(PP::type_v<ID>);
+			return descriptor::reflect_name(PP::type<ID>);
 		}
 	};
 }

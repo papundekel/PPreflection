@@ -1,8 +1,8 @@
 #include <iostream>
-#include "Namespace.hpp"
-#include "reflect.hpp"
-#include "dynamic_variable.hpp"
-
+//#include "Namespace.hpp"
+//#include "reflect.hpp"
+//#include "dynamic_variable.hpp"
+/*
 class S
 {
 public:
@@ -69,7 +69,7 @@ template <> constexpr inline auto reflection::metadata<reflection::functions<Nam
 
 // ::S
 template <> constexpr inline auto reflection::metadata<reflection::name<S>> = "S"sv;
-template <> constexpr inline auto reflection::metadata<reflection::parent<S>> = PP::type_v<namespace_global>;
+template <> constexpr inline auto reflection::metadata<reflection::parent<S>> = PP::type<namespace_global>;
 template <> constexpr inline auto reflection::metadata<reflection::nested_classes<S>> = PP::type_tuple_v<>;
 template <> constexpr inline auto reflection::metadata<reflection::base_classes<S>> = PP::type_tuple_v<>;
 template <> constexpr inline auto reflection::metadata<reflection::static_member_functions<S>> = PP::type_tuple_v<
@@ -95,26 +95,26 @@ template <> constexpr inline auto reflection::metadata<reflection::is_explicit<S
 // ::S::g
 template <> constexpr inline auto reflection::metadata<reflection::overloaded::S::g> = detail::basic_overloaded_static_member_function<reflection::overloaded::S::g>{};
 template <> constexpr inline auto reflection::metadata<reflection::name<reflection::overloaded::S::g>> = "g"sv;
-template <> constexpr inline auto reflection::metadata<reflection::parent<reflection::overloaded::S::g>> = PP::type_v<S>;
+template <> constexpr inline auto reflection::metadata<reflection::parent<reflection::overloaded::S::g>> = PP::type<S>;
 template <> constexpr inline auto reflection::metadata<reflection::overloads<reflection::overloaded::S::g>> = PP::type_tuple_v<
 	PP::value_t<::S::g>
 >;
 
 // ::S::g(int)
 template <> constexpr inline auto reflection::metadata<PP::value_t<::S::g>> = detail::basic_static_member_function<::S::g>{};
-template <> constexpr inline auto reflection::metadata<reflection::overloads<PP::value_t<::S::g>>> = PP::type_v<reflection::overloaded::S::g>;
+template <> constexpr inline auto reflection::metadata<reflection::overloads<PP::value_t<::S::g>>> = PP::type<reflection::overloaded::S::g>;
 
 // ::S::f
 template <> constexpr inline auto reflection::metadata<reflection::overloaded::S::f> = detail::basic_overloaded_member_function<reflection::overloaded::S::f>{};
 template <> constexpr inline auto reflection::metadata<reflection::name<reflection::overloaded::S::f>> = "f"sv;
-template <> constexpr inline auto reflection::metadata<reflection::parent<reflection::overloaded::S::f>> = PP::type_v<S>;
+template <> constexpr inline auto reflection::metadata<reflection::parent<reflection::overloaded::S::f>> = PP::type<S>;
 template <> constexpr inline auto reflection::metadata<reflection::overloads<reflection::overloaded::S::f>> = PP::type_tuple_v<
 	PP::value_t<&::S::f>
 >;
 
 // ::S::f(int) const
 template <> constexpr inline auto reflection::metadata<PP::value_t<&::S::f>> = detail::basic_member_function<&::S::f>{};
-template <> constexpr inline auto reflection::metadata<reflection::overloads<PP::value_t<&::S::f>>> = PP::type_v<reflection::overloaded::S::f>;
+template <> constexpr inline auto reflection::metadata<reflection::overloads<PP::value_t<&::S::f>>> = PP::type<reflection::overloaded::S::f>;
 
 // ::S::operator int
 //template <> constexpr inline auto reflection::metadata<reflection::conversion_function<::S, int>> = detail::basic_overloaded_conversion_function<::S, int>{};
@@ -124,20 +124,21 @@ template <> constexpr inline auto reflection::metadata<reflection::overloads<PP:
 
 // ::S::operator int() const
 //template <> constexpr inline auto reflection::metadata<PP::value_t<&::S::operator int>> = detail::basic_conversion_function<&::S::operator int>{};
-//template <> constexpr inline auto reflection::metadata<reflection::overloads<PP::value_t<&::S::operator int>>> = PP::type_v<reflection::conversion_function<::S, int>>;
+//template <> constexpr inline auto reflection::metadata<reflection::overloads<PP::value_t<&::S::operator int>>> = PP::type<reflection::conversion_function<::S, int>>;
 //template <> constexpr inline auto reflection::metadata<reflection::is_explicit<PP::value_t<&::S::operator int>>> = false;
 
 // ::f
 template <> constexpr inline auto reflection::metadata<reflection::overloaded::f> = detail::basic_overloaded_namespace_function<reflection::overloaded::f>{};
 template <> constexpr inline auto reflection::metadata<reflection::name<reflection::overloaded::f>> = "f"sv;
-template <> constexpr inline auto reflection::metadata<reflection::parent<reflection::overloaded::f>> = PP::type_v<namespace_global>;
+template <> constexpr inline auto reflection::metadata<reflection::parent<reflection::overloaded::f>> = PP::type<namespace_global>;
 template <> constexpr inline auto reflection::metadata<reflection::overloads<reflection::overloaded::f>> = PP::type_tuple_v<
 	PP::value_t<::f>
 >;
 
 // ::f()
 template <> constexpr inline auto reflection::metadata<PP::value_t<::f>> = detail::basic_namespace_function<::f>{};
-template <> constexpr inline auto reflection::metadata<reflection::overloads<PP::value_t<::f>>> = PP::type_v<reflection::overloaded::f>;
+template <> constexpr inline auto reflection::metadata<reflection::overloads<PP::value_t<::f>>> = PP::type<reflection::overloaded::f>;
+*/
 
 int main()
 {

@@ -13,11 +13,11 @@ namespace detail
 	class basic_class_type : public basic_user_defined_type<T, Base>
 	{
 		static constexpr auto static_member_functions =
-			reflect_many(reflect(PP::type_v<reflection::static_member_functions<T>>), PP::type_v<const static_member_function::overloaded&>);
+			reflect_many(reflect(PP::type<reflection::static_member_functions<T>>), PP::type<const static_member_function::overloaded&>);
 		static constexpr auto member_functions =
-			reflect_many(reflect(PP::type_v<reflection::member_functions<T>>), PP::type_v<const member_function::overloaded&>);
+			reflect_many(reflect(PP::type<reflection::member_functions<T>>), PP::type<const member_function::overloaded&>);
 		static constexpr auto nested_classes =
-			reflect_many(reflect(PP::type_v<reflection::nested_classes<T>>), PP::type_v<const user_defined_type&>);
+			reflect_many(reflect(PP::type<reflection::nested_classes<T>>), PP::type<const user_defined_type&>);
 
 	public:
 		static_assert(std::is_class_v<T> || std::is_union_v<T>);
@@ -33,7 +33,7 @@ namespace detail
 
 		constexpr const overloaded_constructor& get_constructors() const noexcept override final
 		{
-			return reflect(PP::type_v<reflection::constructors<T>>);
+			return reflect(PP::type<reflection::constructors<T>>);
 		}
 		constexpr PP::any_view<const member_function::overloaded&> get_member_functions() const noexcept override final
 		{

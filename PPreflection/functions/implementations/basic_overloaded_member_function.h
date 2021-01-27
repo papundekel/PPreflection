@@ -11,7 +11,7 @@ namespace detail
 	protected:
 		static constexpr auto member_function_base_overloads = reflect_many(
 			basic_overloaded_function<ID, Base>::raw_overloads,
-			PP::type_v<const Base&>);
+			PP::type<const Base&>);
 
 		constexpr PP::any_view<const member_function&> get_member_function_overloads() const noexcept override final
 		{

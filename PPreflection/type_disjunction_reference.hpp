@@ -5,23 +5,23 @@
 template <typename... TypeClasses>
 class type_disjunction_reference
 {
-	std::variant<PP::cref_t<TypeClasses>...> variant;
+	std::variant<PP::clref_t<TypeClasses>...> v;
 
 public:
 	template <typename T>
 	constexpr type_disjunction_reference(T&& t) noexcept
-		: variant(std::forward<T>(t))
+		: v(PP_FORWARD(t))
 	{}
 
 	template <typename T>
 	constexpr bool holds_alternative() const noexcept
 	{
-		return std::holds_alternative<PP::cref_t<T>>(variant);
+		return std::holds_alternative<PP::clref_t<T>>(v);
 	}
 
 	template <typename F>
 	constexpr decltype(auto) visit(F&& f) const
 	{
-		return std::visit([&f](auto reference) -> decltype(auto) { return std::forward<F>(f)(reference.get()); }, variant);
+		return std::visit(PP::cal * PP::ref(f) | PP::unref, v);
 	}
 };

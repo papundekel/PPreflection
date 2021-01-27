@@ -21,7 +21,7 @@ namespace detail
 		}
 		constexpr bool is_explicit() const noexcept override final
 		{
-			return reflect(PP::template_v<reflection::is_explicit> + PP::type_v<PP::value_t<mf>>);
+			return reflect(PP::Template<reflection::is_explicit> + PP::type<PP::value_t<mf>>);
 		}
 	};
 }

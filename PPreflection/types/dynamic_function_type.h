@@ -14,7 +14,7 @@ class dynamic_function_type final : public function_type
 public:
 	constexpr dynamic_function_type(
 			return_type_reference return_type,
-			PP::view auto&& parameter_types,
+			PP::concepts::view auto&& parameter_types,
 			bool Noexcept = false,
 			PP::cv_qualifier cv = PP::cv_qualifier::none,
 			PP::ref_qualifier ref = PP::ref_qualifier::none) noexcept

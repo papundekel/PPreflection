@@ -11,7 +11,7 @@ namespace detail
 	{
 		static constexpr auto namespace_overloads = reflect_many(
 			basic_overloaded_function<ID, namespace_function>::raw_overloads,
-			PP::type_v<const namespace_function&>);
+			PP::type<const namespace_function&>);
 
 	public:
 		constexpr PP::any_view<const namespace_function&> get_namespace_overloads() const noexcept override final
@@ -21,7 +21,7 @@ namespace detail
 
 		constexpr const Namespace& get_parent() const noexcept override final
 		{
-			return reflect(reflect(PP::type_v<reflection::parent<ID>>));
+			return reflect(reflect(PP::type<reflection::parent<ID>>));
 		}
 	};
 }

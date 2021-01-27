@@ -1,10 +1,10 @@
 #pragma once
-#include "basic_user_defined_type.hpp"
-#include "../enum_type.h"
 #include "../../reflect.h"
-#include "tuple_map.hpp"
-#include "tuple_map_to_array.hpp"
+#include "../enum_type.h"
+#include "basic_user_defined_type.hpp"
 #include "functional/id.hpp"
+#include "tuple_map.hpp"
+#include "tuple_to_array.hpp"
 
 namespace detail
 {
@@ -13,7 +13,7 @@ namespace detail
 	{
 		constexpr std::string_view get_name() const noexcept override final
 		{
-			return ::reflect(PP::type_v<reflection::name<PP::value_t<value>>>);
+			return ::reflect(PP::type<reflection::name<PP::value_t<value>>>);
 		}
 		constexpr std::int64_t get_value() const noexcept override final
 		{
@@ -30,7 +30,7 @@ namespace detail
 		static_assert(std::is_enum_v<T>);
 
 		static constexpr auto enum_values_basic =
-			PP::tuple_map([](auto v) { return basic_enum_value(v); }, ::reflect(PP::type_v<reflection::enum_values<T>>));
+			PP::tuple_map([](auto v) { return basic_enum_value(v); }, ::reflect(PP::type<reflection::enum_values<T>>));
 
 		static constexpr auto enum_values_array = PP::tuple_map_to_array(PP::id<const enum_value&>, enum_values_basic);
 

@@ -7,5 +7,5 @@
 template <typename T>
 constexpr const type::get_class<T>& type::reflect_helper(PP::type_t<T>) noexcept
 {
-	return ::reflect(PP::type_v<T>);
+	return ::reflect(PP::type<T>);
 }

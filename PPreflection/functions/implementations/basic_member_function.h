@@ -2,7 +2,7 @@
 #include "../member_function.h"
 #include "basic_function.h"
 #include "pointer_to_member_info.hpp"
-#include "forward.hpp"
+#include "utility/forward.hpp"
 #include "apply_transform.hpp"
 #include "template_t.hpp"
 #include "apply_template.hpp"
@@ -27,7 +27,7 @@ namespace detail
 		static constexpr auto caller_type = []()
 		{
 			if constexpr (base::ref != PP::ref_qualifier::rvalue)
-				return PP::template_v<std::add_lvalue_reference> / class_type_;
+				return PP::Template<std::add_lvalue_reference> / class_type_;
 			else
 				return class_type_;
 		}();
@@ -35,13 +35,13 @@ namespace detail
 	private:
 		constexpr const class_type& get_parent() const noexcept override final
 		{
-			return type::reflect(PP::type_v<S>);
+			return type::reflect(PP::type<S>);
 			//return type::reflect(class_type_);
 		}
 
 		constexpr const Base::overloaded& get_overloaded_function() const noexcept override final
 		{
-			return reflect(reflect(PP::type_v<reflection::overloads<PP::value_t<mf>>>));
+			return reflect(reflect(PP::type<reflection::overloads<PP::value_t<mf>>>));
 		}
 	};
 
