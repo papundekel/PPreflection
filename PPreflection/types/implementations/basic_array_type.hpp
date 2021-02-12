@@ -1,9 +1,9 @@
 #pragma once
-#include <type_traits>
-#include "basic_object_type.hpp"
 #include "../complete_object_type.h"
+#include "basic_object_type.hpp"
+#include "remove_extent.hpp"
 
-namespace detail
+namespace PPreflection::detail
 {
 	template <typename T, typename Base>
 	class basic_array_type : public Base
@@ -11,7 +11,7 @@ namespace detail
 	public:
 		constexpr const complete_object_type& remove_extent() const noexcept
 		{
-			return type::reflect(PP::type<std::remove_extent_t<T>>);
+			return type::reflect | PP::remove_extent <<= PP::type<T>;
 		}
 	};
 }

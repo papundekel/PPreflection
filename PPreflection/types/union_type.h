@@ -1,10 +1,13 @@
 #pragma once
 #include "class_type.h"
 
-class union_type : public class_type
+namespace PPreflection
 {
-	constexpr const non_union_class_type* as_non_union_class() const noexcept override final
+	class union_type : public class_type
 	{
-		return nullptr;
-	}
-};
+		constexpr const non_union_class_type* as_non_union_class() const noexcept override final
+		{
+			return nullptr;
+		}
+	};
+}

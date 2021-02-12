@@ -1,8 +1,9 @@
 #pragma once
 #include "descriptor.h"
 #include "reflect.h"
+#include "remove_cv.hpp"
 
-namespace detail
+namespace PPreflection::detail
 {
 	template <typename ID, typename Base>
 	class basic_named_descriptor : public Base
@@ -10,7 +11,7 @@ namespace detail
 	protected:
 		constexpr std::string_view get_name() const noexcept
 		{
-			return this->reflect_name(PP::type<std::remove_cv_t<ID>>);
+			return this->reflect_name(~PP::type<ID>);
 		}
 
 	private:

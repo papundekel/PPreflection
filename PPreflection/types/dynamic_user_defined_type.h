@@ -4,24 +4,27 @@
 #include "dynamic_cv_qualifiable_type.h"
 #include "../parent_descriptor_reference.h"
 
-namespace detail
+namespace PPreflection
 {
-	template <typename Base>
-	class dynamic_user_defined_type : public detail::dynamic_named_descriptor<detail::dynamic_cv_qualifiable_type<Base>>
+	namespace detail
 	{
-		static_assert(std::is_base_of_v<user_defined_type, Base>);
-
-		parent_descriptor_reference parent;
-
-	public:
-		constexpr dynamic_user_defined_type(std::string_view name, parent_descriptor_reference parent, PP::cv_qualifier cv = PP::cv_qualifier::none) noexcept
-			: dynamic_named_descriptor<dynamic_cv_qualifiable_type<Base>>(name, cv)
-			, parent(parent)
-		{}
-
-		constexpr parent_descriptor_reference get_parent() const noexcept override final
+		template <typename Base>
+		class dynamic_user_defined_type : public detail::dynamic_named_descriptor<detail::dynamic_cv_qualifiable_type<Base>>
 		{
-			return parent;
-		}
-	};
+			static_assert(std::is_base_of_v<user_defined_type, Base>);
+
+			parent_descriptor_reference parent;
+
+		public:
+			constexpr dynamic_user_defined_type(std::string_view name, parent_descriptor_reference parent, PP::cv_qualifier cv = PP::cv_qualifier::none) noexcept
+				: dynamic_named_descriptor<dynamic_cv_qualifiable_type<Base>>(name, cv)
+				, parent(parent)
+			{}
+
+			constexpr parent_descriptor_reference get_parent() const noexcept override final
+			{
+				return parent;
+			}
+		};
+	}
 }

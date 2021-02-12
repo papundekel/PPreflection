@@ -1,23 +1,23 @@
 #pragma once
-#include <type_traits>
-#include "basic_type.hpp"
 #include "../reference_type.h"
+#include "basic_type.hpp"
+#include "concepts/reference.hpp"
 
-namespace detail
+namespace PPreflection::detail
 {
 	template <typename T>
 	class basic_reference_type final : public basic_type<T, reference_type>
 	{
-		static_assert(std::is_reference_v<T>);
+		static_assert(PP::concepts::reference<T>);
 
 		constexpr const referencable_type& remove_reference() const noexcept override final
 		{
-			return type::reflect(PP::type<std::remove_reference_t<T>>);
+			return this->reflect(!PP::type<T>);
 		}
 
 		constexpr bool is_lvalue() const noexcept override final
 		{
-			return std::is_lvalue_reference_v<T>;
+			return PP::concepts::lvalue_reference<T>;
 		}
 	};
 }

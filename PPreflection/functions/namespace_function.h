@@ -2,31 +2,34 @@
 #include "function.h"
 #include "../Namespace.h"
 
-class namespace_function;
-
-class overloaded_namespace_function : public function::overloaded
+namespace PPreflection
 {
-protected:
-	constexpr virtual PP::any_view<const namespace_function&> get_namespace_overloads() const noexcept = 0;
+	class namespace_function;
 
-public:
-	constexpr const Namespace& get_parent() const noexcept override = 0;
-
-	constexpr PP::concepts::view auto get_overloads() const noexcept
+	class overloaded_namespace_function : public function::overloaded
 	{
-		return get_namespace_overloads();
-	}
-};
+	protected:
+		constexpr virtual PP::any_view_ra<const namespace_function&> get_namespace_overloads() const noexcept = 0;
 
-class namespace_function : public function
-{
-public:
-	using overloaded = overloaded_namespace_function;
+	public:
+		constexpr const Namespace& get_parent() const noexcept override = 0;
 
-	constexpr const overloaded& get_overloaded_function() const noexcept override = 0;
+		constexpr PP::concepts::view auto get_overloads() const noexcept
+		{
+			return get_namespace_overloads();
+		}
+	};
 
-	constexpr const Namespace& get_parent() const noexcept override final
+	class namespace_function : public function
 	{
-		return get_overloaded_function().get_parent();
-	}
-};
+	public:
+		using overloaded = overloaded_namespace_function;
+
+		constexpr const overloaded& get_overloaded_function() const noexcept override = 0;
+
+		constexpr const Namespace& get_parent() const noexcept override final
+		{
+			return get_overloaded_function().get_parent();
+		}
+	};
+}

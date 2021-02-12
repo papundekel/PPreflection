@@ -1,22 +1,25 @@
 #pragma once
 #include "dynamic_specific_reference_type_base.h"
 
-class dynamic_reference_type : public detail::dynamic_specific_reference_type_base
+namespace PPreflection
 {
-	bool lvalue_;
-
-public:
-	constexpr dynamic_reference_type(const referencable_type& referenced_type, bool lvalue) noexcept
-		: dynamic_specific_reference_type_base(referenced_type)
-		, lvalue_(lvalue)
-	{}
-	constexpr dynamic_reference_type(const reference_type& type) noexcept
-		: dynamic_specific_reference_type_base(type.remove_reference())
-		, lvalue_(type.is_lvalue())
-	{}
-
-	constexpr bool is_lvalue() const noexcept override final
+	class dynamic_reference_type : public detail::dynamic_specific_reference_type_base
 	{
-		return lvalue_;
-	}
-};
+		bool lvalue_;
+
+	public:
+		constexpr dynamic_reference_type(const referencable_type& referenced_type, bool lvalue) noexcept
+			: dynamic_specific_reference_type_base(referenced_type)
+			, lvalue_(lvalue)
+		{}
+		constexpr dynamic_reference_type(const reference_type& type) noexcept
+			: dynamic_specific_reference_type_base(type.remove_reference())
+			, lvalue_(type.is_lvalue())
+		{}
+
+		constexpr bool is_lvalue() const noexcept override final
+		{
+			return lvalue_;
+		}
+	};
+}

@@ -1,63 +1,66 @@
 #pragma once
+#include <exception>
 #include <type_traits>
 #include <utility>
-#include <exception>
+
+#include "add_pointer.hpp"
+#include "add_reference.hpp"
+#include "concepts/rvalue_reference.hpp"
 #include "dynamic_reference.h"
-#include "types/reference_type.h"
-#include "reflect.h"
 #include "overloaded.hpp"
+#include "reflect.h"
+#include "reinterpret_cast.hpp"
+#include "remove_reference.hpp"
+#include "types/reference_type.h"
 #include "types/type.h"
 
-constexpr dynamic_reference::dynamic_reference(const void* ptr, const reference_type& t) noexcept
+constexpr PPreflection::dynamic_reference::dynamic_reference(const void* ptr, const reference_type& t) noexcept
 	: ptr(const_cast<void*>(ptr))
-	, t(t)
+	, type_(t)
 {}
 
-constexpr const reference_type& dynamic_reference::get_type() const noexcept
+constexpr const PPreflection::reference_type& PPreflection::dynamic_reference::get_type() const noexcept
 {
-	return t;
+	return type_;
 }
 
-template <typename T>
-constexpr T&& dynamic_reference::cast_unsafe(PP::type_t<T>) const noexcept
+constexpr auto PPreflection::dynamic_reference::cast_unsafe(PP::concepts::type auto t) const noexcept -> PP_GET_TYPE(t)&&
 {
-	return std::forward<T>(*reinterpret_cast<std::remove_reference_t<T>*>(ptr));
+	return (PP_GET_TYPE(t)&&)(*PP::reinterpret__cast(!PP::add_pointer(t), ptr));
 }
 
-template <typename T>
-constexpr T&& dynamic_reference::cast(PP::type_t<T>) const
+constexpr auto PPreflection::dynamic_reference::cast(PP::concepts::type auto t) const -> PP_GET_TYPE(t)&&
 {
-	if (type::reflect(PP::type<T&&>).can_be_initialized(t.make_reference<std::is_rvalue_reference_v<T&&>>()))
-		return cast_unsafe<T>();
+	constexpr auto T = PP_COPY_TYPE(t) + PP::add_rvalue_tag;
+
+	if (type::reflect(T).can_be_initialized(type_.make_reference(PP::value<!PP::is_rvalue_reference(T)>)))
+		return cast_unsafe(t);
 	else
 		throw bad_cast_exception{};
 }
 
-template <typename T>
-T* dynamic_reference::get_ptr() const
+auto PPreflection::dynamic_reference::get_ptr(PP::concepts::type auto t) const
 {
-	if (type::reflect(PP::type<T>).can_be_pointer_initialized(t.remove_reference()))
-		return reinterpret_cast<T*>(ptr);
+	if (type::reflect(t).can_be_pointer_initialized(type_.remove_reference()))
+		return PP::reinterpret__cast(PP::add_pointer(t), ptr);
 	else
 		return nullptr;
 }
 
-template <typename T>
-T& dynamic_reference::get_ref() const&
+auto& PPreflection::dynamic_reference::get_ref(PP::concepts::type auto t) const&
 {
-	return cast<T&>();
+	return cast(t + PP::add_lvalue_tag);
+}
+auto&& PPreflection::dynamic_reference::get_ref(PP::concepts::type auto t) const&&
+{
+	return cast(t + PP::add_rvalue_tag);
 }
 
-template <typename T>
-T&& dynamic_reference::get_ref() const&&
-{
-	return cast<T&&>();
-}
+constexpr PPreflection::dynamic_reference::dynamic_reference(auto&& r) noexcept
+requires ((
+	!PP::is_same_except_cvref* PP::type<dynamic_reference> &&
+	!PP::is_same_except_cvref* PP::type<dynamic_object> &&
+	!PP::is_same_except_cvref* PP::type<dynamic_variable>)(PP_DECLTYPE(r)))
 
-template <typename R>
-requires PP::different_cvref<dynamic_reference, R>
-	&& PP::different_cvref<dynamic_object, R>
-	&& PP::different_cvref<dynamic_variable, R>
-constexpr dynamic_reference::dynamic_reference(R&& reference) noexcept
-	: dynamic_reference(&reference, type::reflect(PP::type<R&&>))
+	: dynamic_reference(&r, type::reflect(PP_DECLTYPE(r)))
 {}

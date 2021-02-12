@@ -1,12 +1,15 @@
 #pragma once
 #include "cv_qualifier.hpp"
 
-namespace detail
+namespace PPreflection
 {
-	template <typename Base>
-	class cv_qualifiable_type : public Base
+	namespace detail
 	{
-	public:
-		constexpr virtual PP::cv_qualifier get_cv_qualifier() const noexcept = 0;
-	};
+		template <typename Base>
+		class cv_qualifiable_type : public Base
+		{
+		public:
+			constexpr virtual PP::cv_qualifier get_cv_qualifier() const noexcept = 0;
+		};
+	}
 }

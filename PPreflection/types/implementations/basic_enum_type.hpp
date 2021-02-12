@@ -2,39 +2,41 @@
 #include "../../reflect.h"
 #include "../enum_type.h"
 #include "basic_user_defined_type.hpp"
+#include "concepts/enum.hpp"
 #include "functional/id.hpp"
 #include "tuple_map.hpp"
 #include "tuple_to_array.hpp"
 
-namespace detail
+namespace PPreflection::detail
 {
 	template <auto value>
 	class basic_enum_value final : public enum_value
 	{
 		constexpr std::string_view get_name() const noexcept override final
 		{
-			return ::reflect(PP::type<reflection::name<PP::value_t<value>>>);
+			return PPreflection::reflect(PP::type<tags::name<PP::value_t<value>>>);
 		}
-		constexpr std::int64_t get_value() const noexcept override final
+		constexpr long long get_value() const noexcept override final
 		{
-			return std::int64_t(value);
+			return (long long)value;
 		}
-	public:
-		constexpr basic_enum_value(PP::type_t<PP::value_t<value>>) noexcept
-		{}
 	};
+
+	PP_FUNCTOR(make_basic_enum_value, PP::concepts::value auto v)
+	{
+		return basic_enum_value<PP_GET_VALUE(v)>{};
+	}};
 
 	template <typename T>
 	class basic_enum_type final : public basic_user_defined_type<T, enum_type>
 	{
-		static_assert(std::is_enum_v<T>);
+		static_assert(PP::concepts::enum_type<T>);
 
-		static constexpr auto enum_values_basic =
-			PP::tuple_map([](auto v) { return basic_enum_value(v); }, ::reflect(PP::type<reflection::enum_values<T>>));
+		static constexpr auto enum_values_basic = make_basic_enum_value + PPreflection::reflect(PP::type<tags::enum_values<T>>);
 
-		static constexpr auto enum_values_array = PP::tuple_map_to_array(PP::id<const enum_value&>, enum_values_basic);
+		static constexpr auto enum_values_array = PP::id_typed * PP::type<const enum_value&> << enum_values_basic;
 
-		constexpr PP::any_view<const enum_value&> get_values() const noexcept override final
+		constexpr PP::any_view_ra<const enum_value&> get_values() const noexcept override final
 		{
 			return enum_values_array;
 		}

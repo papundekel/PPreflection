@@ -1,16 +1,18 @@
 #pragma once
-#include "type_t.hpp"
+#include "construct_pack.hpp"
+#include "decl_type.hpp"
+#include "functional/compose.hpp"
+#include "overloaded.hpp"
+#include "type_tuple.hpp"
 
-template <typename Holdee>
-class integral_promotion_type
+namespace PPreflection
 {
-	static constexpr int helper(int);
-	static constexpr unsigned int helper(unsigned int);
-	static constexpr long helper(long);
-	static constexpr unsigned long helper(unsigned long);
-	static constexpr long long helper(long long);
-	static constexpr unsigned long long helper(unsigned long long);
-
-public:
-	static constexpr auto value_f() noexcept { return PP::type<decltype(helper(Holdee{}))>; }
-};
+	constexpr inline auto get_integral_promotion_type =
+		PP::decl_type_copy |
+		PP::make_overloaded_pack[PP::functor{ []
+				(PP::concepts::type auto t)
+				{
+					return [](PP_GET_TYPE(t)) { return {}; };
+				}} + PP::type_tuple<int, unsigned int, long, unsigned long, long long, unsigned long long>] |
+		PP::construct_pack;
+}

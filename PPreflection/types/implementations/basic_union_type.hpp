@@ -1,13 +1,13 @@
 #pragma once
-#include <type_traits>
-#include "basic_class_type.hpp"
 #include "../union_type.h"
+#include "basic_class_type.hpp"
+#include "concepts/union.hpp"
 
-namespace detail
+namespace PPreflection::detail
 {
 	template <typename T>
 	class basic_union_type final : public basic_class_type<T, union_type>
 	{
-		static_assert(std::is_union_v<T>);
+		static_assert(PP::concepts::union_type<T>);
 	};
 }

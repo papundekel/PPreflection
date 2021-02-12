@@ -1,43 +1,40 @@
 #pragma once
 #include "concepts/same_except_cvref.hpp"
-#include "types/dynamic_reference_type.h"
+#include "get_type.hpp"
 #include "type_t.hpp"
+#include "types/dynamic_reference_type.h"
 
-class reference_type;
-class dynamic_variable;
-
-class dynamic_reference
+namespace PPreflection
 {
-	friend class dynamic_object;
+	class reference_type;
+	class dynamic_variable;
+	class dynamic_object;
 
-	void* ptr;
-	dynamic_reference_type t;
+	class dynamic_reference
+	{
+		friend class dynamic_object;
 
-	constexpr dynamic_reference(const void* ptr, const reference_type& t) noexcept;
+		void* ptr;
+		dynamic_reference_type type_;
 
-public:
-	struct bad_cast_exception {};
+		constexpr dynamic_reference(const void* ptr, const reference_type& t) noexcept;
 
-	constexpr const reference_type& get_type() const noexcept;
+	public:
+		struct bad_cast_exception {};
 
-	template <typename T>
-	constexpr T&& cast_unsafe(PP::type_t<T> = {}) const noexcept;
+		constexpr const reference_type& get_type() const noexcept;
 
-	template <typename T>
-	constexpr T&& cast(PP::type_t<T> = {}) const;
+		constexpr auto cast_unsafe(PP::concepts::type auto t) const noexcept -> PP_GET_TYPE(t)&&;
+		constexpr auto cast(PP::concepts::type auto t) const -> PP_GET_TYPE(t)&&;
 
-	template <typename T>
-	T* get_ptr() const;
+		auto get_ptr(PP::concepts::type auto t) const;
+		auto& get_ref(PP::concepts::type auto t) const&;
+		auto&& get_ref(PP::concepts::type auto t) const&&;
 
-	template <typename T>
-	T& get_ref() const&;
-
-	template <typename T>
-	T&& get_ref() const&&;
-
-	constexpr dynamic_reference(auto&& reference) noexcept
-		requires
-		PP::concepts::different_except_cvref<dynamic_reference>, R> &&
-		PP::concepts::different_except_cvref<dynamic_object>, R> &&
-		PP::concepts::different_except_cvref<dynamic_variable>, R>;
-};
+		constexpr dynamic_reference(auto&& r) noexcept
+			requires ((
+				!PP::is_same_except_cvref * PP::type<dynamic_reference> &&
+				!PP::is_same_except_cvref * PP::type<dynamic_object> &&
+				!PP::is_same_except_cvref * PP::type<dynamic_variable>)(PP_DECLTYPE(r)));
+	};
+}

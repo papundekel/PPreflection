@@ -3,17 +3,18 @@
 #include "../member_function.h"
 #include "basic_overloaded_named_function.h"
 
-namespace detail
+namespace PPreflection::detail
 {
 	template <typename ID, typename Base>
 	class basic_overloaded_member_function_base : public basic_overloaded_function<ID, Base>
 	{
 	protected:
 		static constexpr auto member_function_base_overloads = reflect_many(
-			basic_overloaded_function<ID, Base>::raw_overloads,
+			basic_overloaded_member_function_base::raw_overloads,
 			PP::type<const Base&>);
 
-		constexpr PP::any_view<const member_function&> get_member_function_overloads() const noexcept override final
+	private:
+		constexpr PP::any_view_ra<const member_function&> get_member_function_overloads() const noexcept override final
 		{
 			return member_function_base_overloads;
 		}

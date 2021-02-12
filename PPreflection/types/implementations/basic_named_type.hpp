@@ -1,8 +1,8 @@
 #pragma once
-#include "../type.h"
 #include "../../basic_named_descriptor.h"
+#include "../type.h"
 
-namespace detail
+namespace PPreflection::detail
 {
 	template <typename T, typename Base>
 	class basic_named_type : public basic_named_descriptor<T, Base>

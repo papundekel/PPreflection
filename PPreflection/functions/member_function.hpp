@@ -5,7 +5,7 @@
 #include "../types/class_type.h"
 #include "../types/reference_type.h"
 
-constexpr void member_function::print_name_after_parent(PP::simple_ostream& out) const noexcept
+constexpr void PPreflection::member_function::print_name_after_parent(PP::simple_ostream& out) const noexcept
 {
 	print_name_basic(out);
 
@@ -29,13 +29,13 @@ constexpr void member_function::print_name_after_parent(PP::simple_ostream& out)
 
 	print_noexcept(out);
 }
-constexpr bool member_function::has_name(std::string_view name) const noexcept
+constexpr bool PPreflection::member_function::has_name(std::string_view name) const noexcept
 {
 	// TODO
 	return false;
 }
 
-constexpr bool member_function::can_invoke(const reference_type& caller_arg_type) const noexcept
+constexpr bool PPreflection::member_function::can_invoke(const reference_type& caller_arg_type) const noexcept
 {
 	const referencable_type& caller_par_type = get_parent();
 
@@ -43,37 +43,37 @@ constexpr bool member_function::can_invoke(const reference_type& caller_arg_type
 	{
 	//case PP::ref_qualifier::none:
 	case PP::ref_qualifier::lvalue:
-		return caller_par_type.make_reference<false>().can_be_initialized(caller_arg_type);
+		return caller_par_type.make_reference(PP::value_false).can_be_initialized(caller_arg_type);
 	case PP::ref_qualifier::rvalue:
-		return caller_par_type.make_reference<true>().can_be_initialized(caller_arg_type);
+		return caller_par_type.make_reference(PP::value_true).can_be_initialized(caller_arg_type);
 	default:
-		return caller_par_type.make_reference<false>().can_be_initialized(caller_arg_type) || caller_par_type.make_reference<true>().can_be_initialized(caller_arg_type);
+		return caller_par_type.make_reference(PP::value_false).can_be_initialized(caller_arg_type) || caller_par_type.make_reference(PP::value_true).can_be_initialized(caller_arg_type);
 	}
 }
 
-inline dynamic_variable member_function::invoke_unsafe(PP::any_iterator<const dynamic_reference&> arg_iterator) const noexcept
+inline PPreflection::dynamic_variable PPreflection::member_function::invoke_unsafe(PP::any_iterator_ra<const dynamic_reference&> arg_iterator) const noexcept
 {
-	return invoke_unsafe_member(arg_iterator[0], arg_iterator + 1);
+	return invoke_unsafe_member(*arg_iterator, arg_iterator + 1);
 }
 
-constexpr bool member_function::can_invoke(PP::any_view<const reference_type&> argument_types) const noexcept
+constexpr bool PPreflection::member_function::can_invoke(PP::any_view_ra<const reference_type&> argument_types) const noexcept
 {
-	return !PP::empty(argument_types) && can_invoke(argument_types[0]) && function::can_invoke(1 >> argument_types);
+	return !PP::view_empty(argument_types) && can_invoke(argument_types[0]) && function::can_invoke(1 >> argument_types);
 }
 
-inline dynamic_variable member_function::invoke(dynamic_reference caller, pointer_view<const dynamic_reference> args) const
+inline PPreflection::dynamic_variable PPreflection::member_function::invoke(dynamic_reference caller, PP::any_view_ra<const dynamic_reference&> args) const
 {
 	if (can_invoke(caller.get_type()) && function::can_invoke(args | PP::transform([](const dynamic_reference& r) -> const reference_type& { return r.get_type(); })))
-		return invoke_unsafe_member(caller, PP::begin(args));
+		return invoke_unsafe_member(caller, PP::view_begin(args));
 	else
 		return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
 }
 
-inline dynamic_variable overloaded_member_function::invoke(dynamic_reference caller, pointer_view<const dynamic_reference> args) const
+inline PPreflection::dynamic_variable PPreflection::overloaded_member_function::invoke(dynamic_reference caller, PP::any_view_ra<const dynamic_reference&> args) const
 {
 	for (const member_function& f : get_overloads())
 		if (f.can_invoke(caller.get_type()) && f.function::can_invoke(args | PP::transform([](const dynamic_reference& r) -> const reference_type& { return r.get_type(); })))
-			return f.invoke_unsafe_member(caller, PP::begin(args));
+			return f.invoke_unsafe_member(caller, PP::view_begin(args));
 
 	return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
 }

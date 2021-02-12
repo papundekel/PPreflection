@@ -1,30 +1,22 @@
 #pragma once
-#include <utility>
+#include <new>
+
 #include "dynamic_object.h"
-#include "types/complete_object_type.h"
 #include "dynamic_reference.h"
 #include "reflect.h"
+#include "types/complete_object_type.h"
 
-constexpr dynamic_object dynamic_object::create_invalid(invalid_code code) noexcept
-{
-	return dynamic_object(code);
-}
-constexpr dynamic_object dynamic_object::create_void() noexcept
-{
-	return dynamic_object(invalid_code::none);
-}
 template <typename T, typename... Args>
-constexpr dynamic_object dynamic_object::create(Args&&... args)
+constexpr PPreflection::dynamic_object PPreflection::dynamic_object::create(Args&&... args)
 {
-	return dynamic_object([&args...]() { return T(std::forward<Args>(args)...); });
+	return dynamic_object([&args...]() { return T(PP_FORWARD(args)...); });
 }
 
-template <bool reference>
-constexpr void* dynamic_object::get_address(PP::unique<data>& p, const complete_object_type& t) noexcept
+constexpr void* PPreflection::dynamic_object::get_address(PP::concepts::value auto reference, PP::unique<data>& p, const complete_object_type& t) noexcept
 {
 	void* ptr = nullptr;
 
-	std::byte*& buffer = p.inner().ptr;
+	char*& buffer = p.inner().ptr;
 
 	if (t.size() <= sizeof(void*))
 		ptr = &buffer;
@@ -33,12 +25,11 @@ constexpr void* dynamic_object::get_address(PP::unique<data>& p, const complete_
 
 	return ptr;
 }
-template <bool reference>
-constexpr const void* dynamic_object::get_address(const PP::unique<data>& p, const complete_object_type& t) noexcept
+constexpr const void* PPreflection::dynamic_object::get_address(PP::concepts::value auto reference, const PP::unique<data>& p, const complete_object_type& t) noexcept
 {
 	const void* ptr = nullptr;
 
-	std::byte* const& buffer = p.inner().ptr;
+	char* const& buffer = p.inner().ptr;
 
 	if (t.size() <= sizeof(void*))
 		ptr = &buffer;
@@ -48,113 +39,107 @@ constexpr const void* dynamic_object::get_address(const PP::unique<data>& p, con
 	return ptr;
 }
 
-constexpr void dynamic_object::deleter::operator()(PP::unique<data>& u) const
+constexpr void PPreflection::dynamic_object::deleter::operator()(PP::unique<data>& u) const
 {
 	const complete_object_type* t = type_.inner();
 	if (!t)
 		return;
 
-	auto ptr = get_address<false>(u, *t);
+	auto ptr = get_address(PP::value_false, u, *t);
 	t->destroy(ptr);
 
 	if (t->size() > sizeof(void*))
 		operator delete(u.inner().ptr);
 }
 
-template <bool reference>
-constexpr void* dynamic_object::get_address_helper() noexcept
+constexpr void* PPreflection::dynamic_object::get_address_helper(PP::concepts::value auto reference) noexcept
 {
-	return get_address<reference>(x.inner(), get_type());
+	return get_address(reference, x.inner(), get_type());
 }
-template <bool reference>
-constexpr const void* dynamic_object::get_address_helper() const noexcept
+constexpr const void* PPreflection::dynamic_object::get_address_helper(PP::concepts::value auto reference) const noexcept
 {
-	return get_address<reference>(x.inner(), get_type());
+	return get_address(reference, x.inner(), get_type());
 }
-constexpr dynamic_object::dynamic_object(invalid_code code) noexcept
-	: x(data(code), deleter(nullptr))
+constexpr PPreflection::dynamic_object::dynamic_object(invalid_code code) noexcept
+	: x(PP::make_unique_default(data(code)), deleter(nullptr))
 {}
-template <typename Initializer>
-constexpr std::byte* dynamic_object::allocate_and_initialize(Initializer&& i) noexcept
+constexpr char* PPreflection::dynamic_object::allocate_and_initialize(PP::concepts::invocable auto&& i) noexcept
 {
-	using R = decltype(std::forward<Initializer>(i)());
+	using R = decltype(PP_FORWARD(i)());
 
-	std::byte* ptr = nullptr;
+	char* ptr = nullptr;
 
-	void* allocate_memory = nullptr;
+	void* allocated_memory = nullptr;
 
-	if constexpr (sizeof(R) <= sizeof(void*))
-		allocate_memory = &ptr;
+	if constexpr (sizeof(R) <= sizeof(ptr))
+		allocated_memory = &ptr;
 	else
 	{
-		ptr = operator new(sizeof(R), std::align_val_t{ alignof(R) });
-		allocate_memory = ptr;
+		ptr = operator new(sizeof(R), std::align_val_t{alignof(R)});
+		allocated_memory = ptr;
 	}
-
-	new (allocate_memory) R(std::forward<Initializer>(i)());
+	
+	new (allocated_memory) R(PP_FORWARD(i)());
 
 	return ptr;
 }
 
-constexpr const complete_object_type* dynamic_object::get_type_helper() const noexcept
+constexpr const PPreflection::complete_object_type* PPreflection::dynamic_object::get_type_helper() const noexcept
 {
-	return x.get_destructor().type_.inner();
+	return x.get_destructor().get_type();
 }
-constexpr const complete_object_type& dynamic_object::get_type() const noexcept
+constexpr const PPreflection::complete_object_type& PPreflection::dynamic_object::get_type() const noexcept
 {
 	return *get_type_helper();
 }
-constexpr void* dynamic_object::get_address() noexcept
+constexpr void* PPreflection::dynamic_object::get_address() noexcept
 {
-	return get_address_helper<true>();
+	return get_address_helper(PP::value_true);
 }
-constexpr const void* dynamic_object::get_address() const noexcept
+constexpr const void* PPreflection::dynamic_object::get_address() const noexcept
 {
-	return get_address_helper<true>();
+	return get_address_helper(PP::value_true);
 }
-template <bool rvalue>
-constexpr dynamic_reference dynamic_object::reference_cast_helper() noexcept
+constexpr PPreflection::dynamic_reference PPreflection::dynamic_object::reference_cast_helper(PP::concepts::value auto rvalue) noexcept
 {
-	return dynamic_reference(get_address(), get_type().make_reference<rvalue>());
+	return dynamic_reference(get_address(), get_type().make_reference(rvalue));
 }
-template <bool rvalue>
-constexpr dynamic_reference dynamic_object::reference_cast_helper() const noexcept
+constexpr PPreflection::dynamic_reference PPreflection::dynamic_object::reference_cast_helper(PP::concepts::value auto rvalue) const noexcept
 {
-	return dynamic_reference(get_address(), get_type().make_reference<rvalue>());
+	return dynamic_reference(get_address(), get_type().make_reference(rvalue));
 }
-constexpr dynamic_object::operator dynamic_reference() &  noexcept
+constexpr PPreflection::dynamic_object::operator dynamic_reference() &  noexcept
 {
-	return reference_cast_helper<false>();
+	return reference_cast_helper(PP::value_false);
 }
-constexpr dynamic_object::operator dynamic_reference() && noexcept
+constexpr PPreflection::dynamic_object::operator dynamic_reference() && noexcept
 {
-	return reference_cast_helper<true>();
+	return reference_cast_helper(PP::value_true);
 }
-constexpr dynamic_object::operator dynamic_reference() const&  noexcept
+constexpr PPreflection::dynamic_object::operator dynamic_reference() const&  noexcept
 {
-	return reference_cast_helper<false>();
+	return reference_cast_helper(PP::value_false);
 }
-constexpr dynamic_object::operator dynamic_reference() const&& noexcept
+constexpr PPreflection::dynamic_object::operator dynamic_reference() const&& noexcept
 {
-	return reference_cast_helper<true>();
+	return reference_cast_helper(PP::value_true);
 }
-constexpr dynamic_object::operator bool() const noexcept
+constexpr PPreflection::dynamic_object::operator bool() const noexcept
 {
 	return get_error_code() == invalid_code::none;
 }
-constexpr dynamic_object::invalid_code dynamic_object::get_error_code() const noexcept
+constexpr PPreflection::dynamic_object::invalid_code PPreflection::dynamic_object::get_error_code() const noexcept
 {
 	if (get_type_helper())
 		return invalid_code::none;
 	else
 		return x.inner().inner().code;
 }
-constexpr bool dynamic_object::is_void() const noexcept
+constexpr bool PPreflection::dynamic_object::is_void() const noexcept
 {
 	return !get_type_helper() && (bool)*this;
 }
 
-template <std::invocable Initializer>
-constexpr dynamic_object::dynamic_object(Initializer&& i)
-	: x(data(allocate_and_initialize(std::forward<Initializer>(i))), deleter(&type::reflect(PP::type<decltype(std::forward<Initializer>(i)())>)))
+constexpr PPreflection::dynamic_object::dynamic_object(PP::concepts::invocable auto&& i)
+	: x(PP::make_unique_default(data(allocate_and_initialize(PP_FORWARD(i)))), deleter(&type::reflect(PP_DECLTYPE(PP_FORWARD(i)()))))
 {}

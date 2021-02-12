@@ -1,13 +1,13 @@
 #pragma once
-#include <type_traits>
-#include "basic_array_type.hpp"
 #include "../unknown_bound_array_type.h"
+#include "basic_array_type.hpp"
+#include "concepts/unbounded_array.hpp"
 
-namespace detail
+namespace PPreflection::detail
 {
 	template <typename T>
 	class basic_unknown_bound_array_type final : public basic_array_type<T, basic_object_type<T, unknown_bound_array_type>>
 	{
-		static_assert(std::is_unbounded_array_v<T>);
+		static_assert(PP::concepts::unbounded_array<T>);
 	};
 }

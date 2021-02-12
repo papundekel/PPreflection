@@ -1,16 +1,16 @@
 #pragma once
-#include <type_traits>
-#include "basic_referencable_type.hpp"
-#include "../function_type.h"
-#include "function_info.hpp"
 #include "../../reflect.h"
+#include "../function_type.h"
+#include "basic_referencable_type.hpp"
+#include "concepts/function.hpp"
+#include "function_info.hpp"
 
-namespace detail
+namespace PPreflection::detail
 {
 	template <typename T>
 	class basic_function_type : public basic_referencable_type<T, function_type>
 	{
-		static_assert(std::is_function_v<T>);
+		static_assert(PP::concepts::function<T>);
 
 		static constexpr auto info = PP::get_function_info(PP::type<T>);
 
@@ -20,7 +20,7 @@ namespace detail
 		{
 			return type::reflect(info.return_type);
 		}
-		constexpr PP::any_view<parameter_type_reference> parameter_types() const noexcept override final
+		constexpr PP::any_view_ra<parameter_type_reference> parameter_types() const noexcept override final
 		{
 			return parameter_types_;
 		}

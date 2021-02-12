@@ -1,14 +1,17 @@
 #pragma once
 #include "../descriptor.h"
 
-namespace detail
+namespace PPreflection
 {
-	template <typename Base>
-	class non_user_defined_type : public Base
+	namespace detail
 	{
-		constexpr const descriptor* get_parent_implementation() const noexcept override final
+		template <typename Base>
+		class non_user_defined_type : public Base
 		{
-			return nullptr;
-		}
-	};
+			constexpr const descriptor* get_parent_implementation() const noexcept override final
+			{
+				return nullptr;
+			}
+		};
+	}
 }

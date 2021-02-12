@@ -1,26 +1,29 @@
 #pragma once
 #include "maybe_static_member_function.h"
 
-class static_member_function;
-
-class overloaded_static_member_function : public detail::maybe_static_member_function::overloaded
+namespace PPreflection
 {
-protected:
-	constexpr virtual PP::any_view<const static_member_function&> get_static_member_overloads() const noexcept = 0;
+	class static_member_function;
 
-public:
-	constexpr PP::concepts::view auto get_overloads() const noexcept
+	class overloaded_static_member_function : public detail::maybe_static_member_function::overloaded
 	{
-		return get_static_member_overloads();
-	}
-};
+	protected:
+		constexpr virtual PP::any_view_ra<const static_member_function&> get_static_member_overloads() const noexcept = 0;
 
-class static_member_function : public detail::maybe_static_member_function 
-{
-public:
-	using overloaded = overloaded_static_member_function;
+	public:
+		constexpr PP::concepts::view auto get_overloads() const noexcept
+		{
+			return get_static_member_overloads();
+		}
+	};
 
-	constexpr const overloaded& get_overloaded_function() const noexcept override = 0;
+	class static_member_function : public detail::maybe_static_member_function
+	{
+	public:
+		using overloaded = overloaded_static_member_function;
 
-	//constexpr const class_type& get_parent() const noexcept final = 0;
-};
+		constexpr const overloaded& get_overloaded_function() const noexcept override = 0;
+
+		//constexpr const class_type& get_parent() const noexcept final = 0;
+	};
+}

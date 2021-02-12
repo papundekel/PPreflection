@@ -1,7 +1,7 @@
 #include "../PP/PP/array_ostream.hpp"
 #include "descriptor.h"
 
-std::ostream& operator<<(std::ostream& out, const descriptor& d)
+std::ostream& PPreflection::operator<<(std::ostream& out, const PPreflection::descriptor& d)
 {
 	PP::array_ostream<64> so;
 	d.print_name(so);

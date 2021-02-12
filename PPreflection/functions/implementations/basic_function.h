@@ -1,7 +1,7 @@
 #pragma once
 #include "../../types/function_type.h"
 
-namespace detail
+namespace PPreflection::detail
 {
 	template <typename F, typename Base>
 	class basic_function : public Base

@@ -1,20 +1,20 @@
 #pragma once
 #include "../member_function.h"
-#include "basic_function.h"
-#include "pointer_to_member_info.hpp"
-#include "utility/forward.hpp"
-#include "apply_transform.hpp"
-#include "template_t.hpp"
+#include "add_reference.hpp"
 #include "apply_template.hpp"
+#include "apply_transform.hpp"
+#include "basic_function.h"
+#include "conditional.hpp"
+#include "pointer_to_member_info.hpp"
+#include "template_t.hpp"
+#include "utility/forward.hpp"
 
-class S;
-
-namespace detail
+namespace PPreflection::detail
 {
 	template <auto mf, typename Base>
-	using basic_member_function_helper = basic_function
-		< PP::apply_transform_t<PP::get_pointer_to_member_member_type, decltype(mf)>
-		, Base>;
+	using basic_member_function_helper = PP_GET_TYPE(PP::Template<basic_function>(
+		PP::get_pointer_to_member_member_type(PP_DECLTYPE(mf)),
+		PP::type<Base>));
 
 	template <auto mf, typename Base>
 	class basic_member_function_base : public basic_member_function_helper<mf, Base>
@@ -24,31 +24,24 @@ namespace detail
 	protected:
 		static constexpr auto class_type_ = PP::get_pointer_to_member_info(PP_DECLTYPE(mf)).class_type;
 
-		static constexpr auto caller_type = []()
-		{
-			if constexpr (base::ref != PP::ref_qualifier::rvalue)
-				return PP::Template<std::add_lvalue_reference> / class_type_;
-			else
-				return class_type_;
-		}();
+		static constexpr auto caller_type = conditional(base::ref != PP::ref_qualifier::rvalue, class_type_ + PP::add_lvalue_tag, class_type_);
 
 	private:
 		constexpr const class_type& get_parent() const noexcept override final
 		{
-			return type::reflect(PP::type<S>);
-			//return type::reflect(class_type_);
+			return type::reflect(class_type_);
 		}
 
 		constexpr const Base::overloaded& get_overloaded_function() const noexcept override final
 		{
-			return reflect(reflect(PP::type<reflection::overloads<PP::value_t<mf>>>));
+			return reflect(reflect(PP::type<tags::overloads<PP::value_t<mf>>>));
 		}
 	};
 
 	template <auto mf>
 	class basic_member_function : public basic_member_function_base<mf, member_function>
 	{
-		dynamic_variable invoke_unsafe_member(dynamic_reference caller, PP::any_iterator<const dynamic_reference&> arg_iterator) const noexcept override final
+		dynamic_variable invoke_unsafe_member(dynamic_reference caller, PP::any_iterator_ra<const dynamic_reference&> arg_iterator) const noexcept override final
 		{
 			return this->invoke_helper(
 				[this, caller](auto&&... args) -> decltype(auto)

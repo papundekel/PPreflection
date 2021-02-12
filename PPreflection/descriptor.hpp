@@ -2,8 +2,7 @@
 #include "descriptor.h"
 #include "reflect.h"
 
-template <typename T>
-constexpr std::string_view descriptor::reflect_name(PP::type_t<T>) noexcept
+constexpr std::string_view PPreflection::descriptor::reflect_name(PP::concepts::type auto t) noexcept
 {
-	return ::reflect(PP::type<reflection::name<T>>);
+	return reflect(PP::type<tags::name<PP_GET_TYPE(t)>>);
 }

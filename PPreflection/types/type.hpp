@@ -4,8 +4,7 @@
 #include "../reflect.h"
 #include <type_traits>
 
-template <typename T>
-constexpr const type::get_class<T>& type::reflect_helper(PP::type_t<T>) noexcept
+constexpr auto PPreflection::type::reflect_helper(PP::concepts::type auto t) noexcept -> const PP_APPLY_TRANSFORM(get_class, t)&
 {
-	return ::reflect(PP::type<T>);
+	return PPreflection::reflect(t);
 }

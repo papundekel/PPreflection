@@ -1,19 +1,19 @@
 #pragma once
-#include <type_traits>
-#include "basic_class_type.hpp"
 #include "../non_union_class_type.h"
+#include "basic_class_type.hpp"
+#include "concepts/non_union_class.hpp"
 
-namespace detail
+namespace PPreflection::detail
 {
 	template <typename T>
 	class basic_non_union_class_type final : public basic_class_type<T, non_union_class_type>
 	{
-		static_assert(std::is_class_v<T>);
+		static_assert(PP::concepts::non_union_class<T>);
 
 		static constexpr auto base_classes =
-			reflect_many(::reflect(PP::type<reflection::base_classes<T>>), PP::type<const non_union_class_type&>);
+			reflect_many(PPreflection::reflect(PP::type<tags::base_classes<T>>), PP::type<const non_union_class_type&>);
 
-		constexpr PP::any_view<const non_union_class_type&> get_base_classes() const noexcept override final
+		constexpr PP::any_view_ra<const non_union_class_type&> get_base_classes() const noexcept override final
 		{
 			return base_classes;
 		}
