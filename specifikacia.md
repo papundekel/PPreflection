@@ -98,13 +98,13 @@ namespace reflect_detail
 }
 
 template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<namespace_t::global>>
-	= std::string_view("global'");
+	= PP::string_view("global'");
 template <> constexpr inline auto detail::reflect_metadata<namespace_t::global> =
 	detail::basic_namespace<namespace_t::global, append_pack<fundamental_type_pack,
 		type_pack<X>>,
 		type_pack<reflect_detail::global_double_>>{};
 
-template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<X>> = std::string_view("X");
+template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<X>> = PP::string_view("X");
 template <> constexpr inline auto detail::reflect_metadata<detail::id_wrap<X>> = std::size_t(0);
 template <> constexpr inline auto detail::reflect_metadata<X>
 	= detail::basic_class_type<namespace_t::global, X,
@@ -126,7 +126,7 @@ namespace detail
 		= overload_member_caster<cv_qualifier::none, ref_qualifier::lvalue>(&X::f);
 }
 
-template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<reflect_detail::X_f>> = std::string_view("f");
+template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<reflect_detail::X_f>> = PP::string_view("f");
 template <> constexpr inline auto detail::reflect_metadata<reflect_detail::X_f>
 	= detail::basic_overloaded_member_function<reflect_detail::X_f, value_pack<
 		detail::overload_caster<reflect_detail::X_f, 0>,
@@ -138,7 +138,7 @@ template <> constexpr inline auto detail::reflect_metadata<value_t<detail::overl
 	= detail::basic_member_function<reflect_detail::X_f, detail::overload_caster<reflect_detail::X_f, 1>>{};
 
 template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<reflect_detail::global_double_>>
-	= std::string_view("double_");
+	= PP::string_view("double_");
 template <> constexpr inline auto detail::reflect_metadata<reflect_detail::global_double_>
 	= detail::basic_overloaded_namespace_function<reflect_detail::global_double_, namespace_t::global, value_pack<
 		::overload_caster<const int&>(double_),

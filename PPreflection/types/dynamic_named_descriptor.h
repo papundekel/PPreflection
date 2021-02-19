@@ -1,6 +1,6 @@
 #pragma once
-#include <string_view>
 #include "../descriptor.h"
+#include "string_view.hpp"
 
 namespace PPreflection
 {
@@ -9,23 +9,23 @@ namespace PPreflection
 		template <typename Base>
 		class dynamic_named_descriptor : public Base
 		{
-			static_assert(std::is_base_of_v<descriptor, Base>);
+			static_assert(PP::derived_from<Base, descriptor>);
 
-			std::string name_;
+			std::string name;
 
 		public:
-			constexpr dynamic_named_descriptor(std::string_view name, auto&&... b) noexcept
-				: Base(PP_FORWARD(b)...)
+			constexpr dynamic_named_descriptor(PP::string_view name, auto&&... args) noexcept
+				: Base(PP_FORWARD(args)...)
 				, name_(name)
 			{}
 
-			constexpr bool has_name(std::string_view name) const noexcept override final
+			constexpr bool has_name(PP::string_view name) const noexcept override final
 			{
-				return name_ == name;
+				return view_equal(this->name, name);
 			}
 			constexpr void print_name_prefix(PP::simple_ostream& out) const noexcept override final
 			{
-				out.write(name_);
+				out.write(name);
 			}
 			constexpr void print_name_suffix(PP::simple_ostream& out) const noexcept override final
 			{}

@@ -9,7 +9,7 @@ namespace PPreflection
 	class overloaded_namespace_function : public function::overloaded
 	{
 	protected:
-		constexpr virtual PP::any_view_ra<const namespace_function&> get_namespace_overloads() const noexcept = 0;
+		constexpr virtual PP::any_view<PP::iterator_category::ra, const namespace_function&> get_namespace_overloads() const noexcept = 0;
 
 	public:
 		constexpr const Namespace& get_parent() const noexcept override = 0;

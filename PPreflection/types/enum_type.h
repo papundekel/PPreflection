@@ -7,14 +7,14 @@ namespace PPreflection
 	class enum_value
 	{
 	public:
-		constexpr virtual std::string_view get_name() const noexcept = 0;
+		constexpr virtual PP::string_view get_name() const noexcept = 0;
 		constexpr virtual std::int64_t get_value() const noexcept = 0;
 	};
 
 	class enum_type : public user_defined_type
 	{
 	public:
-		constexpr virtual PP::any_view_ra<const enum_value&> get_values() const noexcept = 0;
+		constexpr virtual PP::any_view<PP::iterator_category::ra, const enum_value&> get_values() const noexcept = 0;
 		constexpr void destroy(void* ptr) const noexcept override final
 		{}
 	};

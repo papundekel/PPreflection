@@ -61,34 +61,32 @@ namespace PPreflection
 		}
 	}
 
-	using namespace std::literals::string_view_literals;
+	template <> constexpr inline auto detail::metadata<tags::name<Namespace::global		>> = PP::string_view("");
 
-	template <> constexpr inline auto detail::metadata<tags::name<Namespace::global		>> = ""sv;
-
-	template <> constexpr inline auto detail::metadata<tags::name<void					>> = "void"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<decltype(nullptr)		>> = "decltype(nullptr)"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<float					>> = "float"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<double				>> = "double"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<long double			>> = "long double"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<bool					>> = "bool"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<char					>> = "char"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<signed char			>> = "signed char"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<unsigned char			>> = "unsigned char"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<wchar_t				>> = "wchar_t"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<short int				>> = "short int"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<int					>> = "int"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<long int				>> = "long int"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<long long int			>> = "long long int"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<unsigned short int	>> = "unsigned short int"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<unsigned int			>> = "unsigned int"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<unsigned long int		>> = "unsigned long int"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<unsigned long long int>> = "unsigned long long int"sv;
+	template <> constexpr inline auto detail::metadata<tags::name<void					>> = PP::string_view("void");
+	template <> constexpr inline auto detail::metadata<tags::name<decltype(nullptr)		>> = PP::string_view("decltype(nullptr)");
+	template <> constexpr inline auto detail::metadata<tags::name<float					>> = PP::string_view("float");
+	template <> constexpr inline auto detail::metadata<tags::name<double				>> = PP::string_view("double");
+	template <> constexpr inline auto detail::metadata<tags::name<long double			>> = PP::string_view("long double");
+	template <> constexpr inline auto detail::metadata<tags::name<bool					>> = PP::string_view("bool");
+	template <> constexpr inline auto detail::metadata<tags::name<char					>> = PP::string_view("char");
+	template <> constexpr inline auto detail::metadata<tags::name<signed char			>> = PP::string_view("signed char");
+	template <> constexpr inline auto detail::metadata<tags::name<unsigned char			>> = PP::string_view("unsigned char");
+	template <> constexpr inline auto detail::metadata<tags::name<wchar_t				>> = PP::string_view("wchar_t");
+	template <> constexpr inline auto detail::metadata<tags::name<short int				>> = PP::string_view("short int");
+	template <> constexpr inline auto detail::metadata<tags::name<int					>> = PP::string_view("int");
+	template <> constexpr inline auto detail::metadata<tags::name<long int				>> = PP::string_view("long int");
+	template <> constexpr inline auto detail::metadata<tags::name<long long int			>> = PP::string_view("long long int");
+	template <> constexpr inline auto detail::metadata<tags::name<unsigned short int	>> = PP::string_view("unsigned short int");
+	template <> constexpr inline auto detail::metadata<tags::name<unsigned int			>> = PP::string_view("unsigned int");
+	template <> constexpr inline auto detail::metadata<tags::name<unsigned long int		>> = PP::string_view("unsigned long int");
+	template <> constexpr inline auto detail::metadata<tags::name<unsigned long long int>> = PP::string_view("unsigned long long int");
 #ifdef __cpp_char8_t
-	template <> constexpr inline auto detail::metadata<tags::name<char8_t				>> = "char8_t"sv;
+	template <> constexpr inline auto detail::metadata<tags::name<char8_t				>> = PP::string_view("char8_t");
 #endif
 #ifdef __cpp_unicode_characters
-	template <> constexpr inline auto detail::metadata<tags::name<char16_t				>> = "char16_t"sv;
-	template <> constexpr inline auto detail::metadata<tags::name<char32_t				>> = "char32_t"sv;
+	template <> constexpr inline auto detail::metadata<tags::name<char16_t				>> = PP::string_view("char16_t");
+	template <> constexpr inline auto detail::metadata<tags::name<char32_t				>> = PP::string_view("char32_t");
 #endif
 
 	template <typename Class, typename... Parameters> constexpr inline auto detail::metadata<tags::is_explicit<Class, Parameters...>> = false;

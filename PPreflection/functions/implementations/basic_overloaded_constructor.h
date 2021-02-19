@@ -16,17 +16,21 @@ namespace PPreflection::detail
 	{
 		static constexpr auto constructor_overloads = reflect_many(basic_overloaded_constructor::raw_overloads, PP::type<const constructor&>);
 
-		static constexpr auto one_parameter_converting_constructor_overloads = reflect_many(PP::tuple_filter<[](PP::concepts::type auto x)
-				{
-					return x->Template == PP::Template<>;
-				}>(PP::type_to_value + basic_overloaded_constructor::raw_overloads), PP::type<const one_parameter_converting_constructor&>);
+		static constexpr auto one_parameter_converting_constructor_overloads =
+			reflect_many(
+				PP::tuple_filter([]
+					(PP::concepts::type auto x)
+					{
+						return PP::value<x->Template == PP::Template<>>;
+					}, basic_overloaded_constructor::raw_overloads),
+				PP::type<const one_parameter_converting_constructor&>);
 
 	public:
-		constexpr PP::any_view_ra<const constructor&> get_constructor_overloads() const noexcept override final
+		constexpr PP::any_view<PP::iterator_category::ra, const constructor&> get_constructor_overloads() const noexcept override final
 		{
 			return constructor_overloads;
 		}
-		constexpr PP::any_view_ra<const one_parameter_converting_constructor&> get_one_parameter_converting_constructor_overloads() const noexcept override final
+		constexpr PP::any_view<PP::iterator_category::ra, const one_parameter_converting_constructor&> get_one_parameter_converting_constructor_overloads() const noexcept override final
 		{
 			return one_parameter_converting_constructor_overloads;
 		}

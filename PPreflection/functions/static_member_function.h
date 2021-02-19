@@ -8,7 +8,7 @@ namespace PPreflection
 	class overloaded_static_member_function : public detail::maybe_static_member_function::overloaded
 	{
 	protected:
-		constexpr virtual PP::any_view_ra<const static_member_function&> get_static_member_overloads() const noexcept = 0;
+		constexpr virtual PP::any_view<PP::iterator_category::ra, const static_member_function&> get_static_member_overloads() const noexcept = 0;
 
 	public:
 		constexpr PP::concepts::view auto get_overloads() const noexcept

@@ -12,7 +12,7 @@ namespace PPreflection::detail
 		static constexpr auto function_overloads = reflect_many(raw_overloads, PP::type<const function&>);
 
 	public:
-		constexpr PP::any_view_ra<const function&> get_function_overloads() const noexcept override final
+		constexpr PP::any_view<PP::iterator_category::ra, const function&> get_function_overloads() const noexcept override final
 		{
 			return function_overloads;
 		}

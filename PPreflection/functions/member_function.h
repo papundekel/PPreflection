@@ -14,10 +14,10 @@ namespace PPreflection
 	class overloaded_member_function : public detail::maybe_static_member_function::overloaded
 	{
 	protected:
-		constexpr virtual PP::any_view_ra<const member_function&> get_member_function_overloads() const noexcept = 0;
+		constexpr virtual PP::any_view<PP::iterator_category::ra, const member_function&> get_member_function_overloads() const noexcept = 0;
 
 	public:
-		inline dynamic_variable invoke(dynamic_reference caller, PP::any_view_ra<const dynamic_reference&> args = {}) const;
+		inline dynamic_variable invoke(dynamic_reference caller, PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args = {}) const;
 
 		constexpr PP::concepts::view auto get_overloads() const noexcept
 		{
@@ -27,17 +27,17 @@ namespace PPreflection
 
 	class member_function : public detail::maybe_static_member_function
 	{
-		constexpr virtual dynamic_variable invoke_unsafe_member(dynamic_reference caller, PP::any_iterator_ra<const dynamic_reference&> arg_iterator) const = 0;
+		constexpr virtual dynamic_variable invoke_unsafe_member(dynamic_reference caller, PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&> arg_iterator) const = 0;
 
 	protected:
 		constexpr bool can_invoke(const reference_type& caller_arg_type) const noexcept;
 
-		inline dynamic_variable invoke_unsafe(PP::any_iterator_ra<const dynamic_reference&> arg_iterator) const noexcept override final;
-		constexpr bool can_invoke(PP::any_view_ra<const reference_type&> argument_types) const noexcept override final;
+		inline dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&> arg_iterator) const noexcept override final;
+		constexpr bool can_invoke(PP::any_view<PP::iterator_category::ra, const reference_type&> argument_types) const noexcept override final;
 
 	public:
 		constexpr void print_name_after_parent(PP::simple_ostream& out) const noexcept override final;
-		constexpr bool has_name(std::string_view name) const noexcept override final;
+		constexpr bool has_name(PP::string_view name) const noexcept override final;
 
 		constexpr PP::ref_qualifier get_ref_qualifier() const noexcept
 		{
@@ -48,7 +48,7 @@ namespace PPreflection
 			return get_function_type().get_cv_qualifier();
 		}
 
-		inline dynamic_variable invoke(dynamic_reference caller, PP::any_view_ra<const dynamic_reference&> args = {}) const;
+		inline dynamic_variable invoke(dynamic_reference caller, PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args = {}) const;
 
 		using overloaded = overloaded_member_function;
 		friend overloaded_member_function;

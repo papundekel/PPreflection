@@ -3,10 +3,9 @@
 #include "referencable_type.h"
 #include "dynamic_reference_type.h"
 
-template <bool rvalue>
-constexpr auto PPreflection::reference_type::make_reference() const noexcept
+constexpr auto PPreflection::reference_type::make_reference(PP::concepts::value auto rvalue) const noexcept
 {
-	return remove_reference().make_reference<rvalue>();
+	return remove_reference().make_reference(rvalue);
 }
 constexpr auto PPreflection::reference_type::make_reference(bool lvalue) const noexcept
 {

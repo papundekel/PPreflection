@@ -1,9 +1,9 @@
 #pragma once
-#include <cstddef>
-
 #include "concepts/invocable.hpp"
 #include "concepts/same_except_cvref.hpp"
+#include "get_type.hpp"
 #include "scoped.hpp"
+#include "simple_view.hpp"
 #include "unique.hpp"
 
 namespace PPreflection
@@ -27,7 +27,7 @@ namespace PPreflection
 
 		union data
 		{
-			alignas(std::max_align_t) char* ptr;
+			alignas(max_align_t) char* ptr;
 			invalid_code code;
 
 			constexpr data() noexcept
@@ -47,13 +47,13 @@ namespace PPreflection
 
 		public:
 			constexpr deleter(const complete_object_type* ptr) noexcept
-				: type_(PP::placeholder, ptr)
+				: type_(PP::unique_in_place_tag, ptr)
 			{}
 			constexpr void operator()(PP::unique<data>& u) const;
 
 			constexpr const complete_object_type* get_type() const
 			{
-				return type_.inner();
+				return type_.get_object();
 			}
 		};
 
@@ -89,8 +89,7 @@ namespace PPreflection
 			return dynamic_object(invalid_code::none);
 		}
 
-		template <typename T, typename... Args>
-		static constexpr dynamic_object create(Args&&... args);
+		static constexpr dynamic_object create(PP::concepts::type auto t, auto&&... args);
 
 		constexpr dynamic_object() = default;
 
@@ -108,7 +107,7 @@ namespace PPreflection
 		explicit constexpr dynamic_object(PP::concepts::invocable auto&& initializer);
 	};
 
-	static constexpr std::string_view code_to_string(dynamic_object::invalid_code code) noexcept
+	static constexpr PP::string_view code_to_string(dynamic_object::invalid_code code) noexcept
 	{
 		switch (code)
 		{

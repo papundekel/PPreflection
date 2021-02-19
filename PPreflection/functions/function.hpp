@@ -27,17 +27,17 @@ constexpr void PPreflection::function::print_name_after_parent(PP::simple_ostrea
 	print_name_basic(out);
 	print_noexcept(out);
 }
-constexpr bool PPreflection::function::has_name(std::string_view name) const noexcept
+constexpr bool PPreflection::function::has_name(PP::string_view name) const noexcept
 {
 	return get_overloaded_function().has_name(name);
 }
 
-constexpr bool PPreflection::function::can_invoke(PP::any_view_ra<const reference_type&> argument_types) const noexcept
+constexpr bool PPreflection::function::can_invoke(PP::any_view<PP::iterator_category::ra, const reference_type&> argument_types) const noexcept
 {
 	return parameter_type_reference::can_initialize_many(parameter_types(), argument_types);
 }
 
-inline PPreflection::dynamic_variable PPreflection::function::invoke(PP::any_view_ra<const dynamic_reference&> args) const
+inline PPreflection::dynamic_variable PPreflection::function::invoke(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args) const
 {
 	if (can_invoke(args | PP::transform([](const dynamic_reference& r) -> const reference_type& { return r.get_type(); })))
 		return invoke_unsafe(PP::view_begin(args));
@@ -45,7 +45,7 @@ inline PPreflection::dynamic_variable PPreflection::function::invoke(PP::any_vie
 		return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
 }
 
-inline PPreflection::dynamic_variable PPreflection::overloaded_function::invoke(PP::any_view_ra<const dynamic_reference&> args) const
+inline PPreflection::dynamic_variable PPreflection::overloaded_function::invoke(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args) const
 {
 	for (const function& f : get_overloads())
 		if (f.can_invoke(args | PP::transform([](const dynamic_reference& r) -> const reference_type& { return r.get_type(); })))

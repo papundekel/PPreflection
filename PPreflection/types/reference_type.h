@@ -13,8 +13,7 @@ namespace PPreflection
 
 		constexpr virtual bool is_lvalue() const noexcept = 0;
 
-		template <bool rvalue>
-		constexpr auto make_reference() const noexcept;
+		constexpr auto make_reference(PP::concepts::value auto rvalue) const noexcept;
 		constexpr auto make_reference(bool lvalue) const noexcept;
 		constexpr auto make_reference() const noexcept;
 
@@ -25,11 +24,13 @@ namespace PPreflection
 
 		constexpr bool can_be_initialized(const reference_type& initializer) const noexcept
 		{
+			// TODO
 			return true;
 		}
 
-		constexpr bool has_name(std::string_view name) const noexcept override final
+		constexpr bool has_name(PP::string_view name) const noexcept override final
 		{
+			// TODO
 			return false;
 		}
 		constexpr void print_name_prefix(PP::simple_ostream& out) const noexcept override final;

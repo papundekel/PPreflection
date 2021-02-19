@@ -14,7 +14,7 @@ namespace PPreflection::detail
 			PP::type<const Base&>);
 
 	private:
-		constexpr PP::any_view_ra<const member_function&> get_member_function_overloads() const noexcept override final
+		constexpr PP::any_view<PP::iterator_category::ra, const member_function&> get_member_function_overloads() const noexcept override final
 		{
 			return member_function_base_overloads;
 		}

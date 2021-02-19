@@ -11,7 +11,7 @@ namespace PPreflection
 	{
 	public:
 		constexpr virtual return_type_reference return_type() const noexcept = 0;
-		constexpr virtual PP::any_view_ra<parameter_type_reference> parameter_types() const noexcept = 0;
+		constexpr virtual PP::any_view<PP::iterator_category::ra, parameter_type_reference> parameter_types() const noexcept = 0;
 		constexpr virtual bool is_noexcept() const noexcept = 0;
 		constexpr virtual PP::cv_qualifier get_cv_qualifier() const noexcept = 0;
 		constexpr virtual PP::ref_qualifier get_ref_qualifier() const noexcept = 0;
@@ -21,7 +21,7 @@ namespace PPreflection
 			return nullptr;
 		}
 
-		constexpr bool has_name(std::string_view name) const noexcept override final
+		constexpr bool has_name(PP::string_view name) const noexcept override final
 		{
 			return false;
 		}

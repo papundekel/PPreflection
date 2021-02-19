@@ -13,7 +13,7 @@ namespace PPreflection::detail
 			basic_overloaded_static_member_function::raw_overloads,
 			PP::type<const static_member_function&>);
 
-		constexpr PP::any_view_ra<const static_member_function&> get_static_member_overloads() const noexcept override final
+		constexpr PP::any_view<PP::iterator_category::ra, const static_member_function&> get_static_member_overloads() const noexcept override final
 		{
 			return static_member_overloads;
 		}

@@ -1,7 +1,6 @@
 #pragma once
 #include "overload_cast.h"
-#include "pointer_view.h"
-#include "tuple_to_array.hpp"
+#include "tuple_map_to_array.hpp"
 #include "type_t.hpp"
 #include "value_t.hpp"
 #include "view.hpp"
@@ -48,20 +47,20 @@ namespace PPreflection
 
 	constexpr auto reflect_many(PP::concepts::tuple auto&& tuple, PP::concepts::type auto t) noexcept
 	{
-		return PP::tuple_to_array(t, reflect, PP_FORWARD(tuple));
+		return PP::tuple_map_to_array(t, reflect, PP_FORWARD(tuple));
 	}
 
 	// namespace
 	//
 	// template <> constexpr inline auto ::PPreflection::metadata<namespace> = detail::basic_namespace<type>{};
-	// template <> constexpr inline auto ::PPreflection::metadata<::PPreflection::tags::name<namespace>> = "name"sv;
+	// template <> constexpr inline auto ::PPreflection::metadata<::PPreflection::tags::name<namespace>> = PP::string_view("name");
 	// template <> constexpr inline auto ::PPreflection::metadata<::PPreflection::tags::parent<namespace>> = ::PP::type<parent>;
 	// template <> constexpr inline auto ::PPreflection::metadata<::PPreflection::tags::types<namespace>> = ::PP::type_tuple<types>;
 	// template <> constexpr inline auto ::PPreflection::metadata<::PPreflection::tags::namespaces<namespace>> = ::PP::type_tuple<namespaces>;
 
 	// class
 	//
-	// template <> constexpr inline auto reflection::metadata<reflection::name<type>> = "type"sv;
+	// template <> constexpr inline auto reflection::metadata<reflection::name<type>> = PP::string_view("type");
 	// template <> constexpr inline auto reflection::metadata<reflection::parent<type>> = PP::type<parent>;
 	// template <> constexpr inline auto reflection::metadata<reflection::nested_classes<type>> = PP::type_tuple<nested_classes>;
 	// template <> constexpr inline auto reflection::metadata<reflection::base_classes<type>> = PP::type_tuple<bases>;

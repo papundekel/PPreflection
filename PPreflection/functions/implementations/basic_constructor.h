@@ -35,7 +35,7 @@ namespace PPreflection::detail
 	class basic_constructor_general final
 		: public basic_constructor_base<Class, constructor, Parameters...>
 	{
-		dynamic_variable invoke_unsafe(PP::any_iterator_ra<const dynamic_reference&> arg_iterator) const noexcept override final
+		dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&> arg_iterator) const noexcept override final
 		{
 			if constexpr (PP::concepts::destructible<Class>)
 				return this->invoke_helper(PP::construct_pack * PP::type<Class>, arg_iterator, this->parameter_types);

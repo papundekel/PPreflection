@@ -7,7 +7,7 @@ namespace PPreflection
 	class pointer_type : public detail::non_user_defined_type<non_array_object_type>
 	{
 	public:
-		constexpr bool has_name(std::string_view name) const noexcept override final
+		constexpr bool has_name(PP::string_view name) const noexcept override final
 		{
 			return false;
 		}

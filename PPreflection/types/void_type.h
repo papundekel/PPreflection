@@ -10,28 +10,28 @@ namespace PPreflection
 {
 	class void_type : public detail::non_user_defined_type<detail::cv_qualifiable_type<pointable_type>>
 	{
-		static const std::array<const pointer_type*, 4> types;
-		static const std::array<std::string_view, 4> names;
+		static const PP::array<const pointer_type*, 4> types;
+		static const PP::array<PP::string_view, 4> names;
 
 	public:
 		constexpr const pointer_type& make_pointer() const noexcept
 		{
-			return *types[(std::size_t)get_cv_qualifier()];
+			return *types[(size_t)get_cv_qualifier()];
 		}
 
 		constexpr void print_name_prefix(PP::simple_ostream& out) const noexcept override final
 		{
-			out.write(names[(std::size_t)get_cv_qualifier()]);
+			out.write(names[(size_t)get_cv_qualifier()]);
 		}
 		constexpr void print_name_suffix(PP::simple_ostream& out) const noexcept override final
 		{}
-		constexpr bool has_name(std::string_view name) const noexcept override final
+		constexpr bool has_name(PP::string_view name) const noexcept override final
 		{
-			return names[(std::size_t)get_cv_qualifier()] == name;
+			return PP::view_equal(names[(size_t)get_cv_qualifier()], name);
 		}
 	};
 
-	const std::array<const pointer_type*, 4> void_type::types =
+	const PP::array<const pointer_type*, 4> void_type::types
 	{
 		&type::reflect(PP::type<void*>),
 		&type::reflect(PP::type<const void*>),
@@ -39,7 +39,7 @@ namespace PPreflection
 		&type::reflect(PP::type<const volatile void*>),
 	};
 
-	const std::array<std::string_view, 4> void_type::names =
+	const PP::array<PP::string_view, 4> void_type::names
 	{
 		"void",
 		"void const",

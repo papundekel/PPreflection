@@ -12,7 +12,7 @@ namespace PPreflection::detail
 	template <auto value>
 	class basic_enum_value final : public enum_value
 	{
-		constexpr std::string_view get_name() const noexcept override final
+		constexpr PP::string_view get_name() const noexcept override final
 		{
 			return PPreflection::reflect(PP::type<tags::name<PP::value_t<value>>>);
 		}
@@ -36,7 +36,7 @@ namespace PPreflection::detail
 
 		static constexpr auto enum_values_array = PP::id_typed * PP::type<const enum_value&> << enum_values_basic;
 
-		constexpr PP::any_view_ra<const enum_value&> get_values() const noexcept override final
+		constexpr PP::any_view<PP::iterator_category::ra, const enum_value&> get_values() const noexcept override final
 		{
 			return enum_values_array;
 		}

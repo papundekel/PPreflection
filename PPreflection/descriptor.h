@@ -1,13 +1,15 @@
 #pragma once
-#include <string_view>
-#include <utility>
+#include <iosfwd>
 
 #include "simple_ostream.hpp"
+#include "string_view.hpp"
 #include "type_t.hpp"
 #include "view.hpp"
 
 namespace PPreflection
 {
+	using namespace PP::literals;
+
 	class descriptor
 	{
 		constexpr virtual const descriptor* get_parent_implementation() const noexcept = 0;
@@ -26,11 +28,11 @@ namespace PPreflection
 			}
 			print_name_after_parent(out);
 		}
-		constexpr virtual bool has_name(std::string_view name) const noexcept = 0;
+		constexpr virtual bool has_name(PP::string_view name) const noexcept = 0;
 
-		static constexpr std::string_view reflect_name(PP::concepts::type auto t) noexcept;
+		static constexpr PP::string_view reflect_name(PP::concepts::type auto t) noexcept;
 
-		static constexpr auto get_descriptor(std::string_view name, PP::concepts::view auto&& descriptors) noexcept
+		static constexpr auto get_descriptor(PP::string_view name, PP::concepts::view auto&& descriptors) noexcept
 			-> decltype(&declval(PP::view_base(descriptors)))
 		{
 			for (auto&& d : PP_FORWARD(descriptors))

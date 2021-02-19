@@ -16,7 +16,7 @@ namespace PPreflection
 			parent_descriptor_reference parent;
 
 		public:
-			constexpr dynamic_user_defined_type(std::string_view name, parent_descriptor_reference parent, PP::cv_qualifier cv = PP::cv_qualifier::none) noexcept
+			constexpr dynamic_user_defined_type(PP::string_view name, parent_descriptor_reference parent, PP::cv_qualifier cv = PP::cv_qualifier::none) noexcept
 				: dynamic_named_descriptor<dynamic_cv_qualifiable_type<Base>>(name, cv)
 				, parent(parent)
 			{}

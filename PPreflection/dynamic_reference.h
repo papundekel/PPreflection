@@ -6,7 +6,6 @@
 
 namespace PPreflection
 {
-	class reference_type;
 	class dynamic_variable;
 	class dynamic_object;
 
@@ -22,13 +21,16 @@ namespace PPreflection
 	public:
 		struct bad_cast_exception {};
 
-		constexpr const reference_type& get_type() const noexcept;
+		constexpr const reference_type& get_type() const noexcept
+		{
+			return type_;
+		}
 
 		constexpr auto cast_unsafe(PP::concepts::type auto t) const noexcept -> PP_GET_TYPE(t)&&;
 		constexpr auto cast(PP::concepts::type auto t) const -> PP_GET_TYPE(t)&&;
 
-		auto get_ptr(PP::concepts::type auto t) const;
-		auto& get_ref(PP::concepts::type auto t) const&;
+		auto*  get_ptr(PP::concepts::type auto t) const;
+		auto&  get_ref(PP::concepts::type auto t) const&;
 		auto&& get_ref(PP::concepts::type auto t) const&&;
 
 		constexpr dynamic_reference(auto&& r) noexcept

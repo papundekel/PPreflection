@@ -17,12 +17,12 @@ namespace PPreflection
 			std::int64_t value;
 
 		public:
-			inline explicit dynamic_enum_value(std::pair<std::string_view, std::int64_t> name_value) noexcept
+			inline explicit dynamic_enum_value(std::pair<PP::string_view, std::int64_t> name_value) noexcept
 				: name(name_value.first)
 				, value(name_value.second)
 			{}
 
-			inline std::string_view get_name() const noexcept override final
+			inline PP::string_view get_name() const noexcept override final
 			{
 				return name;
 			}
@@ -36,7 +36,7 @@ namespace PPreflection
 
 	public:
 		inline explicit dynamic_enum_type(
-			std::string_view name,
+			PP::string_view name,
 			PP::concepts::view auto&& values,
 			parent_descriptor_reference parent,
 			PP::cv_qualifier cv = PP::cv_qualifier::none) noexcept
@@ -46,7 +46,7 @@ namespace PPreflection
 				PP::view_end(PP_FORWARD(values)))
 		{}
 
-		constexpr PP::any_view_ra<const enum_value&> get_values() const noexcept override final
+		constexpr PP::any_view<PP::iterator_category::ra, const enum_value&> get_values() const noexcept override final
 		{
 			return values;
 		}

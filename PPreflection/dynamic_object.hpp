@@ -6,17 +6,16 @@
 #include "reflect.h"
 #include "types/complete_object_type.h"
 
-template <typename T, typename... Args>
-constexpr PPreflection::dynamic_object PPreflection::dynamic_object::create(Args&&... args)
+constexpr PPreflection::dynamic_object PPreflection::dynamic_object::create(PP::concepts::type auto t, auto&&... args)
 {
-	return dynamic_object([&args...]() { return T(PP_FORWARD(args)...); });
+	return dynamic_object([&args...]() { return PP_GET_TYPE(t)(PP_FORWARD(args)...); });
 }
 
 constexpr void* PPreflection::dynamic_object::get_address(PP::concepts::value auto reference, PP::unique<data>& p, const complete_object_type& t) noexcept
 {
 	void* ptr = nullptr;
 
-	char*& buffer = p.inner().ptr;
+	char*& buffer = p.get_object().ptr;
 
 	if (t.size() <= sizeof(void*))
 		ptr = &buffer;
@@ -29,7 +28,7 @@ constexpr const void* PPreflection::dynamic_object::get_address(PP::concepts::va
 {
 	const void* ptr = nullptr;
 
-	char* const& buffer = p.inner().ptr;
+	char* const& buffer = p.get_object().ptr;
 
 	if (t.size() <= sizeof(void*))
 		ptr = &buffer;
@@ -41,7 +40,7 @@ constexpr const void* PPreflection::dynamic_object::get_address(PP::concepts::va
 
 constexpr void PPreflection::dynamic_object::deleter::operator()(PP::unique<data>& u) const
 {
-	const complete_object_type* t = type_.inner();
+	const complete_object_type* t = type_.get_object();
 	if (!t)
 		return;
 
@@ -49,19 +48,19 @@ constexpr void PPreflection::dynamic_object::deleter::operator()(PP::unique<data
 	t->destroy(ptr);
 
 	if (t->size() > sizeof(void*))
-		operator delete(u.inner().ptr);
+		operator delete(u.get_object().ptr);
 }
 
 constexpr void* PPreflection::dynamic_object::get_address_helper(PP::concepts::value auto reference) noexcept
 {
-	return get_address(reference, x.inner(), get_type());
+	return get_address(reference, x.get_object(), get_type());
 }
 constexpr const void* PPreflection::dynamic_object::get_address_helper(PP::concepts::value auto reference) const noexcept
 {
-	return get_address(reference, x.inner(), get_type());
+	return get_address(reference, x.get_object(), get_type());
 }
 constexpr PPreflection::dynamic_object::dynamic_object(invalid_code code) noexcept
-	: x(PP::make_unique_default(data(code)), deleter(nullptr))
+	: x(PP::placeholder, PP::make_unique_default(data(code)), deleter(nullptr))
 {}
 constexpr char* PPreflection::dynamic_object::allocate_and_initialize(PP::concepts::invocable auto&& i) noexcept
 {
@@ -133,7 +132,7 @@ constexpr PPreflection::dynamic_object::invalid_code PPreflection::dynamic_objec
 	if (get_type_helper())
 		return invalid_code::none;
 	else
-		return x.inner().inner().code;
+		return x.get_object().get_object().code;
 }
 constexpr bool PPreflection::dynamic_object::is_void() const noexcept
 {
@@ -141,5 +140,5 @@ constexpr bool PPreflection::dynamic_object::is_void() const noexcept
 }
 
 constexpr PPreflection::dynamic_object::dynamic_object(PP::concepts::invocable auto&& i)
-	: x(PP::make_unique_default(data(allocate_and_initialize(PP_FORWARD(i)))), deleter(&type::reflect(PP_DECLTYPE(PP_FORWARD(i)()))))
+	: x(PP::placeholder, PP::make_unique_default(data(allocate_and_initialize(PP_FORWARD(i)))), deleter(&type::reflect(PP_DECLTYPE(PP_FORWARD(i)()))))
 {}

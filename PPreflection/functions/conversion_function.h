@@ -1,5 +1,6 @@
 #pragma once
 #include "member_function.h"
+#include "view_prefix.hpp"
 
 namespace PPreflection
 {
@@ -8,7 +9,7 @@ namespace PPreflection
 	class overloaded_conversion_function : public member_function::overloaded
 	{
 	protected:
-		constexpr virtual PP::any_view_ra<const conversion_function&> get_conversion_overloads() const noexcept = 0;
+		constexpr virtual PP::any_view<PP::iterator_category::ra, const conversion_function&> get_conversion_overloads() const noexcept = 0;
 		constexpr virtual return_type_reference return_type() const noexcept = 0;
 
 	public:
@@ -18,10 +19,10 @@ namespace PPreflection
 			const descriptor& rt = return_type();
 			rt.print_name(out);
 		}
-		constexpr bool has_name(std::string_view name) const noexcept override final
+		constexpr bool has_name(PP::string_view name) const noexcept override final
 		{
 			const descriptor& rt = return_type();
-			return name.starts_with("operator ") && rt.has_name(name.substr(9));
+			return PP::view_prefix(name, "operator "_sv) && rt.has_name(name.substr(9));
 		}
 
 		inline dynamic_variable invoke(dynamic_reference caller) const;
@@ -37,7 +38,7 @@ namespace PPreflection
 	protected:
 		constexpr virtual dynamic_variable invoke_unsafe_conversion(dynamic_reference caller) const noexcept = 0;
 
-		inline dynamic_variable invoke_unsafe_member(dynamic_reference caller, PP::any_iterator_ra<const dynamic_reference&>) const noexcept override final
+		inline dynamic_variable invoke_unsafe_member(dynamic_reference caller, PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&>) const noexcept override final
 		{
 			return invoke_unsafe_conversion(caller);
 		}

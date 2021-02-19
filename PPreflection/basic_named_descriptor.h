@@ -9,15 +9,15 @@ namespace PPreflection::detail
 	class basic_named_descriptor : public Base
 	{
 	protected:
-		constexpr std::string_view get_name() const noexcept
+		constexpr PP::string_view get_name() const noexcept
 		{
 			return this->reflect_name(~PP::type<ID>);
 		}
 
 	private:
-		constexpr bool has_name(std::string_view name) const noexcept override final
+		constexpr bool has_name(PP::string_view name) const noexcept override final
 		{
-			return get_name() == name;
+			return view_equal(get_name(), name);
 		}
 	};
 }

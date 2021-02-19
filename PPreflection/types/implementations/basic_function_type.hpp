@@ -20,7 +20,7 @@ namespace PPreflection::detail
 		{
 			return type::reflect(info.return_type);
 		}
-		constexpr PP::any_view_ra<parameter_type_reference> parameter_types() const noexcept override final
+		constexpr PP::any_view<PP::iterator_category::ra, parameter_type_reference> parameter_types() const noexcept override final
 		{
 			return parameter_types_;
 		}

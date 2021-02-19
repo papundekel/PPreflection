@@ -7,7 +7,7 @@ namespace PPreflection
     class unknown_bound_array_type : public detail::array_type<object_type>
     {
     public:
-        constexpr bool has_name(std::string_view name) const noexcept override final
+        constexpr bool has_name(PP::string_view name) const noexcept override final
         {
             return false;
         }

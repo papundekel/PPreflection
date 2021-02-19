@@ -13,7 +13,7 @@ namespace PPreflection::detail
 			basic_overloaded_namespace_function::raw_overloads,
 			PP::type<const namespace_function&>);
 
-		constexpr PP::any_view_ra<const namespace_function&> get_namespace_overloads() const noexcept override final
+		constexpr PP::any_view<PP::iterator_category::ra, const namespace_function&> get_namespace_overloads() const noexcept override final
 		{
 			return namespace_overloads;
 		}

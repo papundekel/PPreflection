@@ -29,7 +29,7 @@ constexpr void PPreflection::member_function::print_name_after_parent(PP::simple
 
 	print_noexcept(out);
 }
-constexpr bool PPreflection::member_function::has_name(std::string_view name) const noexcept
+constexpr bool PPreflection::member_function::has_name(PP::string_view name) const noexcept
 {
 	// TODO
 	return false;
@@ -51,17 +51,17 @@ constexpr bool PPreflection::member_function::can_invoke(const reference_type& c
 	}
 }
 
-inline PPreflection::dynamic_variable PPreflection::member_function::invoke_unsafe(PP::any_iterator_ra<const dynamic_reference&> arg_iterator) const noexcept
+inline PPreflection::dynamic_variable PPreflection::member_function::invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&> arg_iterator) const noexcept
 {
 	return invoke_unsafe_member(*arg_iterator, arg_iterator + 1);
 }
 
-constexpr bool PPreflection::member_function::can_invoke(PP::any_view_ra<const reference_type&> argument_types) const noexcept
+constexpr bool PPreflection::member_function::can_invoke(PP::any_view<PP::iterator_category::ra, const reference_type&> argument_types) const noexcept
 {
-	return !PP::view_empty(argument_types) && can_invoke(argument_types[0]) && function::can_invoke(1 >> argument_types);
+	return !PP::view_empty(argument_types) && can_invoke(argument_types.begin()[0]) && function::can_invoke(1 >> argument_types);
 }
 
-inline PPreflection::dynamic_variable PPreflection::member_function::invoke(dynamic_reference caller, PP::any_view_ra<const dynamic_reference&> args) const
+inline PPreflection::dynamic_variable PPreflection::member_function::invoke(dynamic_reference caller, PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args) const
 {
 	if (can_invoke(caller.get_type()) && function::can_invoke(args | PP::transform([](const dynamic_reference& r) -> const reference_type& { return r.get_type(); })))
 		return invoke_unsafe_member(caller, PP::view_begin(args));
@@ -69,7 +69,7 @@ inline PPreflection::dynamic_variable PPreflection::member_function::invoke(dyna
 		return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
 }
 
-inline PPreflection::dynamic_variable PPreflection::overloaded_member_function::invoke(dynamic_reference caller, PP::any_view_ra<const dynamic_reference&> args) const
+inline PPreflection::dynamic_variable PPreflection::overloaded_member_function::invoke(dynamic_reference caller, PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args) const
 {
 	for (const member_function& f : get_overloads())
 		if (f.can_invoke(caller.get_type()) && f.function::can_invoke(args | PP::transform([](const dynamic_reference& r) -> const reference_type& { return r.get_type(); })))

@@ -14,7 +14,7 @@ namespace PPreflection::detail
 			return type::reflect(PP::type<Return>);
 		}
 
-		constexpr PP::any_view_ra<const conversion_function&> get_conversion_overloads() const noexcept override final
+		constexpr PP::any_view<PP::iterator_category::ra, const conversion_function&> get_conversion_overloads() const noexcept override final
 		{
 			return this->member_function_base_overloads;
 		}
