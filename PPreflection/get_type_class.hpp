@@ -4,7 +4,7 @@
 #include "concepts/reference.hpp"
 #include "functional/apply_partially.hpp"
 #include "functional/operators.hpp"
-#include "tuple_find_index.hpp"
+#include "tuple_find_dynamic.hpp"
 
 namespace PPreflection
 {
@@ -34,7 +34,7 @@ namespace PPreflection
 
 	PP_FUNCTOR(get_type_class_value_t, PP::concepts::type auto t)
 	{
-		return PP::value<type_class(PP::tuple_find_index(PP::cal(PP::partial_tag, PP::value_1, PP_COPY_TYPE(t)),
+		return PP::value<type_class(PP::tuple_find_dynamic(PP::cal(PP::partial_tag, PP::value_1, PP_COPY_TYPE(t)),
 			PP::make_tuple(
 				PP::is_reference,
 				PP::is_void,
@@ -47,5 +47,5 @@ namespace PPreflection
 				PP::is_class,
 				PP::is_union,
 				PP::is_enum)))>;
-	}};
+	});
 }

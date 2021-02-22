@@ -47,7 +47,13 @@ namespace PPreflection
 
 		public:
 			constexpr deleter(const complete_object_type* ptr) noexcept
-				: type_(PP::unique_in_place_tag, ptr)
+				: type_
+				(
+					PP::in_place_tag,
+						ptr,
+					PP::unique_in_place_delimiter
+						// {}
+				)
 			{}
 			constexpr void operator()(PP::unique<data>& u) const;
 

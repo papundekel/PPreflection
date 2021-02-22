@@ -58,7 +58,10 @@ inline PPreflection::dynamic_variable PPreflection::member_function::invoke_unsa
 
 constexpr bool PPreflection::member_function::can_invoke(PP::any_view<PP::iterator_category::ra, const reference_type&> argument_types) const noexcept
 {
-	return !PP::view_empty(argument_types) && can_invoke(argument_types.begin()[0]) && function::can_invoke(1 >> argument_types);
+	return
+		!PP::view_empty(argument_types) &&
+		can_invoke(argument_types.begin()[0]) &&
+		function::can_invoke(1_s >> argument_types);
 }
 
 inline PPreflection::dynamic_variable PPreflection::member_function::invoke(dynamic_reference caller, PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args) const

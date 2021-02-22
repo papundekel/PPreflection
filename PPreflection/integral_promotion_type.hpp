@@ -9,7 +9,7 @@ namespace PPreflection
 {
 	constexpr inline auto get_integral_promotion_type =
 		PP::decl_type_copy |
-		PP::make_overloaded_pack[PP::functor{ []
+		PP::make_overloaded_pack[PP::functor([]
 				(PP::concepts::type auto t)
 				{
 					return [](PP_GET_TYPE(t)) { return {}; };

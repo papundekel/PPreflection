@@ -22,7 +22,7 @@ namespace PPreflection
 		constexpr bool has_name(PP::string_view name) const noexcept override final
 		{
 			const descriptor& rt = return_type();
-			return PP::view_prefix(name, "operator "_sv) && rt.has_name(name.substr(9));
+			return PP::view_prefix(name, "operator "_sv) && rt.has_name(9_s >> name);
 		}
 
 		inline dynamic_variable invoke(dynamic_reference caller) const;

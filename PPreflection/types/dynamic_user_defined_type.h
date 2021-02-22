@@ -1,8 +1,8 @@
 #pragma once
-#include "user_defined_type.h"
-#include "dynamic_named_descriptor.h"
-#include "dynamic_cv_qualifiable_type.h"
 #include "../parent_descriptor_reference.h"
+#include "dynamic_cv_qualifiable_type.h"
+#include "dynamic_named_descriptor.h"
+#include "user_defined_type.h"
 
 namespace PPreflection
 {
@@ -11,7 +11,7 @@ namespace PPreflection
 		template <typename Base>
 		class dynamic_user_defined_type : public detail::dynamic_named_descriptor<detail::dynamic_cv_qualifiable_type<Base>>
 		{
-			static_assert(std::is_base_of_v<user_defined_type, Base>);
+			static_assert(PP::concepts::derived_from<Base, user_defined_type>);
 
 			parent_descriptor_reference parent;
 

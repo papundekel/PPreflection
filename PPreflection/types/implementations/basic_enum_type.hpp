@@ -25,7 +25,7 @@ namespace PPreflection::detail
 	PP_FUNCTOR(make_basic_enum_value, PP::concepts::value auto v)
 	{
 		return basic_enum_value<PP_GET_VALUE(v)>{};
-	}};
+	});
 
 	template <typename T>
 	class basic_enum_type final : public basic_user_defined_type<T, enum_type>

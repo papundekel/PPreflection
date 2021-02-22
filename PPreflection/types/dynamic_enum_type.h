@@ -1,11 +1,10 @@
 #pragma once
-#include <string_view>
-#include <vector>
-#include <utility>
 #include "enum_type.h"
 #include "dynamic_cv_qualifiable_type.h"
 #include "dynamic_user_defined_type.h"
 #include "dynamic_named_descriptor.h"
+#include "string_view.hpp"
+#include "simple_vector.hpp"
 
 namespace PPreflection
 {
@@ -13,33 +12,37 @@ namespace PPreflection
 	{
 		class dynamic_enum_value final : public enum_value
 		{
-			std::string name;
-			std::int64_t value;
+			PP::simple_vector<char> name;
+			long long value;
 
 		public:
-			inline explicit dynamic_enum_value(std::pair<PP::string_view, std::int64_t> name_value) noexcept
-				: name(name_value.first)
-				, value(name_value.second)
-			{}
+			constexpr dynamic_enum_value(PP::string_view name, long long value) noexcept
+				: name()
+				, value(value)
+			{
+				for (char c : name)
+					this->name.push_back(c);
+			}
 
-			inline PP::string_view get_name() const noexcept override final
+			constexpr PP::string_view get_name() const noexcept override final
 			{
 				return name;
 			}
-			constexpr std::int64_t get_value() const noexcept override final
+			constexpr long long get_value() const noexcept override final
 			{
 				return value;
 			}
 		};
 
-		std::vector<dynamic_enum_value> values;
+		PP::simple_vector<dynamic_enum_value> values;
 
 	public:
-		inline explicit dynamic_enum_type(
+		constexpr dynamic_enum_type(
 			PP::string_view name,
 			PP::concepts::view auto&& values,
 			parent_descriptor_reference parent,
 			PP::cv_qualifier cv = PP::cv_qualifier::none) noexcept
+
 			: dynamic_user_defined_type<enum_type>(name, parent, cv)
 			, values(
 				PP::view_begin(PP_FORWARD(values)),
@@ -51,7 +54,7 @@ namespace PPreflection
 			return values;
 		}
 
-		constexpr virtual std::size_t size() const noexcept override final
+		constexpr virtual size_t size() const noexcept override final
 		{
 			return 8;
 		}

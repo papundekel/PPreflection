@@ -60,7 +60,16 @@ constexpr const void* PPreflection::dynamic_object::get_address_helper(PP::conce
 	return get_address(reference, x.get_object(), get_type());
 }
 constexpr PPreflection::dynamic_object::dynamic_object(invalid_code code) noexcept
-	: x(PP::placeholder, PP::make_unique_default(data(code)), deleter(nullptr))
+	: x
+	(
+		PP::in_place_tag,
+			PP::in_place_tag,
+				code,
+			PP::unique_in_place_delimiter,
+				// {},
+		PP::scoped_in_place_delimiter,
+		nullptr
+	)
 {}
 constexpr char* PPreflection::dynamic_object::allocate_and_initialize(PP::concepts::invocable auto&& i) noexcept
 {
@@ -140,5 +149,14 @@ constexpr bool PPreflection::dynamic_object::is_void() const noexcept
 }
 
 constexpr PPreflection::dynamic_object::dynamic_object(PP::concepts::invocable auto&& i)
-	: x(PP::placeholder, PP::make_unique_default(data(allocate_and_initialize(PP_FORWARD(i)))), deleter(&type::reflect(PP_DECLTYPE(PP_FORWARD(i)()))))
+	: x
+	(
+		PP::in_place_tag,
+			PP::in_place_tag,
+				allocate_and_initialize(PP_FORWARD(i)),
+			PP::unique_in_place_delimiter,
+				// {},
+		PP::scoped_in_place_delimiter,
+			&type::reflect(PP_DECLTYPE(PP_FORWARD(i)()))
+	)
 {}

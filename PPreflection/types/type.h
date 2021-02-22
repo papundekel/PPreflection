@@ -5,7 +5,7 @@
 #include "concepts/derived_from.hpp"
 #include "get_type.hpp"
 #include "same.hpp"
-#include "tuple_find_index.hpp"
+#include "tuple_find_dynamic.hpp"
 #include "tuple_fold.hpp"
 #include "tuple_get.hpp"
 #include "tuple_make_array.hpp"
@@ -66,7 +66,7 @@ namespace PPreflection
 	PP_FUNCTOR(get_type_class_type, PP::concepts::type auto t)
 	{
 		return type_classes[PP::value_t_static_cast(PP::type_size_t, get_type_class_value_t(PP_COPY_TYPE(t)))];
-	}};
+	});
 
 	constexpr inline auto common_type_class =
 	[](PP::concepts::type auto t, PP::concepts::type auto u)
@@ -82,7 +82,7 @@ namespace PPreflection
 			return t;
 		else
 		{
-			constexpr auto i = PP::tuple_find_index([T, U]
+			constexpr auto i = PP::tuple_find_dynamic([T, U]
 				(PP::concepts::type auto V)
 				{
 					return PP::is_derived_from(T, V) && PP::is_derived_from(U, V);
@@ -142,18 +142,18 @@ namespace PPreflection
 		static PP_FUNCTOR(reflect, auto&& x) -> decltype(auto)
 		{
 			return reflect_helper(PP_FORWARD(x));
-		}};		
+		});		
 	};
+}
 
-	constexpr auto type::reflect_helper(PP::concepts::tuple auto&& types) noexcept
-	{
-		constexpr auto super_class = PP::type<super_class_type>;
-		auto class_types = PP::tuple_map(get_type_class_type, PP_FORWARD(types));
-		constexpr auto common_class = PP_COPY_TYPE(PP::tuple_foldr(common_type_class, super_class, class_types));
+constexpr auto PPreflection::type::reflect_helper(PP::concepts::tuple auto&& types) noexcept
+{
+	constexpr auto super_class = PP::type<super_class_type>;
+	auto class_types = PP::tuple_map(get_type_class_type, PP_FORWARD(types));
+	constexpr auto common_class = PP_COPY_TYPE(PP::tuple_foldr(common_type_class, super_class, class_types));
 
-		if constexpr (common_class == super_class)
-			return PP::array<int, 0>{};
-		else
-			return PP::tuple_make_array(common_class + PP::add_const_tag + PP::add_lvalue_tag, type::reflect, PP_FORWARD(types));
-	}
+	if constexpr (common_class == super_class)
+		return PP::array<int, 0>{};
+	else
+		return PP::tuple_make_array(common_class + PP::add_const_tag + PP::add_lvalue_tag, type::reflect, PP_FORWARD(types));
 }

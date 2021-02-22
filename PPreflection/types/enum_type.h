@@ -8,7 +8,7 @@ namespace PPreflection
 	{
 	public:
 		constexpr virtual PP::string_view get_name() const noexcept = 0;
-		constexpr virtual std::int64_t get_value() const noexcept = 0;
+		constexpr virtual long long get_value() const noexcept = 0;
 	};
 
 	class enum_type : public user_defined_type

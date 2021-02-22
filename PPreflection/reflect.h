@@ -43,7 +43,7 @@ namespace PPreflection
 	PP_FUNCTOR(reflect, auto&& x) -> decltype(auto)
 	{
 		return detail::reflect_helper(PP_FORWARD(x));
-	}};
+	});
 
 	constexpr auto reflect_many(PP::concepts::tuple auto&& tuple, PP::concepts::type auto t) noexcept
 	{

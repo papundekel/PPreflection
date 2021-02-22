@@ -1,5 +1,6 @@
 #pragma once
 #include "../descriptor.h"
+#include "simple_vector.hpp"
 #include "string_view.hpp"
 
 namespace PPreflection
@@ -9,14 +10,14 @@ namespace PPreflection
 		template <typename Base>
 		class dynamic_named_descriptor : public Base
 		{
-			static_assert(PP::derived_from<Base, descriptor>);
+			static_assert(PP::concepts::derived_from<Base, descriptor>);
 
-			std::string name;
+			PP::simple_vector<char> name;
 
 		public:
 			constexpr dynamic_named_descriptor(PP::string_view name, auto&&... args) noexcept
 				: Base(PP_FORWARD(args)...)
-				, name_(name)
+				, name(name)
 			{}
 
 			constexpr bool has_name(PP::string_view name) const noexcept override final
