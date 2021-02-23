@@ -32,4 +32,4 @@ jobs:
     - name: Build
       working-directory: ${{github.workspace}}/build
       shell: bash
-      run: cmake --build $GITHUB_WORKSPACE --config $BUILD_TYPE --target all
+      run: cmake --build $GITHUB_WORKSPACE --config $BUILD_TYPE --target all -j 10
