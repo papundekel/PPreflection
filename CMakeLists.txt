@@ -8,7 +8,7 @@ endif()
 
 project(PPreflection)
 
-add_subdirectory(PP)
+add_subdirectory(../PP)
 add_subdirectory(PPreflection)
 target_compile_features(PPreflection PUBLIC cxx_std_20)
 
