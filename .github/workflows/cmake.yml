@@ -25,6 +25,9 @@ jobs:
     - name: cigi
       run: ls ${{github.workspace}}
     
+    - name: create build dir
+      run: mkdir ${{github.workspace}}/build
+    
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
       # access regardless of the host operating system
