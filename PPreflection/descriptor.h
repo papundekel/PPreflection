@@ -6,6 +6,8 @@
 #include "type_t.hpp"
 #include "view.hpp"
 
+#include <iostream>
+
 namespace PPreflection
 {
 	using namespace PP::literals;
@@ -21,10 +23,7 @@ namespace PPreflection
 		constexpr void print_name(PP::simple_ostream& out) const noexcept
 		{
 			print_name_before_parent(out);
-			const descriptor& parent = get_parent();
-			auto parent_address = &parent;
-			auto t = this;
-			if (parent_address != t)
+			if (const descriptor& parent = get_parent(); &parent != this)
 			{
 				parent.print_name(out);
 				out.write("::");

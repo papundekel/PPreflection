@@ -37,9 +37,9 @@ public:
 	}
 };
 
-void f()
+void f(int a)
 {
-	std::cout << "f(" << 55 << ")\n";
+	std::cout << "f(" << a << ")\n";
 }
 
 namespace
@@ -143,12 +143,9 @@ template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::t
 
 int main()
 {
-	const PPreflection::function& d = PPreflection::reflect(PP::value<::f>);
+	const PPreflection::function& _f = PPreflection::reflect(PP::value<::f>);
 
-	const PPreflection::descriptor& parent = d.get_parent();
-
-	std::cout << d << '\n';
-	std::cout << parent << '\n';
+	//_f.invoke({ 5 });
 
 	std::cout.flush();
 	return 0;
