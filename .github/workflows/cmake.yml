@@ -19,7 +19,7 @@ jobs:
     
     - run:   |
              sudo apt update
-             sudo apt install g++-10 cmake
+             sudo apt install g++-10 cmake ninja
       shell: bash
 
     - name: cigi
