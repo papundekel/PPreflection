@@ -10,11 +10,6 @@
 #include "types/reference_type.h"
 #include "types/type.h"
 
-constexpr PPreflection::dynamic_reference::dynamic_reference(const void* ptr, const reference_type& t) noexcept
-	: ptr(const_cast<void*>(ptr))
-	, type_(t)
-{}
-
 constexpr auto PPreflection::dynamic_reference::cast_unsafe(PP::concepts::type auto t) const noexcept -> PP_GET_TYPE(t)&&
 {
 	return (PP_GET_TYPE(t)&&)(*PP::reinterpret__cast(!PP::add_pointer(t), ptr));

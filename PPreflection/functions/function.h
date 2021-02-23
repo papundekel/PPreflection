@@ -69,17 +69,11 @@ namespace PPreflection
 
 		inline dynamic_variable invoke(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args = {}) const;
 
-		using overloaded = overloaded_function;
-
 		constexpr virtual const overloaded_function& get_overloaded_function() const noexcept = 0;
 
-		constexpr virtual const descriptor& get_parent() const noexcept;
+		constexpr const descriptor& get_parent() const noexcept override;
 
-	private:
-		constexpr const descriptor* get_parent_implementation() const noexcept override final
-		{
-			return &get_parent();
-		}
+		using overloaded = overloaded_function;
 	};
 
 	class overloaded_function : public descriptor
@@ -93,8 +87,6 @@ namespace PPreflection
 
 		inline dynamic_variable invoke(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args = {}) const;
 
-		constexpr virtual const descriptor& get_parent() const noexcept = 0;
-
 		constexpr const function* select_overload(PP::concepts::view auto&& argument_types) const noexcept
 		{
 			for (const function& f : get_overloads())
@@ -104,15 +96,9 @@ namespace PPreflection
 			return nullptr;
 		}
 
-		constexpr PP::concepts::view auto get_overloads() const noexcept
+		constexpr auto get_overloads() const noexcept
 		{
 			return get_function_overloads();
-		}
-
-	private:
-		constexpr const descriptor* get_parent_implementation() const noexcept override final
-		{
-			return &get_parent();
 		}
 	};
 

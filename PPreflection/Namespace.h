@@ -11,9 +11,9 @@ namespace PPreflection
 	class Namespace : public descriptor
 	{
 	public:
-		constexpr const Namespace* get_parent_implementation() const noexcept override = 0;
-		constexpr virtual PP::any_view<PP::iterator_category::ra, const Namespace&> get_namespaces() const noexcept = 0;
-		constexpr virtual PP::any_view<PP::iterator_category::ra, const user_defined_type&> get_types() const noexcept = 0;
+		constexpr const Namespace& get_parent() const noexcept override = 0;
+		//constexpr virtual PP::any_view<PP::iterator_category::ra, const Namespace&> get_namespaces() const noexcept = 0;
+		//constexpr virtual PP::any_view<PP::iterator_category::ra, const user_defined_type&> get_types() const noexcept = 0;
 		//constexpr virtual PP::any_view<PP::iterator_category::ra, const overloaded_namespace_function&> get_functions() const noexcept = 0;
 
 		constexpr virtual PP::string_view get_name() const noexcept = 0;

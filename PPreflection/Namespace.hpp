@@ -1,5 +1,4 @@
 #pragma once
-#include <algorithm>
 #include "Namespace.h"
 #include "types/type.h"
 #include "descriptor.h"

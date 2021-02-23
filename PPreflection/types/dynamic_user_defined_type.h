@@ -21,7 +21,7 @@ namespace PPreflection
 				, parent(parent)
 			{}
 
-			constexpr parent_descriptor_reference get_parent() const noexcept override final
+			constexpr parent_descriptor_reference get_parent(int = 0) const noexcept override final
 			{
 				return parent;
 			}

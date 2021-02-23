@@ -12,18 +12,21 @@ namespace PPreflection
 
 	class descriptor
 	{
-		constexpr virtual const descriptor* get_parent_implementation() const noexcept = 0;
-
 		constexpr virtual void print_name_before_parent(PP::simple_ostream& out) const noexcept = 0;
 		constexpr virtual void print_name_after_parent(PP::simple_ostream& out) const noexcept = 0;
 
 	public:
+		constexpr virtual const descriptor& get_parent() const noexcept = 0;
+
 		constexpr void print_name(PP::simple_ostream& out) const noexcept
 		{
 			print_name_before_parent(out);
-			if (const descriptor* parent = get_parent_implementation(); parent)
+			const descriptor& parent = get_parent();
+			auto parent_address = &parent;
+			auto t = this;
+			if (parent_address != t)
 			{
-				parent->print_name(out);
+				parent.print_name(out);
 				out.write("::");
 			}
 			print_name_after_parent(out);

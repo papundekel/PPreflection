@@ -1,9 +1,9 @@
 #pragma once
 #include "../type_disjunction_reference.hpp"
-#include "reference_type.h"
 #include "non_array_object_type.h"
+#include "reference_type.h"
+#include "static_cast.hpp"
 #include "void_type.h"
-#include "functional/id.hpp"
 
 namespace PPreflection
 {
@@ -27,7 +27,7 @@ namespace PPreflection
 
 		constexpr operator const type&() const noexcept
 		{
-			return visit(PP::id_typed * PP::type<const type&>);
+			return visit(PP::static__cast * PP::type<const type&>);
 		}
 	};
 }

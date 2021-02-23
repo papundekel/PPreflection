@@ -16,7 +16,10 @@ namespace PPreflection
 		void* ptr;
 		dynamic_reference_type type_;
 
-		constexpr dynamic_reference(const void* ptr, const reference_type& t) noexcept;
+		constexpr dynamic_reference(const void* ptr, const reference_type& t) noexcept
+			: ptr(const_cast<void*>(ptr))
+			, type_(t)
+		{}
 
 	public:
 		struct bad_cast_exception {};

@@ -3,7 +3,7 @@
 #include "../enum_type.h"
 #include "basic_user_defined_type.hpp"
 #include "concepts/enum.hpp"
-#include "functional/id.hpp"
+#include "static_cast.hpp"
 #include "tuple_map.hpp"
 #include "tuple_to_array.hpp"
 
@@ -34,7 +34,7 @@ namespace PPreflection::detail
 
 		static constexpr auto enum_values_basic = make_basic_enum_value + PPreflection::reflect(PP::type<tags::enum_values<T>>);
 
-		static constexpr auto enum_values_array = PP::id_typed * PP::type<const enum_value&> << enum_values_basic;
+		static constexpr auto enum_values_array = PP::static__cast * PP::type<const enum_value&> << enum_values_basic;
 
 		constexpr PP::any_view<PP::iterator_category::ra, const enum_value&> get_values() const noexcept override final
 		{

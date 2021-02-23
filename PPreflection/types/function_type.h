@@ -1,5 +1,6 @@
 #pragma once
 #include "any_iterator.hpp"
+#include "non_user_defined_type.h"
 #include "parameter_type_reference.h"
 #include "referencable_type.h"
 #include "return_type_reference.h"
@@ -7,7 +8,7 @@
 
 namespace PPreflection
 {
-	class function_type : public referencable_type
+	class function_type : public detail::non_user_defined_type<referencable_type>
 	{
 	public:
 		constexpr virtual return_type_reference return_type() const noexcept = 0;
@@ -16,18 +17,14 @@ namespace PPreflection
 		constexpr virtual PP::cv_qualifier get_cv_qualifier() const noexcept = 0;
 		constexpr virtual PP::ref_qualifier get_ref_qualifier() const noexcept = 0;
 
-		constexpr const descriptor* get_parent_implementation() const noexcept override
-		{
-			return nullptr;
-		}
-
 		constexpr bool has_name(PP::string_view name) const noexcept override final
 		{
 			return false;
 		}
 		constexpr void print_name_prefix(PP::simple_ostream& out) const noexcept override final
 		{
-			return_type().visit([&out](const type& t) { t.print_name_prefix(out); });
+			const type& return_type_ = return_type();
+			return_type_.print_name_prefix(out);
 		}
 		constexpr void print_name_suffix(PP::simple_ostream& out) const noexcept override final
 		{
@@ -52,7 +49,8 @@ namespace PPreflection
 			if (is_noexcept())
 				out.write(" noexcept");
 
-			return_type().visit([&out](const type& t) { t.print_name_suffix(out); });
+			const type& return_type_ = return_type();
+			return_type_.print_name_suffix(out);
 		}
 
 		static constexpr auto reflect_parameter_types(PP::concepts::tuple auto&& types)

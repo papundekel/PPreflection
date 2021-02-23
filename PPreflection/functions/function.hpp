@@ -1,11 +1,9 @@
 #pragma once
-#include <type_traits>
-#include <vector>
-#include "function.h"
 #include "../dynamic_object.h"
-#include "../types/type.h"
-#include "../types/parameter_type_reference.h"
 #include "../dynamic_reference.h"
+#include "../types/parameter_type_reference.h"
+#include "../types/type.h"
+#include "function.h"
 
 constexpr void PPreflection::function::print_name_basic(PP::simple_ostream& out) const noexcept
 {
@@ -20,7 +18,9 @@ constexpr void PPreflection::function::print_noexcept(PP::simple_ostream& out) c
 }
 constexpr void PPreflection::function::print_name_before_parent(PP::simple_ostream& out) const noexcept
 {
-	 ((const descriptor&)return_type()).print_name(out);
+	const descriptor& return_type_desc = return_type();
+	return_type_desc.print_name(out);
+	out.write(" ");
 }
 constexpr void PPreflection::function::print_name_after_parent(PP::simple_ostream& out) const noexcept
 {

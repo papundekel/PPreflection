@@ -3,7 +3,7 @@
 #include "dynamic_reference.hpp"
 #include "types/types.hpp"
 #include "reflect.hpp"
-//#include "value_tuple.hpp"
+#include "value_tuple.hpp"
 
 class S
 {
@@ -57,12 +57,12 @@ namespace PPreflection::tags::overloaded
 	}
 
 	struct f {};
-}	
+}
 
 using namespace std::literals::string_view_literals;
 
 // ::
-//template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::Namespace::global> = PPreflection::detail::basic_namespace<namespace_global>{};
+template <> constexpr inline auto PPreflection::detail::metadata<namespace_global> = PPreflection::detail::basic_namespace<namespace_global>{};
 //template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::Namespace::global>> = PP::type_tuple<S>;
 //template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::Namespace::global>> = PP::type_tuple<>;
 //template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::Namespace::global>> = PP::type_tuple<
@@ -70,7 +70,7 @@ using namespace std::literals::string_view_literals;
 //>;
 
 // ::S
-//template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<S>> = PP::string_view("S");
+//template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<S>> = "S"_sv;
 //template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<S>> = PP::type<namespace_global>;
 //template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<S>> = PP::type_tuple<>;
 //template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<S>> = PP::type_tuple<>;
@@ -128,11 +128,10 @@ using namespace std::literals::string_view_literals;
 //template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<&::S::operator int>> = detail::basic_conversion_function<&::S::operator int>{};
 //template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::overloads<PP::value_t<&::S::operator int>>> = PP::type<PPreflection::tags::conversion_function<::S, int>>;
 //template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::is_explicit<PP::value_t<&::S::operator int>>> = false;
-*/
 
 // ::f
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::overloaded::f> = detail::basic_overloaded_namespace_function<PPreflection::tags::overloaded::f>{};
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::tags::overloaded::f>> = PP::string_view("f");
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::tags::overloaded::f>> = "f"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PPreflection::tags::overloaded::f>> = PP::type<namespace_global>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::overloads<PPreflection::tags::overloaded::f>> = PP::value_tuple<
 	::f
@@ -144,19 +143,12 @@ template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::t
 
 int main()
 {
-	//const PPreflection::function& f = PPreflection::reflect(PP::value<::f>);
-	
-	int a = 7;
-	
-	PPreflection::dynamic_reference r = a;
-	
-	std::cout << r.cast(PP::type<const int&>);
-	
-	std::vector<PPreflection::dynamic_reference> references;
-	
-	references.push_back(r);
-	
-	//f.invoke();
+	const PPreflection::function& d = PPreflection::reflect(PP::value<::f>);
+
+	const PPreflection::descriptor& parent = d.get_parent();
+
+	std::cout << d << '\n';
+	std::cout << parent << '\n';
 
 	std::cout.flush();
 	return 0;

@@ -52,16 +52,16 @@ namespace PPreflection
 
 	// namespace
 	//
-	// template <> constexpr inline auto ::PPreflection::metadata<namespace> = detail::basic_namespace<type>{};
-	// template <> constexpr inline auto ::PPreflection::metadata<::PPreflection::tags::name<namespace>> = PP::string_view("name");
-	// template <> constexpr inline auto ::PPreflection::metadata<::PPreflection::tags::parent<namespace>> = ::PP::type<parent>;
-	// template <> constexpr inline auto ::PPreflection::metadata<::PPreflection::tags::types<namespace>> = ::PP::type_tuple<types>;
-	// template <> constexpr inline auto ::PPreflection::metadata<::PPreflection::tags::namespaces<namespace>> = ::PP::type_tuple<namespaces>;
+	// template <> constexpr inline auto PPreflection::detail::metadata<namespace> = detail::basic_namespace<type>{};
+	// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<namespace>> = "name"_sv;
+	// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<namespace>> = ::PP::type<parent>;
+	// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<namespace>> = ::PP::type_tuple<types...>;
+	// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<namespace>> = ::PP::type_tuple<namespaces...>;
 
 	// class
 	//
-	// template <> constexpr inline auto reflection::metadata<reflection::name<type>> = PP::string_view("type");
-	// template <> constexpr inline auto reflection::metadata<reflection::parent<type>> = PP::type<parent>;
-	// template <> constexpr inline auto reflection::metadata<reflection::nested_classes<type>> = PP::type_tuple<nested_classes>;
-	// template <> constexpr inline auto reflection::metadata<reflection::base_classes<type>> = PP::type_tuple<bases>;
+	// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<type>> = "type"_sv;
+	// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<type>> = PP::type<parent>;
+	// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<type>> = PP::type_tuple<nested_classes...>;
+	// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<type>> = PP::type_tuple<bases...>;
 }

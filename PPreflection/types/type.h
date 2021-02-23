@@ -65,7 +65,7 @@ namespace PPreflection
 
 	PP_FUNCTOR(get_type_class_type, PP::concepts::type auto t)
 	{
-		return type_classes[PP::value_t_static_cast(PP::type_size_t, get_type_class_value_t(PP_COPY_TYPE(t)))];
+		return type_classes[PP::value_t_static_cast(PP::type_size_t, get_type_class_value_t(t))];
 	});
 
 	constexpr inline auto common_type_class =
@@ -152,8 +152,7 @@ constexpr auto PPreflection::type::reflect_helper(PP::concepts::tuple auto&& typ
 	auto class_types = PP::tuple_map(get_type_class_type, PP_FORWARD(types));
 	constexpr auto common_class = PP_COPY_TYPE(PP::tuple_foldr(common_type_class, super_class, class_types));
 
-	if constexpr (common_class == super_class)
-		return PP::array<int, 0>{};
-	else
-		return PP::tuple_make_array(common_class + PP::add_const_tag + PP::add_lvalue_tag, type::reflect, PP_FORWARD(types));
+	static_assert(common_class != super_class, "type::reflect: the types dont have a common type category");
+
+	return PP::tuple_make_array(common_class + PP::add_const_tag + PP::add_lvalue_tag, type::reflect, PP_FORWARD(types));
 }
