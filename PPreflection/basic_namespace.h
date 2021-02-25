@@ -16,8 +16,9 @@ namespace PPreflection
 			//static constexpr auto namespaces =
 			//	reflect_many(PPreflection::reflect(PP::type<tags::namespaces<ID>>), PP::type<const Namespace&>);
 
-			//static constexpr auto functions =
-			//	PP::tuple_map_to_array(PPreflection::reflect, PPreflection::reflect(PP::type<tags::functions<ID>>), PP::type<const overloaded_namespace_function&>);
+			static constexpr auto functions = reflect_many(PPreflection::reflect(
+				PP::type<tags::functions<ID>>),
+				PP::type<const overloaded_namespace_function&>);
 
 		public:
 			constexpr const Namespace& get_parent() const noexcept override final
@@ -27,18 +28,18 @@ namespace PPreflection
 				else
 					return *this;
 			}
-			/*constexpr PP::any_view<PP::iterator_category::ra, const Namespace&> get_namespaces() const noexcept override final
-			{
-				return namespaces;
-			}*/
-			/*constexpr PP::any_view<PP::iterator_category::ra, const user_defined_type&> get_types() const noexcept override final
-			{
-				return types;
-			}*/
-			/*constexpr PP::any_view<PP::iterator_category::ra, const overloaded_namespace_function&> get_functions() const noexcept override final
+			//constexpr PP::any_view<PP::iterator_category::ra, const Namespace&> get_namespaces() const noexcept override final
+			//{
+			//	return namespaces;
+			//}
+			//constexpr PP::any_view<PP::iterator_category::ra, const user_defined_type&> get_types() const noexcept override final
+			//{
+			//	return types;
+			//}
+			constexpr PP::any_view<PP::iterator_category::ra, const overloaded_namespace_function&> get_functions() const noexcept override final
 			{
 				return functions;
-			}*/
+			}
 			constexpr PP::string_view get_name() const noexcept override final
 			{
 				return this->reflect_name(PP::type<ID>);

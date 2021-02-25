@@ -1,8 +1,11 @@
 #pragma once
 #include <variant>
+
+#include "concepts/reference.hpp"
+#include "concepts/void.hpp"
 #include "dynamic_object.h"
 #include "dynamic_reference.h"
-#include "../PP/PP/overloaded.hpp"
+#include "overloaded.hpp"
 
 namespace PPreflection
 {
@@ -20,24 +23,24 @@ namespace PPreflection
 		{}
 
 	public:
-		template <typename F>
-		static auto create(F&& f)
+		static auto create(auto&& f)
 		{
-			using R = decltype(std::forward<F>(f)());
+			constexpr auto result_type = PP_DECLTYPE(PP_FORWARD(f)());
 
-			if constexpr (std::is_void_v<R>)
+			if constexpr (PP::is_void(result_type))
 			{
-				std::forward<F>(f)();
+				PP_FORWARD(f)();
 				return dynamic_variable(dynamic_object::create_void());
 			}
-			else if constexpr (std::is_reference_v<R>)
-				return dynamic_variable(dynamic_reference(std::forward<F>(f)()));
+			else if constexpr (PP::is_reference(result_type))
+				return dynamic_variable(dynamic_reference(PP_FORWARD(f)()));
 			else
-				return dynamic_variable(dynamic_object(std::forward<F>(f)));
+				return dynamic_variable(dynamic_object(PP_FORWARD(f)));
 		}
 		explicit operator bool() const noexcept
 		{
-			return std::visit(PP::overloaded{
+			return std::visit(PP::overloaded
+			(
 				[](const dynamic_reference&)
 				{
 					return true;
@@ -45,7 +48,8 @@ namespace PPreflection
 				[](const dynamic_object& o)
 				{
 					return (bool)o;
-				} }, dynamic);
+				}
+			), dynamic);
 		}
 		dynamic_object::invalid_code get_error_code() const noexcept
 		{
@@ -69,7 +73,8 @@ namespace PPreflection
 		}
 		operator dynamic_reference() const noexcept
 		{
-			return std::visit(PP::overloaded{
+			return std::visit(PP::overloaded
+			(
 				[](const dynamic_reference& r)
 				{
 					return r;
@@ -77,7 +82,8 @@ namespace PPreflection
 				[](const dynamic_object& o) -> dynamic_reference
 				{
 					return o;
-				} }, dynamic);
+				}
+			), dynamic);
 		}
 	};
 }

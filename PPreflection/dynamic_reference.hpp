@@ -10,12 +10,12 @@
 #include "types/reference_type.h"
 #include "types/type.h"
 
-constexpr auto PPreflection::dynamic_reference::cast_unsafe(PP::concepts::type auto t) const noexcept -> PP_GET_TYPE(t)&&
+inline auto PPreflection::dynamic_reference::cast_unsafe(PP::concepts::type auto t) const noexcept -> PP_GET_TYPE(t)&&
 {
 	return (PP_GET_TYPE(t)&&)(*PP::reinterpret__cast(!PP::add_pointer(t), ptr));
 }
 
-constexpr auto PPreflection::dynamic_reference::cast(PP::concepts::type auto t) const -> PP_GET_TYPE(t)&&
+inline auto PPreflection::dynamic_reference::cast(PP::concepts::type auto t) const -> PP_GET_TYPE(t)&&
 {
 	constexpr auto T = PP_COPY_TYPE(t) + PP::add_rvalue_tag;
 
@@ -25,7 +25,7 @@ constexpr auto PPreflection::dynamic_reference::cast(PP::concepts::type auto t) 
 		throw bad_cast_exception{};
 }
 
-auto* PPreflection::dynamic_reference::get_ptr(PP::concepts::type auto t) const
+inline auto* PPreflection::dynamic_reference::get_ptr(PP::concepts::type auto t) const
 {
 	if (type::reflect(t).can_be_pointer_initialized(type_.remove_reference()))
 		return PP::reinterpret__cast(PP::add_pointer(t), ptr);
@@ -33,11 +33,11 @@ auto* PPreflection::dynamic_reference::get_ptr(PP::concepts::type auto t) const
 		return nullptr;
 }
 
-auto& PPreflection::dynamic_reference::get_ref(PP::concepts::type auto t) const&
+inline auto& PPreflection::dynamic_reference::get_ref(PP::concepts::type auto t) const&
 {
 	return cast(t + PP::add_lvalue_tag);
 }
-auto&& PPreflection::dynamic_reference::get_ref(PP::concepts::type auto t) const&&
+inline auto&& PPreflection::dynamic_reference::get_ref(PP::concepts::type auto t) const&&
 {
 	return cast(t + PP::add_rvalue_tag);
 }

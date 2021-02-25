@@ -31,12 +31,10 @@ namespace PPreflection
 
 	namespace detail
 	{
-		template <typename T>
-		constexpr auto&& reflect_helper(PP::type_t<T>) noexcept;
-		template <auto v>
-		constexpr auto&& reflect_helper(PP::value_t<v>) noexcept
+		constexpr auto&& reflect_helper(PP::concepts::type auto t) noexcept;
+		constexpr auto&& reflect_helper(PP::concepts::value auto v) noexcept
 		{
-			return reflect_helper(PP::type<PP::value_t<v>>);
+			return reflect_helper(PP_DECLTYPE(PP::to_value_t(v)));
 		}
 	}
 

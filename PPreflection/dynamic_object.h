@@ -3,7 +3,7 @@
 #include "concepts/same_except_cvref.hpp"
 #include "get_type.hpp"
 #include "scoped.hpp"
-#include "simple_view.hpp"
+#include "string_view.hpp"
 #include "unique.hpp"
 
 namespace PPreflection
@@ -47,13 +47,7 @@ namespace PPreflection
 
 		public:
 			constexpr deleter(const complete_object_type* ptr) noexcept
-				: type_
-				(
-					PP::in_place_tag,
-						ptr,
-					PP::unique_in_place_delimiter
-						// {}
-				)
+				: type_(PP::unique_default_releaser_tag, ptr)
 			{}
 			constexpr void operator()(PP::unique<data>& u) const;
 

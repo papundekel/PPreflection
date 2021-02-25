@@ -1,49 +1,39 @@
 #pragma once
-#include "array.hpp"
-#include "pointable_type.h"
-#include "cv_qualifier.hpp"
 #include "add_cv.hpp"
+#include "array.hpp"
 #include "cv_qualifiable_type.h"
+#include "cv_qualifier.hpp"
 #include "non_user_defined_type.h"
+#include "pointable_type.h"
+#include "view_equal.hpp"
 
 namespace PPreflection
 {
 	class void_type : public detail::non_user_defined_type<detail::cv_qualifiable_type<pointable_type>>
 	{
-		static const PP::array<const pointer_type*, 4> types;
-		static const PP::array<PP::string_view, 4> names;
-
-	public:
-		constexpr const pointer_type& make_pointer() const noexcept
+		static constexpr PP::array<PP::string_view, 4> names
 		{
-			return *types[(size_t)get_cv_qualifier()];
+			"void",
+			"void const",
+			"void volatile",
+			"void const volatile"
+		};
+
+		constexpr size_t get_cv_qualifier_index() const noexcept
+		{
+			return (size_t)get_cv_qualifier();
 		}
 
+	public:
 		constexpr void print_name_prefix(PP::simple_ostream& out) const noexcept override final
 		{
-			out.write(names[(size_t)get_cv_qualifier()]);
+			out.write(names[get_cv_qualifier_index()]);
 		}
 		constexpr void print_name_suffix(PP::simple_ostream& out) const noexcept override final
 		{}
 		constexpr bool has_name(PP::string_view name) const noexcept override final
 		{
-			return PP::view_equal(names[(size_t)get_cv_qualifier()], name);
+			return PP::view_equal(names[get_cv_qualifier_index()], name);
 		}
-	};
-
-	const PP::array<const pointer_type*, 4> void_type::types
-	{
-		&type::reflect(PP::type<void*>),
-		&type::reflect(PP::type<const void*>),
-		&type::reflect(PP::type<volatile void*>),
-		&type::reflect(PP::type<const volatile void*>),
-	};
-
-	const PP::array<PP::string_view, 4> void_type::names
-	{
-		"void",
-		"void const",
-		"void volatile",
-		"void const volatile",
 	};
 }

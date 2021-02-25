@@ -4,7 +4,7 @@
 
 namespace PPreflection
 {
-	constexpr auto make_array(const complete_object_type& inner_type, std::size_t extent) noexcept
+	constexpr auto make_array(const complete_object_type& inner_type, size_t extent) noexcept
 	{
 		return dynamic_known_bound_array_type(inner_type, extent);
 	}

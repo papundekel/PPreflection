@@ -13,9 +13,9 @@ namespace PPreflection::detail
 		static constexpr auto base_classes =
 			reflect_many(PPreflection::reflect(PP::type<tags::base_classes<T>>), PP::type<const non_union_class_type&>);
 
-		constexpr PP::any_view<PP::iterator_category::ra, const non_union_class_type&> get_base_classes() const noexcept override final
-		{
-			return base_classes;
-		}
+		//constexpr PP::any_view<PP::iterator_category::ra, const non_union_class_type&> get_base_classes() const noexcept override final
+		//{
+		//	return base_classes;
+		//}
 	};
 }

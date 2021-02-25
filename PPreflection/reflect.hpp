@@ -38,7 +38,7 @@ namespace PPreflection
 	{
 		struct overload_caster__no_specialization {};
 
-		template <typename Overload, std::size_t Index>
+		template <typename Overload, size_t Index>
 		constexpr inline overload_caster__no_specialization overload_caster = {};
 
 		constexpr inline auto basic_types = PP::template_tuple<
@@ -57,12 +57,15 @@ namespace PPreflection
 		template <typename T>
 		constexpr inline auto metadata = detail::basic_types[PP::value_t_static_cast(PP::type_size_t, get_type_class_value_t(PP::type<T>))](PP::type<T>)();
 
-		template <typename T>
-		constexpr auto&& reflect_helper(PP::type_t<T>) noexcept
+		template <> constexpr inline auto metadata<Namespace::global> = PPreflection::detail::basic_namespace<Namespace::global>{};
+
+		constexpr auto&& reflect_helper(PP::concepts::type auto t) noexcept
 		{
-			return metadata<T>;
+			return metadata<PP_GET_TYPE(t)>;
 		}
 	}
+
+	constexpr inline const Namespace& global_namespace = reflect(PP::type<Namespace::global>);
 }
 
 using namespace PP::literals;

@@ -34,8 +34,7 @@ namespace PPreflection
 
 		constexpr const type* operator&() const
 		{
-			const type& t = *this;
-			return &t;
+			return &(const type&)*this;
 		}
 
 		static constexpr bool can_initialize_many(PP::concepts::view auto&& parameter_types, PP::concepts::view auto&& argument_types) noexcept

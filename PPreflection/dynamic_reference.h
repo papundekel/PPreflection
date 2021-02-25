@@ -29,12 +29,12 @@ namespace PPreflection
 			return type_;
 		}
 
-		constexpr auto cast_unsafe(PP::concepts::type auto t) const noexcept -> PP_GET_TYPE(t)&&;
-		constexpr auto cast(PP::concepts::type auto t) const -> PP_GET_TYPE(t)&&;
+		inline auto cast_unsafe(PP::concepts::type auto t) const noexcept -> PP_GET_TYPE(t)&&;
+		inline auto cast(PP::concepts::type auto t) const -> PP_GET_TYPE(t)&&;
 
-		auto*  get_ptr(PP::concepts::type auto t) const;
-		auto&  get_ref(PP::concepts::type auto t) const&;
-		auto&& get_ref(PP::concepts::type auto t) const&&;
+		inline auto*  get_ptr(PP::concepts::type auto t) const;
+		inline auto&  get_ref(PP::concepts::type auto t) const&;
+		inline auto&& get_ref(PP::concepts::type auto t) const&&;
 
 		constexpr dynamic_reference(auto&& r) noexcept
 			requires ((

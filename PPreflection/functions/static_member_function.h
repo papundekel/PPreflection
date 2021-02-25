@@ -23,7 +23,5 @@ namespace PPreflection
 		using overloaded = overloaded_static_member_function;
 
 		constexpr const overloaded& get_overloaded_function() const noexcept override = 0;
-
-		//constexpr const class_type& get_parent() const noexcept final = 0;
 	};
 }

@@ -15,7 +15,7 @@ constexpr const PPreflection::Namespace* PPreflection::parent_descriptor_referen
 	return visit(PP::overloaded
 	(
 		[](const Namespace& n) { return &n;	},
-		[](const descriptor&) { return (const Namespace*)(nullptr); }
+		[](const descriptor&) { return (const Namespace*)nullptr; }
 	));
 }
 constexpr const PPreflection::class_type* PPreflection::parent_descriptor_reference::as_class() const noexcept
@@ -23,6 +23,6 @@ constexpr const PPreflection::class_type* PPreflection::parent_descriptor_refere
 	return visit(PP::overloaded
 	(
 		[](const class_type& c) { return &c; },
-		[](const descriptor&) { return (const class_type*)(nullptr); }
+		[](const descriptor&) { return (const class_type*)nullptr; }
 	));
 }

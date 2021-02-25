@@ -117,8 +117,9 @@ namespace PPreflection
 
 			if (auto [i, end] = PP::view_begin_end(PP_FORWARD(parameter_types)); i != end)
 			{
-				++i;
 				i->print_name(out);
+				++i;
+
 				for (; i != end; ++i)
 				{
 					out.write(", ");

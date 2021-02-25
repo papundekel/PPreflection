@@ -6,6 +6,7 @@
 #include "any_iterator.hpp"
 #include "functional/id.hpp"
 #include "transform_view.hpp"
+#include "tuple_count.hpp"
 #include "tuple_value_sequence_for.hpp"
 #include "tuple_zip_with.hpp"
 #include "type_tuple.hpp"
@@ -30,17 +31,15 @@ namespace PPreflection
 
 		static inline dynamic_variable invoke_helper(auto&& f, PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&> arg_iterator, auto parameter_types) noexcept
 		{
-			/*return dynamic_variable::create(
+			return dynamic_variable::create(
 				[&f, arg_iterator, parameter_types]() -> decltype(auto)
 				{
-					return PP::tuple_apply(PP_FORWARD(f), PP::tuple_zip_with(
-						[](auto ref, auto t) -> decltype(auto)
+					return PP::tuple_apply(PP_FORWARD(f), PP::tuple_zip_with_pack(
+						[](dynamic_reference ref, PP::concepts::type auto t) -> decltype(auto)
 						{
 							return ref.cast_unsafe(t);
-						}, std::make_pair(PP::concepts::view_tuple(arg_iterator), parameter_types)));
-				});*/
-
-			return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
+						}, make_view_tuple(PP::tuple_count_value_t(parameter_types), arg_iterator), parameter_types));
+				});
 		}
 
 		constexpr void print_name_basic(PP::simple_ostream& out) const noexcept;
@@ -78,6 +77,8 @@ namespace PPreflection
 
 	class overloaded_function : public descriptor
 	{
+		friend function;
+
 	protected:
 		constexpr virtual PP::any_view<PP::iterator_category::ra, const function&> get_function_overloads() const noexcept = 0;
 

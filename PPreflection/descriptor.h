@@ -1,12 +1,10 @@
 #pragma once
 #include <iosfwd>
 
+#include "get_type.hpp"
 #include "simple_ostream.hpp"
 #include "string_view.hpp"
-#include "type_t.hpp"
 #include "view.hpp"
-
-#include <iostream>
 
 namespace PPreflection
 {
@@ -14,6 +12,7 @@ namespace PPreflection
 
 	class descriptor
 	{
+	protected:
 		constexpr virtual void print_name_before_parent(PP::simple_ostream& out) const noexcept = 0;
 		constexpr virtual void print_name_after_parent(PP::simple_ostream& out) const noexcept = 0;
 
@@ -35,9 +34,9 @@ namespace PPreflection
 		static constexpr PP::string_view reflect_name(PP::concepts::type auto t) noexcept;
 
 		static constexpr auto get_descriptor(PP::string_view name, PP::concepts::view auto&& descriptors) noexcept
-			-> decltype(&declval(PP::view_base(descriptors)))
+			-> decltype(&PP::declval(PP::view_base(PP_DECLTYPE(descriptors))))
 		{
-			for (auto&& d : PP_FORWARD(descriptors))
+			for (auto& d : PP_FORWARD(descriptors))
 				if (d.has_name(name))
 					return &d;
 

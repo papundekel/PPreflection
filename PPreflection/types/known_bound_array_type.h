@@ -7,7 +7,7 @@ namespace PPreflection
     class known_bound_array_type : public detail::array_type<complete_object_type>
     {
     public:
-        constexpr virtual std::size_t get_extent() const noexcept = 0;
+        constexpr virtual size_t get_extent() const noexcept = 0;
 
         constexpr bool has_name(PP::string_view name) const noexcept override final
         {
@@ -24,7 +24,7 @@ namespace PPreflection
             out.write("]");
             remove_extent().print_name_suffix(out);
         }
-        constexpr std::size_t size() const noexcept override final
+        constexpr size_t size() const noexcept override final
         {
             return get_extent() * remove_extent().size();
         }

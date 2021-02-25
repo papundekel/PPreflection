@@ -1,10 +1,12 @@
 #pragma once
 #include "../PP/PP/any_iterator.hpp"
 #include "descriptor.h"
+#include "PPany_view.hpp"
 #include "view_equal.hpp"
 
 namespace PPreflection
 {
+	class type;
 	class user_defined_type;
 	class overloaded_namespace_function;
 
@@ -14,7 +16,7 @@ namespace PPreflection
 		constexpr const Namespace& get_parent() const noexcept override = 0;
 		//constexpr virtual PP::any_view<PP::iterator_category::ra, const Namespace&> get_namespaces() const noexcept = 0;
 		//constexpr virtual PP::any_view<PP::iterator_category::ra, const user_defined_type&> get_types() const noexcept = 0;
-		//constexpr virtual PP::any_view<PP::iterator_category::ra, const overloaded_namespace_function&> get_functions() const noexcept = 0;
+		constexpr virtual PP::any_view<PP::iterator_category::ra, const overloaded_namespace_function&> get_functions() const noexcept = 0;
 
 		constexpr virtual PP::string_view get_name() const noexcept = 0;
 
@@ -29,8 +31,8 @@ namespace PPreflection
 			return view_equal(get_name(), name);
 		}
 		//constexpr const type* get_type(PP::string_view name) const noexcept;
-		//constexpr const overloaded_namespace_function* get_function(PP::string_view name) const noexcept;
+		constexpr const overloaded_namespace_function* get_function(PP::string_view name) const noexcept;
 
-		struct global {};
+		class global;
 	};
 }

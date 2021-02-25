@@ -16,8 +16,8 @@ namespace PPreflection
 		//constexpr virtual const overloaded_constructor& get_constructors() const noexcept = 0;
 		//constexpr virtual PP::any_view<PP::iterator_category::ra, const overloaded_member_function&> get_member_functions() const noexcept = 0;
 		//constexpr virtual PP::any_view<PP::iterator_category::ra, const overloaded_static_member_function&> get_static_member_functions() const noexcept = 0;
+		//constexpr virtual PP::any_view<PP::iterator_category::ra, const user_defined_type&> get_nested_classes() const noexcept = 0;
 
-		constexpr virtual PP::any_view<PP::iterator_category::ra, const user_defined_type&> get_nested_classes() const noexcept = 0;
 		constexpr virtual const non_union_class_type* as_non_union_class() const noexcept = 0;
 
 		//inline dynamic_variable create_instance(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args = {}) const noexcept;

@@ -18,7 +18,7 @@ namespace PPreflection
 			{
 				return remove_extent().get_cv_qualifier();
 			}
-			constexpr std::size_t alignment() const noexcept override final
+			constexpr size_t alignment() const noexcept override final
 			{
 				return remove_extent().alignment();
 			}

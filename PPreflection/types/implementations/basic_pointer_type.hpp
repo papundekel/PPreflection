@@ -7,7 +7,7 @@
 namespace PPreflection::detail
 {
 	template <typename T>
-	class basic_pointer_type final : public basic_non_array_object_type<T, pointer_type>
+	class basic_pointer_type final : public basic_cv_qualifiable_type<T, basic_complete_object_type<T, pointer_type>>
 	{
 		static_assert(PP::concepts::pointer<T>);
 

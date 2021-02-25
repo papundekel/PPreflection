@@ -3,11 +3,12 @@
 #include "../dynamic_reference.h"
 #include "../types/parameter_type_reference.h"
 #include "../types/type.h"
+#include "args_to_arg_types.hpp"
 #include "function.h"
 
 constexpr void PPreflection::function::print_name_basic(PP::simple_ostream& out) const noexcept
 {
-	get_overloaded_function().print_name(out);
+	get_overloaded_function().print_name_after_parent(out);
 	type::print_parameter_types(out, parameter_types());
 }
 
@@ -39,7 +40,7 @@ constexpr bool PPreflection::function::can_invoke(PP::any_view<PP::iterator_cate
 
 inline PPreflection::dynamic_variable PPreflection::function::invoke(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args) const
 {
-	if (can_invoke(args | PP::transform([](const dynamic_reference& r) -> const reference_type& { return r.get_type(); })))
+	if (can_invoke(args_to_arg_types(args)))
 		return invoke_unsafe(PP::view_begin(args));
 	else
 		return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
@@ -48,7 +49,7 @@ inline PPreflection::dynamic_variable PPreflection::function::invoke(PP::any_vie
 inline PPreflection::dynamic_variable PPreflection::overloaded_function::invoke(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args) const
 {
 	for (const function& f : get_overloads())
-		if (f.can_invoke(args | PP::transform([](const dynamic_reference& r) -> const reference_type& { return r.get_type(); })))
+		if (f.can_invoke(args_to_arg_types(args)))
 			return f.invoke_unsafe(PP::view_begin(args));
 
 	return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);

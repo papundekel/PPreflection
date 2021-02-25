@@ -8,7 +8,7 @@
 
 namespace PPreflection
 {
-	enum class type_class : std::size_t
+	enum class type_class : size_t
 	{
 		reference,
 		Void,

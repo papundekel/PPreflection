@@ -1,13 +1,13 @@
 #pragma once
 #include <utility>
-#include "maybe_static_member_function.h"
+
 #include "../types/function_type.h"
+#include "maybe_static_member_function.h"
 
 namespace PPreflection
 {
 	class class_type;
 	class reference_type;
-	class function_type;
 
 	class member_function;
 

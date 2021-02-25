@@ -105,7 +105,7 @@ template <> constexpr inline auto detail::reflect_metadata<namespace_t::global> 
 		type_pack<reflect_detail::global_double_>>{};
 
 template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<X>> = PP::string_view("X");
-template <> constexpr inline auto detail::reflect_metadata<detail::id_wrap<X>> = std::size_t(0);
+template <> constexpr inline auto detail::reflect_metadata<detail::id_wrap<X>> = size_t(0);
 template <> constexpr inline auto detail::reflect_metadata<X>
 	= detail::basic_class_type<namespace_t::global, X,
 		type_pack<

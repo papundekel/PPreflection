@@ -22,15 +22,15 @@ namespace PPreflection
 			remove_pointer().print_name_suffix(out);
 		}
 
-		constexpr std::size_t alignment() const noexcept
+		constexpr size_t alignment() const noexcept override final
 		{
 			return alignof(void*);
 		}
-		constexpr std::size_t size() const noexcept
+		constexpr size_t size() const noexcept override final
 		{
 			return sizeof(void*);
 		}
-		constexpr void destroy(void* ptr) const noexcept
+		constexpr void destroy(void* ptr) const noexcept override final
 		{}
 
 		constexpr virtual const pointable_type& remove_pointer() const noexcept = 0;

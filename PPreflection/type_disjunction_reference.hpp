@@ -1,30 +1,44 @@
 #pragma once
 #include <variant>
-#include "reference_wrapper.hpp"
+
+//#include "reference_wrapper.hpp"
+#include "forward_wrap.hpp"
 
 namespace PPreflection
 {
+	template <typename T>
+	struct type_disjunction_reference_wrap
+	{
+		const T& ref;
+
+		constexpr type_disjunction_reference_wrap(const T& ref) noexcept
+			: ref(ref)
+		{}
+	};
 	template <typename... TypeClasses>
 	class type_disjunction_reference
 	{
-		std::variant<PP::clref_t<TypeClasses>...> v;
+		std::variant<type_disjunction_reference_wrap<TypeClasses>...> v;
 
 	public:
 		template <typename T>
-		constexpr type_disjunction_reference(T&& t) noexcept
-			: v(PP_FORWARD(t))
+		constexpr type_disjunction_reference(const T& t) noexcept
+			: v(t)
 		{}
 
-		template <typename T>
-		constexpr bool holds_alternative() const noexcept
+		constexpr bool holds_alternative(PP::concepts::type auto t) const noexcept
 		{
-			return std::holds_alternative<PP::clref_t<T>>(v);
+			return std::holds_alternative<PP_GET_TYPE(PP::Template<type_disjunction_reference_wrap>(t))>(v);
 		}
 
-		template <typename F>
-		constexpr decltype(auto) visit(F&& f) const
+		constexpr decltype(auto) visit(auto&& f) const
 		{
-			return std::visit(PP::cal * PP::ref(f) | PP::unref, v);
+			return std::visit([f_wrap = PP_FORWARD_WRAP(f)]
+				<typename T>
+				(type_disjunction_reference_wrap<T> wrap) -> decltype(auto)
+				{
+					return f_wrap.unwrap()(wrap.ref);
+				}, v);
 		}
 	};
 }
