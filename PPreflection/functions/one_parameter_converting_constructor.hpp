@@ -1,16 +1,12 @@
 #pragma once
+#include "../dynamic_reference.h"
+#include "../types/type.h"
 #include "one_parameter_converting_constructor.h"
-#include "type.h"
-#include "dynamic_reference.h"
 
-constexpr PPreflection::dynamic_object PPreflection::one_parameter_converting_constructor::invoke(dynamic_reference arg) const
+inline PPreflection::dynamic_variable PPreflection::one_parameter_converting_constructor::invoke(dynamic_reference arg) const
 {
-	if (arg.get_type().can_initialize(get_parameter_type()))
-		return dynamic_object(return_type(),
-			[this, arg](void* ptr)
-			{
-				invoke_implementation_one_parameter(ptr, arg);
-			});
+	if (get_parameter_type().can_be_initialized(arg.get_type()))
+		return invoke_unsafe_one_parameter(arg);
 	else
-		dynamic_object::create_invalid();
+		return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
 }

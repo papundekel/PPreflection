@@ -10,12 +10,13 @@ namespace PPreflection::detail
 	{
 		static_assert(PP::concepts::non_union_class<T>);
 
-		static constexpr auto base_classes =
-			reflect_many(PPreflection::reflect(PP::type<tags::base_classes<T>>), PP::type<const non_union_class_type&>);
+		static constexpr auto base_classes = reflect_many(
+			PP::type<const non_union_class_type&>,
+			PPreflection::reflect(PP::type<tags::base_classes<T>>));
 
-		//constexpr PP::any_view<PP::iterator_category::ra, const non_union_class_type&> get_base_classes() const noexcept override final
-		//{
-		//	return base_classes;
-		//}
+		constexpr PP::any_view<PP::iterator_category::ra, const non_union_class_type&> get_base_classes() const noexcept override final
+		{
+			return base_classes;
+		}
 	};
 }

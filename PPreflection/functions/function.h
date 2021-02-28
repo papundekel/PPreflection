@@ -25,7 +25,7 @@ namespace PPreflection
 		friend overloaded_function;
 
 	protected:
-		constexpr virtual dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&> arg_iterator) const noexcept = 0;
+		inline virtual dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&> arg_iterator) const noexcept = 0;
 
 		constexpr virtual bool can_invoke(PP::any_view<PP::iterator_category::ra, const reference_type&> argument_types) const noexcept;
 

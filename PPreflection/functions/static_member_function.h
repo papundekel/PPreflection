@@ -1,11 +1,12 @@
 #pragma once
+#include "../named_descriptor.h"
 #include "maybe_static_member_function.h"
 
 namespace PPreflection
 {
 	class static_member_function;
 
-	class overloaded_static_member_function : public detail::maybe_static_member_function::overloaded
+	class overloaded_static_member_function : public detail::named_descriptor<detail::maybe_static_member_function::overloaded>
 	{
 	protected:
 		constexpr virtual PP::any_view<PP::iterator_category::ra, const static_member_function&> get_static_member_overloads() const noexcept = 0;

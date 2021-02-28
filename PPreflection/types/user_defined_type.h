@@ -1,10 +1,11 @@
 #pragma once
+#include "../named_descriptor.h"
 #include "../parent_descriptor_reference.h"
 #include "non_array_object_type.h"
 
 namespace PPreflection
 {
-	class user_defined_type : public non_array_object_type
+	class user_defined_type : public detail::named_descriptor<non_array_object_type>
 	{
 	public:
 		constexpr virtual parent_descriptor_reference get_parent(int = 0) const noexcept = 0;

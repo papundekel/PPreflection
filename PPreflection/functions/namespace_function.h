@@ -6,7 +6,7 @@ namespace PPreflection
 {
 	class namespace_function;
 
-	class overloaded_namespace_function : public function::overloaded
+	class overloaded_namespace_function : public detail::named_descriptor<function::overloaded>
 	{
 	protected:
 		constexpr virtual PP::any_view<PP::iterator_category::ra, const namespace_function&> get_namespace_overloads() const noexcept = 0;

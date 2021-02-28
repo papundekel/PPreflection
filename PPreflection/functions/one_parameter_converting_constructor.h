@@ -1,4 +1,5 @@
 #pragma once
+#include "../types/parameter_type_reference.h"
 #include "constructor.h"
 
 namespace PPreflection
@@ -18,7 +19,7 @@ namespace PPreflection
 			return false;
 		}
 
-		constexpr virtual const type& get_parameter_type() const noexcept = 0;
+		constexpr virtual parameter_type_reference get_parameter_type() const noexcept = 0;
 
 		inline dynamic_variable invoke(dynamic_reference arg) const;
 	};

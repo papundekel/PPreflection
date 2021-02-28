@@ -4,7 +4,7 @@
 
 namespace PPreflection
 {
-	class non_void_fundamental_type : public detail::non_user_defined_type<non_array_object_type>
+	class non_void_fundamental_type : public detail::named_descriptor<detail::non_user_defined_type<non_array_object_type>>
 	{
 		constexpr void destroy(void* ptr) const noexcept override final
 		{}

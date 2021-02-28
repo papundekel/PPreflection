@@ -7,7 +7,7 @@ namespace PPreflection::detail
 {
 	template <typename Class, typename Return>
 	class basic_overloaded_conversion_function final
-		: public basic_overloaded_member_function_base<tags::conversion_function<Class, Return>, conversion_function>
+		: public basic_overloaded_member_function<tags::conversion_function<Class, Return>, conversion_function>
 	{
 		constexpr return_type_reference return_type() const noexcept override final
 		{

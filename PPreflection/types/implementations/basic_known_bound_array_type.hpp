@@ -14,7 +14,7 @@ namespace PPreflection::detail
 
 		constexpr size_t get_extent() const noexcept override final
 		{
-			return extent(PP::type<T>);
+			return PP::extent(PP::type<T>);
 		}
 	};
 }

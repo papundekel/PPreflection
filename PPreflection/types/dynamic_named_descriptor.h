@@ -20,9 +20,9 @@ namespace PPreflection
 				, name(name)
 			{}
 
-			constexpr bool has_name(PP::string_view name) const noexcept override final
+			constexpr PP::string_view get_name() const noexcept override final
 			{
-				return view_equal(this->name, name);
+				return this->name;
 			}
 			constexpr void print_name_prefix(PP::simple_ostream& out) const noexcept override final
 			{

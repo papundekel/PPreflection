@@ -10,8 +10,8 @@ namespace PPreflection::detail
 		basic_overloaded_named_function<ID, basic_overloaded_function<ID, static_member_function>>
 	{
 		static constexpr auto static_member_overloads = reflect_many(
-			basic_overloaded_static_member_function::raw_overloads,
-			PP::type<const static_member_function&>);
+			PP::type<const static_member_function&>,
+			basic_overloaded_static_member_function::raw_overloads);
 
 		constexpr PP::any_view<PP::iterator_category::ra, const static_member_function&> get_static_member_overloads() const noexcept override final
 		{

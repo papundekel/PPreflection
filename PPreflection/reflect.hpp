@@ -12,19 +12,16 @@
 #include "type_t.hpp"
 #include "value_t.hpp"
 
+#include "descriptor.hpp"
+#include "Namespace.hpp"
+
+#include "basic_namespace.h"
+
 #include "types/types.hpp"
 #include "types/implementations/implementations.hpp"
 
-#include "basic_namespace.h"
-#include "Namespace.hpp"
-
-#include "functions/functions.h"
-#include "functions/implementations/implementations.h"
-
-#include "descriptor.hpp"
-
-#include "functions/function.hpp"
-#include "functions/member_function.hpp"
+#include "functions/functions.hpp"
+#include "functions/implementations/implementations.hpp"
 
 #include "types/dynamic_function_type.h"
 #include "make_array.h"
@@ -70,7 +67,7 @@ namespace PPreflection
 
 using namespace PP::literals;
 
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::Namespace::global>> = "global'"_sv;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::Namespace::global>> = ""_sv;
 
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<void					>> = "void"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<decltype(nullptr)		>> = "decltype(nullptr)"_sv;
@@ -98,6 +95,10 @@ template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::t
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<char32_t				>> = "char32_t"_sv;
 #endif
 
-template <typename Class, typename... Parameters> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::is_explicit<Class, Parameters...>> = false;
-template <typename Class, typename... Parameters> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructor<Class, Parameters...>>
-	= detail::basic_constructor<Class, Parameters...>{};
+template <typename Class>
+constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructors<Class>>
+	= detail::basic_overloaded_constructor<Class>{};
+
+template <typename Class, typename... Parameters>
+constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::is_explicit<Class, Parameters...>>
+	= PP::value_false;

@@ -37,7 +37,6 @@ namespace PPreflection
 
 	public:
 		constexpr void print_name_after_parent(PP::simple_ostream& out) const noexcept override final;
-		constexpr bool has_name(PP::string_view name) const noexcept override final;
 
 		constexpr PP::ref_qualifier get_ref_qualifier() const noexcept
 		{

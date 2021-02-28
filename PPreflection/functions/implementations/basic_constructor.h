@@ -19,7 +19,7 @@ namespace PPreflection::detail
 {
 	template <typename Class, typename Base, typename... Parameters>
 	using basic_constructor_base_base = PP_GET_TYPE(PP::Template<basic_function>(
-		PP::make_function_type_no_cvref(PP::type<Class(Parameters...)>, PP::value<PP::concepts::constructible_noexcept<Class, Parameters...>>),
+		PP::make_function_type(PP::type<Class(Parameters...)>, PP::value<PP::concepts::constructible_noexcept<Class, Parameters...>>),
 		PP::type<Base>));
 
 	template <typename Class, typename Base, typename... Parameters>
@@ -58,7 +58,7 @@ namespace PPreflection::detail
 			return dynamic_variable::create([arg]() { return Class(arg.cast_unsafe(PP::type<Parameter>)); });
 		}
 
-		constexpr const type& get_parameter_type() const noexcept override final
+		constexpr parameter_type_reference get_parameter_type() const noexcept override final
 		{
 			return type::reflect(PP::type<Parameter>);
 		}
@@ -69,7 +69,7 @@ namespace PPreflection::detail
 		{
 			return [class_type, parameter_types...]
 			{
-				return conditional(PP_SIZEOF___(parameter_types) != PP::value_1 || reflect(PP::Template<tags::is_explicit>(class_type, parameter_types...)),
+				return PP::conditional(PP_SIZEOF___(parameter_types) != PP::value_1 || reflect(PP::Template<tags::is_explicit>(class_type, parameter_types...)),
 					PP::Template<basic_constructor_general>,
 					PP::Template<basic_constructor_opc>);
 			}()(class_type, parameter_types...);

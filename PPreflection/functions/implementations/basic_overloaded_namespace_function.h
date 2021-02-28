@@ -10,8 +10,8 @@ namespace PPreflection::detail
 		basic_overloaded_named_function<ID, basic_overloaded_function<ID, namespace_function>>
 	{
 		static constexpr auto namespace_overloads = reflect_many(
-			basic_overloaded_namespace_function::raw_overloads,
-			PP::type<const namespace_function&>);
+			PP::type<const namespace_function&>,
+			basic_overloaded_namespace_function::raw_overloads);
 
 		constexpr PP::any_view<PP::iterator_category::ra, const namespace_function&> get_namespace_overloads() const noexcept override final
 		{

@@ -30,11 +30,6 @@ constexpr void PPreflection::member_function::print_name_after_parent(PP::simple
 
 	print_noexcept(out);
 }
-constexpr bool PPreflection::member_function::has_name(PP::string_view name) const noexcept
-{
-	// TODO
-	return false;
-}
 
 constexpr bool PPreflection::member_function::can_invoke(const reference_type& caller_arg_type) const noexcept
 {
