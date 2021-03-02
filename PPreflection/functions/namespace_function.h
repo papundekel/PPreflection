@@ -1,6 +1,6 @@
 #pragma once
-#include "function.h"
 #include "../Namespace.h"
+#include "function.h"
 
 namespace PPreflection
 {

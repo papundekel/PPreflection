@@ -1,14 +1,15 @@
 #pragma once
-#include <vector>
+#include "PP/view.hpp"
+#include "PP/simple_vector.hpp"
+
 #include "function_type.h"
-#include "view.hpp"
 
 namespace PPreflection
 {
 	class dynamic_function_type final : public function_type
 	{
 		return_type_reference return_type_;
-		std::vector<parameter_type_reference> parameter_types_;
+		PP::simple_vector<parameter_type_reference> parameter_types_;
 		PP::cv_qualifier cv;
 		PP::ref_qualifier ref;
 		bool Noexcept;
@@ -21,9 +22,7 @@ namespace PPreflection
 			PP::cv_qualifier cv = PP::cv_qualifier::none,
 			PP::ref_qualifier ref = PP::ref_qualifier::none) noexcept
 			: return_type_(return_type)
-			, parameter_types_(
-				PP::view_begin(PP_FORWARD(parameter_types)),
-				PP::view_end(PP_FORWARD(parameter_types)))
+			, parameter_types_(PP_FORWARD(parameter_types))
 			, cv(cv)
 			, ref(ref)
 			, Noexcept(Noexcept)

@@ -1,10 +1,10 @@
 #pragma once
-#include "concepts/invocable.hpp"
-#include "concepts/same_except_cvref.hpp"
-#include "get_type.hpp"
-#include "scoped.hpp"
-#include "string_view.hpp"
-#include "unique.hpp"
+#include "PP/concepts/invocable.hpp"
+#include "PP/concepts/same_except_cvref.hpp"
+#include "PP/get_type.hpp"
+#include "PP/scoped.hpp"
+#include "PP/string_view.hpp"
+#include "PP/unique.hpp"
 
 namespace PPreflection
 {
@@ -43,13 +43,13 @@ namespace PPreflection
 
 		class deleter
 		{
-			PP::unique<const complete_object_type*> type_;
+			PP::unique<const complete_object_type*, PP::pointer_releaser> type_;
 
 		public:
 			constexpr deleter(const complete_object_type* ptr) noexcept
 				: type_(PP::unique_default_releaser_tag, ptr)
 			{}
-			constexpr void operator()(PP::unique<data>& u) const;
+			constexpr void operator()(auto& u) const;
 
 			constexpr const complete_object_type* get_type() const
 			{
@@ -57,19 +57,13 @@ namespace PPreflection
 			}
 		};
 
-		PP::scoped<PP::unique<data>, deleter> x;
+		PP::scoped<PP::unique<data, PP::default_releaser>, deleter> x;
 
-		constexpr void* get_address_helper(PP::concepts::value auto reference) noexcept;
-		constexpr const void* get_address_helper(PP::concepts::value auto reference) const noexcept;
+		static constexpr auto* get_address(auto& r) noexcept;
 
-		constexpr void* get_address() noexcept;
-		constexpr const void* get_address() const noexcept;
+		static constexpr auto* get_address(auto& p, const complete_object_type& t) noexcept;
 
-		static constexpr void* get_address(PP::concepts::value auto reference, PP::unique<data>& p, const complete_object_type& t) noexcept;
-		static constexpr const void* get_address(PP::concepts::value auto reference, const PP::unique<data>& p, const complete_object_type& t) noexcept;
-
-		constexpr dynamic_reference reference_cast_helper(PP::concepts::value auto rvalue) noexcept;
-		constexpr dynamic_reference reference_cast_helper(PP::concepts::value auto rvalue) const noexcept;
+		static constexpr dynamic_reference reference_cast_helper(auto&& r) noexcept;
 
 		static constexpr char* allocate_and_initialize(PP::concepts::invocable auto&& i) noexcept;
 
@@ -95,9 +89,9 @@ namespace PPreflection
 
 		constexpr const complete_object_type& get_type() const noexcept;
 
-		constexpr operator dynamic_reference() & noexcept;
-		constexpr operator dynamic_reference() && noexcept;
-		constexpr operator dynamic_reference() const& noexcept;
+		constexpr operator dynamic_reference()      &  noexcept;
+		constexpr operator dynamic_reference()      && noexcept;
+		constexpr operator dynamic_reference() const&  noexcept;
 		constexpr operator dynamic_reference() const&& noexcept;
 
 		constexpr explicit operator bool() const noexcept;

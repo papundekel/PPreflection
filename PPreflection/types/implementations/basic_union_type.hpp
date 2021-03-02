@@ -1,7 +1,8 @@
 #pragma once
+#include "PP/concepts/union.hpp"
+
 #include "../union_type.h"
 #include "basic_class_type.hpp"
-#include "concepts/union.hpp"
 
 namespace PPreflection::detail
 {

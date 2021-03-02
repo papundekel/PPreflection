@@ -1,9 +1,10 @@
 #pragma once
+#include "PP/concepts/bounded_array.hpp"
+#include "PP/extent.hpp"
+
 #include "../known_bound_array_type.h"
 #include "basic_array_type.hpp"
 #include "basic_complete_object_type.hpp"
-#include "concepts/bounded_array.hpp"
-#include "extent.hpp"
 
 namespace PPreflection::detail
 {

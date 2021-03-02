@@ -1,5 +1,6 @@
-#include "../PP/PP/array_ostream.hpp"
 #include "descriptor.h"
+
+#include "PP/array_ostream.hpp"
 
 std::ostream& PPreflection::operator<<(std::ostream& out, const PPreflection::descriptor& d)
 {

@@ -1,8 +1,8 @@
 #pragma once
-#include "get_function_info.hpp"
-#include "make_function_type.hpp"
-#include "functional/compose.hpp"
-#include "concepts::valueper.hpp"
+//#include "PP/concepts::valueper.hpp"
+#include "PP/functional/compose.hpp"
+#include "PP/get_function_info.hpp"
+#include "PP/make_function_type.hpp"
 
 namespace PPreflection
 {

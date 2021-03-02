@@ -1,11 +1,12 @@
 #pragma once
-#include "add_cv.hpp"
-#include "array.hpp"
+#include "PP/add_cv.hpp"
+#include "PP/array.hpp"
+#include "PP/cv_qualifier.hpp"
+#include "PP/view_equal.hpp"
+
 #include "cv_qualifiable_type.h"
-#include "cv_qualifier.hpp"
 #include "non_user_defined_type.h"
 #include "pointable_type.h"
-#include "view_equal.hpp"
 
 namespace PPreflection
 {
@@ -29,7 +30,7 @@ namespace PPreflection
 		{
 			out.write(names[get_cv_qualifier_index()]);
 		}
-		constexpr void print_name_suffix(PP::simple_ostream& out) const noexcept override final
+		constexpr void print_name_suffix(PP::simple_ostream&) const noexcept override final
 		{}
 		constexpr bool has_name(PP::string_view name) const noexcept override final
 		{

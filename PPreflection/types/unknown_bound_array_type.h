@@ -1,15 +1,15 @@
 #pragma once
-#include "object_type.h"
 #include "array_type.h"
+#include "object_type.h"
 
 namespace PPreflection
 {
     class unknown_bound_array_type : public detail::array_type<object_type>
     {
     public:
-        constexpr bool has_name(PP::string_view name) const noexcept override final
+        constexpr bool has_name(PP::string_view) const noexcept override final
         {
-            return false;
+            return false; // TODO
         }
         constexpr void print_name_prefix(PP::simple_ostream& out) const noexcept override final
         {

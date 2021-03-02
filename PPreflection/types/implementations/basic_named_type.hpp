@@ -11,7 +11,7 @@ namespace PPreflection::detail
 		{
 			out.write(this->get_name());
 		}
-		constexpr void print_name_suffix(PP::simple_ostream& out) const noexcept override final
+		constexpr void print_name_suffix(PP::simple_ostream&) const noexcept override final
 		{}
 	};
 }

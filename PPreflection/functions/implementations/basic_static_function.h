@@ -1,6 +1,7 @@
 #pragma once
+#include "PP/remove_pointer.hpp"
+
 #include "basic_function.h"
-#include "remove_pointer.hpp"
 
 namespace PPreflection::detail
 {

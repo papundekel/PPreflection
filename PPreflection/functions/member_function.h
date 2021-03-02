@@ -1,6 +1,4 @@
 #pragma once
-#include <utility>
-
 #include "../types/function_type.h"
 #include "maybe_static_member_function.h"
 

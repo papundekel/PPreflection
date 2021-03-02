@@ -1,7 +1,11 @@
 #pragma once
+#include "dynamic_object.h"
+
 #include <new>
 
-#include "dynamic_object.h"
+#include "PP/concepts/rvalue_reference.hpp"
+#include "PP/to_void_ptr.hpp"
+
 #include "dynamic_reference.h"
 #include "reflect.h"
 #include "types/complete_object_type.h"
@@ -11,54 +15,6 @@ constexpr PPreflection::dynamic_object PPreflection::dynamic_object::create(PP::
 	return dynamic_object([&args...]() { return PP_GET_TYPE(t)(PP_FORWARD(args)...); });
 }
 
-constexpr void* PPreflection::dynamic_object::get_address(PP::concepts::value auto reference, PP::unique<data>& p, const complete_object_type& t) noexcept
-{
-	void* ptr = nullptr;
-
-	char*& buffer = p.get_object().ptr;
-
-	if (t.size() <= sizeof(void*))
-		ptr = &buffer;
-	else
-		ptr = buffer;
-
-	return ptr;
-}
-constexpr const void* PPreflection::dynamic_object::get_address(PP::concepts::value auto reference, const PP::unique<data>& p, const complete_object_type& t) noexcept
-{
-	const void* ptr = nullptr;
-
-	char* const& buffer = p.get_object().ptr;
-
-	if (t.size() <= sizeof(void*))
-		ptr = &buffer;
-	else
-		ptr = buffer;
-
-	return ptr;
-}
-
-constexpr void PPreflection::dynamic_object::deleter::operator()(PP::unique<data>& u) const
-{
-	const complete_object_type* t = type_.get_object();
-	if (!t)
-		return;
-
-	auto ptr = get_address(PP::value_false, u, *t);
-	t->destroy(ptr);
-
-	if (t->size() > sizeof(void*))
-		operator delete(u.get_object().ptr);
-}
-
-constexpr void* PPreflection::dynamic_object::get_address_helper(PP::concepts::value auto reference) noexcept
-{
-	return get_address(reference, x.get_object(), get_type());
-}
-constexpr const void* PPreflection::dynamic_object::get_address_helper(PP::concepts::value auto reference) const noexcept
-{
-	return get_address(reference, x.get_object(), get_type());
-}
 constexpr PPreflection::dynamic_object::dynamic_object(invalid_code code) noexcept
 	: x(PP::in_place_tag, nullptr, PP::unique_default_releaser_tag,	code)
 {}
@@ -91,38 +47,31 @@ constexpr const PPreflection::complete_object_type& PPreflection::dynamic_object
 {
 	return *get_type_helper();
 }
-constexpr void* PPreflection::dynamic_object::get_address() noexcept
+constexpr auto* PPreflection::dynamic_object::get_address(auto& p, const complete_object_type& t) noexcept
 {
-	return get_address_helper(PP::value_true);
+	auto& buffer = p.get_object().ptr;
+
+	auto* ptr = PP::to_void_ptr(buffer);
+
+	if (t.size() > sizeof(void*))
+		ptr = buffer;
+
+	return ptr;
 }
-constexpr const void* PPreflection::dynamic_object::get_address() const noexcept
+constexpr auto* PPreflection::dynamic_object::get_address(auto& r) noexcept
 {
-	return get_address_helper(PP::value_true);
+	return get_address(r.x.get_object(), r.get_type());
 }
-constexpr PPreflection::dynamic_reference PPreflection::dynamic_object::reference_cast_helper(PP::concepts::value auto rvalue) noexcept
+constexpr PPreflection::dynamic_reference PPreflection::dynamic_object::reference_cast_helper(auto&& r) noexcept
 {
-	return dynamic_reference(get_address(), get_type().make_reference(rvalue));
+	return dynamic_reference(get_address(r), r.get_type().make_reference(PP::value<PP::is_rvalue_reference(PP_DECLTYPE(r))>));
 }
-constexpr PPreflection::dynamic_reference PPreflection::dynamic_object::reference_cast_helper(PP::concepts::value auto rvalue) const noexcept
-{
-	return dynamic_reference(get_address(), get_type().make_reference(rvalue));
-}
-constexpr PPreflection::dynamic_object::operator dynamic_reference() &  noexcept
-{
-	return reference_cast_helper(PP::value_false);
-}
-constexpr PPreflection::dynamic_object::operator dynamic_reference() && noexcept
-{
-	return reference_cast_helper(PP::value_true);
-}
-constexpr PPreflection::dynamic_object::operator dynamic_reference() const&  noexcept
-{
-	return reference_cast_helper(PP::value_false);
-}
-constexpr PPreflection::dynamic_object::operator dynamic_reference() const&& noexcept
-{
-	return reference_cast_helper(PP::value_true);
-}
+
+constexpr PPreflection::dynamic_object::operator dynamic_reference()      &  noexcept { return reference_cast_helper(         *this ); }
+constexpr PPreflection::dynamic_object::operator dynamic_reference() const&  noexcept {	return reference_cast_helper(         *this ); }
+constexpr PPreflection::dynamic_object::operator dynamic_reference()      && noexcept {	return reference_cast_helper(PP::move(*this)); }
+constexpr PPreflection::dynamic_object::operator dynamic_reference() const&& noexcept {	return reference_cast_helper(PP::move(*this)); }
+
 constexpr PPreflection::dynamic_object::operator bool() const noexcept
 {
 	return get_error_code() == invalid_code::none;
@@ -142,3 +91,16 @@ constexpr bool PPreflection::dynamic_object::is_void() const noexcept
 constexpr PPreflection::dynamic_object::dynamic_object(PP::concepts::invocable auto&& i)
 	: x(PP::in_place_tag, &type::reflect(PP_DECLTYPE(PP_FORWARD(i)())), PP::unique_default_releaser_tag, allocate_and_initialize(PP_FORWARD(i)))
 {}
+
+constexpr void PPreflection::dynamic_object::deleter::operator()(auto& u) const
+{
+	const complete_object_type* t = type_.get_object();
+	if (!t)
+		return;
+
+	auto ptr = get_address(u, *t);
+	t->destroy(ptr);
+
+	if (t->size() > sizeof(void*))
+		operator delete(u.get_object().ptr);
+}

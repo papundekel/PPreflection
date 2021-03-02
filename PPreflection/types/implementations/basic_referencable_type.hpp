@@ -1,7 +1,6 @@
 #pragma once
-#include <type_traits>
-#include "basic_pointable_type.hpp"
 #include "../referencable_type.h"
+#include "basic_pointable_type.hpp"
 
 namespace PPreflection::detail
 {

@@ -9,9 +9,9 @@ namespace PPreflection
     public:
         constexpr virtual size_t get_extent() const noexcept = 0;
 
-        constexpr bool has_name(PP::string_view name) const noexcept override final
+        constexpr bool has_name(PP::string_view) const noexcept override final
         {
-            return false;
+            return false; // TODO
         }
         constexpr void print_name_prefix(PP::simple_ostream& out) const noexcept override final
         {

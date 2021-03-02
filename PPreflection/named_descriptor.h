@@ -1,7 +1,8 @@
 #pragma once
-#include "concepts/derived_from.hpp"
+#include "PP/concepts/derived_from.hpp"
+#include "PP/view_equal.hpp"
+
 #include "descriptor.h"
-#include "view_equal.hpp"
 
 namespace PPreflection::detail
 {

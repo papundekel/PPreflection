@@ -1,7 +1,8 @@
 #pragma once
+#include "PP/concepts/non_union_class.hpp"
+
 #include "../non_union_class_type.h"
 #include "basic_class_type.hpp"
-#include "concepts/non_union_class.hpp"
 
 namespace PPreflection::detail
 {

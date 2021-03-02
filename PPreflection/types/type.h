@@ -1,18 +1,19 @@
 #pragma once
+#include "PP/concepts/derived_from.hpp"
+#include "PP/get_type.hpp"
+#include "PP/same.hpp"
+#include "PP/tuple_find_dynamic.hpp"
+#include "PP/tuple_fold.hpp"
+#include "PP/tuple_get.hpp"
+#include "PP/tuple_make_array.hpp"
+#include "PP/tuple_map.hpp"
+#include "PP/type_tuple.hpp"
+#include "PP/value_t_static_cast.hpp"
+#include "PP/view.hpp"
+
 #include "../descriptor.h"
 #include "../get_type_class.hpp"
 #include "../type_disjunction_reference.hpp"
-#include "concepts/derived_from.hpp"
-#include "get_type.hpp"
-#include "same.hpp"
-#include "tuple_find_dynamic.hpp"
-#include "tuple_fold.hpp"
-#include "tuple_get.hpp"
-#include "tuple_make_array.hpp"
-#include "tuple_map.hpp"
-#include "type_tuple.hpp"
-#include "value_t_static_cast.hpp"
-#include "view.hpp"
 
 namespace PPreflection
 {
@@ -101,7 +102,7 @@ namespace PPreflection
 		constexpr virtual void print_name_prefix(PP::simple_ostream& out) const noexcept = 0;
 		constexpr virtual void print_name_suffix(PP::simple_ostream& out) const noexcept = 0;
 
-		constexpr void print_name_before_parent(PP::simple_ostream& out) const noexcept override final
+		constexpr void print_name_before_parent(PP::simple_ostream&) const noexcept override final
 		{}
 		constexpr void print_name_after_parent(PP::simple_ostream& out) const noexcept override final
 		{

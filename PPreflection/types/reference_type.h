@@ -1,6 +1,6 @@
 #pragma once
-#include "type.h"
 #include "non_user_defined_type.h"
+#include "type.h"
 
 namespace PPreflection
 {
@@ -22,13 +22,13 @@ namespace PPreflection
 			return *this;
 		}
 
-		constexpr bool can_be_initialized(const reference_type& initializer) const noexcept
+		constexpr bool can_be_initialized(const reference_type&) const noexcept
 		{
 			// TODO
 			return true;
 		}
 
-		constexpr bool has_name(PP::string_view name) const noexcept override final
+		constexpr bool has_name(PP::string_view) const noexcept override final
 		{
 			// TODO
 			return false;

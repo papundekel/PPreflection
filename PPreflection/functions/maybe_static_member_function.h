@@ -1,6 +1,6 @@
 #pragma once
-#include "function.h"
 #include "../types/class_type.h"
+#include "function.h"
 
 namespace PPreflection
 {

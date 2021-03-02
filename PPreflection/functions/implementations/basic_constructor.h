@@ -1,19 +1,20 @@
 #pragma once
+#include "PP/apply_template.hpp"
+#include "PP/concepts/constructible.hpp"
+#include "PP/concepts/destructible.hpp"
+#include "PP/conditional.hpp"
+#include "PP/construct_pack.hpp"
+#include "PP/functional/apply_partially.hpp"
+#include "PP/get_type.hpp"
+#include "PP/make_function_type.hpp"
+#include "PP/tuple_split.hpp"
+#include "PP/type_tuple.hpp"
+
 #include "../../dynamic_variable.h"
 #include "../../reflect.h"
 #include "../constructor.h"
 #include "../one_parameter_converting_constructor.h"
-#include "apply_template.hpp"
 #include "basic_function.h"
-#include "concepts/constructible.hpp"
-#include "concepts/destructible.hpp"
-#include "conditional.hpp"
-#include "construct_pack.hpp"
-#include "functional/apply_partially.hpp"
-#include "get_type.hpp"
-#include "make_function_type.hpp"
-#include "tuple_split.hpp"
-#include "type_tuple.hpp"
 
 namespace PPreflection::detail
 {

@@ -1,8 +1,8 @@
 #pragma once
 #include "../type_disjunction_reference.hpp"
-#include "void_type.h"
-#include "unknown_bound_array_type.h"
 #include "known_bound_array_type.h"
+#include "unknown_bound_array_type.h"
+#include "void_type.h"
 
 
 /*namespace detail

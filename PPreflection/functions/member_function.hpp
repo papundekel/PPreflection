@@ -12,6 +12,8 @@ constexpr void PPreflection::member_function::print_name_after_parent(PP::simple
 
 	switch (get_cv_qualifier())
 	{
+	case PP::cv_qualifier::none:
+		break;
 	case PP::cv_qualifier::Const:
 		out.write(" const"); break;
 	case PP::cv_qualifier::Volatile: break;
@@ -22,6 +24,8 @@ constexpr void PPreflection::member_function::print_name_after_parent(PP::simple
 
 	switch (get_ref_qualifier())
 	{
+	case PP::ref_qualifier::none:
+		break;
 	case PP::ref_qualifier::lvalue:
 		out.write("&"); break;
 	case PP::ref_qualifier::rvalue:

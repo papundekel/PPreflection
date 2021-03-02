@@ -1,7 +1,7 @@
 #pragma once
+#include "../static_member_function.h"
 #include "basic_overloaded_function.h"
 #include "basic_overloaded_named_function.h"
-#include "../static_member_function.h"
 
 namespace PPreflection::detail
 {

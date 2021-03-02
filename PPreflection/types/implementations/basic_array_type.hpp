@@ -1,7 +1,8 @@
 #pragma once
+#include "PP/remove_extent.hpp"
+
 #include "../complete_object_type.h"
 #include "basic_object_type.hpp"
-#include "remove_extent.hpp"
 
 namespace PPreflection::detail
 {

@@ -1,9 +1,10 @@
 #pragma once
+#include "PP/tuple_map_to_array.hpp"
+#include "PP/type_t.hpp"
+#include "PP/value_t.hpp"
+#include "PP/view.hpp"
+
 #include "overload_cast.h"
-#include "tuple_map_to_array.hpp"
-#include "type_t.hpp"
-#include "value_t.hpp"
-#include "view.hpp"
 
 namespace PPreflection
 {
@@ -56,15 +57,27 @@ namespace PPreflection
 
 // namespace
 //
-// template <> constexpr inline auto PPreflection::detail::metadata<namespace> = PPreflection::detail::basic_namespace<type>{};
-// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<namespace>> = "name"_sv;
-// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<namespace>> = PP::type<parent>;
-// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<namespace>> = PP::type_tuple<types...>;
-// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<namespace>> = PP::type_tuple<namespaces...>;
+// template <> constexpr inline auto PPreflection::detail::metadata<N> = PPreflection::detail::basic_namespace<N>{};
+// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<N>> = "N"_sv;
+// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<N>> = PP::type<parent>;
+// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<N>> = PP::type_tuple<types...>;
+// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<N>> = PP::type_tuple<namespaces...>;
 
 // class
 //
-// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<type>> = "type"_sv;
-// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<type>> = PP::type<parent>;
-// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<type>> = PP::type_tuple<nested_classes...>;
-// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<type>> = PP::type_tuple<bases...>;
+// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<C>> = "C"_sv;
+// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<C>> = PP::type<parent>;
+// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<C>> = PP::type_tuple<nested_classes...>;
+// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<C>> = PP::type_tuple<bases...>;
+// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::static_member_functions<C>> = PP::type_tuple<static_member_functions...>;
+// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::member_functions<C>> = PP::type_tuple<member_functions...>;
+
+// enum
+//
+// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<E>> = "E"_sv;
+// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<E>> = PP::type<parent>;
+// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::enum_values<E>> = PP::value_tuple<values...>;
+
+// enum value
+// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<V>>> = "V"_sv;
+

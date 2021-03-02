@@ -7,9 +7,9 @@ namespace PPreflection
 	class pointer_type : public detail::non_user_defined_type<non_array_object_type>
 	{
 	public:
-		constexpr bool has_name(PP::string_view name) const noexcept override final
+		constexpr bool has_name(PP::string_view) const noexcept override final
 		{
-			return false;
+			return false; // TODO
 		}
 		constexpr void print_name_prefix(PP::simple_ostream& out) const noexcept override final
 		{
@@ -30,7 +30,7 @@ namespace PPreflection
 		{
 			return sizeof(void*);
 		}
-		constexpr void destroy(void* ptr) const noexcept override final
+		constexpr void destroy(void*) const noexcept override final
 		{}
 
 		constexpr virtual const pointable_type& remove_pointer() const noexcept = 0;

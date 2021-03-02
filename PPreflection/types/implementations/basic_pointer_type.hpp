@@ -1,8 +1,9 @@
 #pragma once
+#include "PP/concepts/pointer.hpp"
+#include "PP/remove_pointer.hpp"
+
 #include "../pointer_type.h"
 #include "basic_non_array_object_type.hpp"
-#include "concepts/pointer.hpp"
-#include "remove_pointer.hpp"
 
 namespace PPreflection::detail
 {

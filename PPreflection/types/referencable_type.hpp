@@ -1,7 +1,8 @@
 #pragma once
 #include "referencable_type.h"
-#include "dynamic_reference_type.h"
+
 #include "dynamic_lvalue_reference_type.h"
+#include "dynamic_reference_type.h"
 #include "dynamic_rvalue_reference_type.h"
 
 constexpr PPreflection::dynamic_lvalue_reference_type PPreflection::referencable_type::make_lreference() const noexcept

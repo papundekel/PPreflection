@@ -1,7 +1,7 @@
 #pragma once
-#include "concepts/same_except_cvref.hpp"
-#include "get_type.hpp"
-#include "type_t.hpp"
+#include "PP/concepts/same_except_cvref.hpp"
+#include "PP/get_type.hpp"
+
 #include "types/dynamic_reference_type.h"
 
 namespace PPreflection

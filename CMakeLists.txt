@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
+add_compile_options(-Wall -Wextra -pedantic -Werror)
+
 find_program(CCACHE_FOUND ccache)
 if(CCACHE_FOUND)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
@@ -10,11 +12,7 @@ project(PPreflection)
 
 add_subdirectory(PP)
 add_subdirectory(PPreflection)
+add_subdirectory(PPreflectiondemo)
 
-target_link_libraries(PPreflectionlib PPlib)
-
-set_target_properties(PPreflectionlib PROPERTIES COMPILE_FLAGS "-ftemplate-backtrace-limit=0 -fconcepts-diagnostics-depth=4")
-set_target_properties(PPreflection PROPERTIES COMPILE_FLAGS "-ftemplate-backtrace-limit=0 -fconcepts-diagnostics-depth=4")
-
-target_include_directories(PPreflectionlib PUBLIC "PP/PP")
-target_include_directories(PPreflection PUBLIC "PP/PP")
+target_link_libraries(PPreflection PP)
+target_link_libraries(PPreflectiondemo PPreflection)

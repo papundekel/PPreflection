@@ -1,11 +1,12 @@
 #include <iostream>
 
-#include "dynamic_reference.hpp"
-#include "Namespace.hpp"
-#include "overload_cast.h"
-#include "reflect.hpp"
-#include "types/types.hpp"
-#include "value_tuple.hpp"
+#include "PP/value_tuple.hpp"
+
+#include "PPreflection/dynamic_reference.hpp"
+#include "PPreflection/Namespace.hpp"
+#include "PPreflection/overload_cast.h"
+#include "PPreflection/reflect.hpp"
+#include "PPreflection/types/types.hpp"
 
 class S
 {
@@ -39,6 +40,12 @@ public:
 	}
 };
 
+enum E
+{
+	val = -8,
+	cigi
+};
+
 void f(int a)
 {
 	std::cout << "f(" << a << ")\n";
@@ -68,6 +75,16 @@ template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::t
 	PPreflection::tags::global::f
 >;
 
+// ::E
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::E>> = "E"_sv;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::E>> = PP::type<PPreflection::Namespace::global>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::enum_values<::E>> = PP::value_tuple<
+	E::val,
+	E::cigi
+>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<::E::val>>> = "val"_sv;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<::E::cigi>>> = "cigi"_sv;
+
 // ::S
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::S>> = "S"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::S>> = PP::type<PPreflection::Namespace::global>;
@@ -77,7 +94,8 @@ template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::t
 	PPreflection::tags::global::S::g
 >;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::member_functions<::S>> = PP::type_tuple<
-	PPreflection::tags::global::S::f
+	PPreflection::tags::global::S::f,
+	PPreflection::tags::conversion_function<::S, int>
 >;
 
 // ::S::S
@@ -140,9 +158,9 @@ template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::t
 
 int main()
 {
-	std::cout << *PPreflection::global_namespace.get_type("S") << '\n';
+	const PPreflection::class_type& s = PPreflection::reflect(PP::type<S>);
 
-	std::cout << PPreflection::reflect(PP::type_char) << '\n';
+	auto i = s.create_instance();
 
 	std::cout.flush();
 	return 0;

@@ -1,7 +1,7 @@
 #pragma once
+#include "../type_disjunction_reference.h"
 #include "known_bound_array_type.h"
 #include "unknown_bound_array_type.h"
-#include "../type_disjunction_reference.h"
 
 namespace PPreflection
 {

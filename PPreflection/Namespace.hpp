@@ -1,8 +1,9 @@
 #pragma once
-#include "descriptor.h"
 #include "Namespace.h"
-#include "types/types.h"
+
+#include "descriptor.h"
 #include "functions/functions.h"
+#include "types/types.h"
 
 constexpr const PPreflection::Namespace* PPreflection::Namespace::get_namespace(PP::string_view name) const noexcept
 {

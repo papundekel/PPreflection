@@ -1,9 +1,10 @@
 #pragma once
-#include "../PP/PP/any_iterator.hpp"
+#include "PP/any_iterator.hpp"
+#include "PP/view_equal.hpp"
+
 #include "descriptor.h"
 #include "named_descriptor.h"
 #include "PPany_view.hpp"
-#include "view_equal.hpp"
 
 namespace PPreflection
 {
@@ -19,7 +20,7 @@ namespace PPreflection
 		constexpr virtual PP::any_view<PP::iterator_category::ra, const user_defined_type&> get_types() const noexcept = 0;
 		constexpr virtual PP::any_view<PP::iterator_category::ra, const overloaded_namespace_function&> get_functions() const noexcept = 0;
 
-		constexpr void print_name_before_parent(PP::simple_ostream& out) const noexcept override final
+		constexpr void print_name_before_parent(PP::simple_ostream&) const noexcept override final
 		{}
 		constexpr void print_name_after_parent(PP::simple_ostream& out) const noexcept override final
 		{

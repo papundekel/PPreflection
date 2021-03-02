@@ -1,5 +1,7 @@
-#include "empty_tuple.hpp"
 #include "PPany_view.hpp"
+
+#include "PP/empty_tuple.hpp"
+
 #include "reflect.hpp"
 
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces	<PPreflection::Namespace::global>> = PP::empty_tuple{};
@@ -14,6 +16,8 @@ template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra
 template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::conversion_function&>;
 template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::member_function&>;
 template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::overloaded_member_function&>;
+template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::static_member_function&>;
+template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::overloaded_static_member_function&>;
 template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::constructor&>;
 template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::one_parameter_converting_constructor&>;
 template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::reference_type&>;

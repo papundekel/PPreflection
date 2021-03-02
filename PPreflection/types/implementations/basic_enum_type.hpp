@@ -1,11 +1,12 @@
 #pragma once
+#include "PP/concepts/enum.hpp"
+#include "PP/static_cast.hpp"
+#include "PP/tuple_map.hpp"
+#include "PP/tuple_to_array.hpp"
+
 #include "../../reflect.h"
 #include "../enum_type.h"
 #include "basic_user_defined_type.hpp"
-#include "concepts/enum.hpp"
-#include "static_cast.hpp"
-#include "tuple_map.hpp"
-#include "tuple_to_array.hpp"
 
 namespace PPreflection::detail
 {
@@ -19,6 +20,10 @@ namespace PPreflection::detail
 		constexpr long long get_value() const noexcept override final
 		{
 			return (long long)value;
+		}
+		constexpr const descriptor& get_parent() const noexcept override final
+		{
+			return type::reflect(PP_DECLTYPE(value));
 		}
 	};
 
@@ -39,6 +44,11 @@ namespace PPreflection::detail
 		constexpr PP::any_view<PP::iterator_category::ra, const enum_value&> get_values() const noexcept override final
 		{
 			return enum_values_array;
+		}
+
+		constexpr const non_void_fundamental_type& get_underlying_type() const noexcept override final
+		{
+			return type::reflect(PP::type<int>);
 		}
 	};
 }

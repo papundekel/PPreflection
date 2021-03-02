@@ -13,9 +13,9 @@ namespace PPreflection
 			return *this;
 		}
 
-		constexpr bool can_be_pointer_initialized(const pointable_type& initializer) const noexcept
+		constexpr bool can_be_pointer_initialized(const pointable_type&) const noexcept
 		{
-			return true;
+			return true; // TODO
 		}
 
 		constexpr dynamic_pointer_type make_pointer() const noexcept;

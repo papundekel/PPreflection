@@ -1,7 +1,7 @@
 #pragma once
+#include "../type_disjunction_reference.h"
 #include "object_type.h"
 #include "void_type.h"
-#include "../type_disjunction_reference.h"
 
 namespace PPreflection
 {

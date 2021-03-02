@@ -1,14 +1,16 @@
 #pragma once
+#include "PP/concepts/class.hpp"
+#include "PP/concepts/derived_from.hpp"
+#include "PP/concepts/destructible.hpp"
+#include "PP/destroy_at.hpp"
+#include "PP/tuple_filter.hpp"
+
 #include "../../functions/constructor.h"
 #include "../../functions/member_function.h"
 #include "../../functions/static_member_function.h"
 #include "../../reflect.h"
 #include "../class_type.h"
 #include "basic_user_defined_type.hpp"
-#include "concepts/class.hpp"
-#include "concepts/derived_from.hpp"
-#include "concepts/destructible.hpp"
-#include "destroy_at.hpp"
 
 namespace PPreflection::detail
 {
@@ -24,6 +26,13 @@ namespace PPreflection::detail
 		static constexpr auto member_functions = reflector(PP::Template<tags::member_functions>, PP::type<const member_function::overloaded&>);
 		static constexpr auto nested_classes = reflector(PP::Template<tags::nested_classes>, PP::type<const user_defined_type&>);
 
+		static constexpr auto conversion_functions = reflect_many(PP::type<const conversion_function::overloaded&>,
+			PP::tuple_filter([]
+				(PP::concepts::type auto t)
+				{
+					return PP::value<PP_COPY_TYPE(t)->Template == PP::Template<tags::conversion_function>>;
+				}, PPreflection::reflect(PP::type<tags::member_functions<T>>)));
+
 	public:
 		void destroy(void* ptr) const noexcept override final
 		{
@@ -38,6 +47,10 @@ namespace PPreflection::detail
 		constexpr PP::any_view<PP::iterator_category::ra, const member_function::overloaded&> get_member_functions() const noexcept override final
 		{
 			return member_functions;
+		}
+		constexpr PP::any_view<PP::iterator_category::ra, const conversion_function::overloaded&> get_conversion_functions() const noexcept override final
+		{
+			return conversion_functions;
 		}
 		constexpr PP::any_view<PP::iterator_category::ra, const static_member_function::overloaded&> get_static_member_functions() const noexcept override final
 		{

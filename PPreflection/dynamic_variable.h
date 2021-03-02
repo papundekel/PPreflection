@@ -1,11 +1,12 @@
 #pragma once
 #include <variant>
 
-#include "concepts/reference.hpp"
-#include "concepts/void.hpp"
+#include "PP/concepts/reference.hpp"
+#include "PP/concepts/void.hpp"
+#include "PP/overloaded.hpp"
+
 #include "dynamic_object.h"
 #include "dynamic_reference.h"
-#include "overloaded.hpp"
 
 namespace PPreflection
 {
@@ -15,15 +16,15 @@ namespace PPreflection
 
 		std::variant<dynamic_reference, dynamic_object> dynamic;
 
-		explicit dynamic_variable(dynamic_reference r)
-			: dynamic(std::move(r))
+		explicit constexpr dynamic_variable(dynamic_reference r)
+			: dynamic(PP::move(r))
 		{}
-		explicit dynamic_variable(dynamic_object o)
-			: dynamic(std::move(o))
+		explicit constexpr dynamic_variable(dynamic_object o)
+			: dynamic(PP::move(o))
 		{}
 
 	public:
-		static auto create(auto&& f)
+		static constexpr auto create(auto&& f)
 		{
 			constexpr auto result_type = PP_DECLTYPE(PP_FORWARD(f)());
 
@@ -37,7 +38,7 @@ namespace PPreflection
 			else
 				return dynamic_variable(dynamic_object(PP_FORWARD(f)));
 		}
-		explicit operator bool() const noexcept
+		constexpr explicit operator bool() const noexcept
 		{
 			return std::visit(PP::overloaded
 			(
@@ -51,7 +52,7 @@ namespace PPreflection
 				}
 			), dynamic);
 		}
-		dynamic_object::invalid_code get_error_code() const noexcept
+		constexpr dynamic_object::invalid_code get_error_code() const noexcept
 		{
 			return std::visit(PP::overloaded{
 				[](const dynamic_reference&)
@@ -63,15 +64,14 @@ namespace PPreflection
 					return o.get_error_code();
 				} }, dynamic);
 		}
-		static auto create_invalid(dynamic_object::invalid_code code) noexcept
-		{
-			return dynamic_variable(dynamic_object::create_invalid(code));
-		}
-		decltype(auto) get_type() const noexcept
+
+		static dynamic_variable create_invalid(dynamic_object::invalid_code code) noexcept;
+
+		constexpr decltype(auto) get_type() const noexcept
 		{
 			return std::visit([](const auto& r) -> const type& { return r.get_type(); }, dynamic);
 		}
-		operator dynamic_reference() const noexcept
+		constexpr operator dynamic_reference() const noexcept
 		{
 			return std::visit(PP::overloaded
 			(
