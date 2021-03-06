@@ -7,7 +7,7 @@ namespace PPreflection
     class known_bound_array_type : public detail::array_type<complete_object_type>
     {
     public:
-        constexpr virtual size_t get_extent() const noexcept = 0;
+        constexpr virtual PP::size_t get_extent() const noexcept = 0;
 
         constexpr bool has_name(PP::string_view) const noexcept override final
         {
@@ -24,10 +24,16 @@ namespace PPreflection
             out.write("]");
             remove_extent().print_name_suffix(out);
         }
-        constexpr size_t size() const noexcept override final
+        constexpr PP::size_t size() const noexcept override final
         {
-            return get_extent() * remove_extent().size();
+            return get_extent() * remove_extent().type.size();
         }
         void destroy(void* ptr) const noexcept override final;
+
+        constexpr bool operator==(const known_bound_array_type& other) const noexcept;
+        constexpr bool operator==(const type& other) const noexcept override final
+		{
+			return compare(*this, other);
+		}
     };
 }

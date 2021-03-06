@@ -10,9 +10,14 @@ namespace PPreflection::detail
 	class basic_array_type : public Base
 	{
 	public:
-		constexpr const complete_object_type& remove_extent() const noexcept
+		constexpr cv_type<complete_object_type> remove_extent() const noexcept
 		{
-			return type::reflect | PP::remove_extent <<= PP::type<T>;
+			return type::reflect_cv | PP::remove_extent <<= PP::type<T>;
+		}
+
+		constexpr convertor array_to_pointer_conversion() const noexcept override final
+		{
+			return create_convertor_to_value(PP::type<T>);
 		}
 	};
 }

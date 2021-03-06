@@ -8,7 +8,7 @@ namespace PPreflection
 		bool lvalue_;
 
 	public:
-		constexpr dynamic_reference_type(const referencable_type& referenced_type, bool lvalue) noexcept
+		constexpr dynamic_reference_type(cv_type<referencable_type> referenced_type, bool lvalue) noexcept
 			: dynamic_specific_reference_type_base(referenced_type)
 			, lvalue_(lvalue)
 		{}

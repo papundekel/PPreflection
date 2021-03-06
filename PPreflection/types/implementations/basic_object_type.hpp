@@ -1,7 +1,6 @@
 #pragma once
 #include "../object_type.h"
 #include "basic_referencable_type.hpp"
-#include "basic_cv_qualifiable_type.hpp"
 
 namespace PPreflection::detail
 {

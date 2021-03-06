@@ -21,7 +21,7 @@ namespace PPreflection::detail
 		{
 			return (long long)value;
 		}
-		constexpr const descriptor& get_parent() const noexcept override final
+		constexpr parent_descriptor_reference get_parent(void*) const noexcept override final
 		{
 			return type::reflect(PP_DECLTYPE(value));
 		}

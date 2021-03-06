@@ -3,6 +3,7 @@
 
 #include "PP/apply_template.hpp"
 #include "PP/functional/id.hpp"
+#include "PP/fundamental_types.h"
 #include "PP/template_tuple.hpp"
 #include "PP/transform_view.hpp"
 #include "PP/tuple_map.hpp"
@@ -11,7 +12,6 @@
 
 #include "dynamic_object.hpp"
 #include "dynamic_reference.hpp"
-#include "fundamental_type_pack.h"
 #include "get_type_class.hpp"
 
 #include "descriptor.hpp"
@@ -30,6 +30,9 @@
 #include "types/dynamic_enum_type.h"
 
 #include "parent_descriptor_reference.hpp"
+#include "parent_descriptor_reference_strong.hpp"
+#include "convertor.hpp"
+#include "types/array_type_reference.h"
 
 namespace PPreflection
 {
@@ -37,7 +40,7 @@ namespace PPreflection
 	{
 		struct overload_caster__no_specialization {};
 
-		template <typename Overload, size_t Index>
+		template <typename Overload, PP::size_t Index>
 		constexpr inline overload_caster__no_specialization overload_caster = {};
 
 		constexpr inline auto basic_types = PP::template_tuple<
@@ -46,7 +49,8 @@ namespace PPreflection
 			basic_function_type,
 			basic_unknown_bound_array_type,
 			basic_known_bound_array_type,
-			basic_non_void_fundamental_type,
+			basic_null_type,
+			arithmetic_type_strong,
 			basic_pointer_type,
 			basic_pointer_to_member_type,
 			basic_non_union_class_type,
@@ -60,11 +64,12 @@ namespace PPreflection
 
 		constexpr auto&& reflect_helper(PP::concepts::type auto t) noexcept
 		{
-			return metadata<PP_GET_TYPE(t)>;
+			return metadata<PP_GET_TYPE(PP::remove_cv(t))>;
 		}
 	}
 
 	constexpr inline const Namespace& global_namespace = reflect(PP::type<Namespace::global>);
+	constexpr inline const arithmetic_type_strong<float>& float_type = reflect(PP::type<float>);
 }
 
 using namespace PP::literals;

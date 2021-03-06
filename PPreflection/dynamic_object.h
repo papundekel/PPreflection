@@ -10,6 +10,8 @@ namespace PPreflection
 {
 	class complete_object_type;
 	class dynamic_reference;
+	template <typename>
+	class cv_type;
 
 	class dynamic_object
 	{
@@ -43,35 +45,53 @@ namespace PPreflection
 
 		class deleter
 		{
-			PP::unique<const complete_object_type*, PP::pointer_releaser> type_;
+			struct optional_cv_type
+			{
+				const complete_object_type* type;
+				PP::cv_qualifier cv;
+			};
+
+			struct releaser
+			{
+				constexpr optional_cv_type operator()(optional_cv_type& u) const noexcept
+				{
+					return PP::exchange(u, optional_cv_type{nullptr, PP::cv_qualifier::none});
+				}
+			};
+
+			PP::unique<optional_cv_type, releaser> type_;
 
 		public:
-			constexpr deleter(const complete_object_type* ptr) noexcept
-				: type_(PP::unique_default_releaser_tag, ptr)
+			constexpr deleter(cv_type<complete_object_type> t) noexcept;
+			constexpr deleter(int = 0) noexcept
+				: type_(PP::unique_default_releaser_tag, nullptr, PP::cv_qualifier::none)
 			{}
-			constexpr void operator()(auto& u) const;
+			constexpr void operator()(PP::unique<data, PP::default_releaser>& u) const;
 
-			constexpr const complete_object_type* get_type() const
+			constexpr bool has_valid_type() const
 			{
-				return type_.get_object();
+				return type_.get_object().type;
 			}
+			constexpr cv_type<complete_object_type> get_cv_type() const;
 		};
 
 		PP::scoped<PP::unique<data, PP::default_releaser>, deleter> x;
 
 		static constexpr auto* get_address(auto& r) noexcept;
-
 		static constexpr auto* get_address(auto& p, const complete_object_type& t) noexcept;
 
-		static constexpr dynamic_reference reference_cast_helper(auto&& r) noexcept;
+		static constexpr dynamic_reference reference_cast_helper(auto& r) noexcept;
 
 		static constexpr char* allocate_and_initialize(PP::concepts::invocable auto&& i) noexcept;
 
 		explicit constexpr dynamic_object(invalid_code code) noexcept;
 
-		constexpr const complete_object_type* get_type_helper() const noexcept;
-
 		constexpr bool invalid_check_helper(invalid_code code) const noexcept;
+
+		constexpr bool has_valid_type() const noexcept
+		{
+			return x.get_destructor().has_valid_type();
+		}
 
 	public:
 		static constexpr dynamic_object create_invalid(invalid_code code) noexcept
@@ -87,12 +107,11 @@ namespace PPreflection
 
 		constexpr dynamic_object() = default;
 
-		constexpr const complete_object_type& get_type() const noexcept;
+		constexpr cv_type<complete_object_type> get_cv_type()       noexcept;
+		constexpr cv_type<complete_object_type> get_cv_type() const noexcept;
 
-		constexpr operator dynamic_reference()      &  noexcept;
-		constexpr operator dynamic_reference()      && noexcept;
-		constexpr operator dynamic_reference() const&  noexcept;
-		constexpr operator dynamic_reference() const&& noexcept;
+		constexpr operator dynamic_reference()       noexcept;
+		constexpr operator dynamic_reference() const noexcept;
 
 		constexpr explicit operator bool() const noexcept;
 		constexpr invalid_code get_error_code() const noexcept;

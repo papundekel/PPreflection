@@ -1,5 +1,6 @@
 #pragma once
 #include "PP/concepts/function.hpp"
+#include "PP/concepts/null.hpp"
 #include "PP/concepts/pointable.hpp"
 #include "PP/concepts/reference.hpp"
 #include "PP/functional/apply_partially.hpp"
@@ -15,7 +16,8 @@ namespace PPreflection
 		function,
 		unknown_bound_array,
 		known_bound_array,
-		non_void_fundamental,
+		null,
+		arithmetic,
 		pointer,
 		pointer_to_member,
 		non_union_class,
@@ -41,6 +43,7 @@ namespace PPreflection
 				PP::is_function,
 				PP::is_unbounded_array,
 				PP::is_bounded_array,
+				PP::is_null,
 				PP::is_non_void_fundamental,
 				PP::is_pointer,
 				PP::is_pointer_to_member,

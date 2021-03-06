@@ -3,7 +3,6 @@
 #include "PP/simple_vector.hpp"
 
 #include "enum_type.h"
-#include "dynamic_cv_qualifiable_type.h"
 #include "dynamic_user_defined_type.h"
 #include "dynamic_named_descriptor.h"
 
@@ -43,10 +42,9 @@ namespace PPreflection
 			PP::string_view name,
 			PP::concepts::view auto&& values,
 			const non_void_fundamental_type& underlying_type,
-			parent_descriptor_reference parent,
-			PP::cv_qualifier cv = PP::cv_qualifier::none) noexcept
+			parent_descriptor_reference_strong parent) noexcept
 
-			: dynamic_user_defined_type<enum_type>(name, parent, cv)
+			: dynamic_user_defined_type<enum_type>(name, parent)
 			, values(PP_FORWARD(values))
 			, underlying_type(underlying_type)
 		{}
@@ -61,7 +59,7 @@ namespace PPreflection
 			return underlying_type;
 		}
 
-		constexpr virtual size_t size() const noexcept override final
+		constexpr virtual PP::size_t size() const noexcept override final
 		{
 			return 8;
 		}

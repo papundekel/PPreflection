@@ -2,11 +2,7 @@
 
 #include "PP/empty_tuple.hpp"
 
-#include "reflect.hpp"
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces	<PPreflection::Namespace::global>> = PP::empty_tuple{};
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types		<PPreflection::Namespace::global>> = PP::empty_tuple{};
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions	<PPreflection::Namespace::global>> = PP::empty_tuple{};
+#include "reflect_dummy.hpp"
 
 template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::Namespace&>;
 template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::function&>;

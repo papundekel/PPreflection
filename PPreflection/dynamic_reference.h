@@ -1,6 +1,9 @@
 #pragma once
+#include <variant>
+
 #include "PP/concepts/same_except_cvref.hpp"
 #include "PP/get_type.hpp"
+#include "PP/reinterpret_cast.hpp"
 
 #include "types/dynamic_reference_type.h"
 
@@ -13,13 +16,23 @@ namespace PPreflection
 	{
 		friend class dynamic_object;
 
-		void* ptr;
+		std::variant<void*, void(*)()> ptr;
 		dynamic_reference_type type_;
 
 		constexpr dynamic_reference(const void* ptr, const reference_type& t) noexcept
 			: ptr(const_cast<void*>(ptr))
 			, type_(t)
 		{}
+		template <typename Return, typename... Parameters>
+		constexpr dynamic_reference(Return(*ptr)(Parameters...), const reference_type& t) noexcept
+			: ptr((void(*)())ptr)
+			, type_(t)
+		{}
+
+		constexpr decltype(auto) reinterpret(PP::concepts::type auto t) const
+		{
+			return std::visit([t](auto p) -> decltype(auto) { return PP::reinterpret__cast(t, p); }, ptr);
+		}
 
 	public:
 		struct bad_cast_exception {};
@@ -41,5 +54,7 @@ namespace PPreflection
 				!PP::is_same_except_cvref * PP::type<dynamic_reference> &&
 				!PP::is_same_except_cvref * PP::type<dynamic_object> &&
 				!PP::is_same_except_cvref * PP::type<dynamic_variable>)(PP_DECLTYPE(r)));
+
+		inline decltype(auto) visit(PP::concepts::type auto t, auto&& f) const;
 	};
 }

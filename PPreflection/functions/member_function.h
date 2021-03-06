@@ -38,11 +38,11 @@ namespace PPreflection
 
 		constexpr PP::ref_qualifier get_ref_qualifier() const noexcept
 		{
-			return get_function_type().get_ref_qualifier();
+			return get_function_type().get_function_ref_qualifier();
 		}
 		constexpr PP::cv_qualifier get_cv_qualifier() const noexcept
 		{
-			return get_function_type().get_cv_qualifier();
+			return get_function_type().get_function_cv_qualifier();
 		}
 
 		inline dynamic_variable invoke(dynamic_reference caller, PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args = {}) const;
@@ -51,7 +51,5 @@ namespace PPreflection
 		friend overloaded_member_function;
 
 		constexpr const overloaded& get_overloaded_function() const noexcept override = 0;
-
-		constexpr const class_type& get_parent() const noexcept override = 0;
 	};
 }

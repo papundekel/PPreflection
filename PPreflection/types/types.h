@@ -1,9 +1,13 @@
 #pragma once
+#include "arithmetic_type_strong.h"
+#include "class_type.h"
+#include "cv_type.h"
 #include "enum_type.h"
 #include "function_type.h"
 #include "known_bound_array_type.h"
 #include "non_union_class_type.h"
 #include "non_void_fundamental_type.h"
+#include "null_type.h"
 #include "pointer_type.h"
 #include "pointable_type.hpp"
 #include "pointer_to_member_type.h"

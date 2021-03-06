@@ -156,11 +156,46 @@ template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::t
 template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<PPreflection::overload_caster<int, int>(::f)>> = detail::basic_namespace_function<PPreflection::overload_caster<int, int>(::f)>{};
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::overloads<PP::value_t<PPreflection::overload_caster<int, int>(::f)>>> = PP::type<PPreflection::tags::global::f>;
 
+void xxxn() noexcept
+{
+
+}
+
 int main()
 {
-	const PPreflection::class_type& s = PPreflection::reflect(PP::type<S>);
+	PPreflection::dynamic_reference r_xxxn = xxxn;
+	
+	auto& r_xxxn_type = dynamic_cast<const PPreflection::function_type&>(r_xxxn.get_type().remove_reference().type);
+	
+	auto p_xxxn = r_xxxn_type.function_to_pointer_conversion()(r_xxxn);
+	
+	auto& p_xxxn_type = dynamic_cast<const PPreflection::pointer_type&>(p_xxxn.get_cv_type().type);
+	
+	auto p_xxx = p_xxxn_type.function_pointer_conversion()(p_xxxn);
+	
+	std::cout << r_xxxn.get_type() << '\n';
+	std::cout << p_xxxn.get_cv_type() << '\n';
+	std::cout << p_xxx.get_cv_type() << '\n';
 
-	auto i = s.create_instance();
+	const int a[2]{1, 5};
+
+	PPreflection::dynamic_reference r_a = a;
+
+	PPreflection::array_type_reference r_a_type = dynamic_cast<const PPreflection::object_type&>(r_a.get_type().remove_reference().type);
+
+	auto p_a = r_a_type.array_to_pointer_conversion()(r_a);
+
+	std::cout << r_a.get_type() << '\n';
+	std::cout << p_a.get_type() << '\n';
+
+	auto x = PPreflection::float_type.create_instance();
+
+	auto& x_type = dynamic_cast<const PPreflection::arithmetic_type&>(x.get_cv_type().type);
+
+	const auto y = x_type.promotion()(x);
+
+	std::cout << x.get_cv_type() << '\n';
+	std::cout << y.get_cv_type() << '\n';
 
 	std::cout.flush();
 	return 0;

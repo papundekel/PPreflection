@@ -10,7 +10,5 @@ namespace PPreflection
 	{
 	public:
 		constexpr virtual PP::size_t alignment() const noexcept = 0;
-
-		constexpr virtual PP::cv_qualifier get_cv_qualifier() const noexcept = 0;
 	};
 }

@@ -26,7 +26,7 @@ namespace PPreflection
 		friend overloaded_function;
 
 	protected:
-		inline virtual dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&> arg_iterator) const noexcept = 0;
+		virtual dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&> arg_iterator) const noexcept = 0;
 
 		constexpr virtual bool can_invoke(PP::any_view<PP::iterator_category::ra, const reference_type&> argument_types) const noexcept;
 
@@ -71,7 +71,11 @@ namespace PPreflection
 
 		constexpr virtual const overloaded_function& get_overloaded_function() const noexcept = 0;
 
-		constexpr const descriptor& get_parent() const noexcept override;
+		constexpr virtual parent_descriptor_reference_strong get_parent(int = 0) const noexcept;
+		constexpr parent_descriptor_reference get_parent(void*) const noexcept override final
+		{
+			return get_parent();
+		}
 
 		using overloaded = overloaded_function;
 	};
@@ -102,9 +106,15 @@ namespace PPreflection
 		{
 			return get_function_overloads();
 		}
+
+		constexpr virtual parent_descriptor_reference_strong get_parent(int = 0) const noexcept = 0;
+		constexpr parent_descriptor_reference get_parent(void*) const noexcept override final
+		{
+			return get_parent();
+		}
 	};
 
-	constexpr const descriptor& function::get_parent() const noexcept
+	constexpr parent_descriptor_reference_strong function::get_parent(int) const noexcept
 	{
 		return get_overloaded_function().get_parent();
 	}

@@ -13,7 +13,7 @@ namespace PPreflection::detail
 	{
 		static_assert(PP::concepts::bounded_array<T>);
 
-		constexpr size_t get_extent() const noexcept override final
+		constexpr PP::size_t get_extent() const noexcept override final
 		{
 			return PP::extent(PP::type<T>);
 		}

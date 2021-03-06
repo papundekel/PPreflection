@@ -20,10 +20,10 @@ namespace PPreflection
 		std::variant<type_disjunction_reference_wrap<TypeClasses>...> v;
 
 	public:
-		template <typename T>
-		constexpr type_disjunction_reference(const T& t) noexcept
-			: v(t)
+		constexpr type_disjunction_reference(const auto& t) noexcept
+			: v(type_disjunction_reference_wrap(t))
 		{}
+		type_disjunction_reference(const type_disjunction_reference&) = default;
 
 		constexpr bool holds_alternative(PP::concepts::type auto t) const noexcept
 		{

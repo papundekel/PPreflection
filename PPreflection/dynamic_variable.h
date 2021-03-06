@@ -67,22 +67,38 @@ namespace PPreflection
 
 		static dynamic_variable create_invalid(dynamic_object::invalid_code code) noexcept;
 
-		constexpr decltype(auto) get_type() const noexcept
+	private:
+		static constexpr auto get_type_helper = PP::overloaded
+		(
+			[](const dynamic_reference& r) -> cv_type<type>
+			{
+				return r.get_type();
+			},
+			[](const dynamic_object& o) -> cv_type<type>
+			{
+				return o.get_cv_type();
+			},
+			[](dynamic_object& o) -> cv_type<type>
+			{
+				return o.get_cv_type();
+			}
+		);
+
+	public:
+		constexpr auto get_type() noexcept
 		{
-			return std::visit([](const auto& r) -> const type& { return r.get_type(); }, dynamic);
+			return std::visit(get_type_helper, dynamic);
+		}
+		constexpr auto get_type() const noexcept
+		{
+			return std::visit(get_type_helper, dynamic);
 		}
 		constexpr operator dynamic_reference() const noexcept
 		{
 			return std::visit(PP::overloaded
 			(
-				[](const dynamic_reference& r)
-				{
-					return r;
-				},
-				[](const dynamic_object& o) -> dynamic_reference
-				{
-					return o;
-				}
+				[](const dynamic_reference& r) { return r; },
+				[](const dynamic_object& o) -> dynamic_reference { return o; }
 			), dynamic);
 		}
 	};

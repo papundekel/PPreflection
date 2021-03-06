@@ -40,11 +40,11 @@ namespace PPreflection
 		{
 			return Noexcept;
 		}
-		constexpr PP::cv_qualifier get_cv_qualifier() const noexcept override final
+		constexpr PP::cv_qualifier get_function_cv_qualifier() const noexcept override final
 		{
 			return cv;
 		}
-		constexpr PP::ref_qualifier get_ref_qualifier() const noexcept override final
+		constexpr PP::ref_qualifier get_function_ref_qualifier() const noexcept override final
 		{
 			return ref;
 		}

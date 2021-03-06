@@ -1,4 +1,6 @@
 #pragma once
+#include "PP/concepts/derived_from.hpp"
+
 #include "../descriptor.h"
 
 namespace PPreflection
@@ -8,10 +10,10 @@ namespace PPreflection
 		template <typename Base>
 		class non_user_defined_type : public Base
 		{
-			constexpr const descriptor& get_parent() const noexcept override final
-			{
-				return *this;
-			}
+			static_assert(PP::concepts::derived_from<Base, descriptor>);
+
+		public:
+			constexpr parent_descriptor_reference get_parent(void* = nullptr) const noexcept override final;
 		};
 	}
 }

@@ -4,12 +4,27 @@
 #include "PP/overloaded.hpp"
 #include "PP/static_cast.hpp"
 
+#include "descriptor.h"
 #include "Namespace.h"
 #include "types/class_type.h"
 
-constexpr PPreflection::parent_descriptor_reference::operator const descriptor&() const noexcept
+constexpr PPreflection::parent_descriptor_reference::parent_descriptor_reference(const class_type& d) noexcept
+	: detail::parent_descriptor_reference_base(d)
+{}
+constexpr PPreflection::parent_descriptor_reference::parent_descriptor_reference(const Namespace& d) noexcept
+	: detail::parent_descriptor_reference_base(d)
+{}
+constexpr PPreflection::parent_descriptor_reference::parent_descriptor_reference() noexcept
+	: detail::parent_descriptor_reference_base(parent_descriptor_none_tag)
+{}
+
+constexpr const PPreflection::descriptor* PPreflection::parent_descriptor_reference::as_descriptor()  const noexcept
 {
-	return visit(PP::static__cast * PP::type<const descriptor&>);
+	return visit(PP::overloaded
+	(
+		[](const descriptor& d) { return &d; },
+		[](auto&) { return (const descriptor*)nullptr; }
+	));
 }
 
 constexpr const PPreflection::Namespace* PPreflection::parent_descriptor_reference::as_namespace() const noexcept
@@ -17,7 +32,7 @@ constexpr const PPreflection::Namespace* PPreflection::parent_descriptor_referen
 	return visit(PP::overloaded
 	(
 		[](const Namespace& n) { return &n;	},
-		[](const descriptor&) { return (const Namespace*)nullptr; }
+		[](const auto&) { return (const Namespace*)nullptr; }
 	));
 }
 constexpr const PPreflection::class_type* PPreflection::parent_descriptor_reference::as_class() const noexcept
@@ -25,6 +40,6 @@ constexpr const PPreflection::class_type* PPreflection::parent_descriptor_refere
 	return visit(PP::overloaded
 	(
 		[](const class_type& c) { return &c; },
-		[](const descriptor&) { return (const class_type*)nullptr; }
+		[](const auto&) { return (const class_type*)nullptr; }
 	));
 }

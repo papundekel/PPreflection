@@ -2,6 +2,7 @@
 #include "PP/static_cast.hpp"
 
 #include "../type_disjunction_reference.hpp"
+#include "make_equal_operator_visitor.h"
 #include "non_array_object_type.h"
 #include "reference_type.h"
 #include "void_type.h"
@@ -29,6 +30,11 @@ namespace PPreflection
 		constexpr operator const type&() const noexcept
 		{
 			return visit(PP::static__cast * PP::type<const type&>);
+		}
+
+		constexpr bool operator==(return_type_reference other) const noexcept
+		{
+			return visit(make_equal_operator_visitor(other));
 		}
 	};
 }

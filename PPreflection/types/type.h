@@ -22,7 +22,8 @@ namespace PPreflection
 	class function_type;
 	class unknown_bound_array_type;
 	class known_bound_array_type;
-	class non_void_fundamental_type;
+	class null_type;
+	class arithmetic_type;
 	class pointer_type;
 	class pointer_to_member_type;
 	class non_union_class_type;
@@ -40,13 +41,17 @@ namespace PPreflection
 
 	class super_class_type;
 
+	template <typename>
+	class cv_type;
+
 	constexpr inline auto type_classes = PP::type_tuple<
 		reference_type,
 		void_type,
 		function_type,
 		unknown_bound_array_type,
 		known_bound_array_type,
-		non_void_fundamental_type,
+		null_type,
+		arithmetic_type,
 		pointer_type,
 		pointer_to_member_type,
 		non_union_class_type,
@@ -139,12 +144,28 @@ namespace PPreflection
 
 		static constexpr auto reflect_helper(PP::concepts::type auto t) noexcept -> const PP_APPLY_TRANSFORM(get_class, t)&;
 		static constexpr auto reflect_helper(PP::concepts::tuple auto&& types) noexcept;
+		static constexpr auto reflect_cv_helper(PP::concepts::type auto t) noexcept
+			-> PPreflection::cv_type<PP_GET_TYPE(~PP_DECLTYPE(PPreflection::type::reflect_helper(t)))>;
 
 	public:
 		static PP_FUNCTOR(reflect, auto&& x) -> decltype(auto)
 		{
 			return reflect_helper(PP_FORWARD(x));
-		});		
+		});
+		static PP_FUNCTOR(reflect_cv, PP::concepts::type auto t)
+		{
+			return reflect_cv_helper(t);
+		});
+
+		constexpr virtual bool operator==(const type& other) const noexcept = 0;
+
+		static constexpr bool compare(const auto& this_, const type& other) noexcept
+		{
+			if (auto p = dynamic_cast<decltype(&this_)>(&other); p)
+				return this_ == *p;
+			else
+				return false;
+		}
 	};
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "PP/concepts/reference.hpp"
+#include "PP/get_cv.hpp"
 
 #include "../reference_type.h"
 #include "basic_type.hpp"
@@ -11,9 +12,9 @@ namespace PPreflection::detail
 	{
 		static_assert(PP::concepts::reference<T>);
 
-		constexpr const referencable_type& remove_reference() const noexcept override final
+		constexpr cv_type<referencable_type> remove_reference() const noexcept override final
 		{
-			return this->reflect(!PP::type<T>);
+			return type::reflect_cv(!PP::type<T>);
 		}
 
 		constexpr bool is_lvalue() const noexcept override final

@@ -8,11 +8,16 @@ namespace PPreflection
 
 	class overloaded_namespace_function : public detail::named_descriptor<function::overloaded>
 	{
+		constexpr parent_descriptor_reference_strong get_parent(int) const noexcept override final
+		{
+			return get_parent();
+		}
+
 	protected:
 		constexpr virtual PP::any_view<PP::iterator_category::ra, const namespace_function&> get_namespace_overloads() const noexcept = 0;
 
 	public:
-		constexpr const Namespace& get_parent() const noexcept override = 0;
+		constexpr virtual const Namespace& get_parent() const noexcept = 0;
 
 		constexpr PP::concepts::view auto get_overloads() const noexcept
 		{
@@ -27,9 +32,15 @@ namespace PPreflection
 
 		constexpr const overloaded& get_overloaded_function() const noexcept override = 0;
 
-		constexpr const Namespace& get_parent() const noexcept override final
+		constexpr const Namespace& get_parent() const noexcept
 		{
 			return get_overloaded_function().get_parent();
+		}
+
+	private:
+		constexpr parent_descriptor_reference_strong get_parent(int) const noexcept override final
+		{
+			return get_parent();
 		}
 	};
 }

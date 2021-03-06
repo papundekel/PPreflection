@@ -7,8 +7,8 @@ namespace PPreflection
 	class one_parameter_converting_constructor : public constructor
 	{
 	protected:
-		inline virtual dynamic_variable invoke_unsafe_one_parameter(dynamic_reference arg) const noexcept = 0;
-		inline dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&> arg_iterator) const noexcept override final
+		virtual dynamic_variable invoke_unsafe_one_parameter(dynamic_reference arg) const noexcept = 0;
+		dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&> arg_iterator) const noexcept override final
 		{
 			return invoke_unsafe_one_parameter(arg_iterator[0]);
 		}

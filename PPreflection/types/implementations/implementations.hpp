@@ -1,6 +1,5 @@
 #pragma once
 #include "basic_reference_type.hpp"
-#include "basic_void_type.hpp"
 #include "basic_function_type.hpp"
 #include "basic_unknown_bound_array_type.hpp"
 #include "basic_known_bound_array_type.hpp"

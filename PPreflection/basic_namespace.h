@@ -19,7 +19,6 @@ namespace PPreflection
 			static constexpr auto types = reflector(PP::Template<PPreflection::tags::types>, PP::type<const user_defined_type&>);
 			static constexpr auto functions = reflector(PP::Template<PPreflection::tags::functions>, PP::type<const namespace_function::overloaded&>);
 
-		public:
 			constexpr const Namespace& get_parent() const noexcept override final
 			{
 				if constexpr (PP::type<ID> != PP::type<Namespace::global>)

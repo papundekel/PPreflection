@@ -20,5 +20,11 @@ namespace PPreflection
             out.write("[]");
             remove_extent().print_name_suffix(out);
         }
+
+        constexpr bool operator==(const unknown_bound_array_type& other) const noexcept;
+        constexpr bool operator==(const type& other) const noexcept override final
+		{
+			return compare(*this, other);
+		}
     };
 }

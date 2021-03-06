@@ -3,6 +3,7 @@
 #include "PP/static_cast.hpp"
 
 #include "../type_disjunction_reference.hpp"
+#include "make_equal_operator_visitor.h"
 #include "non_array_object_type.h"
 #include "reference_type.h"
 
@@ -54,6 +55,11 @@ namespace PPreflection
 			}
 
 			return true;
+		}
+
+		constexpr bool operator==(parameter_type_reference other) const noexcept
+		{
+			return visit(make_equal_operator_visitor(other));
 		}
 	};
 }

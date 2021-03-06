@@ -3,8 +3,11 @@
 
 #include "PP/get_type.hpp"
 #include "PP/simple_ostream.hpp"
+#include "PP/simple_vector.hpp"
 #include "PP/string_view.hpp"
 #include "PP/view.hpp"
+
+#include "parent_descriptor_reference.h"
 
 namespace PPreflection
 {
@@ -12,23 +15,13 @@ namespace PPreflection
 
 	class descriptor
 	{
-	protected:
+	public:
 		constexpr virtual void print_name_before_parent(PP::simple_ostream& out) const noexcept = 0;
 		constexpr virtual void print_name_after_parent(PP::simple_ostream& out) const noexcept = 0;
 
-	public:
-		constexpr virtual const descriptor& get_parent() const noexcept = 0;
+		constexpr virtual parent_descriptor_reference get_parent(void* = nullptr) const noexcept = 0;
 
-		constexpr void print_name(PP::simple_ostream& out) const noexcept
-		{
-			print_name_before_parent(out);
-			if (const descriptor& parent = get_parent(); &parent != this)
-			{
-				parent.print_name(out);
-				out.write("::");
-			}
-			print_name_after_parent(out);
-		}
+		constexpr void print_name(PP::simple_ostream& out) const noexcept;
 		constexpr virtual bool has_name(PP::string_view name) const noexcept = 0;
 
 		static constexpr PP::string_view reflect_name(PP::concepts::type auto t) noexcept;
