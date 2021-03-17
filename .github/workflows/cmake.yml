@@ -14,10 +14,14 @@ jobs:
       with:
         submodules: recursive
 
+    - run: sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+
     - run:   |
              sudo apt update
-             sudo apt install g++-10 cmake ninja-build
+             sudo apt install g++-10 cmake ninja-build clang-10 libclang-10-dev
       shell: bash
+      
+    - run: ls /usr/lib/llvm-10/include
 
     - name: create build dir
       run: mkdir ${{github.workspace}}/build
