@@ -16,7 +16,7 @@ jobs:
 
     - run:   |
              sudo apt update
-             sudo apt install g++-10 cmake ninja-build
+             sudo apt install g++-10 cmake ninja-build clang-12
       shell: bash
 
     - name: create build dir
