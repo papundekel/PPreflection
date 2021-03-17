@@ -18,7 +18,7 @@ jobs:
 
     - run:   |
              sudo apt update
-             sudo apt install g++-10 cmake ninja-build
+             sudo apt install g++-10 cmake ninja-build libclang-12-dev
       shell: bash
       
     - run: ls /usr/lib/llvm-12/include
