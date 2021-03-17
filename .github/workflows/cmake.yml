@@ -7,7 +7,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-20.10
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
@@ -16,7 +16,7 @@ jobs:
 
     - run:   |
              sudo apt update
-             sudo apt install g++-10 cmake ninja-build clang-12
+             sudo apt install g++-10 cmake ninja-build clang-10
       shell: bash
 
     - name: create build dir
