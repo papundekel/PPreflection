@@ -19,7 +19,7 @@ jobs:
              sudo apt install g++-10 cmake ninja-build clang-10 libclang-10-dev
       shell: bash
       
-    - run: ls /usr/lib && ls /usr/lib/llvm-9/include/clang
+    - run: ls /usr/lib/llvm-9/include
 
     - name: create build dir
       run: mkdir ${{github.workspace}}/build
