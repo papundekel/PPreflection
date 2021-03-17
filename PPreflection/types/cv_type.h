@@ -48,7 +48,7 @@ namespace PPreflection
 
 		constexpr parent_descriptor_reference get_parent(void*) const noexcept override final;
 
-		constexpr type_disjunction_reference<reference_type, pointable_type> reference_or_pointable() const noexcept override final
+		constexpr PP::type_disjunction_reference<reference_type, pointable_type> reference_or_pointable() const noexcept override final
 		{
 			return type.reference_or_pointable();
 		}

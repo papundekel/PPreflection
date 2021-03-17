@@ -1,5 +1,5 @@
 #pragma once
-#include "type_disjunction_reference.hpp"
+#include "PP/type_disjunction_reference.hpp"
 
 namespace PPreflection
 {
@@ -11,7 +11,7 @@ namespace PPreflection
 
 	namespace detail
 	{
-		using parent_descriptor_reference_base = type_disjunction_reference<class_type, Namespace, parent_descriptor_none_tag_t>;
+		using parent_descriptor_reference_base = PP::type_disjunction_reference<class_type, Namespace, parent_descriptor_none_tag_t>;
 	}
 
 	class parent_descriptor_reference

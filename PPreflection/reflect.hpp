@@ -1,7 +1,9 @@
+#ifndef PPREFLECTOR_GUARD
 #pragma once
 #include "reflect.h"
 
 #include "PP/apply_template.hpp"
+#include "PP/empty_tuple.hpp"
 #include "PP/functional/id.hpp"
 #include "PP/fundamental_types.h"
 #include "PP/template_tuple.hpp"
@@ -34,6 +36,8 @@
 #include "convertor.hpp"
 #include "types/array_type_reference.h"
 
+#include "overload_cast.h"
+
 namespace PPreflection
 {
 	namespace detail
@@ -60,7 +64,7 @@ namespace PPreflection
 		template <typename T>
 		constexpr inline auto metadata = detail::basic_types[PP::value_t_static_cast(PP::type_size_t, get_type_class_value_t(PP::type<T>))](PP::type<T>)();
 
-		template <> constexpr inline auto metadata<Namespace::global> = PPreflection::detail::basic_namespace<Namespace::global>{};
+		template <> constexpr inline auto metadata<tags::global> = PPreflection::detail::basic_namespace<tags::global>{};
 
 		constexpr auto&& reflect_helper(PP::concepts::type auto t) noexcept
 		{
@@ -68,13 +72,13 @@ namespace PPreflection
 		}
 	}
 
-	constexpr inline const Namespace& global_namespace = reflect(PP::type<Namespace::global>);
+	constexpr inline const Namespace& global_namespace = reflect(PP::type<tags::global>);
 	constexpr inline const arithmetic_type_strong<float>& float_type = reflect(PP::type<float>);
 }
 
 using namespace PP::literals;
 
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::Namespace::global>> = ""_sv;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::tags::global>> = ""_sv;
 
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<void					>> = "void"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<decltype(nullptr)		>> = "decltype(nullptr)"_sv;
@@ -102,10 +106,8 @@ template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::t
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<char32_t				>> = "char32_t"_sv;
 #endif
 
-template <typename Class>
-constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructors<Class>>
-	= detail::basic_overloaded_constructor<Class>{};
-
 template <typename Class, typename... Parameters>
 constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::is_explicit<Class, Parameters...>>
 	= PP::value_false;
+
+#endif

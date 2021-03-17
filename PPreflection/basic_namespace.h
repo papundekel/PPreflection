@@ -17,11 +17,11 @@ namespace PPreflection
 
 			static constexpr auto namespaces = reflector(PP::Template<PPreflection::tags::namespaces>, PP::type<const Namespace&>);
 			static constexpr auto types = reflector(PP::Template<PPreflection::tags::types>, PP::type<const user_defined_type&>);
-			static constexpr auto functions = reflector(PP::Template<PPreflection::tags::functions>, PP::type<const namespace_function::overloaded&>);
+			static constexpr auto functions = reflector(PP::Template<PPreflection::tags::functions>, PP::type<const namespace_function&>);
 
 			constexpr const Namespace& get_parent() const noexcept override final
 			{
-				if constexpr (PP::type<ID> != PP::type<Namespace::global>)
+				if constexpr (PP::type<ID> != PP::type<tags::global>)
 					return PPreflection::reflect(PPreflection::reflect(PP::type<tags::parent<ID>>));
 				else
 					return *this;
@@ -34,7 +34,7 @@ namespace PPreflection
 			{
 				return types;
 			}
-			constexpr PP::any_view<PP::iterator_category::ra, const namespace_function::overloaded&> get_functions() const noexcept override final
+			constexpr PP::any_view<PP::iterator_category::ra, const namespace_function&> get_functions() const noexcept override final
 			{
 				return functions;
 			}

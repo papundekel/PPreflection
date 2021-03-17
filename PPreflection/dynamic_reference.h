@@ -24,7 +24,7 @@ namespace PPreflection
 			, type_(t)
 		{}
 		template <typename Return, typename... Parameters>
-		constexpr dynamic_reference(Return(*ptr)(Parameters...), const reference_type& t) noexcept
+		constexpr dynamic_reference(Return (*ptr)(Parameters...), const reference_type& t) noexcept
 			: ptr((void(*)())ptr)
 			, type_(t)
 		{}
@@ -50,10 +50,10 @@ namespace PPreflection
 		inline auto&& get_ref(PP::concepts::type auto t) const&&;
 
 		constexpr dynamic_reference(auto&& r) noexcept
-			requires ((
-				!PP::is_same_except_cvref * PP::type<dynamic_reference> &&
-				!PP::is_same_except_cvref * PP::type<dynamic_object> &&
-				!PP::is_same_except_cvref * PP::type<dynamic_variable>)(PP_DECLTYPE(r)));
+		requires ((
+			!PP::is_same_except_cvref * PP::type<dynamic_reference> &&
+			!PP::is_same_except_cvref * PP::type<dynamic_object> &&
+			!PP::is_same_except_cvref * PP::type<dynamic_variable>)(PP_DECLTYPE(r)));
 
 		inline decltype(auto) visit(PP::concepts::type auto t, auto&& f) const;
 	};

@@ -9,7 +9,7 @@
 namespace PPreflection
 {
 	class user_defined_type;
-	class overloaded_namespace_function;
+	class namespace_function;
 
 	class Namespace : public detail::named_descriptor<descriptor>
 	{
@@ -20,7 +20,7 @@ namespace PPreflection
 
 		constexpr virtual PP::any_view<PP::iterator_category::ra, const Namespace&> get_namespaces() const noexcept = 0;
 		constexpr virtual PP::any_view<PP::iterator_category::ra, const user_defined_type&> get_types() const noexcept = 0;
-		constexpr virtual PP::any_view<PP::iterator_category::ra, const overloaded_namespace_function&> get_functions() const noexcept = 0;
+		constexpr virtual PP::any_view<PP::iterator_category::ra, const namespace_function&> get_functions() const noexcept = 0;
 
 		constexpr void print_name_before_parent(PP::simple_ostream&) const noexcept override final
 		{}
@@ -30,7 +30,10 @@ namespace PPreflection
 		}
 		constexpr const Namespace* get_namespace(PP::string_view name) const noexcept;
 		constexpr const user_defined_type* get_type(PP::string_view name) const noexcept;
-		constexpr const overloaded_namespace_function* get_function(PP::string_view name) const noexcept;
+		constexpr void get_function_overloads(PP::string_view name, PP::concepts::iterator auto i_out) const noexcept;
+
+		inline dynamic_variable invoke(PP::string_view function_name, PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args = {}) const noexcept;
+		inline dynamic_variable invoke_qualified(PP::string_view function_name, PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args = {}) const noexcept;
 
 		class global;
 	};

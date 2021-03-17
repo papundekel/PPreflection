@@ -1,5 +1,6 @@
 #pragma once
-#include "../type_disjunction_reference.h"
+#include "PP/type_disjunction_reference.h"
+
 #include "object_type.h"
 #include "void_type.h"
 
@@ -7,7 +8,7 @@ namespace PPreflection
 {
 	namespace detail
 	{
-		using cv_qualifiable_type_reference_base = type_disjunction_reference<object_type, void_type>;
+		using cv_qualifiable_type_reference_base = PP::type_disjunction_reference<object_type, void_type>;
 	}
 
 	class cv_qualifiable_type_reference : public detail::cv_qualifiable_type_reference_base

@@ -6,27 +6,27 @@
 
 namespace PPreflection
 {
-	class overloaded_constructor;
-	class overloaded_member_function;
-	class overloaded_conversion_function;
-	class overloaded_static_member_function;
+	class constructor;
+	class member_function;
+	class conversion_function;
+	class static_member_function;
 	class non_union_class_type;
 
 	class class_type : public user_defined_type
 	{
 	public:
-		constexpr virtual const overloaded_constructor& get_constructors() const noexcept = 0;
-		constexpr virtual PP::any_view<PP::iterator_category::ra, const overloaded_member_function&> get_member_functions() const noexcept = 0;
-		constexpr virtual PP::any_view<PP::iterator_category::ra, const overloaded_conversion_function&> get_conversion_functions() const noexcept = 0;
-		constexpr virtual PP::any_view<PP::iterator_category::ra, const overloaded_static_member_function&> get_static_member_functions() const noexcept = 0;
-		constexpr virtual PP::any_view<PP::iterator_category::ra, const user_defined_type&> get_nested_classes() const noexcept = 0;
+		constexpr virtual PP::any_view<PP::iterator_category::ra, const constructor&> get_constructors() const noexcept = 0;
+		constexpr virtual PP::any_view<PP::iterator_category::ra, const member_function&> get_member_functions() const noexcept = 0;
+		constexpr virtual PP::any_view<PP::iterator_category::ra, const conversion_function&> get_conversion_functions() const noexcept = 0;
+		constexpr virtual PP::any_view<PP::iterator_category::ra, const static_member_function&> get_static_member_functions() const noexcept = 0;
+		constexpr virtual PP::any_view<PP::iterator_category::ra, const user_defined_type&> get_nested_types() const noexcept = 0;
 
 		constexpr virtual const non_union_class_type* as_non_union_class() const noexcept = 0;
 
 		inline dynamic_variable create_instance(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args = {}) const noexcept;
 
-		constexpr const overloaded_member_function* get_member_function(PP::string_view name) const noexcept;
-		constexpr const overloaded_static_member_function* get_static_member_function(PP::string_view name) const noexcept;
-		constexpr const user_defined_type* get_nested_class(PP::string_view name) const noexcept;
+		constexpr void get_member_function_overloads(PP::string_view name, PP::concepts::iterator auto i_out) const noexcept;
+		constexpr void get_static_member_function_overloads(PP::string_view name, PP::concepts::iterator auto i_out) const noexcept;
+		constexpr const user_defined_type* get_nested_type(PP::string_view name) const noexcept;
 	};
 }

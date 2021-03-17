@@ -20,9 +20,5 @@ namespace PPreflection
 		{
 			return nullptr;
 		}
-		constexpr convertor_object qualification_conversion(PP::any_view<PP::iterator_category::ra, PP::cv_qualifier>) const noexcept override final
-		{
-			return nullptr;
-		}
 	};
 }

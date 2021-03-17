@@ -7,22 +7,6 @@ namespace PPreflection
 	class class_type;
 	class reference_type;
 
-	class member_function;
-
-	class overloaded_member_function : public detail::maybe_static_member_function::overloaded
-	{
-	protected:
-		constexpr virtual PP::any_view<PP::iterator_category::ra, const member_function&> get_member_function_overloads() const noexcept = 0;
-
-	public:
-		inline dynamic_variable invoke(dynamic_reference caller, PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args = {}) const;
-
-		constexpr PP::concepts::view auto get_overloads() const noexcept
-		{
-			return get_member_function_overloads();
-		}
-	};
-
 	class member_function : public detail::maybe_static_member_function
 	{
 		constexpr virtual dynamic_variable invoke_unsafe_member(dynamic_reference caller, PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&> arg_iterator) const = 0;
@@ -46,10 +30,5 @@ namespace PPreflection
 		}
 
 		inline dynamic_variable invoke(dynamic_reference caller, PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args = {}) const;
-
-		using overloaded = overloaded_member_function;
-		friend overloaded_member_function;
-
-		constexpr const overloaded& get_overloaded_function() const noexcept override = 0;
 	};
 }

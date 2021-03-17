@@ -8,13 +8,9 @@ namespace PPreflection
 	class Namespace;
 
 	class function;
-	class overloaded_function;
 	class namespace_function;
-	class overloaded_namespace_function;
 	class member_function;
-	class overloaded_member_function;
 	class static_member_function;
-	class overloaded_static_member_function;
 	class conversion_function;
 	class constructor;
 	class one_parameter_converting_constructor;
@@ -29,14 +25,10 @@ namespace PPreflection
 
 extern template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::Namespace&>;
 extern template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::function&>;
-extern template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::overloaded_function&>;
 extern template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::namespace_function&>;
-extern template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::overloaded_namespace_function&>;
 extern template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::conversion_function&>;
 extern template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::member_function&>;
-extern template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::overloaded_member_function&>;
 extern template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::static_member_function&>;
-extern template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::overloaded_static_member_function&>;
 extern template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::constructor&>;
 extern template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::one_parameter_converting_constructor&>;
 extern template class PP::any_view_implementation<PP::value_t<PP::iterator_category::ra>, const PPreflection::user_defined_type&>;

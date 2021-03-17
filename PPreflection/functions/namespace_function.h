@@ -1,41 +1,14 @@
 #pragma once
+#include "../named_descriptor.h"
 #include "../Namespace.h"
 #include "function.h"
 
 namespace PPreflection
 {
-	class namespace_function;
-
-	class overloaded_namespace_function : public detail::named_descriptor<function::overloaded>
+	class namespace_function : public detail::named_descriptor<function>
 	{
-		constexpr parent_descriptor_reference_strong get_parent(int) const noexcept override final
-		{
-			return get_parent();
-		}
-
-	protected:
-		constexpr virtual PP::any_view<PP::iterator_category::ra, const namespace_function&> get_namespace_overloads() const noexcept = 0;
-
 	public:
 		constexpr virtual const Namespace& get_parent() const noexcept = 0;
-
-		constexpr PP::concepts::view auto get_overloads() const noexcept
-		{
-			return get_namespace_overloads();
-		}
-	};
-
-	class namespace_function : public function
-	{
-	public:
-		using overloaded = overloaded_namespace_function;
-
-		constexpr const overloaded& get_overloaded_function() const noexcept override = 0;
-
-		constexpr const Namespace& get_parent() const noexcept
-		{
-			return get_overloaded_function().get_parent();
-		}
 
 	private:
 		constexpr parent_descriptor_reference_strong get_parent(int) const noexcept override final

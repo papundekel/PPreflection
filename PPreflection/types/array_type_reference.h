@@ -1,5 +1,6 @@
 #pragma once
-#include "../type_disjunction_reference.hpp"
+#include "PP/type_disjunction_reference.hpp"
+
 #include "known_bound_array_type.h"
 #include "unknown_bound_array_type.h"
 
@@ -7,7 +8,7 @@ namespace PPreflection
 {
 	namespace detail
 	{
-		using array_type_reference_helper = type_disjunction_reference<known_bound_array_type, unknown_bound_array_type>;
+		using array_type_reference_helper = PP::type_disjunction_reference<known_bound_array_type, unknown_bound_array_type>;
 	}
 
 	class array_type_reference

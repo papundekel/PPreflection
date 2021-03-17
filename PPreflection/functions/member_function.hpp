@@ -65,12 +65,3 @@ inline PPreflection::dynamic_variable PPreflection::member_function::invoke(dyna
 	else
 		return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
 }
-
-inline PPreflection::dynamic_variable PPreflection::overloaded_member_function::invoke(dynamic_reference caller, PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args) const
-{
-	for (const member_function& f : get_overloads())
-		if (f.can_invoke(caller.get_type()) && f.function::can_invoke(args_to_arg_types(args)))
-			return f.invoke_unsafe_member(caller, PP::view_begin(args));
-
-	return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
-}

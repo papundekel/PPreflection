@@ -8,7 +8,7 @@
 
 constexpr void PPreflection::function::print_name_basic(PP::simple_ostream& out) const noexcept
 {
-	get_overloaded_function().print_name_after_parent(out);
+	print_name_implementation(out);
 	type::print_parameter_types(out, parameter_types());
 }
 
@@ -28,17 +28,13 @@ constexpr void PPreflection::function::print_name_after_parent(PP::simple_ostrea
 	print_name_basic(out);
 	print_noexcept(out);
 }
-constexpr bool PPreflection::function::has_name(PP::string_view name) const noexcept
-{
-	return get_overloaded_function().has_name(name);
-}
 
 constexpr bool PPreflection::function::can_invoke(PP::any_view<PP::iterator_category::ra, const reference_type&> argument_types) const noexcept
 {
 	return parameter_type_reference::can_initialize_many(parameter_types(), argument_types);
 }
 
-inline PPreflection::dynamic_variable PPreflection::function::invoke(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args) const
+inline PPreflection::dynamic_variable PPreflection::function::invoke(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args) const noexcept
 {
 	if (can_invoke(args_to_arg_types(args)))
 		return invoke_unsafe(PP::view_begin(args));
@@ -46,11 +42,11 @@ inline PPreflection::dynamic_variable PPreflection::function::invoke(PP::any_vie
 		return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
 }
 
-inline PPreflection::dynamic_variable PPreflection::overloaded_function::invoke(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args) const
+constexpr PP::any_view<PP::iterator_category::ra, const PPreflection::reference_type&> PPreflection::function::args_to_types_transform(PP::concepts::view auto&& args) noexcept
 {
-	for (const function& f : get_overloads())
-		if (f.can_invoke(args_to_arg_types(args)))
-			return f.invoke_unsafe(PP::view_begin(args));
-
-	return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
+	return PP_FORWARD(args) | PP::transform([]
+		(dynamic_reference r) -> auto&
+		{
+			return r.get_type();
+		});
 }

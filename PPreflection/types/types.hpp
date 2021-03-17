@@ -8,6 +8,7 @@
 #include "non_user_defined_type.hpp"
 #include "pointable_type.hpp"
 #include "pointer_to_member_type.hpp"
+#include "pointer_type.hpp"
 #include "referencable_type.hpp"
 #include "reference_type.hpp"
 #include "type.hpp"

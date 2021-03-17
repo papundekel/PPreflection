@@ -1,7 +1,7 @@
 #pragma once
 #include "PP/static_cast.hpp"
+#include "PP/type_disjunction_reference.hpp"
 
-#include "../type_disjunction_reference.hpp"
 #include "make_equal_operator_visitor.h"
 #include "non_array_object_type.h"
 #include "reference_type.h"
@@ -11,7 +11,7 @@ namespace PPreflection
 {
 	namespace detail
 	{
-		using return_type_reference_base = type_disjunction_reference<reference_type, non_array_object_type, void_type>;
+		using return_type_reference_base = PP::type_disjunction_reference<reference_type, non_array_object_type, void_type>;
 	}
 
 	class return_type_reference : public detail::return_type_reference_base

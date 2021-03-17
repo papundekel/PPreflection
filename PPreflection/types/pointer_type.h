@@ -38,7 +38,10 @@ namespace PPreflection
 		constexpr virtual cv_type<pointable_type> remove_pointer() const noexcept = 0;
 
 		constexpr virtual convertor_object function_pointer_conversion() const noexcept = 0;
-		constexpr virtual convertor_object qualification_conversion(PP::any_view<PP::iterator_category::ra, PP::cv_qualifier> qualifiers) const noexcept = 0;
+
+		using TTT = PPreflection::dynamic_object(PPreflection::dynamic_reference, const PPreflection::pointer_type&);
+
+		constexpr TTT* qualification_conversion() const noexcept;
 
 		constexpr bool operator==(const pointer_type& other) const noexcept
 		{

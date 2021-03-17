@@ -10,7 +10,7 @@ namespace PPreflection
 	class pointable_type : public type
 	{
 	public:
-		constexpr type_disjunction_reference<reference_type, pointable_type> reference_or_pointable() const noexcept override final
+		constexpr PP::type_disjunction_reference<reference_type, pointable_type> reference_or_pointable() const noexcept override final
 		{
 			return *this;
 		}

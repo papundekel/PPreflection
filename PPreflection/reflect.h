@@ -28,6 +28,8 @@ namespace PPreflection
 		template <typename Class, typename... Parameters> struct is_explicit;
 		template <typename... Parameters> struct constructor_parameters;
 		template <typename Class, typename Return> struct conversion_function;
+
+		struct global;
 	}
 
 	namespace detail

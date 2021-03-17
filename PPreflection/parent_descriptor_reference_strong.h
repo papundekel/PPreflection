@@ -1,13 +1,14 @@
 #pragma once
+#include "PP/type_disjunction_reference.hpp"
+
 #include "descriptor.h"
 #include "parent_descriptor_reference.h"
-#include "type_disjunction_reference.hpp"
 
 namespace PPreflection
 {
 	namespace detail
 	{
-		using parent_descriptor_reference_strong_base = type_disjunction_reference<class_type, Namespace>;
+		using parent_descriptor_reference_strong_base = PP::type_disjunction_reference<class_type, Namespace>;
 	}
 
 	class parent_descriptor_reference_strong

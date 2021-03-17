@@ -25,12 +25,7 @@ namespace PPreflection::detail
 
 	template <typename Class, typename Base, typename... Parameters>
 	class basic_constructor_base : public basic_constructor_base_base<Class, Base, Parameters...>
-	{
-		constexpr const overloaded_constructor& get_overloaded_function() const noexcept override final
-		{
-			return reflect(PP::type<tags::constructors<Class>>);
-		}
-	};
+	{};
 
 	template <typename Class, typename... Parameters>
 	class basic_constructor_general final

@@ -62,13 +62,16 @@ constexpr auto* PPreflection::dynamic_object::get_address(auto& o) noexcept
 {
 	return get_address(o.x.get_object(), o.get_cv_type().type);
 }
-constexpr PPreflection::dynamic_reference PPreflection::dynamic_object::reference_cast_helper(auto& o) noexcept
+constexpr PPreflection::dynamic_reference PPreflection::dynamic_object::reference_cast_helper(auto& o)
 {
-	return dynamic_reference(get_address(o), make_reference_type(PP::value<PP::is_rvalue_reference(PP_DECLTYPE(o))>, o.get_cv_type()));
+	if (o)
+		return dynamic_reference(get_address(o), make_reference_type(PP::value<PP::is_rvalue_reference(PP_DECLTYPE(o))>, o.get_cv_type()));
+	else
+		throw 0; // TODO
 }
 
-constexpr PPreflection::dynamic_object::operator dynamic_reference()       noexcept { return reference_cast_helper(*this); }
-constexpr PPreflection::dynamic_object::operator dynamic_reference() const noexcept { return reference_cast_helper(*this); }
+constexpr PPreflection::dynamic_object::operator dynamic_reference()       { return reference_cast_helper(*this); }
+constexpr PPreflection::dynamic_object::operator dynamic_reference() const { return reference_cast_helper(*this); }
 
 constexpr PPreflection::dynamic_object::operator bool() const noexcept
 {
