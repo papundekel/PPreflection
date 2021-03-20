@@ -13,6 +13,7 @@ add_llvm_library(PPreflector MODULE
 "consumer.cpp"
 "descriptor.cpp"
 "Enum.cpp"
+"enum_value.cpp"
 "global_namespace.cpp"
 "main.cpp"
 "Namespace.cpp"

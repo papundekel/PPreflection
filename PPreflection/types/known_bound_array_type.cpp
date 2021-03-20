@@ -1,6 +1,7 @@
 #include "known_bound_array_type.hpp"
 
 #include "../descriptor.hpp"
+#include "../dynamic_reference.hpp"
 #include "../dynamic_object.hpp"
 #include "../functions/functions.hpp"
 #include "../parent_descriptor_reference.hpp"

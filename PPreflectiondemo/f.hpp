@@ -5,6 +5,9 @@ namespace G
 	enum E
 	{
 		a = 5,
+		tinko,
+		cigi = 8,
+		bugi,
 	};
 
 	namespace A{}

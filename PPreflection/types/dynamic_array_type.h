@@ -18,7 +18,7 @@ namespace PPreflection
 			return inner_type;
 		}
 
-		constexpr convertor array_to_pointer_conversion() const noexcept override final
+		constexpr convertor_object array_to_pointer_conversion() const noexcept override final
 		{
 			return nullptr;
 		}

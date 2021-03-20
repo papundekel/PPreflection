@@ -45,7 +45,8 @@ bool PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 		{
 			auto& enum_declaration = *enum_declaration_p;
 
-			if (enum_declaration.isFirstDecl())
+			if (!enum_declaration.isFirstDecl() ||
+				!enum_declaration.getIdentifier())
 				return true;
 
 			// is enum in namespace scope

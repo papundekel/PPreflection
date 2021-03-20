@@ -4,6 +4,7 @@
 #include "PP/tuple_map.hpp"
 #include "PP/tuple_to_array.hpp"
 
+#include "../../dynamic_object.h"
 #include "../../reflect.h"
 #include "../enum_type.h"
 #include "basic_user_defined_type.hpp"
@@ -17,11 +18,11 @@ namespace PPreflection::detail
 		{
 			return PPreflection::reflect(PP::type<tags::name<PP::value_t<value>>>);
 		}
-		constexpr long long get_value() const noexcept override final
+		constexpr dynamic_object get_value() const noexcept override final
 		{
-			return (long long)value;
+			return dynamic_object::create(PP_DECLTYPE(value), value);
 		}
-		constexpr parent_descriptor_reference get_parent(void*) const noexcept override final
+		constexpr const enum_type& get_parent() const noexcept override final
 		{
 			return type::reflect(PP_DECLTYPE(value));
 		}

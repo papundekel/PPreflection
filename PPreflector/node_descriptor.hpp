@@ -17,22 +17,35 @@ namespace PPreflector
 		const Node& node;
 
 	public:
-		node_descriptor(const Node& node, auto&&... args)
+		explicit node_descriptor(const Node& node, auto&&... args)
 			: Descriptor(PP_FORWARD(args)...)
 			, node(node)
 		{}
 
-		void print_qualified_name(llvm::raw_ostream& out) const
+		void print_qualified_name(llvm::raw_ostream& out) const override final
 		{
 			if constexpr (PP::concepts::derived_from<Node, clang::NamedDecl>)
 				node.printQualifiedName(out);
+			else if constexpr (PP::concepts::derived_from<Node, clang::Type>)
+			{
+				auto pp = clang::PrintingPolicy({});
+				pp.SuppressTagKeyword = 1;
+
+				clang::QualType::print(&node, clang::Qualifiers(), out, pp, "");
+			}
 		}
-		void print_name(llvm::raw_ostream& out) const
+		void print_name(llvm::raw_ostream& out) const override final
 		{
 			if constexpr (PP::concepts::derived_from<Node, clang::NamedDecl>)
 				node.printName(out);
 			else if constexpr (PP::concepts::derived_from<Node, clang::Type>)
-				clang::QualType::print(&node, clang::Qualifiers(), out, clang::PrintingPolicy({}), "");
+			{
+				auto pp = clang::PrintingPolicy({});
+				pp.SuppressScope = 1;
+				pp.SuppressTagKeyword = 1;
+
+				clang::QualType::print(&node, clang::Qualifiers(), out, pp, "");
+			}
 		}
 
 	protected:

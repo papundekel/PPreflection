@@ -4,14 +4,13 @@
 #include "pragma_pop.hpp"
 
 #include "Namespace.h"
+#include "nested_descriptor.hpp"
 #include "node_descriptor.hpp"
 
 namespace PPreflector
 {
-	class non_global_namespace : public node_descriptor<clang::NamespaceDecl, Namespace>	
+	class non_global_namespace : public node_descriptor<clang::NamespaceDecl, nested_descriptor<Namespace, Namespace>>
 	{
-		const Namespace& parent;
-
 	public:
 		non_global_namespace(PP::size_t depth, const clang::NamespaceDecl& decl, const Namespace& parent);
 
@@ -19,8 +18,10 @@ namespace PPreflector
 
 	private:
 		void print_name_parent(llvm::raw_ostream& out) const override final;
-		void print_name_simple_no_prefix(llvm::raw_ostream& out) const override final;
-		void print_name_simple(llvm::raw_ostream& out) const override final;
 		void print_preamble(llvm::raw_ostream& out) const override final;
+
+		void print_unscoped_name(llvm::raw_ostream& out) const override final;
+		void print_scoped_name_parent(llvm::raw_ostream& out) const override final;
+		void print_scoped_name_as_parent(llvm::raw_ostream& out) const override final;
 	};
 }

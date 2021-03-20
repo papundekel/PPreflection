@@ -4,23 +4,19 @@
 #include "pragma_pop.hpp"
 
 #include "descriptor.hpp"
-#include "nested_descriptor.hpp"
 #include "node_descriptor.hpp"
 
 namespace PPreflector
-{	
-	class namespace_function : public node_descriptor<clang::FunctionDecl, nested_descriptor<descriptor, descriptor>>
+{
+	class enum_value : public node_descriptor<clang::EnumConstantDecl, descriptor>
 	{
 	public:
-		namespace_function(const clang::FunctionDecl& decl, const descriptor& parent);
+		enum_value(const clang::EnumConstantDecl& decl);
 
 		void print_name_header(llvm::raw_ostream& out) const override final;
 		void print_name_own(llvm::raw_ostream& out) const override final;
 		void print_name_foreign(llvm::raw_ostream& out) const override final;
-		void print_parameter_types(llvm::raw_ostream& out) const;
 		void print_metadata_implementation(llvm::raw_ostream& out) const override final;
-
-	private:
-		static void print_parameter_type(llvm::raw_ostream& out, clang::ParmVarDecl* parameter);
+		const descriptor* get_parent(void* = nullptr) const override final;
 	};
 }

@@ -27,7 +27,7 @@ namespace PPreflection
 				return remove_extent().type.alignment();
 			}
 
-			constexpr virtual convertor array_to_pointer_conversion() const noexcept = 0;
+			constexpr virtual convertor_object array_to_pointer_conversion() const noexcept = 0;
 		};
 	}
 }

@@ -15,7 +15,7 @@ namespace PPreflection::detail
 			return type::reflect_cv | PP::remove_extent <<= PP::type<T>;
 		}
 
-		constexpr convertor array_to_pointer_conversion() const noexcept override final
+		constexpr convertor_object array_to_pointer_conversion() const noexcept override final
 		{
 			return create_convertor_to_value(PP::type<T>);
 		}

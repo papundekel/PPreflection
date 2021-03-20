@@ -30,7 +30,7 @@ namespace PPreflection
 
 		union data
 		{
-			alignas(max_align_t) char* ptr;
+			alignas(max_align_t) void* ptr;
 			invalid_code code;
 
 			constexpr data() noexcept
@@ -39,65 +39,69 @@ namespace PPreflection
 			explicit constexpr data(invalid_code code) noexcept
 				: code(code)
 			{}
-			explicit constexpr data(char* ptr) noexcept
+			explicit constexpr data(void* ptr) noexcept
 				: ptr(ptr)
 			{}
 		};
 
 		class deleter
 		{
-			struct optional_cv_type
-			{
-				const complete_object_type* type;
-				PP::cv_qualifier cv;
-			};
-
-			struct releaser
-			{
-				constexpr optional_cv_type operator()(optional_cv_type& u) const noexcept
-				{
-					return PP::exchange(u, optional_cv_type{nullptr, PP::cv_qualifier::none});
-				}
-			};
-
-			PP::unique<optional_cv_type, releaser> type_;
+			PP::unique<const complete_object_type*, PP::pointer_releaser> type_;
+			PP::cv_qualifier cv;
 
 		public:
 			constexpr deleter(cv_type<complete_object_type> t) noexcept;
 			constexpr deleter(int = 0) noexcept
-				: type_(PP::unique_default_releaser_tag, nullptr, PP::cv_qualifier::none)
+				: type_(PP::unique_default_releaser_tag, nullptr)
 			{}
-			constexpr void operator()(PP::unique<data, PP::default_releaser>& u) const;
 
+			constexpr void operator()(PP::unique<data, PP::default_releaser>& u) const;
+			constexpr const complete_object_type& get_type() const;
+			constexpr PP::cv_qualifier get_cv() const;
 			constexpr bool has_valid_type() const
 			{
-				return type_.get_object().type;
+				return type_.get_object();
 			}
-			constexpr cv_type<complete_object_type> get_cv_type() const;
-
 			constexpr void change_type(const complete_object_type& target_type)
 			{
-				type_.get_object().type = &target_type;
+				type_.get_object() = &target_type;
 			}
 		};
 
+		class allocated_ptr
+		{
+			void* ptr;
+			bool small;
+
+		public:
+			constexpr allocated_ptr() noexcept
+				: ptr(nullptr)
+				, small(true)
+			{}
+			constexpr allocated_ptr(void* ptr) noexcept
+				: ptr(ptr)
+				, small(false)
+			{}
+
+			constexpr void* initialize_and_get(auto i) noexcept
+			{
+				i(small ? &ptr : ptr);
+				return ptr;
+			}
+		};
+
+	private:
 		PP::scoped<PP::unique<data, PP::default_releaser>, deleter> x;
 
-		static constexpr auto* get_address(auto& r) noexcept;
-		static constexpr auto* get_address(auto& p, const complete_object_type& t) noexcept;
+	public:
+		constexpr dynamic_object() = default;
+		explicit constexpr dynamic_object(PP::concepts::invocable auto&& initializer);
 
-		static constexpr dynamic_reference reference_cast_helper(auto& r);
-
-		static constexpr char* allocate_and_initialize(PP::concepts::invocable auto&& i) noexcept;
-
-		explicit constexpr dynamic_object(invalid_code code) noexcept;
-
-		constexpr bool invalid_check_helper(invalid_code code) const noexcept;
-
-		constexpr bool has_valid_type() const noexcept
-		{
-			return x.get_destructor().has_valid_type();
-		}
+	private:
+		explicit constexpr dynamic_object(invalid_code code) noexcept
+			: x(PP::in_place_tag, 0, PP::unique_default_releaser_tag, code)
+		{}
+		constexpr dynamic_object(cv_type<complete_object_type> cv_type, void* data) noexcept;
 
 	public:
 		static constexpr dynamic_object create_invalid(invalid_code code) noexcept
@@ -110,11 +114,11 @@ namespace PPreflection
 		}
 
 		static constexpr dynamic_object create(PP::concepts::type auto t, auto&&... args);
+		static constexpr dynamic_object create_shallow_copy(dynamic_reference r) noexcept;
 
-		constexpr dynamic_object() = default;
-
-		constexpr cv_type<complete_object_type> get_cv_type()       noexcept;
 		constexpr cv_type<complete_object_type> get_cv_type() const noexcept;
+
+		constexpr const complete_object_type& get_type() const noexcept;
 
 		constexpr operator dynamic_reference();
 		constexpr operator dynamic_reference() const;
@@ -123,14 +127,26 @@ namespace PPreflection
 		constexpr invalid_code get_error_code() const noexcept;
 		constexpr bool is_void() const noexcept;
 
-		constexpr dynamic_object cast(const complete_object_type& target_type) const&& noexcept
+		constexpr dynamic_object cast(const complete_object_type& target_type) && noexcept
 		{
 			auto temp = PP::move(*this);
 			temp.x.get_destructor().change_type(target_type);
 			return PP::move(temp);
 		}
+	
+	private:
+		static constexpr auto* get_address(auto& r) noexcept;
+		static constexpr auto* get_address(auto& p, const complete_object_type& t) noexcept;
 
-		explicit constexpr dynamic_object(PP::concepts::invocable auto&& initializer);
+		static constexpr dynamic_reference reference_cast_helper(auto& r);
+
+		static constexpr allocated_ptr allocate(const complete_object_type& t) noexcept;
+		static constexpr void* allocate_and_initialize(PP::concepts::invocable auto&& i) noexcept;
+
+		constexpr bool has_valid_type() const noexcept
+		{
+			return x.get_destructor().has_valid_type();
+		}
 	};
 
 	static constexpr PP::string_view code_to_string(dynamic_object::invalid_code code) noexcept

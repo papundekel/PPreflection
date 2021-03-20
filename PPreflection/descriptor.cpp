@@ -3,6 +3,7 @@
 #include "PP/array_ostream.hpp"
 
 #include "dynamic_object.hpp"
+#include "dynamic_reference.hpp"
 #include "Namespace.hpp"
 #include "parent_descriptor_reference.hpp"
 #include "parent_descriptor_reference_strong.hpp"

@@ -28,13 +28,10 @@ namespace PPreflector
 		Namespace(PP::size_t depth);
 
 	public:
-		void print_metadata_name_header(llvm::raw_ostream& out) const override final;
-		void print_metadata_name_own(llvm::raw_ostream& out) const override final;
-		void print_metadata_name_foreign(llvm::raw_ostream& out) const override final;
-		virtual void print_name(llvm::raw_ostream& out) const = 0;
-		void print_name_full(llvm::raw_ostream& out) const;
-		virtual void print_name_simple_no_prefix(llvm::raw_ostream& out) const = 0;
-		virtual void print_name_simple(llvm::raw_ostream& out) const = 0;
+		void print_name_header(llvm::raw_ostream& out) const override final;
+		void print_name_own(llvm::raw_ostream& out) const override final;
+		void print_name_foreign(llvm::raw_ostream& out) const override final;
+
 		void print_layout(llvm::raw_ostream& out) const;
 		void print_metadata_implementation(llvm::raw_ostream& out) const override final;
 
@@ -46,6 +43,9 @@ namespace PPreflector
 		
 		void print_tabs(llvm::raw_ostream& out) const;
 
+		virtual void print_scoped_name_parent(llvm::raw_ostream& out) const = 0;
+		virtual void print_scoped_name_as_parent(llvm::raw_ostream& out) const = 0;
+
 	protected:
 		virtual void print_name_parent(llvm::raw_ostream& out) const = 0;
 		virtual void print_preamble(llvm::raw_ostream& out) const = 0;
@@ -54,5 +54,7 @@ namespace PPreflector
 		void print_namespaces(llvm::raw_ostream& out) const;
 		void print_types(llvm::raw_ostream& out) const;
 		void print_functions(llvm::raw_ostream& out) const;
+
+		virtual void print_unscoped_name(llvm::raw_ostream& out) const = 0;
 	};
 }

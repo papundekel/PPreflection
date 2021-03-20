@@ -9,21 +9,18 @@ namespace PPreflection::tags
 // ::
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global>> = PP::type_tuple<
 	::S,
-	::E
->;
+	::E>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global>> = PP::type_tuple<>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global>> = PP::value_tuple<
 	PPreflection::overload_caster<int>(::f),
-	PPreflection::overload_caster<int, int>(::f)
->;
+	PPreflection::overload_caster<int, int>(::f)>;
 
 // ::E
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::E>> = "E"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::E>> = PP::type<PPreflection::tags::global>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::enum_values<::E>> = PP::value_tuple<
-	E::val,
-	E::cigi
->;
+	::E::val,
+	::E::cigi>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<::E::val>>> = "val"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<::E::cigi>>> = "cigi"_sv;
 
@@ -34,15 +31,12 @@ template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::t
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::S>> = PP::type_tuple<>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructors<::S>> = PP::make_tuple(
 	PP::type_tuple<>,
-	PP::type_tuple<int>
-);
+	PP::type_tuple<int>);
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::static_member_functions<::S>> = PP::type_tuple<
-	PPreflection::tags::global::S::g
->;
+	PPreflection::tags::global::S::g>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::member_functions<::S>> = PP::value_tuple<
 	&::S::f,
-	&::S::operator int
->;
+	&::S::operator int>;
 
 // ::S::S()
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructor<::S>> = PPreflection::detail::basic_constructor<::S>{};

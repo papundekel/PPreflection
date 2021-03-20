@@ -59,3 +59,16 @@ inline decltype(auto) PPreflection::dynamic_reference::visit(PP::concepts::type 
 	else
 		return PP_FORWARD(f)(PP::move(*this).get_ref(t));
 }
+
+constexpr void* PPreflection::dynamic_reference::get_void_ptr() const
+{
+	return std::visit(PP::overloaded([]
+		(void* p)
+		{
+			return p;
+		}, []
+		(void(*)()) -> void*
+		{
+			return nullptr;
+		}), ptr);
+}

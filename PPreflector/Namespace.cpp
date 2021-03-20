@@ -19,24 +19,20 @@ PPreflector::Namespace::Namespace(PP::size_t depth)
 	, classes()
 {}
 
-void PPreflector::Namespace::print_metadata_name_header(llvm::raw_ostream& out) const
+void PPreflector::Namespace::print_name_header(llvm::raw_ostream& out) const
 {
-	print_name_simple(out);
+	print_scoped_name_parent(out);
+	print_unscoped_name(out);
 }
-void PPreflector::Namespace::print_metadata_name_own(llvm::raw_ostream& out) const
-{
-	print_name_full(out);
-}
-void PPreflector::Namespace::print_metadata_name_foreign(llvm::raw_ostream& out) const
-{
-	print_metadata_name_own(out);
-}
-
-void PPreflector::Namespace::print_name_full(llvm::raw_ostream& out) const
+void PPreflector::Namespace::print_name_own(llvm::raw_ostream& out) const
 {
 	print_name_parent(out);
 	out << "::";
 	print_name(out);
+}
+void PPreflector::Namespace::print_name_foreign(llvm::raw_ostream& out) const
+{
+	print_name_own(out);
 }
 
 PPreflector::non_global_namespace& PPreflector::Namespace::add(clang::NamespaceDecl& n)
@@ -51,7 +47,7 @@ PPreflector::namespace_function& PPreflector::Namespace::add(clang::FunctionDecl
 
 PPreflector::Enum& PPreflector::Namespace::add(clang::EnumDecl& e)
 {
-	return enums.emplace_back(*clang::dyn_cast_or_null<const clang::EnumType>(e.getTypeForDecl()), *this);
+	return enums.emplace_back(e, *this);
 }
 
 void PPreflector::Namespace::remove_std()
@@ -79,46 +75,9 @@ void PPreflector::Namespace::print_layout(llvm::raw_ostream& out) const
 			<< PPREFLECTOR_PW(print_tabs, *this) << "{\n";
 
 		for (const auto& n : namespaces)
-			n.print_layout(out);
+			out << PPREFLECTOR_PW(print_layout, n);
 
 		out << PPREFLECTOR_PW(print_tabs, *this) << "};\n";
-	}
-}
-
-namespace
-{
-	template <typename M>
-	struct for_each_member_helper
-	{
-		const M& members;
-	};
-	template <typename M>
-	llvm::raw_ostream& operator<<(llvm::raw_ostream& out, const for_each_member_helper<M>& fw)
-	{
-		for_each_with_delimiters([&out]
-			(const PPreflector::descriptor& n)
-			{
-				out << 	"\n"
-						"\t" << PPREFLECTOR_PW(print_metadata_name_foreign, n);
-			}, [&out]
-			()
-			{
-				out << ',';
-			}, fw.members);
-
-		return out;
-	}
-
-	auto as_descriptors_view(PP::concepts::view auto&& v)
-	{
-		return v | PP::transform([](const PPreflector::descriptor& d) -> auto& { return d; });
-	}
-
-	void print_members(llvm::raw_ostream& out, const PPreflector::Namespace& n, auto& members, std::string_view members_name, std::string_view container_name)
-	{
-		out << PPreflector::metadata_prefix << PPreflector::tags_namespace_name << members_name << "<" << PPREFLECTOR_PW(print_name_full, n) << ">> = " << container_name << "<"
-			<< for_each_member_helper(members)
-			<< ">;\n";
 	}
 }
 
@@ -126,9 +85,9 @@ void PPreflector::Namespace::print_metadata_implementation(llvm::raw_ostream& ou
 {
 	print_preamble(out);
 
-	print_members(out, *this, functions, "functions", "PP::value_tuple");
-	print_members(out, *this, enums, "types", "PP::type_tuple");
-	print_members(out, *this, namespaces, "namespaces", "PP::type_tuple");
+	print_members(out, functions, "functions", "PP::value_tuple");
+	print_members(out, enums, "types", "PP::type_tuple");
+	print_members(out, namespaces, "namespaces", "PP::type_tuple");
 
 	for (const descriptor& d : PP::view_chain(as_descriptors_view(functions)) ^ as_descriptors_view(enums) ^ as_descriptors_view(namespaces))
 		d.print_metadata(out);

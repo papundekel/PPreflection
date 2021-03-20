@@ -1,6 +1,7 @@
 #include "dynamic_variable.hpp"
 
 #include "descriptor.hpp"
+#include "dynamic_reference.hpp"
 #include "functions/functions.hpp"
 #include "parent_descriptor_reference.hpp"
 #include "parent_descriptor_reference_strong.hpp"

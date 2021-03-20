@@ -6,6 +6,9 @@
 
 namespace PPreflection
 {
+	class enum_type;
+	class dynamic_object;
+
 	class enum_value : public detail::named_descriptor<descriptor>
 	{
 		constexpr virtual void print_name_before_parent(PP::simple_ostream&) const noexcept
@@ -14,11 +17,19 @@ namespace PPreflection
 		{
 			out.write(get_name());
 			out.write(" = ");
-			out.write(get_value());
+			out.write("TODO");
+			//out.write(get_value());
+		}
+
+		constexpr parent_descriptor_reference get_parent(void*) const noexcept override final
+		{
+			return {};
 		}
 
 	public:
-		constexpr virtual long long get_value() const noexcept = 0;
+		constexpr virtual dynamic_object get_value() const noexcept = 0;
+		
+		constexpr virtual const enum_type& get_parent() const noexcept = 0;
 	};
 
 	class enum_type : public user_defined_type

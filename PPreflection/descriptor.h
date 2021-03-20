@@ -19,7 +19,6 @@ namespace PPreflection
 		constexpr virtual void print_name_before_parent(PP::simple_ostream& out) const noexcept = 0;
 		constexpr virtual void print_name_after_parent(PP::simple_ostream& out) const noexcept = 0;
 
-// 		constexpr virtual (Namespace | class_type | 0) get_parent(void* = nullptr) const noexcept = 0;
 		constexpr virtual parent_descriptor_reference get_parent(void* = nullptr) const noexcept = 0;
 
 		constexpr void print_name(PP::simple_ostream& out) const noexcept;

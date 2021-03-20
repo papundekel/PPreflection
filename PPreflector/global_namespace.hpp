@@ -10,9 +10,14 @@ namespace PPreflector
 
 	private:
 		void print_name_parent(llvm::raw_ostream& out) const override final;
-		void print_name_simple(llvm::raw_ostream& out) const override final;
-		void print_name_simple_no_prefix(llvm::raw_ostream&) const override final;
+		void print_qualified_name(llvm::raw_ostream& out) const override final;
 		void print_name(llvm::raw_ostream& out) const override final;
 		void print_preamble(llvm::raw_ostream&) const override final;
+
+		void print_unscoped_name(llvm::raw_ostream& out) const override final;
+		void print_scoped_name_parent(llvm::raw_ostream& out) const override final;
+		void print_scoped_name_as_parent(llvm::raw_ostream& out) const override final;
+		
+		const descriptor* get_parent(void*) const override final;
 	};
 }

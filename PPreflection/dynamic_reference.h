@@ -56,5 +56,7 @@ namespace PPreflection
 			!PP::is_same_except_cvref * PP::type<dynamic_variable>)(PP_DECLTYPE(r)));
 
 		inline decltype(auto) visit(PP::concepts::type auto t, auto&& f) const;
+
+		constexpr void* get_void_ptr() const;
 	};
 }

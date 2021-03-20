@@ -1,6 +1,9 @@
 #pragma once
 #include "PP/concepts/derived_from.hpp"
 #include "PP/cv_qualifier.hpp"
+#include "PP/dynamic_cast.hpp"
+#include "PP/add_cv.hpp"
+#include "PP/add_reference.hpp"
 
 #include "../print_cv.h"
 #include "type.h"
@@ -67,13 +70,18 @@ namespace PPreflection
 			type.print_name_suffix(out);
 		}
 
-		constexpr cv_type add_cv(PP::cv_qualifier cv_to_add) const
+		constexpr cv_type with_added_cv(PP::cv_qualifier cv_to_add) const
 		{
 			return {type, cv | cv_to_add};
 		}
+
+		constexpr auto cast(PP::concepts::type auto t) const
+		{
+			return PP::Template<cv_type>(t)(PP::dynamic__cast(t + PP::add_const_tag + PP::add_lvalue_tag, type), cv);
+		}
 	};
 	template <typename Type>
-	cv_type(const Type&, PP::cv_qualifier)->cv_type<Type>;
+	cv_type(const Type&, PP::cv_qualifier) -> cv_type<Type>;
 	template <typename Type>
-	cv_type(const Type&)->cv_type<Type>;
+	cv_type(const Type&) -> cv_type<Type>;
 }

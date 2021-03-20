@@ -2,9 +2,10 @@
 #include "PP/string_view.hpp"
 #include "PP/simple_vector.hpp"
 
-#include "enum_type.h"
+#include "../dynamic_object.h"
 #include "dynamic_user_defined_type.h"
 #include "dynamic_named_descriptor.h"
+#include "enum_type.h"
 
 namespace PPreflection
 {
@@ -13,10 +14,10 @@ namespace PPreflection
 		class dynamic_enum_value final : public enum_value
 		{
 			PP::simple_vector<char> name;
-			long long value;
+			dynamic_object value;
 
 		public:
-			constexpr dynamic_enum_value(PP::string_view name, long long value) noexcept
+			constexpr dynamic_enum_value(PP::string_view name, dynamic_object value) noexcept
 				: name()
 				, value(value)
 			{
@@ -28,7 +29,7 @@ namespace PPreflection
 			{
 				return name;
 			}
-			constexpr long long get_value() const noexcept override final
+			constexpr dynamic_object get_value() const noexcept override final
 			{
 				return value;
 			}
