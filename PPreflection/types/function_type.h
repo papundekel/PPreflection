@@ -11,9 +11,16 @@
 
 namespace PPreflection
 {
+	class pointer_type;
+
 	class function_type : public detail::non_user_defined_type<referencable_type>
 	{
 	public:
+		constexpr PP::type_disjunction_reference<function_type, object_type> cast_down(PP::overload_tag<referencable_type>) const noexcept override final
+		{
+			return *this;
+		}
+
 		constexpr virtual return_type_reference return_type() const noexcept = 0;
 		constexpr virtual PP::any_view<PP::iterator_category::ra, parameter_type_reference> parameter_types() const noexcept = 0;
 		constexpr virtual bool is_noexcept() const noexcept = 0;
@@ -56,6 +63,7 @@ namespace PPreflection
 		}
 
 		constexpr virtual convertor_object function_to_pointer_conversion() const noexcept = 0;
+		constexpr virtual convertor_object function_noexcept_conversion() const noexcept = 0;
 
 		constexpr bool operator==(const function_type& other) const noexcept
 		{
@@ -70,5 +78,36 @@ namespace PPreflection
 		{
 			return compare(*this, other);
 		}
+
+		enum class convertible_rank
+		{
+			exact,
+			Noexcept,
+			invalid,
+		}
+
+		constexpr convertible_rank convertible_function_type(const function_type& target) const noexcept
+		{
+			bool necessary_matches =
+				return_type() == other.return_type() &&
+				PP::view_equal(parameter_types(), other.parameter_types()) &&
+				get_function_cv_qualifier() == other.get_function_cv_qualifier() &&
+				get_function_ref_qualifier() == other.get_function_ref_qualifier();
+
+			if (necessary_matches)
+			{
+				if (is_noexcept() == target.is_noexcept())
+					return convertible_rank::exact;
+				else
+					is_noexcept() ? convertible_rank::Noexcept : convertible_rank::invalid;
+			}
+			else
+				return convertible_rank::invalid;
+		}
+
+		constexpr virtual const pointer_type& get_pointer_type() const noexcept = 0;
+
+		constexpr standard_conversion_sequence make_standard_conversion_sequence(const pointer_type& target) const noexcept;
+		constexpr standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target) const noexcept override final;
 	};
 }

@@ -20,7 +20,7 @@ namespace PPreflection
 		{
 			using promoted_type = PP::apply_transform_t<PP::get_promotion_type, T>;
 
-			return create_convertor_object(PP::type<T>, PP::value<[]
+			return create_convertor_object(PP::type<const T>, PP::value<[]
 				(const auto& x) -> promoted_type
 				{
 					return x;

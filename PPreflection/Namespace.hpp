@@ -7,6 +7,7 @@
 
 #include "descriptor.h"
 #include "functions/functions.h"
+#include "overload_resolution.hpp"
 #include "parent_descriptor_reference.h"
 #include "types/types.h"
 
@@ -28,28 +29,18 @@ constexpr void PPreflection::Namespace::get_function_overloads(PP::string_view n
 	get_descriptors(name, get_functions(), i_out);
 }
 
-PPreflection::dynamic_variable PPreflection::Namespace::invoke(PP::string_view, PP::any_view<PP::iterator_category::ra, const dynamic_reference&>) const noexcept
+PPreflection::dynamic_variable PPreflection::Namespace::invoke(PP::string_view, PP::any_view<PP::iterator_category::ra, dynamic_reference>) const noexcept
 {
 	return dynamic_variable::create_invalid(dynamic_object::invalid_code::no_valid_overload);
 }
-PPreflection::dynamic_variable PPreflection::Namespace::invoke_qualified(PP::string_view function_name, PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args) const noexcept
+PPreflection::dynamic_variable PPreflection::Namespace::invoke_qualified(PP::string_view function_name, PP::any_view<PP::iterator_category::ra, dynamic_reference> args) const noexcept
 {
 	PP::simple_vector<PP::reference_wrapper<const namespace_function&>> candidate_functions;
 	get_function_overloads(function_name, PP::push_back_iterator(candidate_functions));
 
-	candidate_functions.erase_until_end(PP::view_remove([c = PP::view_count(args)]
-		(const function& nf)
-		{
-			return PP::view_count(nf.parameter_types()) != c;
-		}, candidate_functions));
-
-	auto& viable_functions = candidate_functions;
-
-	if (!PP::view_empty(viable_functions))
-	{
-		const function& first = viable_functions[0];
-		return first.invoke(args);
-	}
+	auto f = overload_resolution(candidate_functions, args);
+	if (f)
+		return f->invoke(args);
 	else
-		return dynamic_variable::create_invalid(dynamic_object::invalid_code::no_valid_overload);
+		return dynamic_variable::create_invalid(dynamic_object::invalid_code::overload_resolution_error);
 }

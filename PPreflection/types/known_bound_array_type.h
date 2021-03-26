@@ -7,6 +7,11 @@ namespace PPreflection
     class known_bound_array_type : public detail::array_type<complete_object_type>
     {
     public:
+		constexpr PP::type_disjunction_reference<known_bound_array_type, non_array_object_type> cast_down(PP::overload_tag<complete_object_type>) const noexcept override final
+        {
+            return *this;
+        }
+
         constexpr virtual PP::size_t get_extent() const noexcept = 0;
 
         constexpr bool has_name(PP::string_view) const noexcept override final

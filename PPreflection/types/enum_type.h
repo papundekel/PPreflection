@@ -16,8 +16,7 @@ namespace PPreflection
 		constexpr virtual void print_name_after_parent(PP::simple_ostream& out) const noexcept
 		{
 			out.write(get_name());
-			out.write(" = ");
-			out.write("TODO");
+			//out.write(" = ");
 			//out.write(get_value());
 		}
 

@@ -32,7 +32,8 @@ bool PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 
 			if (!function_declaration.isFirstDecl() ||
 				function_declaration.isTemplated() ||
-				function_declaration.isMain())
+				function_declaration.isMain() ||
+				function_declaration.isVariadic())
 				return true;
 
 			// is namespace function

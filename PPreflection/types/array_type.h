@@ -11,6 +11,7 @@
 namespace PPreflection
 {
 	class complete_object_type;
+	class pointer_type;
 
 	namespace detail
 	{
@@ -21,6 +22,7 @@ namespace PPreflection
 
 		public:
 			constexpr virtual cv_type<complete_object_type> remove_extent() const noexcept = 0;
+			constexpr virtual const pointer_type& get_pointer_to_element() const noexcept = 0;
 
 			constexpr PP::size_t alignment() const noexcept override final
 			{
@@ -28,6 +30,8 @@ namespace PPreflection
 			}
 
 			constexpr virtual convertor_object array_to_pointer_conversion() const noexcept = 0;
+
+			constexpr standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target) const noexcept override final;
 		};
 	}
 }

@@ -19,6 +19,11 @@ namespace PPreflection
 		std::variant<void*, void(*)()> ptr;
 		dynamic_reference_type type_;
 
+	public:
+		dynamic_reference(const dynamic_reference&) = default;
+		dynamic_reference(dynamic_reference&&) = default;
+
+	private:
 		constexpr dynamic_reference(const void* ptr, const reference_type& t) noexcept
 			: ptr(const_cast<void*>(ptr))
 			, type_(t)
@@ -29,12 +34,10 @@ namespace PPreflection
 			, type_(t)
 		{}
 
-		constexpr decltype(auto) reinterpret(PP::concepts::type auto t) const
-		{
-			return std::visit([t](auto p) -> decltype(auto) { return PP::reinterpret__cast(t, p); }, ptr);
-		}
-
 	public:
+		dynamic_reference& operator=(const dynamic_reference&) = default;
+		dynamic_reference& operator=(dynamic_reference&&) = default;
+
 		struct bad_cast_exception {};
 
 		constexpr const reference_type& get_type() const noexcept
@@ -58,5 +61,11 @@ namespace PPreflection
 		inline decltype(auto) visit(PP::concepts::type auto t, auto&& f) const;
 
 		constexpr void* get_void_ptr() const;
+
+	private:
+		constexpr decltype(auto) reinterpret(PP::concepts::type auto t) const
+		{
+			return std::visit([t](auto p) -> decltype(auto) { return PP::reinterpret__cast(t, p); }, ptr);
+		}
 	};
 }

@@ -25,6 +25,7 @@ namespace PPreflection::detail
 
 		static constexpr auto reflector = reflect_many_helper * PP::type<T>;
 
+		static constexpr auto base_classes = reflector(PP::Template<tags::base_classes>, PP::type<const class_type&>);
 		static constexpr auto static_member_functions = reflector(PP::Template<tags::static_member_functions>, PP::type<const static_member_function&>);
 		static constexpr auto member_functions = reflector(PP::Template<tags::member_functions>, PP::type<const member_function&>);
 		static constexpr auto nested_classes = reflector(PP::Template<tags::nested_classes>, PP::type<const user_defined_type&>);
@@ -50,6 +51,10 @@ namespace PPreflection::detail
 				PP::destroy_at(reinterpret_cast<T*>(ptr));
 		}
 
+		constexpr PP::any_view<PP::iterator_category::ra, const class_type&> get_base_classes() const noexcept override final
+		{
+			return base_classes;
+		}
 		constexpr PP::any_view<PP::iterator_category::ra, const constructor&> get_constructors() const noexcept override final
 		{
 			return constructors;
@@ -69,6 +74,11 @@ namespace PPreflection::detail
 		constexpr PP::any_view<PP::iterator_category::ra, const user_defined_type&> get_nested_classes() const noexcept override final
 		{
 			return nested_classes;
+		}
+
+		constexpr convertor_object base_pointer_conversion(const class_type& base) const noexcept override final
+		{
+			return nullptr;
 		}
 	};
 }

@@ -13,6 +13,15 @@ namespace PPreflection
 		}
 
 	public:
+		constexpr PP::type_disjunction_reference<
+			non_void_fundamental_type,
+			pointer_type,
+			pointer_to_member_type,
+			user_defined_type> cast_down(PP::overload_tag<non_array_object_type>) const noexcept override final
+		{
+			return *this;
+		}
+
 		constexpr virtual parent_descriptor_reference_strong get_parent(int = 0) const noexcept = 0;
 
 		constexpr bool operator==(const user_defined_type& other) const noexcept

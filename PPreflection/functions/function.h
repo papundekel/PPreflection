@@ -21,19 +21,27 @@ namespace PPreflection
 
 	class function : public descriptor
 	{
-	protected:
-		virtual dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&> arg_iterator) const noexcept = 0;
+		friend class Namespace;
+		friend class viable_function_t;
 
-		static inline dynamic_variable invoke_helper(auto&& f, PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&> arg_iterator, auto parameter_types) noexcept
+	protected:
+		virtual dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator, void* = nullptr) const noexcept = 0;
+
+		static constexpr decltype(auto) call_with_arguments_cast_to_parameter_types(auto&& f, PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator, auto parameter_types) noexcept
+		{
+			return PP::tuple_apply(PP_FORWARD(f), PP::tuple_zip_with_pack([]
+				(dynamic_reference ref, PP::concepts::type auto t) -> auto&&
+				{
+					return ref.cast_unsafe(t);
+				}, make_view_tuple(PP::tuple_count_value_t(parameter_types), arg_iterator), parameter_types));
+		}
+
+		static inline dynamic_variable invoke_helper(auto&& f, PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator, auto parameter_types) noexcept
 		{
 			return dynamic_variable::create([&f, arg_iterator, parameter_types]
 				() -> decltype(auto)
 				{
-					return PP::tuple_apply(PP_FORWARD(f), PP::tuple_zip_with_pack(
-						[](dynamic_reference ref, PP::concepts::type auto t) -> decltype(auto)
-						{
-							return ref.cast_unsafe(t);
-						}, make_view_tuple(PP::tuple_count_value_t(parameter_types), arg_iterator), parameter_types));
+					return call_with_arguments_cast_to_parameter_types(PP_FORWARD(f), arg_iterator, parameter_types);
 				});
 		}
 
@@ -60,15 +68,12 @@ namespace PPreflection
 			return get_function_type().is_noexcept();
 		}
 
-		constexpr virtual bool can_invoke(PP::any_view<PP::iterator_category::ra, const reference_type&> argument_types) const noexcept;
-		inline dynamic_variable invoke(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args = {}) const noexcept;
+		inline dynamic_variable invoke(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args = {}, void* = nullptr) const noexcept;
 
 		constexpr virtual parent_descriptor_reference_strong get_parent(int = 0) const noexcept = 0;
 		constexpr parent_descriptor_reference get_parent(void*) const noexcept override final
 		{
 			return get_parent();
 		}
-
-		static constexpr PP::any_view<PP::iterator_category::ra, const reference_type&> args_to_types_transform(PP::concepts::view auto&& args) noexcept;
 	};
 }

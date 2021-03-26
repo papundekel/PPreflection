@@ -27,6 +27,15 @@ namespace PPreflection
 				return array_type_reference(dynamic_cast<const unknown_bound_array_type&>(t));
 		}
 
+		constexpr PP::type_disjunction_reference<unknown_bound_array_type, complete_object_type> cast_down(PP::overload_tag<object_type>) const noexcept override final
+		{
+			return visit(PP::overloaded
+			(
+				[](const unknown_bound_array_type& t){ return PP::type_disjunction_reference<unknown_bound_array_type, complete_object_type>(t); },
+				[](const   known_bound_array_type& t){ return PP::type_disjunction_reference<unknown_bound_array_type, complete_object_type>(t); }
+			));
+		}
+
 	public:
 	 	constexpr array_type_reference(const object_type& t) noexcept
 			: array_type_reference(create(t))
@@ -52,7 +61,7 @@ namespace PPreflection
 			return visit([](const auto& array_type)	{ return array_type.remove_extent(); });
 		}
 
-		constexpr convertor array_to_pointer_conversion() const noexcept override final
+		constexpr convertor_object array_to_pointer_conversion() const noexcept override final
 		{
 			return visit([](const auto& array_type) { return array_type.array_to_pointer_conversion(); });
 		}

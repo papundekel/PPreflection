@@ -6,14 +6,17 @@
 namespace PPreflection
 {
 	class dynamic_pointer_type;
+	class referencable_type;
+	class void_type;
 
 	class pointable_type : public type
 	{
 	public:
-		constexpr PP::type_disjunction_reference<reference_type, pointable_type> reference_or_pointable() const noexcept override final
+		constexpr PP::type_disjunction_reference<reference_type, pointable_type> cast_down(PP::overload_tag<type>) const noexcept override final
 		{
 			return *this;
 		}
+		constexpr virtual PP::type_disjunction_reference<void_type, referencable_type> cast_down(PP::overload_tag<pointable_type> = {}) const noexcept = 0;
 
 		constexpr bool can_be_pointer_initialized(const pointable_type&) const noexcept
 		{

@@ -62,8 +62,15 @@ constexpr const PPreflection::complete_object_type& PPreflection::dynamic_object
 	return x.get_destructor().get_type();
 }
 
-constexpr PPreflection::dynamic_object::operator dynamic_reference()       { return reference_cast_helper(*this); }
-constexpr PPreflection::dynamic_object::operator dynamic_reference() const { return reference_cast_helper(*this); }
+constexpr PPreflection::dynamic_object::operator dynamic_reference() const
+{
+	return reference_cast_helper(PP::value_false);
+}
+
+constexpr PPreflection::dynamic_reference PPreflection::dynamic_object::move() const
+{
+	return reference_cast_helper(PP::value_true);
+}
 
 constexpr PPreflection::dynamic_object::operator bool() const noexcept
 {
@@ -100,12 +107,12 @@ constexpr auto* PPreflection::dynamic_object::get_address(auto& o) noexcept
 	return get_address(o.x.get_object(), o.get_cv_type().type);
 }
 
-constexpr PPreflection::dynamic_reference PPreflection::dynamic_object::reference_cast_helper(auto& o)
+constexpr dynamic_reference PPreflection::dynamic_object::reference_cast_helper(PP::concepts::value auto rvalue) const
 {
-	if (o)
-		return dynamic_reference(get_address(o), make_reference_type(PP::value<PP::is_rvalue_reference(PP_DECLTYPE(o))>, o.get_cv_type()));
+	if (*this)
+		return dynamic_reference(get_address(o), make_reference_type(rvalue, o.get_cv_type()));
 	else
-		throw 0; // TODO
+		throw 0;
 }
 
 constexpr PPreflection::dynamic_object::allocated_ptr PPreflection::dynamic_object::allocate(const complete_object_type& t) noexcept

@@ -15,6 +15,7 @@ namespace PPreflection
 	class class_type : public user_defined_type
 	{
 	public:
+		constexpr virtual PP::any_view<PP::iterator_category::ra, const class_type&> get_base_classes() const noexcept = 0;
 		constexpr virtual PP::any_view<PP::iterator_category::ra, const constructor&> get_constructors() const noexcept = 0;
 		constexpr virtual PP::any_view<PP::iterator_category::ra, const member_function&> get_member_functions() const noexcept = 0;
 		constexpr virtual PP::any_view<PP::iterator_category::ra, const conversion_function&> get_conversion_functions() const noexcept = 0;
@@ -23,10 +24,14 @@ namespace PPreflection
 
 		constexpr virtual const non_union_class_type* as_non_union_class() const noexcept = 0;
 
-		inline dynamic_variable create_instance(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args = {}) const noexcept;
+		inline dynamic_object create_instance(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args = {}) const noexcept;
+
+		inline dynamic_object copy_initialize_same_or_derived(dynamic_reference arg) const noexcept;
 
 		constexpr void get_member_function_overloads(PP::string_view name, PP::concepts::iterator auto i_out) const noexcept;
 		constexpr void get_static_member_function_overloads(PP::string_view name, PP::concepts::iterator auto i_out) const noexcept;
 		constexpr const user_defined_type* get_nested_type(PP::string_view name) const noexcept;
+
+		constexpr virtual convertor_object base_pointer_conversion(const class_type& base) const noexcept = 0;
 	};
 }

@@ -39,12 +39,26 @@ namespace PPreflection::detail
 		{
 			return info.ref;
 		}
+		constexpr const pointer_type& get_function_ref_qualifier() const noexcept override final
+		{
+			return type::reflect(PP::type<T*>);
+		}
+
 		constexpr convertor_object function_to_pointer_conversion() const noexcept override final
 		{
 			if constexpr (info.cv == PP::cv_qualifier::none && info.ref == PP::ref_qualifier::none)
-			{
 				return create_convertor_object_to_value(PP::type<T>);
-			}
+			else
+				return nullptr;
+		}
+		constexpr convertor_object function_noexcept_conversion() const noexcept override final
+		{
+			if constexpr (info.Noexcept)
+				return create_convertor_object(PP::type<T>, PP::value<[]
+					(auto* fp)
+					{
+						return PP::add_pointer(PP::make_function_type(PP::type<T>, PP::value_true))(fp);
+					}>);
 			else
 				return nullptr;
 		}

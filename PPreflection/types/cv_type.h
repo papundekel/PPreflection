@@ -11,6 +11,13 @@
 namespace PPreflection
 {
 	template <typename Type>
+	struct cv_type_ptr
+	{
+		const Type* type_ptr;
+		PP::cv_qualifier cv;
+	}
+
+	template <typename Type>
 	struct cv_type : public type
 	{
 		const Type& type;
@@ -24,6 +31,11 @@ namespace PPreflection
 			: type(type)
 			, cv(PP::cv_qualifier::none)
 		{}
+
+		constexpr auto to_type_ptr() const noexcept
+		{
+			return cv_type_ptr<Type>{&type, cv};
+		}
 
 		operator const Type&() const noexcept
 		{
@@ -51,9 +63,12 @@ namespace PPreflection
 
 		constexpr parent_descriptor_reference get_parent(void*) const noexcept override final;
 
-		constexpr PP::type_disjunction_reference<reference_type, pointable_type> reference_or_pointable() const noexcept override final
+		constexpr PP::type_disjunction_reference<reference_type, pointable_type> cast_down(PP::overload_tag<PPreflection::type>) const noexcept override final
 		{
-			return type.reference_or_pointable();
+			if constexpr (PP::type<Type> != PP::type<PPreflection::type>)
+				return type;
+			else
+				return type.cast_down();
 		}
 		constexpr bool operator==(const PPreflection::type& other) const noexcept override final
 		{

@@ -29,9 +29,14 @@ namespace PPreflection
 			return visit([&initializer](const auto& x) { return x.can_be_initialized(initializer); });
 		}
 
-		constexpr operator const type&() const
+		constexpr const type& to_type() const
 		{
 			return visit(PP::static__cast * PP::type<const type&>);
+		}
+
+		constexpr operator const type&() const
+		{
+			return to_type();
 		}
 
 		constexpr const type* operator&() const

@@ -17,9 +17,9 @@ namespace PPreflection
 			dynamic_object value;
 
 		public:
-			constexpr dynamic_enum_value(PP::string_view name, dynamic_object value) noexcept
+			constexpr dynamic_enum_value(PP::string_view name, dynamic_object&& value) noexcept
 				: name()
-				, value(value)
+				, value(PP::move(value))
 			{
 				for (char c : name)
 					this->name.push_back(c);
@@ -31,7 +31,7 @@ namespace PPreflection
 			}
 			constexpr dynamic_object get_value() const noexcept override final
 			{
-				return value;
+				return dynamic_object::create_shallow_copy(value);
 			}
 		};
 

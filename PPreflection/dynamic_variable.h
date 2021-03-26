@@ -13,17 +13,21 @@ namespace PPreflection
 	class dynamic_variable
 	{
 		friend class dynamic_reference;
+		friend class constructor;
 
 		std::variant<dynamic_reference, dynamic_object> dynamic;
 
+	public:
 		explicit constexpr dynamic_variable(dynamic_reference r)
-			: dynamic(PP::move(r))
+			: dynamic(r)
 		{}
-		explicit constexpr dynamic_variable(dynamic_object o)
+		explicit constexpr dynamic_variable(dynamic_object&& o)
 			: dynamic(PP::move(o))
 		{}
 
-	public:
+		dynamic_variable(dynamic_variable&&) = default;
+		dynamic_variable& operator=(dynamic_variable&&) = default;
+
 		static constexpr auto create(auto&& f)
 		{
 			constexpr auto result_type = PP_DECLTYPE(PP_FORWARD(f)());
@@ -99,6 +103,14 @@ namespace PPreflection
 			(
 				[](const dynamic_reference& r) { return r; },
 				[](const dynamic_object& o) -> dynamic_reference { return o; }
+			), dynamic);
+		}
+		constexpr dynamic_reference move() const noexcept
+		{
+			return std::visit(PP::overloaded
+			(
+				[](const dynamic_reference& r) { return r; },
+				[](const dynamic_object& o) { return o.move(); }
 			), dynamic);
 		}
 	};

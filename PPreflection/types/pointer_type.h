@@ -9,6 +9,15 @@ namespace PPreflection
 	class pointer_type : public detail::non_user_defined_type<non_array_object_type>
 	{
 	public:
+		constexpr PP::type_disjunction_reference<
+			non_void_fundamental_type,
+			pointer_type,
+			pointer_to_member_type,
+			user_defined_type> cast_down(PP::overload_tag<non_array_object_type>) const noexcept override final
+		{
+			return *this;
+		}
+
 		constexpr bool has_name(PP::string_view) const noexcept override final
 		{
 			return false; // TODO
@@ -37,8 +46,6 @@ namespace PPreflection
 
 		constexpr virtual cv_type<pointable_type> remove_pointer() const noexcept = 0;
 
-		constexpr virtual convertor_object function_pointer_conversion() const noexcept = 0;
-
 		constexpr bool operator==(const pointer_type& other) const noexcept
 		{
 			return remove_pointer() == other.remove_pointer();
@@ -47,5 +54,13 @@ namespace PPreflection
 		{
 			return compare(*this, other);
 		}
+
+		constexpr virtual convertor_object bool_conversion() const noexcept = 0;
+		constexpr virtual convertor_object void_conversion() const noexcept = 0;
+
+		constexpr bool qualification_compatible(const pointer_type& target) const noexcept;
+
+		constexpr standard_conversion_sequence make_standard_conversion_sequence(const pointer_type& target) const noexcept;
+		constexpr standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target) const noexcept override final;
 	};
 }

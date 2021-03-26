@@ -20,18 +20,23 @@ namespace PPreflection::detail
 		{
 			return type::reflect_cv(pointed_to_type);
 		}
-		constexpr convertor_object function_pointer_conversion() const noexcept override final
+
+		constexpr convertor_object bool_conversion() const noexcept override final
 		{
-			if constexpr (PP::is_function(pointed_to_type) && PP::get_function_info(pointed_to_type).Noexcept)
-			{
-				return create_convertor_object(PP::type<T>, PP::value<[]
-					(auto* fp)
-					{
-						return PP::add_pointer(PP::make_function_type(pointed_to_type, PP::value_false))(fp);
-					}>);
-			}
-			else
-				return nullptr;
+			return create_convertor_object(PP::type<T>, PP::value<[]
+				(auto* p) -> bool
+				{
+					return p;
+				}>);
+		}
+
+		constexpr convertor_object void_conversion() const noexcept override final
+		{
+			return create_convertor_object(PP::type<T>, PP::value<[]
+				(auto* p)
+				{
+					return PP::copy_cv(pointed_to_type, PP::type_void)(p);
+				}>);
 		}
 	};
 }

@@ -22,7 +22,7 @@ namespace PPreflection::detail
 	{
 	protected:
 		static constexpr auto class_type_ = PP::get_pointer_to_member_info(PP_DECLTYPE(mf)).class_type;
-
+		
 		static constexpr auto caller_type = PP::conditional(PP::value<basic_member_function::ref != PP::ref_qualifier::rvalue>, class_type_ + PP::add_lvalue_tag, class_type_);
 
 	private:

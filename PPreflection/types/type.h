@@ -1,6 +1,7 @@
 #pragma once
 #include "PP/concepts/derived_from.hpp"
 #include "PP/get_type.hpp"
+#include "PP/overload_tag.hpp"
 #include "PP/same.hpp"
 #include "PP/tuple_find_dynamic.hpp"
 #include "PP/tuple_fold.hpp"
@@ -115,7 +116,7 @@ namespace PPreflection
 			print_name_suffix(out);
 		}
 
-		constexpr virtual PP::type_disjunction_reference<reference_type, pointable_type> reference_or_pointable() const noexcept = 0;
+		constexpr virtual PP::type_disjunction_reference<reference_type, pointable_type> cast_down(PP::overload_tag<type> = {}) const noexcept = 0;
 
 		static constexpr void print_parameter_types(PP::simple_ostream& out, PP::concepts::view auto&& parameter_types) noexcept
 		{

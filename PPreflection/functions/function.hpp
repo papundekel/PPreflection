@@ -1,9 +1,9 @@
 #pragma once
+#include "../conversion_sequence.hpp"
 #include "../dynamic_object.h"
 #include "../dynamic_reference.h"
 #include "../types/parameter_type_reference.h"
 #include "../types/type.h"
-#include "args_to_arg_types.hpp"
 #include "function.h"
 
 constexpr void PPreflection::function::print_name_basic(PP::simple_ostream& out) const noexcept
@@ -29,24 +29,7 @@ constexpr void PPreflection::function::print_name_after_parent(PP::simple_ostrea
 	print_noexcept(out);
 }
 
-constexpr bool PPreflection::function::can_invoke(PP::any_view<PP::iterator_category::ra, const reference_type&> argument_types) const noexcept
+inline PPreflection::dynamic_variable PPreflection::function::invoke(PP::any_view<PP::iterator_category::ra, const dynamic_reference&>, void*) const noexcept
 {
-	return parameter_type_reference::can_initialize_many(parameter_types(), argument_types);
-}
-
-inline PPreflection::dynamic_variable PPreflection::function::invoke(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args) const noexcept
-{
-	if (can_invoke(args_to_arg_types(args)))
-		return invoke_unsafe(PP::view_begin(args));
-	else
-		return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
-}
-
-constexpr PP::any_view<PP::iterator_category::ra, const PPreflection::reference_type&> PPreflection::function::args_to_types_transform(PP::concepts::view auto&& args) noexcept
-{
-	return PP_FORWARD(args) | PP::transform([]
-		(dynamic_reference r) -> auto&
-		{
-			return r.get_type();
-		});
+	return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
 }

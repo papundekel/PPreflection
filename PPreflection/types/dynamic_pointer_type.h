@@ -16,9 +16,5 @@ namespace PPreflection
 		{
 			return pointed_to_type;
 		}
-		constexpr convertor_object function_pointer_conversion() const noexcept override final
-		{
-			return nullptr;
-		}
 	};
 }

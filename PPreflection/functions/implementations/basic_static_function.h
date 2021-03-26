@@ -9,7 +9,7 @@ namespace PPreflection::detail
 	class basic_static_function : public basic_function<PP::apply_transform_t<PP::remove_pointer, decltype(f)>, Base>
 	{
 	protected:
-		dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&> arg_iterator) const noexcept override final
+		dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator, void*) const noexcept override final
 		{
 			return this->invoke_helper(f, arg_iterator, this->parameter_types);
 		}

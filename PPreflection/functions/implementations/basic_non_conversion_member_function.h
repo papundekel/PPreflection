@@ -7,7 +7,7 @@ namespace PPreflection::detail
 	template <auto mf>
 	class basic_non_conversion_member_function : public basic_member_function<mf, non_conversion_member_function>
 	{
-		dynamic_variable invoke_unsafe_member(dynamic_reference caller, PP::any_iterator<PP::iterator_category::ra, const dynamic_reference&> arg_iterator) const noexcept override final
+		dynamic_variable invoke_unsafe_member(dynamic_reference caller, PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator) const noexcept override final
 		{
 			return this->invoke_helper(
 				[this, caller](auto&&... args) -> decltype(auto)
