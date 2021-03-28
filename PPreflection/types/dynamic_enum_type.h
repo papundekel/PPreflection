@@ -15,11 +15,13 @@ namespace PPreflection
 		{
 			PP::simple_vector<char> name;
 			dynamic_object value;
+			const enum_type& parent;
 
 		public:
-			constexpr dynamic_enum_value(PP::string_view name, dynamic_object&& value) noexcept
+			constexpr dynamic_enum_value(PP::string_view name, dynamic_object&& value, const enum_type& parent) noexcept
 				: name()
 				, value(PP::move(value))
+				, parent(parent)
 			{
 				for (char c : name)
 					this->name.push_back(c);
@@ -33,16 +35,21 @@ namespace PPreflection
 			{
 				return dynamic_object::create_shallow_copy(value);
 			}
+
+			constexpr const enum_type& get_parent() const noexcept override final
+			{
+				return parent;
+			}
 		};
 
 		PP::simple_vector<dynamic_enum_value> values;
-		const non_void_fundamental_type& underlying_type;
+		const integral_type& underlying_type;
 
 	public:
 		constexpr dynamic_enum_type(
 			PP::string_view name,
 			PP::concepts::view auto&& values,
-			const non_void_fundamental_type& underlying_type,
+			const integral_type& underlying_type,
 			parent_descriptor_reference_strong parent) noexcept
 
 			: dynamic_user_defined_type<enum_type>(name, parent)
@@ -55,7 +62,7 @@ namespace PPreflection
 			return values;
 		}
 
-		constexpr const non_void_fundamental_type& get_underlying_type() const noexcept override final
+		constexpr const integral_type& get_underlying_type() const noexcept override final
 		{
 			return underlying_type;
 		}

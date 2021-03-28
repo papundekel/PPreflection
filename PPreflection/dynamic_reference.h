@@ -53,10 +53,10 @@ namespace PPreflection
 		inline auto&& get_ref(PP::concepts::type auto t) const&&;
 
 		constexpr dynamic_reference(auto&& r) noexcept
-		requires ((
-			!PP::is_same_except_cvref * PP::type<dynamic_reference> &&
-			!PP::is_same_except_cvref * PP::type<dynamic_object> &&
-			!PP::is_same_except_cvref * PP::type<dynamic_variable>)(PP_DECLTYPE(r)));
+		requires 
+			PP::concepts::different_except_cvref<decltype(r), dynamic_reference> &&
+			PP::concepts::different_except_cvref<decltype(r), dynamic_object> &&
+			PP::concepts::different_except_cvref<decltype(r), dynamic_variable>;
 
 		inline decltype(auto) visit(PP::concepts::type auto t, auto&& f) const;
 

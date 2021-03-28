@@ -23,10 +23,10 @@ namespace PPreflection
 			const pointable_type* u;
 		};
 
-		class element
+		struct element
 		{
 			std::variant<pointer, member_pointer, unknown_bound_array, known_bound_array, U> P;
-			PP::cv_qualification cv;
+			PP::cv_qualifier cv;
 
 			constexpr bool compatible_P(const element& target) const noexcept
 			{
@@ -46,7 +46,7 @@ namespace PPreflection
 					{
 						return std::visit(PP::overloaded
 						(
-							[a_this](known_bound_array a_target){ return *a_this.extent == *a_target.extent; },
+							[a_this](known_bound_array a_target){ return a_this.extent == a_target.extent; },
 							[](unknown_bound_array){ return true; },
 							[](auto){ return false; }
 						), p);
@@ -67,6 +67,50 @@ namespace PPreflection
 	private:
 		PP::simple_vector<element> elements;
 
+	public:
+		constexpr explicit cv_qualification_signature(const pointer_type& type)
+			: elements(2)
+		{
+			register_elements(type.remove_pointer().to_type_ptr());			
+		}
+		constexpr explicit cv_qualification_signature(const pointer_to_member_type& type)
+			: elements(2)
+		{
+			register_elements(type.get_member_type().to_type_ptr());
+		}
+
+		constexpr bool compatible(cv_qualification_signature target) const noexcept
+		{
+			if (elements.count() != target.elements.count())
+				return false;
+
+			for (auto [element_this, element_target] : PP::zip_view_pack(elements, target.elements))
+			{
+				if (!(element_target.cv >= element_this.cv))
+					return false;
+				
+				if (!element_this.compatible_P(element_target))
+					return false;
+			}
+
+			auto first_diff = PP::view_find(*PP::functor([]
+				(const element& element_this, const element& element_target)
+				{
+					return
+						element_target.cv > element_this.cv ||
+						(element_this.P.index() != element_target.P.index());
+				}), PP::zip_view_pack(elements, target.elements))[PP::value_1];
+
+			for (auto i = target.elements.begin(); i != first_diff; ++i)
+			{
+				if (!PP::cv_is_const(i->cv))
+					return false;
+			}
+
+			return true;
+		}
+
+	private:
 		constexpr void register_elements(cv_type_ptr<pointable_type> t)
 		{
 			while (true)
@@ -107,51 +151,6 @@ namespace PPreflection
 			}
 
 			elements.push_back(U{t.type_ptr}, t.cv);
-		}
-
-	public:
-		constexpr explicit cv_qualification_signature(const pointer_type& type)
-			: elements(2)
-			, U(nullptr)
-		{
-			register_elements(type.remove_pointer().to_type_ptr());			
-		}
-		constexpr explicit cv_qualification_signature(const pointer_to_member_type& type)
-			: elements(2)
-			, U(nullptr)
-		{
-			register_elements(type.get_member_type().to_type_ptr());
-		}
-
-		constexpr bool compatible(cv_qualification_signature target) const noexcept
-		{
-			if (elements.count() != target.elements.count())
-				return false;
-
-			for (auto [element_this, element_target] : PP::zip_view_pack(elements, target.elements))
-			{
-				if (!(element_target.cv >= element_this.cv))
-					return false;
-				
-				if (!element_this.compatible_P(element_target))
-					return false;
-			}
-
-			auto first_diff = PP::view_find(*PP::functor([]
-				(const element& element_this, const element& element_target)
-				{
-					return
-						element_target.cv > element_this.cv ||
-						(element_this.P.index() != element_target.P.index())
-				}), PP::zip_view_pack(elements, target.elements))[PP::value_1];
-
-			for (auto i = target.elements.begin(); i != first_diff; ++i)
-			{
-				if (!cv_is_const(i->cv))
-					return false;
-			}
-
-			return true;
 		}
 	};
 }

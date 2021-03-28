@@ -31,7 +31,7 @@ namespace PPreflection
 
 		union data
 		{
-			alignas(max_align_t) void* ptr;
+			alignas(max_align_t) mutable void* ptr;
 			invalid_code code;
 
 			constexpr data() noexcept
@@ -139,10 +139,10 @@ namespace PPreflection
 		}
 	
 	private:
-		static constexpr auto* get_address(auto& r) noexcept;
-		static constexpr auto* get_address(auto& p, const complete_object_type& t) noexcept;
+		static constexpr void* get_address(auto& unique, const complete_object_type& t) noexcept;
+		constexpr void* get_address() const noexcept;
 
-		static constexpr dynamic_reference reference_cast_helper(PP::concepts::value auto rvalue) const;
+		constexpr dynamic_reference reference_cast_helper(PP::concepts::value auto rvalue) const;
 
 		static constexpr allocated_ptr allocate(const complete_object_type& t) noexcept;
 		static constexpr void* allocate_and_initialize(PP::concepts::invocable auto&& i) noexcept;

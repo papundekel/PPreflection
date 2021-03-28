@@ -39,9 +39,9 @@ namespace PPreflection::detail
 		{
 			return info.ref;
 		}
-		constexpr const pointer_type& get_function_ref_qualifier() const noexcept override final
+		constexpr const pointer_type& get_pointer_type() const noexcept override final
 		{
-			return type::reflect(PP::type<T*>);
+			return type::reflect | PP::add_pointer <<= PP::make_function_type(PP::type<T>, PP::value<info.Noexcept>, PP::value<PP::cv_qualifier::none>, PP::value<PP::ref_qualifier::none>);
 		}
 
 		constexpr convertor_object function_to_pointer_conversion() const noexcept override final

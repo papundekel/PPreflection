@@ -21,6 +21,7 @@ namespace PPreflection
 		template <typename T> struct member_functions;
 		template <typename T> struct static_member_functions;
 		template <typename T> struct enum_values;
+		template <typename T> struct enum_fixed_type;
 		template <typename T> struct overloads;
 		template <typename T> struct overload;
 		template <typename T> struct constructors;

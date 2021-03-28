@@ -3,7 +3,6 @@
 #include "basic_function_type.hpp"
 #include "basic_unknown_bound_array_type.hpp"
 #include "basic_known_bound_array_type.hpp"
-#include "basic_non_void_fundamental_type.hpp"
 #include "basic_pointer_type.hpp"
 #include "basic_pointer_to_member_type.hpp"
 #include "basic_non_union_class_type.hpp"

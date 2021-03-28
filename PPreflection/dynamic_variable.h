@@ -1,8 +1,8 @@
 #pragma once
 #include <variant>
 
+#include "PP/concepts/fundamental_types.hpp"
 #include "PP/concepts/reference.hpp"
-#include "PP/concepts/void.hpp"
 #include "PP/overloaded.hpp"
 
 #include "dynamic_object.h"

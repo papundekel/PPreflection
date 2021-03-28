@@ -24,6 +24,7 @@ namespace PPreflection
 	class unknown_bound_array_type;
 	class known_bound_array_type;
 	class null_type;
+	class integral_type;
 	class arithmetic_type;
 	class pointer_type;
 	class pointer_to_member_type;
@@ -52,6 +53,7 @@ namespace PPreflection
 		unknown_bound_array_type,
 		known_bound_array_type,
 		null_type,
+		integral_type,
 		arithmetic_type,
 		pointer_type,
 		pointer_to_member_type,

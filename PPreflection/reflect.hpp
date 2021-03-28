@@ -5,7 +5,6 @@
 #include "PP/apply_template.hpp"
 #include "PP/empty_tuple.hpp"
 #include "PP/functional/id.hpp"
-#include "PP/fundamental_types.h"
 #include "PP/template_tuple.hpp"
 #include "PP/transform_view.hpp"
 #include "PP/tuple_map.hpp"
@@ -54,6 +53,7 @@ namespace PPreflection
 			basic_unknown_bound_array_type,
 			basic_known_bound_array_type,
 			basic_null_type,
+			arithmetic_type_strong,
 			arithmetic_type_strong,
 			basic_pointer_type,
 			basic_pointer_to_member_type,
@@ -107,7 +107,9 @@ template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::t
 #endif
 
 template <typename Class, typename... Parameters>
-constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::is_explicit<Class, Parameters...>>
-	= PP::value_false;
+constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::is_explicit<Class, Parameters...>> = PP::value_false;
+
+template <typename E>
+constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::enum_fixed_type<E>> = PP::type_void;
 
 #endif

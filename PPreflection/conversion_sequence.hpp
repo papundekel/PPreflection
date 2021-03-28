@@ -57,25 +57,38 @@ namespace PPreflection
 		convertor_object promotion_conversion;
 		convertor_object function_noexcept;
 		dynamic_reference(*derived_to_base_binder)(dynamic_reference, const class_type&);
-		dynamic_reference(*reference_binder)(dynamic_reference, PP::cv_qualification, bool rvalue);
+		dynamic_reference(*reference_binder)(dynamic_reference, PP::cv_qualifier, bool);
 		conversion_sequence_rank rank;
 		bool has_qualification_conversion;
+		bool enum_has_fixed_undrlying_type;
+		bool enum_to_promoted_fixed_type;
 
-	public:
-		constexpr standard_conversion_sequence(const type& source, const type* target = nullptr) noexcept
-			: type_source(&source)
-			, type_target(target)
+		constexpr standard_conversion_sequence(const type* source) noexcept
+			: type_source(source)
+			, type_target(nullptr)
 			, load()
 			, to_pointer(nullptr)
 			, promotion_conversion(nullptr)
 			, function_noexcept(nullptr)
 			, rank(conversion_sequence_rank::exact_match)
 			, has_qualification_conversion(false)
+			, enum_has_fixed_undrlying_type(false)
+			, enum_to_promoted_fixed_type(false)
+		{}
+
+	public:
+		constexpr standard_conversion_sequence() noexcept
+			: standard_conversion_sequence(nullptr)
+		{}
+		constexpr standard_conversion_sequence(const type& source) noexcept
+			: standard_conversion_sequence(&source)
 		{}
 
 		static constexpr standard_conversion_sequence create_identity(const type& t) noexcept
 		{
-			return standard_conversion_sequence(t, &t);
+			standard_conversion_sequence sequence(t);
+			sequence.set_validity(t);
+			return sequence;
 		}
 
 		dynamic_variable convert(dynamic_variable v) const
@@ -121,9 +134,13 @@ namespace PPreflection
 		{
 			has_qualification_conversion = true;
 		}
-		constexpr void set_is_promotion(bool new_is_promotion) noexcept
+		constexpr void set_enum_fixed_type() noexcept
 		{
-			is_promotion = new_is_promotion;
+			enum_has_fixed_undrlying_type = true;
+		}
+		constexpr void set_enum_promoted_fixed_type() noexcept
+		{
+			enum_to_promoted_fixed_type = true;
 		}
 
 		constexpr conversion_sequence_rank get_rank() const noexcept
@@ -279,11 +296,11 @@ namespace PPreflection
 			}
 		}
 
-		standard_conversion_sequence& get_first_standard() noexcept;
+		standard_conversion_sequence& get_first_standard() noexcept
 		{
 			return first_standard_conversion;
 		}
-		standard_conversion_sequence& get_second_standard() noexcept;
+		standard_conversion_sequence& get_second_standard() noexcept
 		{
 			return second_standard_conversion;
 		}

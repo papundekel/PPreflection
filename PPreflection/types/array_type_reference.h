@@ -70,5 +70,10 @@ namespace PPreflection
 		{
 			return visit([&other](const auto& array_type) { return array_type == other; });
 		}
+
+		constexpr const pointer_type& get_pointer_to_element() const noexcept override final
+		{
+			return visit([](const auto& array_type) -> auto& { return array_type.get_pointer_to_element(); });
+		}
 	};
 }

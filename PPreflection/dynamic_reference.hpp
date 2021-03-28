@@ -44,10 +44,10 @@ inline auto&& PPreflection::dynamic_reference::get_ref(PP::concepts::type auto t
 }
 
 constexpr PPreflection::dynamic_reference::dynamic_reference(auto&& r) noexcept
-requires ((
-	!PP::is_same_except_cvref* PP::type<dynamic_reference> &&
-	!PP::is_same_except_cvref* PP::type<dynamic_object> &&
-	!PP::is_same_except_cvref* PP::type<dynamic_variable>)(PP_DECLTYPE(r)))
+requires 
+	PP::concepts::different_except_cvref<decltype(r), dynamic_reference> &&
+	PP::concepts::different_except_cvref<decltype(r), dynamic_object> &&
+	PP::concepts::different_except_cvref<decltype(r), dynamic_variable>
 
 	: dynamic_reference(&r, type::reflect(PP_DECLTYPE(r)))
 {}

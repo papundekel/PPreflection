@@ -5,9 +5,9 @@
 #include "pointer_type.h"
 
 template <typename Base>
-PPreflection::standard_conversion_sequence PPreflection::detail::array_type<Base>::make_standard_conversion_sequence(const non_array_object_type& target) const noexcept
+constexpr PPreflection::standard_conversion_sequence PPreflection::detail::array_type<Base>::make_standard_conversion_sequence(const non_array_object_type& target, void*) const noexcept
 {
-	auto sequence = get_pointer_type().make_standard_conversion_sequence(target);
+	auto sequence = get_pointer_to_element().make_standard_conversion_sequence(target);
 	sequence.set_to_pointer(array_to_pointer_conversion());
 	return sequence;
 }

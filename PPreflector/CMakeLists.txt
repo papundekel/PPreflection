@@ -23,5 +23,5 @@ add_llvm_library(PPreflector MODULE
 PLUGIN_TOOL clang)
 
 target_compile_features(PPreflector PUBLIC cxx_std_20)
-set_target_properties(PPreflector PROPERTIES COMPILE_FLAGS "-ftemplate-backtrace-limit=0 -fconcepts-diagnostics-depth=4")
+set_target_properties(PPreflector PROPERTIES COMPILE_FLAGS "-ftemplate-backtrace-limit=0 -fconcepts-diagnostics-depth=5")
 target_include_directories(PPreflector PUBLIC "${CMAKE_CURRENT_LIST_DIR}/../PP")

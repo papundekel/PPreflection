@@ -15,7 +15,14 @@ namespace PPreflection
 	{
 		const Type* type_ptr;
 		PP::cv_qualifier cv;
-	}
+
+		template <typename OtherType>
+		requires PP::concepts::derived_from<Type, OtherType>
+		constexpr operator cv_type_ptr<OtherType>() const noexcept
+		{
+			return {type_ptr, cv};
+		}
+	};
 
 	template <typename Type>
 	struct cv_type : public type

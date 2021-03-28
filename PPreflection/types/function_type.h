@@ -84,22 +84,24 @@ namespace PPreflection
 			exact,
 			Noexcept,
 			invalid,
-		}
+		};
 
 		constexpr convertible_rank convertible_function_type(const function_type& target) const noexcept
 		{
 			bool necessary_matches =
-				return_type() == other.return_type() &&
-				PP::view_equal(parameter_types(), other.parameter_types()) &&
-				get_function_cv_qualifier() == other.get_function_cv_qualifier() &&
-				get_function_ref_qualifier() == other.get_function_ref_qualifier();
+				return_type() == target.return_type() &&
+				PP::view_equal(parameter_types(), target.parameter_types()) &&
+				get_function_cv_qualifier() == target.get_function_cv_qualifier() &&
+				get_function_ref_qualifier() == target.get_function_ref_qualifier();
 
 			if (necessary_matches)
 			{
 				if (is_noexcept() == target.is_noexcept())
 					return convertible_rank::exact;
+				else if (is_noexcept())
+					return convertible_rank::Noexcept;
 				else
-					is_noexcept() ? convertible_rank::Noexcept : convertible_rank::invalid;
+					return convertible_rank::invalid;
 			}
 			else
 				return convertible_rank::invalid;
@@ -108,6 +110,6 @@ namespace PPreflection
 		constexpr virtual const pointer_type& get_pointer_type() const noexcept = 0;
 
 		constexpr standard_conversion_sequence make_standard_conversion_sequence(const pointer_type& target) const noexcept;
-		constexpr standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target) const noexcept override final;
+		constexpr standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target, void* = nullptr) const noexcept override final;
 	};
 }

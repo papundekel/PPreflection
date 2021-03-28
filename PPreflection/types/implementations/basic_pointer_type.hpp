@@ -3,14 +3,16 @@
 #include "PP/concepts/function.hpp"
 #include "PP/concepts/pointer.hpp"
 #include "PP/remove_pointer.hpp"
+#include "PP/to_void_ptr.hpp"
 
 #include "../pointer_type.h"
-#include "basic_non_array_object_type.hpp"
+#include "basic_complete_object_type.hpp"
+#include "basic_pointer_base_type.hpp"
 
 namespace PPreflection::detail
 {
 	template <typename T>
-	class basic_pointer_type final : public basic_complete_object_type<T, pointer_type>
+	class basic_pointer_type final : public basic_pointer_base_type<T, basic_complete_object_type<T, pointer_type>>
 	{
 		static_assert(PP::concepts::pointer<T>);
 
@@ -21,22 +23,12 @@ namespace PPreflection::detail
 			return type::reflect_cv(pointed_to_type);
 		}
 
-		constexpr convertor_object bool_conversion() const noexcept override final
-		{
-			return create_convertor_object(PP::type<T>, PP::value<[]
-				(auto* p) -> bool
-				{
-					return p;
-				}>);
-		}
-
 		constexpr convertor_object void_conversion() const noexcept override final
 		{
-			return create_convertor_object(PP::type<T>, PP::value<[]
-				(auto* p)
-				{
-					return PP::copy_cv(pointed_to_type, PP::type_void)(p);
-				}>);
+			if constexpr (!PP::is_function(pointed_to_type))
+				return create_convertor_object(PP::type<T>, PP::value<PP::to_void_ptr>);
+			else
+				return nullptr;
 		}
 	};
 }

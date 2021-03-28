@@ -15,7 +15,6 @@ namespace PPreflection
 	class class_type : public user_defined_type
 	{
 	public:
-		constexpr virtual PP::any_view<PP::iterator_category::ra, const class_type&> get_base_classes() const noexcept = 0;
 		constexpr virtual PP::any_view<PP::iterator_category::ra, const constructor&> get_constructors() const noexcept = 0;
 		constexpr virtual PP::any_view<PP::iterator_category::ra, const member_function&> get_member_functions() const noexcept = 0;
 		constexpr virtual PP::any_view<PP::iterator_category::ra, const conversion_function&> get_conversion_functions() const noexcept = 0;

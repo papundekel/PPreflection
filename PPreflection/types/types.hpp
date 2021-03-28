@@ -1,10 +1,15 @@
 #pragma once
 #include "types.h"
 
+#include "arithmetic_type.hpp"
 #include "arithmetic_type_strong.hpp"
+#include "array_type.hpp"
 #include "class_type.hpp"
 #include "cv_type.hpp"
+#include "enum_type.hpp"
+#include "function_type.hpp"
 #include "known_bound_array_type.hpp"
+#include "non_array_object_type.hpp"
 #include "non_user_defined_type.hpp"
 #include "pointable_type.hpp"
 #include "pointer_to_member_type.hpp"
