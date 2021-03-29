@@ -7,6 +7,7 @@
 
 #include "for_each_with_delimiters.hpp"
 #include "print_wrap.hpp"
+#include "printing_policy.hpp"
 #include "strings.hpp"
 
 PPreflector::namespace_function::namespace_function(const clang::FunctionDecl& decl, const descriptor& parent)
@@ -50,5 +51,5 @@ void PPreflector::namespace_function::print_metadata_implementation(llvm::raw_os
 
 void PPreflector::namespace_function::print_parameter_type(llvm::raw_ostream& out, clang::ParmVarDecl* parameter)
 {
-	parameter->getType().print(out, clang::PrintingPolicy({}));
+	parameter->getType().print(out, printing_policy);
 }

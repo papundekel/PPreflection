@@ -5,6 +5,7 @@
 #include "PP/simple_vector.hpp"
 #include "PP/view_remove.hpp"
 
+#include "args_to_types.hpp"
 #include "descriptor.h"
 #include "functions/functions.h"
 #include "overload_resolution.hpp"
@@ -38,7 +39,7 @@ PPreflection::dynamic_variable PPreflection::Namespace::invoke_qualified(PP::str
 	PP::simple_vector<PP::reference_wrapper<const namespace_function&>> candidate_functions;
 	get_function_overloads(function_name, PP::push_back_iterator(candidate_functions));
 
-	auto f = overload_resolution(candidate_functions, args);
+	auto [f, error_code] = overload_resolution(candidate_functions, args_to_types(args), PP::empty_view<standard_conversion_sequence>{}, true);
 	if (f)
 		return f->invoke(args);
 	else

@@ -30,7 +30,7 @@ namespace PPreflection
 		constexpr virtual convertor_object member_function_noexcept_conversion() const noexcept = 0;
 		constexpr virtual convertor_object base_pointer_conversion(const non_union_class_type& derived) const noexcept = 0;
 		
-		constexpr standard_conversion_sequence make_standard_conversion_sequence(const pointer_to_member_type& target) const noexcept;
-		constexpr standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target) const noexcept override final;
+		constexpr standard_conversion_sequence make_standard_conversion_sequence_impl(const pointer_to_member_type& target) const noexcept;
+		constexpr standard_conversion_sequence make_standard_conversion_sequence_impl(const non_array_object_type& target) const noexcept override final;
 	};
 }

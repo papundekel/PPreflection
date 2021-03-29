@@ -7,6 +7,7 @@
 #include "pragma_pop.hpp"
 
 #include "descriptor.hpp"
+#include "printing_policy.hpp"
 
 namespace PPreflector
 {
@@ -28,10 +29,7 @@ namespace PPreflector
 				node.printQualifiedName(out);
 			else if constexpr (PP::concepts::derived_from<Node, clang::Type>)
 			{
-				auto pp = clang::PrintingPolicy({});
-				pp.SuppressTagKeyword = 1;
-
-				clang::QualType::print(&node, clang::Qualifiers(), out, pp, "");
+				clang::QualType::print(&node, clang::Qualifiers(), out, printing_policy, "");
 			}
 		}
 		void print_name(llvm::raw_ostream& out) const override final
@@ -40,9 +38,8 @@ namespace PPreflector
 				node.printName(out);
 			else if constexpr (PP::concepts::derived_from<Node, clang::Type>)
 			{
-				auto pp = clang::PrintingPolicy({});
+				auto pp = printing_policy;
 				pp.SuppressScope = 1;
-				pp.SuppressTagKeyword = 1;
 
 				clang::QualType::print(&node, clang::Qualifiers(), out, pp, "");
 			}

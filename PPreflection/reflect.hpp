@@ -30,6 +30,7 @@
 #include "make_array.h"
 #include "types/dynamic_enum_type.h"
 
+#include "overload_resolution.hpp"
 #include "parent_descriptor_reference.hpp"
 #include "parent_descriptor_reference_strong.hpp"
 #include "convertor.hpp"

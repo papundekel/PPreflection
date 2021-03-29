@@ -22,7 +22,7 @@ namespace PPreflection::tags
 // ::
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global>> = PP::value_tuple<
 	PPreflection::overload_caster<int>(::print_int),
-	PPreflection::overload_caster<G::E>(::print_enum)>;
+	PPreflection::overload_caster<bool>(::print_bool)>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global>> = PP::type_tuple<>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global>> = PP::type_tuple<
 	PPreflection::tags::global::G,
@@ -33,10 +33,10 @@ template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<PPr
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<PPreflection::overload_caster<int>(::print_int)>>> = "print_int"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PP::value_t<PPreflection::overload_caster<int>(::print_int)>>> = PP::type<PPreflection::tags::global>;
 
-// ::print_enum(G::E)
-template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<PPreflection::overload_caster<G::E>(::print_enum)>> = PPreflection::detail::basic_namespace_function<PPreflection::overload_caster<G::E>(::print_enum)>{};
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<PPreflection::overload_caster<G::E>(::print_enum)>>> = "print_enum"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PP::value_t<PPreflection::overload_caster<G::E>(::print_enum)>>> = PP::type<PPreflection::tags::global>;
+// ::print_bool(bool)
+template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<PPreflection::overload_caster<bool>(::print_bool)>> = PPreflection::detail::basic_namespace_function<PPreflection::overload_caster<bool>(::print_bool)>{};
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<PPreflection::overload_caster<bool>(::print_bool)>>> = "print_bool"_sv;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PP::value_t<PPreflection::overload_caster<bool>(::print_bool)>>> = PP::type<PPreflection::tags::global>;
 
 // ::G
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::global::G> = PPreflection::detail::basic_namespace<PPreflection::tags::global::G>{};

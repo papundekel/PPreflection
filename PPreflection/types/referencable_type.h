@@ -19,6 +19,6 @@ namespace PPreflection
 		}
 		constexpr virtual PP::type_disjunction_reference<function_type, object_type> cast_down(PP::overload_tag<referencable_type> = {}) const noexcept = 0;
 
-		constexpr virtual standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target, void* = nullptr) const noexcept = 0;
+		constexpr virtual standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target) const noexcept = 0;
 	};
 }

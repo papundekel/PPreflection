@@ -22,11 +22,9 @@ namespace PPreflection
 	class function : public descriptor
 	{
 		friend class Namespace;
-		friend class viable_function_t;
+		friend class viable_function;
 
 	protected:
-		virtual dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator, void* = nullptr) const noexcept = 0;
-
 		static constexpr decltype(auto) call_with_arguments_cast_to_parameter_types(auto&& f, PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator, auto parameter_types) noexcept
 		{
 			return PP::tuple_apply(PP_FORWARD(f), PP::tuple_zip_with_pack([]
@@ -53,6 +51,7 @@ namespace PPreflection
 		constexpr void print_name_after_parent(PP::simple_ostream& out) const noexcept override;
 
 	public:
+		virtual dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator, void* = nullptr) const noexcept = 0;
 		constexpr virtual const function_type& get_function_type() const noexcept = 0;
 
 		constexpr return_type_reference return_type() const noexcept

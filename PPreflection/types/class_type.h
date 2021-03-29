@@ -31,6 +31,8 @@ namespace PPreflection
 		constexpr void get_static_member_function_overloads(PP::string_view name, PP::concepts::iterator auto i_out) const noexcept;
 		constexpr const user_defined_type* get_nested_type(PP::string_view name) const noexcept;
 
+		constexpr void get_conversion_functions_inherited(PP::concepts::iterator auto i_out) const noexcept;
+
 		constexpr virtual convertor_object base_pointer_conversion(const class_type& base) const noexcept = 0;
 	};
 }

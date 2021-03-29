@@ -110,6 +110,6 @@ namespace PPreflection
 		constexpr virtual const pointer_type& get_pointer_type() const noexcept = 0;
 
 		constexpr standard_conversion_sequence make_standard_conversion_sequence(const pointer_type& target) const noexcept;
-		constexpr standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target, void* = nullptr) const noexcept override final;
+		constexpr standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target) const noexcept override final;
 	};
 }

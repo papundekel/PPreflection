@@ -4,6 +4,7 @@
 #include "../dynamic_reference.hpp"
 #include "../dynamic_object.hpp"
 #include "../functions/functions.hpp"
+#include "../overload_resolution.hpp"
 #include "../parent_descriptor_reference.hpp"
 #include "../parent_descriptor_reference_strong.hpp"
 #include "types.hpp"

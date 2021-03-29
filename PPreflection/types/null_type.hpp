@@ -4,7 +4,7 @@
 #include "../conversion_sequence.hpp"
 #include "pointer_base_type.h"
 
-constexpr PPreflection::standard_conversion_sequence PPreflection::null_type::make_standard_conversion_sequence(const non_array_object_type& target) const noexcept
+constexpr PPreflection::standard_conversion_sequence PPreflection::null_type::make_standard_conversion_sequence_impl(const non_array_object_type& target) const noexcept
 {
 	standard_conversion_sequence sequence(*this);
 

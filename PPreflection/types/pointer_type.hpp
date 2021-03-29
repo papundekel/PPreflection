@@ -4,7 +4,7 @@
 #include "../cv_qualification_signature.hpp"
 #include "derived_from.hpp"
 
-constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_type::make_standard_conversion_sequence(const pointer_type& target) const noexcept
+constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_type::make_standard_conversion_sequence_impl(const pointer_type& target) const noexcept
 {
 	standard_conversion_sequence sequence(*this);
 
@@ -33,6 +33,7 @@ constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_type:
 			sequence.set_validity(target);
 			sequence.set_rank(conversion_sequence_rank::conversion);
 			sequence.set_promotion_conversion(pointed_to_this_class_ptr->base_pointer_conversion(*pointed_to_target_class_ptr));
+			sequence.set_converts_to_base_pointer();
 			if (pointed_to_target.cv != pointed_to_this.cv)
 				sequence.set_qualification();
 		}
@@ -41,6 +42,7 @@ constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_type:
 			sequence.set_validity(target);
 			sequence.set_rank(conversion_sequence_rank::conversion);
 			sequence.set_promotion_conversion(void_conversion());
+			sequence.set_converts_to_void_pointer();
 			if (pointed_to_target.cv != pointed_to_this.cv)
 				sequence.set_qualification();
 		}
@@ -54,19 +56,20 @@ constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_type:
 	return sequence;
 }
 
-constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_type::make_standard_conversion_sequence(const non_array_object_type& target) const noexcept
+constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_type::make_standard_conversion_sequence_impl(const non_array_object_type& target) const noexcept
 {
 	standard_conversion_sequence sequence(*this);
 
 	if (const auto* target_pointer_ptr = dynamic_cast<const pointer_type*>(&target); target_pointer_ptr)
 	{
-		sequence = make_standard_conversion_sequence(*target_pointer_ptr);
+		sequence = make_standard_conversion_sequence_impl(*target_pointer_ptr);
 	}
 	else if (const auto* target_bool_ptr = dynamic_cast<const arithmetic_type_strong<bool>*>(&target); target_bool_ptr)
 	{
 		sequence.set_validity(target);
 		sequence.set_rank(conversion_sequence_rank::conversion);
 		sequence.set_promotion_conversion(bool_conversion());
+		sequence.set_converts_pointer_to_bool();
 	}
 
 	return sequence;

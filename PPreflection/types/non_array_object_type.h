@@ -28,7 +28,7 @@ namespace PPreflection
 			return true; /* TODO */
 		}
 
-		constexpr virtual standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target) const noexcept = 0;
-		constexpr standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target, void*) const noexcept override final;
+		constexpr virtual standard_conversion_sequence make_standard_conversion_sequence_impl(const non_array_object_type& target) const noexcept = 0;
+		constexpr standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target) const noexcept override final;
 	};
 }

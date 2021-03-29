@@ -1,6 +1,5 @@
 #pragma once
-#include "types/pointer_type.h"
-#include "types/pointer_to_member_type.h"
+#include "types/types.h"
 
 namespace PPreflection
 {
@@ -71,12 +70,20 @@ namespace PPreflection
 		constexpr explicit cv_qualification_signature(const pointer_type& type)
 			: elements(2)
 		{
-			register_elements(type.remove_pointer().to_type_ptr());			
+			register_elements(type);			
 		}
 		constexpr explicit cv_qualification_signature(const pointer_to_member_type& type)
 			: elements(2)
 		{
-			register_elements(type.get_member_type().to_type_ptr());
+			register_elements(type);
+		}
+		constexpr explicit cv_qualification_signature(const non_array_object_type& type)
+			: elements(2)
+		{
+			if (const auto* p = dynamic_cast<const pointer_type*>(&type); p)
+				register_elements(*p);
+			else if (const auto* p = dynamic_cast<const pointer_to_member_type*>(&type); p)
+				register_elements(*p);
 		}
 
 		constexpr bool compatible(cv_qualification_signature target) const noexcept
@@ -111,7 +118,16 @@ namespace PPreflection
 		}
 
 	private:
-		constexpr void register_elements(cv_type_ptr<pointable_type> t)
+		constexpr void register_elements(const pointer_to_member_type& t)
+		{
+			register_elements_implementation(t.get_member_type().to_type_ptr());
+		}
+		constexpr void register_elements(const pointer_type& t)
+		{
+			register_elements_implementation(t.remove_pointer().to_type_ptr());
+		}
+
+		constexpr void register_elements_implementation(cv_type_ptr<pointable_type> t)
 		{
 			while (true)
 			{

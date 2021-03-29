@@ -11,6 +11,9 @@
 namespace PPreflection
 {
 	template <typename Type>
+	struct cv_type;
+
+	template <typename Type>
 	struct cv_type_ptr
 	{
 		const Type* type_ptr;
@@ -22,6 +25,8 @@ namespace PPreflection
 		{
 			return {type_ptr, cv};
 		}
+
+		constexpr cv_type<Type> operator*() const noexcept;
 	};
 
 	template <typename Type>
@@ -106,4 +111,10 @@ namespace PPreflection
 	cv_type(const Type&, PP::cv_qualifier) -> cv_type<Type>;
 	template <typename Type>
 	cv_type(const Type&) -> cv_type<Type>;
+}
+
+template <typename Type>
+constexpr PPreflection::cv_type<Type> PPreflection::cv_type_ptr<Type>::operator*() const noexcept
+{
+	return {*type_ptr, cv};
 }

@@ -12,7 +12,7 @@ constexpr bool PPreflection::pointer_to_member_type::operator==(const pointer_to
 		get_member_type() == other.get_member_type();
 }
 
-constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_to_member_type::make_standard_conversion_sequence(const pointer_to_member_type& target) const noexcept
+constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_to_member_type::make_standard_conversion_sequence_impl(const pointer_to_member_type& target) const noexcept
 {
 	standard_conversion_sequence sequence(*this);
 
@@ -72,19 +72,20 @@ constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_to_me
 	return sequence;
 }
 
-constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_to_member_type::make_standard_conversion_sequence(const non_array_object_type& target) const noexcept
+constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_to_member_type::make_standard_conversion_sequence_impl(const non_array_object_type& target) const noexcept
 {
 	standard_conversion_sequence sequence(*this);
 
 	if (const auto* target_pointer_to_member_ptr = dynamic_cast<const pointer_to_member_type*>(&target); target_pointer_to_member_ptr)
 	{
-		sequence = make_standard_conversion_sequence(*target_pointer_to_member_ptr);
+		sequence = make_standard_conversion_sequence_impl(*target_pointer_to_member_ptr);
 	}
 	else if (const auto* target_bool_ptr = dynamic_cast<const arithmetic_type_strong<bool>*>(&target); target_bool_ptr)
 	{
 		sequence.set_validity(target);
 		sequence.set_rank(conversion_sequence_rank::conversion);
 		sequence.set_promotion_conversion(bool_conversion());
+		sequence.set_converts_pointer_to_bool();
 	}
 
 	return sequence;

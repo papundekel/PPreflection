@@ -43,4 +43,12 @@ namespace PPreflection
 
 		return PP::make_tuple(result, non_union_class_derived_ptr, non_union_class_base_ptr);
 	}
+
+	constexpr bool same_or_derived_from(const type& derived, const type& base)
+	{
+		if (derived == base)
+			return true;
+
+		return derived_from(derived, base)[PP::value_0];
+	}
 }

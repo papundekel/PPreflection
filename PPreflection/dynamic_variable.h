@@ -70,6 +70,7 @@ namespace PPreflection
 		}
 
 		static dynamic_variable create_invalid(dynamic_object::invalid_code code) noexcept;
+		static dynamic_variable create_void() noexcept;
 
 	private:
 		static constexpr auto get_type_helper = PP::overloaded
@@ -111,6 +112,15 @@ namespace PPreflection
 			(
 				[](const dynamic_reference& r) { return r; },
 				[](const dynamic_object& o) { return o.move(); }
+			), dynamic);
+		}
+
+		constexpr dynamic_object move_object() && noexcept
+		{
+			return std::visit(PP::overloaded
+			(
+				[](dynamic_reference&) { return dynamic_object::create_void(); },
+				[](dynamic_object& o) { return PP::move(o); }
 			), dynamic);
 		}
 	};

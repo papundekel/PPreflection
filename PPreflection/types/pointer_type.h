@@ -57,7 +57,7 @@ namespace PPreflection
 
 		constexpr virtual convertor_object void_conversion() const noexcept = 0;
 
-		constexpr standard_conversion_sequence make_standard_conversion_sequence(const pointer_type& target) const noexcept;
-		constexpr standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target) const noexcept override final;
+		constexpr standard_conversion_sequence make_standard_conversion_sequence_impl(const pointer_type& target) const noexcept;
+		constexpr standard_conversion_sequence make_standard_conversion_sequence_impl(const non_array_object_type& target) const noexcept override final;
 	};
 }

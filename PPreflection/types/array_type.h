@@ -31,7 +31,7 @@ namespace PPreflection
 
 			constexpr virtual convertor_object array_to_pointer_conversion() const noexcept = 0;
 
-			constexpr standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target, void* = nullptr) const noexcept override final;
+			constexpr standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target) const noexcept override final;
 		};
 	}
 }

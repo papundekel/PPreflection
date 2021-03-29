@@ -2,6 +2,7 @@
 #include "../conversion_sequence.hpp"
 #include "../dynamic_object.h"
 #include "../dynamic_reference.h"
+#include "../initialization.hpp"
 #include "../types/parameter_type_reference.h"
 #include "../types/type.h"
 #include "function.h"

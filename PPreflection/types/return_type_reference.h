@@ -27,9 +27,14 @@ namespace PPreflection
 			: detail::return_type_reference_base(vt)
 		{}
 
-		constexpr operator const type&() const noexcept
+		constexpr const type& as_type() const noexcept
 		{
 			return visit(PP::static__cast * PP::type<const type&>);
+		}
+
+		constexpr operator const type&() const noexcept
+		{
+			return as_type();
 		}
 
 		constexpr bool operator==(return_type_reference other) const noexcept

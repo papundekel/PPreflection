@@ -17,32 +17,30 @@ namespace PPreflection
 		friend class dynamic_object;
 
 		std::variant<void*, void(*)()> ptr;
-		dynamic_reference_type type_;
+		const reference_type* type_;
 
 	public:
 		dynamic_reference(const dynamic_reference&) = default;
-		dynamic_reference(dynamic_reference&&) = default;
 
 	private:
 		constexpr dynamic_reference(const void* ptr, const reference_type& t) noexcept
 			: ptr(const_cast<void*>(ptr))
-			, type_(t)
+			, type_(&t)
 		{}
 		template <typename Return, typename... Parameters>
 		constexpr dynamic_reference(Return (*ptr)(Parameters...), const reference_type& t) noexcept
 			: ptr((void(*)())ptr)
-			, type_(t)
+			, type_(&t)
 		{}
 
 	public:
 		dynamic_reference& operator=(const dynamic_reference&) = default;
-		dynamic_reference& operator=(dynamic_reference&&) = default;
 
 		struct bad_cast_exception {};
 
 		constexpr const reference_type& get_type() const noexcept
 		{
-			return type_;
+			return *type_;
 		}
 
 		inline auto cast_unsafe(PP::concepts::type auto t) const noexcept -> PP_GET_TYPE(t)&&;
