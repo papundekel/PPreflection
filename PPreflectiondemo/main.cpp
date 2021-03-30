@@ -2,13 +2,16 @@
 
 #include "PPreflection/reflect.hpp"
 
-void print_int(int a)
+namespace N
 {
-	std::cout << a << '\n';
-}
-void print_bool(bool b)
-{
-	std::cout << std::boolalpha << b << '\n';
+	void print(int a)
+	{
+		std::cout << "int " << a << '\n';
+	}
+	void print(short b)
+	{
+		std::cout << "short " << b << '\n';
+	}
 }
 
 #include "f.hpp"
@@ -17,7 +20,25 @@ void print_bool(bool b)
 
 int main()
 {
-	PPreflection::global_namespace.invoke_qualified("print_bool", { true });
+	const auto& n = *PPreflection::global_namespace.get_namespace("N");
+
+	for (const auto& f : n.get_functions())
+		std::cout << f << "\n";
+
+	while (true)
+	{
+		int a;
+		std::cin >> a;
+
+		auto obj = PPreflection::dynamic_object::create_void();
+
+		if (a > 5)
+			obj = PPreflection::dynamic_object::create_copy(a % 2 == 0);
+		else
+			obj = PPreflection::dynamic_object::create_copy((short)a);
+
+		n.invoke_qualified("print", { obj });
+	}
 
 	std::cout.flush();
 	return 0;

@@ -22,6 +22,12 @@ namespace PPreflection
 	public:
 		dynamic_reference(const dynamic_reference&) = default;
 
+		constexpr dynamic_reference(auto&& r) noexcept
+		requires 
+			PP::concepts::different_except_cvref<decltype(r), dynamic_reference> &&
+			PP::concepts::different_except_cvref<decltype(r), dynamic_object> &&
+			PP::concepts::different_except_cvref<decltype(r), dynamic_variable>;
+
 	private:
 		constexpr dynamic_reference(const void* ptr, const reference_type& t) noexcept
 			: ptr(const_cast<void*>(ptr))
@@ -50,20 +56,14 @@ namespace PPreflection
 		inline auto&  get_ref(PP::concepts::type auto t) const&;
 		inline auto&& get_ref(PP::concepts::type auto t) const&&;
 
-		constexpr dynamic_reference(auto&& r) noexcept
-		requires 
-			PP::concepts::different_except_cvref<decltype(r), dynamic_reference> &&
-			PP::concepts::different_except_cvref<decltype(r), dynamic_object> &&
-			PP::concepts::different_except_cvref<decltype(r), dynamic_variable>;
-
 		inline decltype(auto) visit(PP::concepts::type auto t, auto&& f) const;
 
 		constexpr void* get_void_ptr() const;
 
 	private:
-		constexpr decltype(auto) reinterpret(PP::concepts::type auto t) const
+		constexpr auto* reinterpret(PP::concepts::type auto t) const
 		{
-			return std::visit([t](auto p) -> decltype(auto) { return PP::reinterpret__cast(t, p); }, ptr);
+			return std::visit([t](auto* p) -> decltype(auto) { return PP::reinterpret__cast(t, p); }, ptr);
 		}
 	};
 }

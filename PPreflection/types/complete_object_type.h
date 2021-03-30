@@ -17,6 +17,8 @@ namespace PPreflection
 		}
 		constexpr virtual PP::type_disjunction_reference<known_bound_array_type, non_array_object_type> cast_down(PP::overload_tag<complete_object_type> = {}) const noexcept = 0;
 
+		constexpr virtual const reference_type& get_reference_type(bool lvalue, PP::cv_qualifier cv) const noexcept = 0;
+
 		constexpr virtual PP::size_t size() const noexcept = 0;
 		constexpr virtual void destroy(void* ptr) const noexcept = 0;
 	};

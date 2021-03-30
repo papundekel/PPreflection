@@ -23,7 +23,7 @@ namespace PPreflection
 
 		constexpr virtual const non_union_class_type* as_non_union_class() const noexcept = 0;
 
-		inline dynamic_object create_instance(PP::any_view<PP::iterator_category::ra, const dynamic_reference&> args = {}) const noexcept;
+		inline dynamic_object create_instance(PP::any_view<PP::iterator_category::ra, dynamic_reference> args = {}) const noexcept;
 
 		inline dynamic_object copy_initialize_same_or_derived(dynamic_reference arg) const noexcept;
 

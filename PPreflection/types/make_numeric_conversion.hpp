@@ -19,7 +19,7 @@ namespace PPreflection
 		auto convertors = type_to_convertor < PP::arithmetic_types;
 
 		auto type_index = PP::tuple_find_dynamic([&target]
-			(PP::concepts::type auto t)
+			([[maybe_unused]] PP::concepts::type auto t)
 			{
 				return dynamic_cast<const arithmetic_type_strong<PP_GET_TYPE(t)>*>(&target) != nullptr;
 			}, PP::arithmetic_types);

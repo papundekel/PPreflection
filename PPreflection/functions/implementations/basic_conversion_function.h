@@ -19,7 +19,7 @@ namespace PPreflection::detail
 				[this, caller]() -> decltype(auto)
 				{
 					return (caller.cast_unsafe(this->caller_type).*mf)();
-				}, PP::make_any_iterator(PP::empty_iterator<const dynamic_reference&>{}), PP::empty_tuple{});
+				}, PP::make_any_iterator(PP::empty_iterator<dynamic_reference>{}), PP::empty_tuple{});
 		}
 		constexpr bool is_explicit() const noexcept override final
 		{

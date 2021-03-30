@@ -1,4 +1,5 @@
 #pragma once
+#include "dynamic_reference_type.h"
 #include "pointer_type.h"
 
 namespace PPreflection
@@ -29,5 +30,6 @@ namespace PPreflection
 		{
 			return nullptr;
 		}
+		constexpr const reference_type& get_reference_type(bool lvalue, PP::cv_qualifier cv) const noexcept override final;
 	};
 }

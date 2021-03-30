@@ -40,6 +40,12 @@ constexpr PPreflection::dynamic_object PPreflection::dynamic_object::create(PP::
 	return dynamic_object([&args...]() { return PP_GET_TYPE(t)(PP_FORWARD(args)...); });
 }
 
+constexpr PPreflection::dynamic_object PPreflection::dynamic_object::create_copy(auto&& arg)
+{
+	using T = PP_GET_TYPE(~PP_DECLTYPE(arg));
+	return dynamic_object([&arg]() { return T(PP_FORWARD(arg)); });
+}
+
 constexpr PPreflection::dynamic_object PPreflection::dynamic_object::create_shallow_copy(dynamic_reference r) noexcept
 {
 	auto cv_type = r.get_type().remove_reference().cast(PP::type<complete_object_type>);
@@ -63,12 +69,12 @@ constexpr const PPreflection::complete_object_type& PPreflection::dynamic_object
 
 constexpr PPreflection::dynamic_object::operator dynamic_reference() const
 {
-	return reference_cast_helper(PP::value_false);
+	return reference_cast_helper(PP::value_true);
 }
 
 constexpr PPreflection::dynamic_reference PPreflection::dynamic_object::move() const
 {
-	return reference_cast_helper(PP::value_true);
+	return reference_cast_helper(PP::value_false);
 }
 
 constexpr PPreflection::dynamic_object::operator bool() const noexcept
@@ -106,10 +112,13 @@ constexpr void* PPreflection::dynamic_object::get_address() const noexcept
 	return get_address(x.get_object(), get_cv_type().type);
 }
 
-constexpr PPreflection::dynamic_reference PPreflection::dynamic_object::reference_cast_helper(PP::concepts::value auto rvalue) const
+constexpr PPreflection::dynamic_reference PPreflection::dynamic_object::reference_cast_helper(PP::concepts::value auto lvalue) const
 {
 	if (*this)
-		return dynamic_reference(get_address(), make_reference_type(rvalue, get_cv_type()));
+	{
+		auto cv_type = get_cv_type();
+		return dynamic_reference(get_address(), cv_type.type.get_reference_type(*lvalue, cv_type.cv));
+	}
 	else
 		throw 0;
 }

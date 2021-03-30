@@ -30,7 +30,7 @@ constexpr void PPreflection::function::print_name_after_parent(PP::simple_ostrea
 	print_noexcept(out);
 }
 
-inline PPreflection::dynamic_variable PPreflection::function::invoke(PP::any_view<PP::iterator_category::ra, const dynamic_reference&>, void*) const noexcept
+inline PPreflection::dynamic_variable PPreflection::function::invoke(PP::any_view<PP::iterator_category::ra, dynamic_reference>, void*) const noexcept
 {
 	return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
 }

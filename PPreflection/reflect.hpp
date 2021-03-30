@@ -27,7 +27,6 @@
 #include "functions/implementations/implementations.hpp"
 
 #include "types/dynamic_function_type.h"
-#include "make_array.h"
 #include "types/dynamic_enum_type.h"
 
 #include "overload_resolution.hpp"

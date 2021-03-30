@@ -429,6 +429,11 @@ namespace PPreflection
 			if (type_this == type::standard && type_other == type::user_defined)
 				return true;
 
+			// 3.2
+			if (type_this == type::standard && type_other == type::standard &&
+				first_standard_conversion > other.first_standard_conversion)
+				return true;
+
 			// 3.3
 			if (type_this == type::user_defined && type_other == type::user_defined &&
 				user_defined_conversion.same_user_defined_function(other.user_defined_conversion) &&

@@ -14,7 +14,10 @@
 
 constexpr PPreflection::parent_descriptor_reference PPreflection::Namespace::get_parent(void*) const noexcept
 {
-	return get_parent();
+	if (const auto& parent = get_parent(); &parent != this)
+		return parent;
+	else
+		return {};
 }
 
 constexpr const PPreflection::Namespace* PPreflection::Namespace::get_namespace(PP::string_view name) const noexcept
@@ -39,7 +42,12 @@ PPreflection::dynamic_variable PPreflection::Namespace::invoke_qualified(PP::str
 	PP::simple_vector<PP::reference_wrapper<const namespace_function&>> candidate_functions;
 	get_function_overloads(function_name, PP::push_back_iterator(candidate_functions));
 
-	auto [f, error_code] = overload_resolution(candidate_functions, args_to_types(args), PP::empty_view<standard_conversion_sequence>{}, true);
+	PP::simple_vector<PP::reference_wrapper<const reference_type&>> arg_types;
+	
+	for (auto r : args)
+		arg_types.push_back(r.get_type());
+
+	auto [f, error_code] = overload_resolution(candidate_functions, arg_types, PP::empty_view<standard_conversion_sequence>{}, true);
 	if (f)
 		return f->invoke(args);
 	else

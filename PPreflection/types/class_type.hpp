@@ -5,7 +5,7 @@
 #include "../functions/constructor.h"
 #include "derived_from.hpp"
 
-inline PPreflection::dynamic_object PPreflection::class_type::create_instance(PP::any_view<PP::iterator_category::ra, const dynamic_reference&>) const noexcept
+inline PPreflection::dynamic_object PPreflection::class_type::create_instance(PP::any_view<PP::iterator_category::ra, dynamic_reference>) const noexcept
 {
 	return dynamic_object::create_invalid(dynamic_object::invalid_code::no_valid_overload);
 }

@@ -118,6 +118,7 @@ namespace PPreflection
 		}
 
 		static constexpr dynamic_object create(PP::concepts::type auto t, auto&&... args);
+		static constexpr dynamic_object create_copy(auto&& arg);
 		static constexpr dynamic_object create_shallow_copy(dynamic_reference r) noexcept;
 
 		constexpr cv_type<complete_object_type> get_cv_type() const noexcept;

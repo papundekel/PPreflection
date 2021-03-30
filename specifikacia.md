@@ -2,256 +2,135 @@
 
 C++ reflection knižnica.
 
-Ročníkový projekt.
+Bakalárska práca.
 
-## Popis
+# Idea
 
-C++20
+## Definícia
 
-Dve časti: generátor a framework.
+Reflexia je schopnosť jazyka explicitne sa odkazovať na vlastnú štruktúru.
 
-### Generátor
+Príklad z C++:\
+Štruktúra: funkcie patria do namespace-ov.\
+Táto štruktúra má implicitný vplyv na výsledný program, keďže ovplyvňuje pravidlá pri výbere overloadu funkcie pri volaní.\
+Ale, nikde v kóde sa nevieme explicitne odkázať, napríklad, na zoznam všetkých funkcií v danom namespace, pretože v tomto zmysle C++ reflexiu nepodporuje.
 
-Súčasťou knižnice bude generátor metadát. Ten vygeneruje zo zdrojového kódu užívateľa potrebné metadáta pre reflexiu. Metadáta sú C++ kód, ktorý bude súčasťou kompilovaného kódu.
+## Hlavné myšlienky
 
-Cieľom je možnosť zapojiť generátor do automatizovaného buildu s čo najmenšou prácou užívateľa: zdrojový kód prejde cez generátor, ktorý vyprodukuje kód aj s metadátami; ten dostane kompilátor.
+* rozšíriť C++20 o reflexiu
+* nevytvárať nový prekladač
+* nerozširovať kód už existujúceho prekladača
+* umožniť dynamické volanie funkcií, vrátane "overload resolution" a "implicit conversions"
+* implementovať potenciálne veľmi malú, ale čo najviac ucelenú podmnožinu jazyka
 
-Najjednoduchšie bude použiť clang nástroje, ktoré sprístupňujú AST. Iná možnosť by bola iba napísať vlastný parser.
+### Záver
 
-### Framework
+Implementovať reflexiu v dvoch častiach, generátor a framework.
 
-Poskytuje rozhranie pre prístup k metadátam.
+Generátor je Clang plugin, ktorý vygeneruje z prekladovej jednotky súbor s metadátami.\
+Metadáta sú platný C++ kód, pripoja sa do užívateľovho programu cez `#include`.
 
-Triedy ako napr. `type` a `function` s metódami `is_derived_from(/*iný typ*/)` a `invoke(/*dynamické argumenty*/)` resp.
+Framework je obyčajná C++ knižnica, ktorú užívateľ pripojí k svojmu programu.
 
-Rieši úlohy ako: reprezentácia metadát, dynamicky vytvorené objekty cez reflexiu, implementácia pravidiel inicializácie a overload resolution.
+Toto rozdelenie síce vyžaduje implementáciu pluginu špecifického prekladača,
+ale keďže metadáta sú obyčajný C++ kód, užívateľ môže svoj program prekladať ľubovoľným prekladačom, ktorý podporuje danú verziu C++ štandardu.\
+Clang teda slúži v podstate len ako knižnica pre generátor.
 
-## Rozsah práce
+Užívateľ potrebuje linknúť framework, include-núť jeden header z knižnice a do build systému pridať ekvivalent tohto pseudo-pravidla:\
+`@.cpp.meta <- clang++ -fplugin="$PPREFLECTOR_PATH" -fsyntax-only @.cpp`
 
-Keďže potenciálny rozsah podporovaných funckcií končí pri implementácii prakticky celého kompilátora, cieľom tejto knižnice zatiaľ **nie** je podporovať vytváranie nových tried, funckií a pod.
+# Implementácia
 
-V aktuálnom stave vývoja sa javí ako rozsahovo rozumné implementovať iba dynamické volanie funkcií a spôsoby, ktorými sa tieto funkcie dajú "objaviť" (získať členské metódy danej triedy, získať funkcie s počtom parametrov 2 v danom namespace a pod.).
+## Framework
 
-## Príklad
+Framework implementuje dynamické typy, teda typy ako objekty.
+
+```cpp
+namespace N { class X; }
+const type* t = nullptr;
+t = &PPreflection::reflect(PP::type<int>);
+std::cout << *t << "\n"; // prints "int"
+t = &PPreflection::reflect(PP::type<X>);
+std::cout << *t << "\n"; // prints "::N::X"
+```
+
+S dynamickými typmi implementuje aj dynamicky typované premenné (napríklad return z dynamicky volanej funkcie)
+
+Pre volanie funkcií tiež potrebuje implementovať overload resolution, implicitné konverzie a inicializáciu.
+
+```cpp
+void f(int a) { std::cout << a; }
+void f(std::nullptr_t) { std::cout << "null"; }
+
+PP::string_view function_name = "f";
+
+auto x = PPreflection::dynamic_object::create_copy('A');
+PPreflection::global_namespace.invoke(function_name, x); // prints "65"
+
+x = PPreflection::dynamic_object::create_copy(nullptr);
+PPreflection::global_namespace.invoke(function_name, x); // prints "null"
+```
+
+### Hierarchia tried
+[odkaz](class_diagram.svg)
+
+## Generátor
+
+Clang plugin.
+
+Z AST vygeneruje všetky potrebné informácie pre reflexiu, ktoré nie sú v jazyku dostupné.\
+Tieto informácie zachytí ako explicitné špecializácie constexpr inline premennej.
+
+Napríklad pre namespace:
+
+```cpp
+template <> constexpr inline auto PPreflection::detail::metadata<N> = PPreflection::detail::basic_namespace<N>{};
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<N>> = "N"_sv;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<N>> = PP::type<parent>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<N>> = PP::type_tuple<types...>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<N>> = PP::type_tuple<namespaces...>;
+
+```
+
+# Príklad
 
 ```cpp
 // declarations.hpp
-struct X
+namespace N
 {
-	int x;
-
-	X(const int& x);
-
-	explicit X(const double& y);
-
-	X(int a, int b);
-
-	void f() &;
-	void f() &&;
-
-	explicit operator int();
-	operator int() const;
-
-	~X();
-};
-
-// implementations.cpp
-#include "declarations.hpp"
-
-X::X(const int& x)
-	: x(x)
-{
-	std::cout << "int ctr\n";
+	int f(int a);
+	int f(bool a);
 }
+```
 
-X::X(const double& y)
-	: x(y)
-{
-	std::cout << "double ctr\n";
-}
-
-void X::f() &
-{
-	std::cout << x << "f&\n";
-}
-void X::f() &&
-{
-	std::cout << x << "f&&\n";
-}
-
-X::~X()
-{
-	std::cout << "dead, " << x << '\n';
-}
-
-// other implementations...
-
+```cpp
 // main.cpp
+#include "PPreflection/reflect.hpp"
+
 #include "declarations.hpp"
-// #include "framework.hpp"
 
-// generated
-namespace reflect_detail
-{
-	struct X_f {};
-	struct global_double_ {};
-}
-
-template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<namespace_t::global>>
-	= PP::string_view("global'");
-template <> constexpr inline auto detail::reflect_metadata<namespace_t::global> =
-	detail::basic_namespace<namespace_t::global, append_pack<fundamental_type_pack,
-		type_pack<X>>,
-		type_pack<reflect_detail::global_double_>>{};
-
-template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<X>> = PP::string_view("X");
-template <> constexpr inline auto detail::reflect_metadata<detail::id_wrap<X>> = size_t(0);
-template <> constexpr inline auto detail::reflect_metadata<X>
-	= detail::basic_class_type<namespace_t::global, X,
-		type_pack<
-		reflect_detail::X_f,
-		overloaded_conversion_function_info<X, int>>,
-		type_pack<>>{};
-
-template <> constexpr inline auto detail::reflect_metadata<detail::constructor_wrap<X>>
-	= detail::basic_overloaded_class_constructor<X, type_pack<
-		constructor_partial_info<false, const int&>,
-		constructor_partial_info<true, const double&>>>{};
-
-namespace detail
-{
-	template <>	constexpr inline auto overload_caster<reflect_detail::X_f, 0>
-		= overload_member_caster<cv_qualifier::none, ref_qualifier::rvalue>(&X::f);
-	template <>	constexpr inline auto overload_caster<reflect_detail::X_f, 1>
-		= overload_member_caster<cv_qualifier::none, ref_qualifier::lvalue>(&X::f);
-}
-
-template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<reflect_detail::X_f>> = PP::string_view("f");
-template <> constexpr inline auto detail::reflect_metadata<reflect_detail::X_f>
-	= detail::basic_overloaded_member_function<reflect_detail::X_f, value_pack<
-		detail::overload_caster<reflect_detail::X_f, 0>,
-		detail::overload_caster<reflect_detail::X_f, 1>>>{};
-
-template <> constexpr inline auto detail::reflect_metadata<value_t<detail::overload_caster<reflect_detail::X_f, 0>>>
-	= detail::basic_member_function<reflect_detail::X_f, detail::overload_caster<reflect_detail::X_f, 0>>{};
-template <> constexpr inline auto detail::reflect_metadata<value_t<detail::overload_caster<reflect_detail::X_f, 1>>>
-	= detail::basic_member_function<reflect_detail::X_f, detail::overload_caster<reflect_detail::X_f, 1>>{};
-
-template <> constexpr inline auto detail::reflect_metadata<detail::name_wrap<reflect_detail::global_double_>>
-	= PP::string_view("double_");
-template <> constexpr inline auto detail::reflect_metadata<reflect_detail::global_double_>
-	= detail::basic_overloaded_namespace_function<reflect_detail::global_double_, namespace_t::global, value_pack<
-		::overload_caster<const int&>(double_),
-		::overload_caster<const double&>(double_)>>{};
-
-template <> constexpr inline auto detail::reflect_metadata<value_t<::overload_caster<const int&>(double_)>>
-	= detail::basic_namespace_function<reflect_detail::global_double_, ::overload_caster<const int&>(double_)>{};
-template <> constexpr inline auto detail::reflect_metadata<value_t<::overload_caster<const double&>(double_)>>
-	= detail::basic_namespace_function<reflect_detail::global_double_, ::overload_caster<const double&>(double_)>{};
-
-template <> constexpr inline auto detail::reflect_metadata<overloaded_conversion_function_info<X, int>>
-	= detail::basic_overloaded_conversion_function<overloaded_conversion_function_info<X, int>, type_pack<
-		conversion_function_info<true, cv_qualifier::none, ref_qualifier::none>,
-		conversion_function_info<false, cv_qualifier::const_, ref_qualifier::none>>>{};
-
-namespace detail
-{
-	template <>	constexpr inline auto overload_caster<overloaded_conversion_function_info<X, int>, 0>
-		= overload_member_caster<cv_qualifier::none, ref_qualifier::none>(&X::operator int);
-	template <>	constexpr inline auto overload_caster<overloaded_conversion_function_info<X, int>, 1>
-		= overload_member_caster<cv_qualifier::const_, ref_qualifier::none>(&X::operator int);
-}
-
-template <> constexpr inline auto detail::reflect_metadata<value_t<detail::overload_caster<overloaded_conversion_function_info<X, int>, 0>>>
-	= detail::basic_conversion_function<detail::overload_caster<overloaded_conversion_function_info<X, int>, 0>, false>{};
-template <> constexpr inline auto detail::reflect_metadata<value_t<detail::overload_caster<overloaded_conversion_function_info<X, int>, 1>>>
-	= detail::basic_conversion_function<detail::overload_caster<overloaded_conversion_function_info<X, int>, 1>, false>{};
-
-// /generated
+#include "main.cpp.meta"
 
 int main()
 {
-	std::string name;
-
-	std::cout << "Enter a global namespace class: ";
-	std::cin >> name;
-
-	if (auto X_type = reflect<namespace_t::global, namespace_t>().get_type(name); X_type)
+	const auto* n = PPreflection::global_namespace.get_namespace("N");
+	
+	if (n)
 	{
-		std::cout << "Enter another global namespace class: ";
-		std::cin >> name;
+		// prints
+		// void ::N::f(int)
+		// void ::N::f(bool)
+		for (const auto& f : n->get_functions())
+			std::cout << f << "\n";
 
-		if (auto Y_type = reflect<namespace_t::global, namespace_t>().get_type(name); Y_type)
-		{
-			std::cout << "Trying to default construct " << *Y_type << "...\n";
-
-			if (auto Y_instance = Y_type->create_instance(); Y_instance)
-			{
-				std::cout << "Success.\n";
-				std::cout << "Trying to create " << *X_type << " from " << *Y_type << "&...\n";
-				if (auto X_instance = X_type->create_instance({ Y_instance }); X_instance)
-				{
-					std::cout << "Success.\n";
-					
-					std::cout << "Trying to call member function f with no argumemts on " << *X_type << " instance\n";
-					if (auto f_mf = X_type->get_member_function("f"); f_mf && f_mf->invoke(X_instance))
-						std::cout << "Success.\n";
-					else
-						std::cout << "Failure.\n";
-				}
-				else
-					std::cout << "Failure.\n";
-			}
-			else
-				std::cout << *Y_type << " is not default constructible.\n";
-		}
-		else
-			std::cout << "there is no class ::" << name << ".\n";
+		auto r1 = n->invoke("f", { short(2) }); //calls N::f(int)
+		auto r2 = n->invoke("f", { &n }); //calls N::f(bool)
+		auto r3 = n->invoke("f", { nullptr }); // invalid call
+		auto r4 = n->invoke("f", { 5, 2 }); // invalid call
+		auto r5 = n->invoke("g"); // invalid call
 	}
-	else
-		std::cout << "there is no class ::" << name << ".\n";
 
 	std::cout.flush();
 	return 0;
 }
-```
-
-### Výstup 1
-
-```
-Enter a global namespace class: int
-Enter another global namespace class: double
-Trying to default construct double...
-Success.
-Trying to create int from double&...
-Failure.
-```
-
-### Výstup 2
-
-```
-Enter a global namespace class: int
-Enter another global namespace class: int
-Trying to default construct int...
-Success.
-Trying to create int from int&...
-Success.
-Trying to call member function f with no argumemts on int instance
-Failure.
-```
-
-### Výstup 3
-
-```
-Enter a global namespace class: X
-Enter another global namespace class: int
-Trying to default construct int...
-Success.
-Trying to create X from int&...
-int ctr
-Success.
-Trying to call member function f with no argumemts on X instance
-0f&
-Success.
-dead, 0
 ```

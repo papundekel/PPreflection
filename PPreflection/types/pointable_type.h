@@ -22,7 +22,5 @@ namespace PPreflection
 		{
 			return true; // TODO
 		}
-
-		constexpr dynamic_pointer_type make_pointer(PP::cv_qualifier cv) const noexcept;
 	};
 }

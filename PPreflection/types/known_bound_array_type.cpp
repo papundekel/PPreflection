@@ -1,8 +1,8 @@
 #include "known_bound_array_type.hpp"
 
 #include "../descriptor.hpp"
-#include "../dynamic_reference.hpp"
 #include "../dynamic_object.hpp"
+#include "../dynamic_reference.hpp"
 #include "../functions/functions.hpp"
 #include "../overload_resolution.hpp"
 #include "../parent_descriptor_reference.hpp"

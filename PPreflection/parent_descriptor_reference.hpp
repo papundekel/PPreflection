@@ -23,7 +23,7 @@ constexpr const PPreflection::descriptor* PPreflection::parent_descriptor_refere
 	return visit(PP::overloaded
 	(
 		[](const descriptor& d) { return &d; },
-		[](auto&) { return (const descriptor*)nullptr; }
+		[](const parent_descriptor_none_tag_t&) { return (const descriptor*)nullptr; }
 	));
 }
 

@@ -3,7 +3,6 @@ cmake_minimum_required (VERSION 3.8)
 add_library(PPreflection
 "descriptor.cpp"
 "dynamic_variable.cpp"
-"PPany_view.cpp"
 "types/known_bound_array_type.cpp"
 "types/null_type.cpp"
 )
@@ -14,7 +13,3 @@ set_target_properties(PPreflection PROPERTIES COMPILE_FLAGS "-ftemplate-backtrac
 endif()
 
 target_include_directories(PPreflection PUBLIC "${CMAKE_CURRENT_LIST_DIR}/../PP")
-
-target_precompile_headers(PPreflection PUBLIC
-"PPany_view.hpp"
-)

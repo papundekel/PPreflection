@@ -13,7 +13,7 @@
 
 inline auto PPreflection::dynamic_reference::cast_unsafe(PP::concepts::type auto t) const noexcept -> PP_GET_TYPE(t)&&
 {
-	return (PP_GET_TYPE(t)&&)(*reinterpret(!PP::add_pointer(t)));
+	return (PP_GET_TYPE(t)&&)(*reinterpret(PP::add_pointer(!t)));
 }
 
 inline auto PPreflection::dynamic_reference::cast(PP::concepts::type auto t) const -> PP_GET_TYPE(t)&&

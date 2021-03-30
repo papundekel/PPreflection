@@ -116,6 +116,10 @@ namespace PPreflection
 				converted_argument_references.push_back(sequence.convert(argument, converted_arguments.back()));
 			}
 
+			for (auto& arg : converted_arguments)
+				if (!arg)
+					return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
+
 			return get_function().invoke_unsafe(PP::make_any_iterator(PP::view_begin(converted_argument_references)));
 		}
 	};
@@ -143,7 +147,10 @@ namespace PPreflection
 			if (better_than_all_others)
 			{
 				if (winner)
+				{
 					ambiguous_winner = true;
+					break;
+				}
 				winner = &vf;
 			}
 		}
