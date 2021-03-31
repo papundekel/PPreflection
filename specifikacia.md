@@ -44,20 +44,24 @@ Užívateľ potrebuje linknúť framework, include-núť jeden header z knižnic
 
 # Implementácia
 
+## PP
+
+Projekt použije knižnicu [PP](https://github.com/Petkr/PP), hlavne na metaprogramovanie.
+
 ## Framework
 
 Framework implementuje dynamické typy, teda typy ako objekty.
 
 ```cpp
 namespace N { class X; }
-const type* t = nullptr;
+const PPreflection::type* t = nullptr;
 t = &PPreflection::reflect(PP::type<int>);
 std::cout << *t << "\n"; // prints "int"
-t = &PPreflection::reflect(PP::type<X>);
+t = &PPreflection::reflect(PP::type<N::X>);
 std::cout << *t << "\n"; // prints "::N::X"
 ```
 
-S dynamickými typmi implementuje aj dynamicky typované premenné (napríklad return z dynamicky volanej funkcie)
+S dynamickými typmi implementuje aj dynamicky typované premenné (napríklad return z dynamicky volanej funkcie).
 
 Pre volanie funkcií tiež potrebuje implementovať overload resolution, implicitné konverzie a inicializáciu.
 
@@ -84,14 +88,44 @@ Clang plugin.
 Z AST vygeneruje všetky potrebné informácie pre reflexiu, ktoré nie sú v jazyku dostupné.\
 Tieto informácie zachytí ako explicitné špecializácie constexpr inline premennej.
 
-Napríklad pre namespace:
+Keďže sa na namespace-y v jazyku odkazovať nedá, musí vyrobiť pre každý namespace nový typ, ktorý slúži len na odkazovanie sa na konkrétny namespace.
+
+Hodnoty premenných v týchto metadátach nie sú priamo referencie na iné štruktúry reflexie, pretože použitie hodnoty premennej by predčilo jej explicitnú špecializáciu.\
+Preto je na strane hodnôt vždy použitý len "tag" danej štruktúry.\
+Typ je svojím vlastným tagom, tag funkcie je pointer na ňu a tagom namespace-u je vygenerovaný tag typ.
+
+Napríklad, pre:
 
 ```cpp
-template <> constexpr inline auto PPreflection::detail::metadata<N> = PPreflection::detail::basic_namespace<N>{};
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<N>> = "N"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<N>> = PP::type<parent>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<N>> = PP::type_tuple<types...>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<N>> = PP::type_tuple<namespaces...>;
+namespace N
+{
+	int f(int, int);
+}
+```
+
+sa vygeneruje:
+
+```cpp
+namespace PPreflection::tags
+{
+	struct global
+	{
+		struct N;
+	};
+}
+
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global>> = PP::value_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global>> = PP::type_tuple<
+	PPreflection::tags::global::N>;
+
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::global::N> = PPreflection::detail::basic_namespace<PPreflection::tags::global::N>{};
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::tags::global::N>> = "N"_sv;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PPreflection::tags::global::N>> = PP::type<parent>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global>> = PP::value_tuple<
+	PPreflection::overload_caster<int, int>(::N::f)>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::N>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::N>> = PP::type_tuple<>;
 ```
 
 # Príklad
