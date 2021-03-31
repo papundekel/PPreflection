@@ -39,7 +39,11 @@ Toto rozdelenie síce vyžaduje implementáciu pluginu špecifického prekladač
 ale keďže metadáta sú obyčajný C++ kód, užívateľ môže po generácii svoj program prekladať ľubovoľným prekladačom, ktorý podporuje danú verziu C++ štandardu.\
 Clang teda slúži v podstate len ako knižnica pre generátor.
 
-Užívateľ potrebuje linknúť framework, include-núť jeden header z knižnice a do build systému pridať ekvivalent tohto pseudo-pravidla:\
+Užívateľ potrebuje:
+* linknúť framework
+* include-núť jeden header z knižnice (`PPreflection/reflect.hpp`)
+* do každého súboru `X.cpp`, v ktorom chce používať reflexiu, include-núť `X.cpp.meta`
+* do buildu pridať ekvivalent tohto pseudo-pravidla:\
 `@.cpp.meta <- clang++ -fplugin="$PPREFLECTOR_PATH" -fsyntax-only @.cpp`
 
 # Implementácia
