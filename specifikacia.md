@@ -121,7 +121,7 @@ template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::t
 
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::global::N> = PPreflection::detail::basic_namespace<PPreflection::tags::global::N>{};
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::tags::global::N>> = "N"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PPreflection::tags::global::N>> = PP::type<parent>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PPreflection::tags::global::N>> = PP::type<PPreflection::tags::global>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global>> = PP::value_tuple<
 	PPreflection::overload_caster<int, int>(::N::f)>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::N>> = PP::type_tuple<>;
