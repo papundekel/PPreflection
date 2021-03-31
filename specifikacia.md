@@ -10,7 +10,8 @@ Bakalárska práca.
 
 Reflexia je schopnosť jazyka explicitne sa odkazovať na vlastnú štruktúru.
 
-Príklad z C++:\
+### Príklad z C++:
+
 Štruktúra: funkcie patria do namespace-ov.\
 Táto štruktúra má implicitný vplyv na výsledný program, keďže ovplyvňuje pravidlá pri výbere overloadu funkcie pri volaní.\
 Ale, nikde v kóde sa nevieme explicitne odkázať, napríklad, na zoznam všetkých funkcií v danom namespace, pretože v tomto zmysle C++ reflexiu nepodporuje.
@@ -27,13 +28,15 @@ Ale, nikde v kóde sa nevieme explicitne odkázať, napríklad, na zoznam všetk
 
 Implementovať reflexiu v dvoch častiach, generátor a framework.
 
+#### Generátor
 Generátor je Clang plugin, ktorý vygeneruje z prekladovej jednotky súbor s metadátami.\
 Metadáta sú platný C++ kód, pripoja sa do užívateľovho programu cez `#include`.
 
+#### Framework
 Framework je obyčajná C++ knižnica, ktorú užívateľ pripojí k svojmu programu.
 
 Toto rozdelenie síce vyžaduje implementáciu pluginu špecifického prekladača,
-ale keďže metadáta sú obyčajný C++ kód, užívateľ môže svoj program prekladať ľubovoľným prekladačom, ktorý podporuje danú verziu C++ štandardu.\
+ale keďže metadáta sú obyčajný C++ kód, užívateľ môže po generácii svoj program prekladať ľubovoľným prekladačom, ktorý podporuje danú verziu C++ štandardu.\
 Clang teda slúži v podstate len ako knižnica pre generátor.
 
 Užívateľ potrebuje linknúť framework, include-núť jeden header z knižnice a do build systému pridať ekvivalent tohto pseudo-pravidla:\
@@ -89,7 +92,6 @@ template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::t
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<N>> = PP::type<parent>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<N>> = PP::type_tuple<types...>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<N>> = PP::type_tuple<namespaces...>;
-
 ```
 
 # Príklad
