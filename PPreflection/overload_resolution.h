@@ -93,12 +93,12 @@ namespace PPreflection
 			);
 		}
 
-		const function& get_function() const noexcept
+		constexpr const function& get_function() const noexcept
 		{
 			return f;
 		}
 
-		implicit_conversion_sequence make_conversion_sequence() const noexcept
+		constexpr auto make_conversion_sequence() const noexcept
 		{
 			return conversion_sequences[0]
 				.with_user_defined_conversion(get_function())
@@ -193,5 +193,20 @@ namespace PPreflection
 			return PP::make_tuple(PP::nullopt, overload_resolution_error::invalid);
 		else
 			return PP::forward_as_tuple(PP::move(*winner), overload_resolution_error());
+	}
+
+	constexpr implicit_conversion_sequence overload_resolution(
+		PP::concepts::view auto&& candidates,
+		const reference_type& argument_type,
+		PP::concepts::view auto&& return_value_sequences)
+	{
+		auto [result, error_code] = overload_resolution(PP_FORWARD(candidates), PP::forward_as_array(argument_type), PP_FORWARD(return_value_sequences), false);
+
+		if (result)
+			return result->make_conversion_sequence();
+		else if (error_code == overload_resolution_error::ambiguous)
+			return implicit_conversion_sequence::create_ambiguous();
+		else// if (error_code == overload_resolution_error::invalid)
+			return implicit_conversion_sequence::create_invalid();
 	}
 }

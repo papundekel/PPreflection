@@ -4,13 +4,13 @@
 
 namespace N
 {
-	void print(int a)
+	void print(void* x)
 	{
-		std::cout << "int " << a << '\n';
+		std::cout << "void* " << x << '\n';
 	}
-	void print(short b)
+	void print(int& x)
 	{
-		std::cout << "short " << b << '\n';
+		x = 7;
 	}
 }
 
@@ -25,20 +25,11 @@ int main()
 	for (const auto& f : n.get_functions())
 		std::cout << f << "\n";
 
-	while (true)
-	{
-		int a;
-		std::cin >> a;
+	int x = 0;
 
-		auto obj = PPreflection::dynamic_object::create_void();
+	n.invoke_qualified("print", { x });
 
-		if (a > 5)
-			obj = PPreflection::dynamic_object::create_copy(a % 2 == 0);
-		else
-			obj = PPreflection::dynamic_object::create_copy((short)a);
-
-		n.invoke_qualified("print", { obj });
-	}
+	std::cout << x << '\n';
 
 	std::cout.flush();
 	return 0;

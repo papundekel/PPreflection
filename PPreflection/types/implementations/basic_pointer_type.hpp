@@ -28,7 +28,7 @@ namespace PPreflection::detail
 			if constexpr (!PP::is_function(pointed_to_type))
 				return create_convertor_object(PP::type<T>, PP::value<PP::to_void_ptr>);
 			else
-				return nullptr;
+				return [](dynamic_reference) -> dynamic_object { throw 0; };
 		}
 	};
 }

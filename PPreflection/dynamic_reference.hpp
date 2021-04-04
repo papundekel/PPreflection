@@ -54,10 +54,36 @@ requires
 
 inline decltype(auto) PPreflection::dynamic_reference::visit(PP::concepts::type auto t, auto&& f) const
 {
-	if (get_type().is_lvalue())
-		return PP_FORWARD(f)((*this).get_ref(t));
+	if (is_lvalue)
+	{
+		switch (referenced_type_cv.cv)
+		{
+		case PP::cv_qualifier::none:
+			return PP_FORWARD(f)(cast_unsafe(t + PP::add_lvalue_tag));
+		case PP::cv_qualifier::Const:
+			return PP_FORWARD(f)(cast_unsafe(t + PP::add_const_tag + PP::add_lvalue_tag));
+		case PP::cv_qualifier::Volatile:
+			return PP_FORWARD(f)(cast_unsafe(t + PP::add_volatile_tag + PP::add_lvalue_tag));
+		case PP::cv_qualifier::const_volatile:
+			return PP_FORWARD(f)(cast_unsafe(t + PP::add_const_volatile_tag + PP::add_lvalue_tag));
+		}
+	}
 	else
-		return PP_FORWARD(f)(PP::move(*this).get_ref(t));
+	{
+		switch (referenced_type_cv.cv)
+		{
+		case PP::cv_qualifier::none:
+			return PP_FORWARD(f)(cast_unsafe(t));
+		case PP::cv_qualifier::Const:
+			return PP_FORWARD(f)(cast_unsafe(t + PP::add_const_tag));
+		case PP::cv_qualifier::Volatile:
+			return PP_FORWARD(f)(cast_unsafe(t + PP::add_volatile_tag));
+		case PP::cv_qualifier::const_volatile:
+			return PP_FORWARD(f)(cast_unsafe(t + PP::add_const_volatile_tag));
+		}
+	}
+
+	return PP_FORWARD(f)(cast_unsafe(t));
 }
 
 constexpr void* PPreflection::dynamic_reference::get_void_ptr() const

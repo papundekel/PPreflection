@@ -70,10 +70,5 @@ namespace PPreflection::detail
 		{
 			return nested_classes;
 		}
-
-		constexpr convertor_object base_pointer_conversion(const class_type& base) const noexcept override final
-		{
-			return nullptr;
-		}
 	};
 }

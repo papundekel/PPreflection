@@ -33,20 +33,20 @@ template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::t
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::tags::global::N>> = "N"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PPreflection::tags::global::N>> = PP::type<PPreflection::tags::global>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global::N>> = PP::value_tuple<
-	PPreflection::overload_caster<int>(::N::print),
-	PPreflection::overload_caster<short>(::N::print)>;
+	PPreflection::overload_caster<void *>(::N::print),
+	PPreflection::overload_caster<int &>(::N::print)>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::N>> = PP::type_tuple<>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::N>> = PP::type_tuple<>;
 
-// ::N::print(int)
-template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<PPreflection::overload_caster<int>(::N::print)>> = PPreflection::detail::basic_namespace_function<PPreflection::overload_caster<int>(::N::print)>{};
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<PPreflection::overload_caster<int>(::N::print)>>> = "print"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PP::value_t<PPreflection::overload_caster<int>(::N::print)>>> = PP::type<PPreflection::tags::global::N>;
+// ::N::print(void *)
+template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<PPreflection::overload_caster<void *>(::N::print)>> = PPreflection::detail::basic_namespace_function<PPreflection::overload_caster<void *>(::N::print)>{};
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<PPreflection::overload_caster<void *>(::N::print)>>> = "print"_sv;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PP::value_t<PPreflection::overload_caster<void *>(::N::print)>>> = PP::type<PPreflection::tags::global::N>;
 
-// ::N::print(short)
-template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<PPreflection::overload_caster<short>(::N::print)>> = PPreflection::detail::basic_namespace_function<PPreflection::overload_caster<short>(::N::print)>{};
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<PPreflection::overload_caster<short>(::N::print)>>> = "print"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PP::value_t<PPreflection::overload_caster<short>(::N::print)>>> = PP::type<PPreflection::tags::global::N>;
+// ::N::print(int &)
+template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<PPreflection::overload_caster<int &>(::N::print)>> = PPreflection::detail::basic_namespace_function<PPreflection::overload_caster<int &>(::N::print)>{};
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<PPreflection::overload_caster<int &>(::N::print)>>> = "print"_sv;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PP::value_t<PPreflection::overload_caster<int &>(::N::print)>>> = PP::type<PPreflection::tags::global::N>;
 
 // ::G
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::global::G> = PPreflection::detail::basic_namespace<PPreflection::tags::global::G>{};

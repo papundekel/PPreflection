@@ -9,8 +9,8 @@ namespace PPreflection
 		auto type_to_convertor = PP::functor([t_this]
 			(PP::concepts::type auto t)
 			{
-				return create_convertor_object(t_this + PP::add_const_tag, PP::value<[]
-					(const auto& x)
+				return create_convertor_object(t_this, PP::value<[]
+					(auto&& x)
 					{
 						return (PP_GET_TYPE(t))x;
 					}>);

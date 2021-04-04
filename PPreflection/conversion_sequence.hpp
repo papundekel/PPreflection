@@ -13,40 +13,22 @@
 
 namespace PPreflection
 {
-	enum class conversion_sequence_rank : int
+	enum conversion_sequence_rank : unsigned int
 	{
-		exact_match,
-		promotion,
-		conversion,
+		exact_match = 2,
+		promotion = 1,
+		conversion = 0,
 	};
-
-	constexpr bool operator==(conversion_sequence_rank a, conversion_sequence_rank b)
-	{
-		return (int)a == (int)b;
-	}
-	constexpr bool operator>(conversion_sequence_rank a, conversion_sequence_rank b)
-	{
-		return (int)a < (int)b;
-	}
 
 	class standard_conversion_sequence
 	{
 		struct load_conversion
 		{
 			const class_type* c;
-			bool is_present = false;
-
-			constexpr operator bool() const noexcept
-			{
-				return is_present;
-			}
 
 			constexpr bool operator==(const load_conversion& other) const noexcept
 			{
-				if (is_present)	
-					return c == other.c;
-				else
-					return !other.is_present;
+				return c == other.c;
 			}
 
 			dynamic_object operator()(dynamic_reference r) const
@@ -63,37 +45,39 @@ namespace PPreflection
 	private:
 		const type* type_source;
 		const non_array_object_type* type_target_value;
+		const reference_type* type_target_reference;
 
 		load_conversion load;
 		convertor_object to_pointer;
 		convertor_object promotion_conversion;
 		convertor_object function_noexcept;
-		bool has_qualification_conversion;
-		dynamic_reference(*reference_binder)(dynamic_reference);
+		convertor_reference derived_to_base_reference_conversion;
 
-		conversion_sequence_rank rank;
-
-		bool identity;
-
-		bool enum_with_fixed_underlying_type;
-		bool enum_to_promoted_fixed_type;
-		bool converts_pointer_to_bool;
-		bool converts_to_base_or_void_pointer;
-		bool converts_to_void_pointer;
+		unsigned int
+			rank : 2,
+			identity : 1,
+			load_present : 1,
+			has_qualification_conversion : 1,
+			enum_with_fixed_underlying_type : 1,
+			enum_to_promoted_fixed_type : 1,
+			converts_pointer_to_bool : 1,
+			converts_to_base_or_void_pointer : 1,
+			converts_to_void_pointer : 1;
 
 	private:
 		constexpr standard_conversion_sequence(const type* source) noexcept
 			: type_source(source)
 			, type_target_value(nullptr)
-			//, type_target_reference(nullptr)
-			, load()
+			, type_target_reference(nullptr)
+			, load(nullptr)
 			, to_pointer(nullptr)
 			, promotion_conversion(nullptr)
 			, function_noexcept(nullptr)
-			, has_qualification_conversion(false)
-			, reference_binder(nullptr)
+			, derived_to_base_reference_conversion(nullptr)
 			, rank(conversion_sequence_rank::exact_match)
 			, identity(false)
+			, load_present(false)
+			, has_qualification_conversion(false)
 			, enum_with_fixed_underlying_type(false)
 			, enum_to_promoted_fixed_type(false)
 			, converts_pointer_to_bool(false)
@@ -127,52 +111,54 @@ namespace PPreflection
 			return sequence;
 		}
 
-		dynamic_reference convert(dynamic_variable v, dynamic_variable& temp_variable) const
+		dynamic_reference do_reference_binding(dynamic_reference r) const noexcept
 		{
-			if (!identity)
+			if (derived_to_base_reference_conversion)
+				r = derived_to_base_reference_conversion(r);
+			return r.with_cv_ref(type_target_reference->remove_reference().cv, type_target_reference->is_lvalue());
+		}
+
+		dynamic_reference convert(dynamic_variable v, dynamic_variable& temp_variable) const noexcept
+		{
+			if (load_present || to_pointer || promotion_conversion || function_noexcept || has_qualification_conversion)
 			{
 				auto temp = dynamic_object::create_void();
-				if (load)
+
+				dynamic_reference prev_ref = v.move();
+
+				if (load_present)
 				{
 					temp = load(v);
+					prev_ref = temp.move();
 				}
-				else
+				if (to_pointer)
 				{
-					dynamic_reference prev_ref = v.move();
-
-					if (to_pointer)
-					{
-						temp = to_pointer(prev_ref);
-						prev_ref = temp.move();
-					}
-					if (promotion_conversion)
-					{
-						temp = promotion_conversion(prev_ref);
-						prev_ref = temp.move();
-					}
-					if (function_noexcept)
-					{
-						temp = function_noexcept(prev_ref);
-						prev_ref = temp.move();
-					}
-					if (has_qualification_conversion)
-					{
-						temp = qualification_conversion(prev_ref, *type_target_value);
-					}
+					temp = to_pointer(prev_ref);
+					prev_ref = temp.move();
+				}
+				if (promotion_conversion)
+				{
+					temp = promotion_conversion(prev_ref);
+					prev_ref = temp.move();
+				}
+				if (function_noexcept)
+				{
+					temp = function_noexcept(prev_ref);
+					prev_ref = temp.move();
+				}
+				if (has_qualification_conversion)
+				{
+					temp = qualification_conversion(prev_ref, *type_target_value);
 				}
 
 				temp_variable = dynamic_variable(PP::move(temp));
-
-				if (reference_binder)
-					return reference_binder(temp_variable.move());
-				else
-					return temp_variable.move();
 			}
 			else
 			{
 				temp_variable = PP::move(v);
-				return temp_variable.move();
 			}
+
+			return do_reference_binding(temp_variable.move());
 		}
 
 		constexpr void set_rank(conversion_sequence_rank new_rank) noexcept
@@ -183,16 +169,20 @@ namespace PPreflection
 		{
 			type_target_value = &new_target_type;
 		}
+		constexpr void set_validity(const reference_type& new_target_type) noexcept
+		{
+			type_target_reference = &new_target_type;
+		}
 		constexpr void set_load(const class_type& target) noexcept
 		{
-			load.is_present = true;
+			load_present = true;
 			load.c = &target;
 			type_target_value = &target;
 			identity = false;
 		}
 		constexpr void set_load(const non_array_object_type& target) noexcept
 		{
-			load.is_present = true;
+			load_present = true;
 			load.c = nullptr;
 			type_target_value = &target;
 			identity = false;
@@ -235,10 +225,15 @@ namespace PPreflection
 			converts_to_base_or_void_pointer = true;
 			converts_to_void_pointer = true;
 		}
-
-		constexpr conversion_sequence_rank get_rank() const noexcept
+		constexpr void set_derived_to_base_reference_conversion(convertor_reference convertor) noexcept
 		{
-			return rank;
+			derived_to_base_reference_conversion = convertor;
+			rank = conversion_sequence_rank::conversion;
+		}
+
+		constexpr auto get_rank() const noexcept
+		{
+			return conversion_sequence_rank(rank);
 		}
 
 		constexpr bool is_identity() const noexcept
@@ -248,20 +243,22 @@ namespace PPreflection
 
 		constexpr bool is_valid() const noexcept
 		{
-			return is_identity() || type_target_value;
+			return is_identity() || type_target_value || type_target_reference;
+		}
+
+		constexpr bool same_load(const standard_conversion_sequence& other) const noexcept
+		{
+			return (!load_present && !other.load_present) || (load_present && other.load_present && load == other.load);
 		}
 
 		constexpr bool identical_except_qualification(const standard_conversion_sequence& other) const noexcept
 		{
-			if (identity)
-				return false;
-			
 			return
-				load == other.load &&
+				same_load(other) &&
 				to_pointer == other.to_pointer &&
 				promotion_conversion ==	other.promotion_conversion &&
 				function_noexcept == other.function_noexcept &&
-				reference_binder == other.reference_binder &&
+				derived_to_base_reference_conversion == other.derived_to_base_reference_conversion &&
 				has_qualification_conversion && other.has_qualification_conversion &&
 				*type_target_value != *other.type_target_value;
 		}
@@ -375,6 +372,12 @@ namespace PPreflection
 		user_defined_conversion_t user_defined_conversion;
 		standard_conversion_sequence second_standard_conversion;
 
+		constexpr implicit_conversion_sequence()
+			: first_standard_conversion()
+			, user_defined_conversion()
+			, second_standard_conversion()
+		{}
+
 	public:
 		enum class type
 		{
@@ -384,40 +387,48 @@ namespace PPreflection
 			ambiguous,
 		};
 
-		constexpr implicit_conversion_sequence()
-			: first_standard_conversion()
-			, user_defined_conversion()
-			, second_standard_conversion()
-		{}
-
-		static constexpr implicit_conversion_sequence create_invalid() noexcept
+		static constexpr auto create_invalid() noexcept
 		{
 			return implicit_conversion_sequence();
 		}
-		static constexpr implicit_conversion_sequence create_ambiguous() noexcept
+		static constexpr auto create_ambiguous() noexcept
 		{
 			implicit_conversion_sequence s;
 			s.user_defined_conversion.ambiguous = true;
 			return s;
 		}
-		static constexpr implicit_conversion_sequence create_standard(standard_conversion_sequence sequence) noexcept
+		static constexpr auto create_standard(standard_conversion_sequence sequence) noexcept
 		{
 			implicit_conversion_sequence s;
 			s.first_standard_conversion = sequence;
 			return s;
 		}
 
-		constexpr implicit_conversion_sequence with_user_defined_conversion(const function& new_conversion) const noexcept
+		constexpr auto with_first_standard_conversion(standard_conversion_sequence sequence) const noexcept
+		{
+			auto copy = *this;
+			copy.first_standard_conversion = sequence;
+			return copy;
+		}
+		constexpr auto with_user_defined_conversion(const function& new_conversion) const noexcept
 		{
 			auto copy = *this;
 			copy.user_defined_conversion.set_conversion(new_conversion);
 			return copy;
 		}
-		constexpr implicit_conversion_sequence with_second_standard_conversion(standard_conversion_sequence sequence) const noexcept
+		constexpr auto with_second_standard_conversion(standard_conversion_sequence sequence) const noexcept
 		{
 			auto copy = *this;
 			copy.second_standard_conversion = sequence;
 			return copy;
+		}
+
+		constexpr void set_reference_bind(const reference_type& target_type) noexcept
+		{
+			if (!user_defined_conversion.present())
+				first_standard_conversion.type_target_reference = &target_type;
+			else
+				second_standard_conversion.type_target_reference = &target_type;
 		}
 
 		constexpr bool operator>(const implicit_conversion_sequence& other) const noexcept
@@ -441,6 +452,11 @@ namespace PPreflection
 				return true;
 
 			return false;
+		}
+
+		constexpr bool is_valid() const noexcept
+		{
+			return first_standard_conversion.is_valid();
 		}
 
 		constexpr type get_type() const noexcept

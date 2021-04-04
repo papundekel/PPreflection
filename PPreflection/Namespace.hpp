@@ -42,7 +42,7 @@ PPreflection::dynamic_variable PPreflection::Namespace::invoke_qualified(PP::str
 	PP::simple_vector<PP::reference_wrapper<const namespace_function&>> candidate_functions;
 	get_function_overloads(function_name, PP::push_back_iterator(candidate_functions));
 
-	PP::simple_vector<PP::reference_wrapper<const reference_type&>> arg_types;
+	PP::simple_vector<dynamic_reference_type> arg_types;
 	
 	for (auto r : args)
 		arg_types.push_back(r.get_type());

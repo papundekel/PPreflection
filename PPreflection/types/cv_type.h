@@ -60,12 +60,23 @@ namespace PPreflection
 		{
 			return {type, cv};
 		}
+		
+		constexpr auto operator&() const noexcept
+		{
+			return cv_type_ptr<Type>{&type, cv};
+		}
 
 		constexpr bool operator==(cv_type other) const noexcept
 		{
 			return
 				cv == other.cv &&
 				type == other.type;
+		}
+
+		template <typename OtherType>
+		constexpr bool operator>=(cv_type<OtherType> other) const noexcept
+		{
+			return cv >= other.cv;
 		}
 
 		constexpr virtual bool has_name(PP::string_view name) const noexcept override final
