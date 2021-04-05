@@ -11,7 +11,7 @@
 
 namespace PPreflector
 {
-	class namespace_function;
+	class static_function;
 	class non_global_namespace;
 	class Enum;
 	class Class;
@@ -20,7 +20,7 @@ namespace PPreflector
 	{
 		PP::size_t depth;
 		std::list<non_global_namespace> namespaces;
-		std::list<namespace_function> functions;
+		std::list<static_function> functions;
 		std::list<Enum> enums;
 		std::list<Class> classes;
 
@@ -33,11 +33,12 @@ namespace PPreflector
 		void print_name_foreign(llvm::raw_ostream& out) const override final;
 
 		void print_layout(llvm::raw_ostream& out) const;
-		void print_metadata_implementation(llvm::raw_ostream& out) const override final;
+		void print_metadata_members(llvm::raw_ostream& out) const override final;
 
 		non_global_namespace& add(clang::NamespaceDecl& n);
-		namespace_function& add(clang::FunctionDecl& f);
+		static_function& add(clang::FunctionDecl& f);
 		Enum& add(clang::EnumDecl& e);
+		Class& add(clang::CXXRecordDecl& c);
 
 		void remove_std();
 		
@@ -48,7 +49,6 @@ namespace PPreflector
 
 	protected:
 		virtual void print_name_parent(llvm::raw_ostream& out) const = 0;
-		virtual void print_preamble(llvm::raw_ostream& out) const = 0;
 
 	private:
 		void print_namespaces(llvm::raw_ostream& out) const;

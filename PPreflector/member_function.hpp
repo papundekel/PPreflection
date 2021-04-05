@@ -1,28 +1,23 @@
 #pragma once
-#include <vector>
-
 #include "pragma_push.hpp"
-#include "clang/AST/Type.h"
+#include "clang/AST/Decl.h"
 #include "pragma_pop.hpp"
 
 #include "descriptor.hpp"
-#include "enum_value.hpp"
 #include "nested_descriptor.hpp"
 #include "node_descriptor.hpp"
 
 namespace PPreflector
-{
-	class Enum : public node_descriptor<clang::EnumType, nested_descriptor<descriptor, descriptor>>
+{	
+	class member_function : public node_descriptor<clang::FunctionDecl, nested_descriptor<descriptor, descriptor>>
 	{
-		std::vector<enum_value> enum_values;
-
 	public:
-		Enum(const clang::EnumDecl& decl, const descriptor& parent);
+		member_function(const clang::FunctionDecl& decl, const descriptor& parent);
 
 		void print_name_header(llvm::raw_ostream& out) const override final;
 		void print_name_own(llvm::raw_ostream& out) const override final;
 		void print_name_foreign(llvm::raw_ostream& out) const override final;
-		void print_metadata_object(llvm::raw_ostream& out) const override final;
+		void print_parameter_types(llvm::raw_ostream& out) const;
 		void print_metadata_members(llvm::raw_ostream& out) const override final;
 	};
 }

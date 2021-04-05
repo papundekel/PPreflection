@@ -18,10 +18,11 @@ namespace PPreflector
 
 	private:
 		void print_name_parent(llvm::raw_ostream& out) const override final;
-		void print_preamble(llvm::raw_ostream& out) const override final;
 
 		void print_unscoped_name(llvm::raw_ostream& out) const override final;
 		void print_scoped_name_parent(llvm::raw_ostream& out) const override final;
 		void print_scoped_name_as_parent(llvm::raw_ostream& out) const override final;
+
+		void print_metadata_object(llvm::raw_ostream& out) const override final;
 	};
 }

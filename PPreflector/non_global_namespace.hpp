@@ -3,4 +3,4 @@
 
 #include "Class.hpp"
 #include "Enum.hpp"
-#include "namespace_function.hpp"
+#include "static_function.hpp"

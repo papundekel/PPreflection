@@ -1,6 +1,6 @@
 #include "visitor.hpp"
 
-#include "print_wrap.hpp"
+#include "printers.hpp"
 
 PPreflector::visitor::visitor(clang::CompilerInstance& ci)
 	: context(ci.getASTContext())
@@ -10,15 +10,15 @@ PPreflector::visitor::visitor(clang::CompilerInstance& ci)
 
 bool PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 {
-	if (auto* named_declaration_p = clang::dyn_cast<clang::NamedDecl>(declaration); named_declaration_p && !clang::isa<clang::ParmVarDecl>(named_declaration_p))
+	if (auto* named_declaration_ptr = clang::dyn_cast<clang::NamedDecl>(declaration); named_declaration_ptr && !clang::isa<clang::ParmVarDecl>(named_declaration_ptr))
 	{
-		auto& named_declaration = *named_declaration_p;
+		auto& named_declaration = *named_declaration_ptr;
 		if (is_reserved(named_declaration))
 			return true;
 
-		if (auto* namespace_declaration_p = clang::dyn_cast<clang::NamespaceDecl>(named_declaration_p))
+		if (auto* namespace_declaration_ptr = clang::dyn_cast<clang::NamespaceDecl>(named_declaration_ptr))
 		{
-			auto& namespace_declaration = *namespace_declaration_p;
+			auto& namespace_declaration = *namespace_declaration_ptr;
 
 			if (!namespace_declaration.isFirstDecl() ||
 				namespace_declaration.isStdNamespace())
@@ -26,9 +26,9 @@ bool PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 
 			register_namespace(namespace_declaration);
 		}
-		else if (auto* function_declaration_p = clang::dyn_cast<clang::FunctionDecl>(named_declaration_p))
+		else if (auto* function_declaration_ptr = clang::dyn_cast<clang::FunctionDecl>(named_declaration_ptr))
 		{
-			auto& function_declaration = *function_declaration_p;
+			auto& function_declaration = *function_declaration_ptr;
 
 			if (!function_declaration.isFirstDecl() ||
 				function_declaration.isTemplated() ||
@@ -42,18 +42,31 @@ bool PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 				parent_namespace_p->add(function_declaration);
 			}
 		}
-		else if (auto* enum_declaration_p = clang::dyn_cast<clang::EnumDecl>(named_declaration_p))
+		else if (auto* enum_declaration_ptr = clang::dyn_cast<clang::EnumDecl>(named_declaration_ptr))
 		{
-			auto& enum_declaration = *enum_declaration_p;
+			auto& enum_declaration = *enum_declaration_ptr;
 
 			if (!enum_declaration.isFirstDecl() ||
 				!enum_declaration.getIdentifier())
 				return true;
 
 			// is enum in namespace scope
-			if (auto* parent_namespace_p = get_namespace_parent(enum_declaration))
+			if (auto* parent_namespace_ptr = get_namespace_parent(enum_declaration))
 			{
-				parent_namespace_p->add(enum_declaration);
+				parent_namespace_ptr->add(enum_declaration);
+			}
+		}
+		else if (auto* class_declaration_ptr = clang::dyn_cast<clang::CXXRecordDecl>(named_declaration_ptr))
+		{
+			auto& class_declaration = *class_declaration_ptr;
+
+			if (!class_declaration.hasDefinition())
+				return true;
+
+			// is class in namespace scope
+			if (auto* parent_namespace_ptr = get_namespace_parent(class_declaration))
+			{
+				parent_namespace_ptr->add(class_declaration);
 			}
 		}
 	}
@@ -71,7 +84,7 @@ void PPreflector::visitor::print(llvm::raw_ostream& out) const
 			"\n"
 			"namespace PPreflection::tags\n"
 			"{\n"
-		<<	PPREFLECTOR_PW(print_layout, global)
+		<<	PPREFLECTOR_MEMBER_PRINT(print_layout, global)
 		<< 	"}\n";
 	
 	global.print_metadata(out);

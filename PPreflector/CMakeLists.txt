@@ -10,6 +10,8 @@ include_directories(${LLVM_INCLUDE_DIRS})
 
 add_llvm_library(PPreflector MODULE
 "action.cpp"
+"base_class.cpp"
+"Class.cpp"
 "consumer.cpp"
 "descriptor.cpp"
 "Enum.cpp"
@@ -17,8 +19,8 @@ add_llvm_library(PPreflector MODULE
 "global_namespace.cpp"
 "main.cpp"
 "Namespace.cpp"
-"namespace_function.cpp"
 "non_global_namespace.cpp"
+"static_function.cpp"
 "visitor.cpp"
 PLUGIN_TOOL clang)
 

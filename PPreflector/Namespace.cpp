@@ -7,7 +7,7 @@
 #include "Enum.hpp"
 #include "for_each_with_delimiters.hpp"
 #include "non_global_namespace.hpp"
-#include "print_wrap.hpp"
+#include "printers.hpp"
 #include "strings.hpp"
 
 PPreflector::Namespace::Namespace(PP::size_t depth)
@@ -40,7 +40,7 @@ PPreflector::non_global_namespace& PPreflector::Namespace::add(clang::NamespaceD
 	return namespaces.emplace_back(depth + 1, n, *this);;
 }
 
-PPreflector::namespace_function& PPreflector::Namespace::add(clang::FunctionDecl& f)
+PPreflector::static_function& PPreflector::Namespace::add(clang::FunctionDecl& f)
 {
 	return functions.emplace_back(f, *this);
 }
@@ -48,6 +48,11 @@ PPreflector::namespace_function& PPreflector::Namespace::add(clang::FunctionDecl
 PPreflector::Enum& PPreflector::Namespace::add(clang::EnumDecl& e)
 {
 	return enums.emplace_back(e, *this);
+}
+
+PPreflector::Class& PPreflector::Namespace::add(clang::CXXRecordDecl& c)
+{
+	return classes.emplace_back(c, *this);
 }
 
 void PPreflector::Namespace::remove_std()
@@ -63,7 +68,7 @@ void PPreflector::Namespace::print_tabs(llvm::raw_ostream& out) const
 
 void PPreflector::Namespace::print_layout(llvm::raw_ostream& out) const
 {
-	out << PPREFLECTOR_PW(print_tabs, *this) << "struct " << PPREFLECTOR_PW(print_name, *this);
+	out << PPREFLECTOR_MEMBER_PRINT(print_tabs, *this) << "struct " << PPREFLECTOR_MEMBER_PRINT(print_name, *this);
 
 	if (namespaces.empty())
 	{
@@ -72,23 +77,25 @@ void PPreflector::Namespace::print_layout(llvm::raw_ostream& out) const
 	else
 	{
 		out << "\n"
-			<< PPREFLECTOR_PW(print_tabs, *this) << "{\n";
+			<< PPREFLECTOR_MEMBER_PRINT(print_tabs, *this) << "{\n";
 
 		for (const auto& n : namespaces)
-			out << PPREFLECTOR_PW(print_layout, n);
+			out << PPREFLECTOR_MEMBER_PRINT(print_layout, n);
 
-		out << PPREFLECTOR_PW(print_tabs, *this) << "};\n";
+		out << PPREFLECTOR_MEMBER_PRINT(print_tabs, *this) << "};\n";
 	}
 }
 
-void PPreflector::Namespace::print_metadata_implementation(llvm::raw_ostream& out) const
+void PPreflector::Namespace::print_metadata_members(llvm::raw_ostream& out) const
 {
-	print_preamble(out);
+	print_members(out, functions, "functions", printer_value_tuple);
+	print_members(out, PP::view_chain(as_descriptors_view(enums)) ^ as_descriptors_view(classes), "types", printer_type_tuple);
+	print_members(out, namespaces, "namespaces", printer_type_tuple);
 
-	print_members(out, functions, "functions", "PP::value_tuple");
-	print_members(out, enums, "types", "PP::type_tuple");
-	print_members(out, namespaces, "namespaces", "PP::type_tuple");
-
-	for (const descriptor& d : PP::view_chain(as_descriptors_view(functions)) ^ as_descriptors_view(enums) ^ as_descriptors_view(namespaces))
+	for (const descriptor& d : PP::view_chain(
+			as_descriptors_view(functions)) ^
+			as_descriptors_view(enums) ^
+			as_descriptors_view(classes) ^
+			as_descriptors_view(namespaces))
 		d.print_metadata(out);
 }

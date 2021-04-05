@@ -14,6 +14,11 @@ namespace G
 	namespace B{}
 	namespace C{}
 	namespace D{}
+
+	struct S
+	{
+
+	};
 }
 
 namespace M

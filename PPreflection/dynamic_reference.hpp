@@ -52,6 +52,17 @@ requires
 	: dynamic_reference(&r, type::reflect(PP_DECLTYPE(r)))
 {}
 
+namespace PPreflection::detail
+{
+	constexpr auto add_cv_except_to_array(PP::concepts::type auto t, PP::concepts::value auto cv) noexcept
+	{
+		if constexpr (PP::is_array(PP_COPY_TYPE(t)))
+			return t;
+		else
+			return PP::add_cv(cv, t);
+	}
+}
+
 inline decltype(auto) PPreflection::dynamic_reference::visit(PP::concepts::type auto t, auto&& f) const
 {
 	if (is_lvalue)
@@ -59,13 +70,13 @@ inline decltype(auto) PPreflection::dynamic_reference::visit(PP::concepts::type 
 		switch (referenced_type_cv.cv)
 		{
 		case PP::cv_qualifier::none:
-			return PP_FORWARD(f)(cast_unsafe(t + PP::add_lvalue_tag));
+			return PP_FORWARD(f)(cast_unsafe(detail::add_cv_except_to_array(t, PP::value<PP::cv_qualifier::none>) + PP::add_lvalue_tag));
 		case PP::cv_qualifier::Const:
-			return PP_FORWARD(f)(cast_unsafe(t + PP::add_const_tag + PP::add_lvalue_tag));
+			return PP_FORWARD(f)(cast_unsafe(detail::add_cv_except_to_array(t, PP::value<PP::cv_qualifier::Const>) + PP::add_lvalue_tag));
 		case PP::cv_qualifier::Volatile:
-			return PP_FORWARD(f)(cast_unsafe(t + PP::add_volatile_tag + PP::add_lvalue_tag));
+			return PP_FORWARD(f)(cast_unsafe(detail::add_cv_except_to_array(t, PP::value<PP::cv_qualifier::Volatile>) + PP::add_lvalue_tag));
 		case PP::cv_qualifier::const_volatile:
-			return PP_FORWARD(f)(cast_unsafe(t + PP::add_const_volatile_tag + PP::add_lvalue_tag));
+			return PP_FORWARD(f)(cast_unsafe(detail::add_cv_except_to_array(t, PP::value<PP::cv_qualifier::const_volatile>) + PP::add_lvalue_tag));
 		}
 	}
 	else
@@ -73,13 +84,13 @@ inline decltype(auto) PPreflection::dynamic_reference::visit(PP::concepts::type 
 		switch (referenced_type_cv.cv)
 		{
 		case PP::cv_qualifier::none:
-			return PP_FORWARD(f)(cast_unsafe(t));
+			return PP_FORWARD(f)(cast_unsafe(detail::add_cv_except_to_array(t, PP::value<PP::cv_qualifier::none>)));
 		case PP::cv_qualifier::Const:
-			return PP_FORWARD(f)(cast_unsafe(t + PP::add_const_tag));
+			return PP_FORWARD(f)(cast_unsafe(detail::add_cv_except_to_array(t, PP::value<PP::cv_qualifier::Const>)));
 		case PP::cv_qualifier::Volatile:
-			return PP_FORWARD(f)(cast_unsafe(t + PP::add_volatile_tag));
+			return PP_FORWARD(f)(cast_unsafe(detail::add_cv_except_to_array(t, PP::value<PP::cv_qualifier::Volatile>)));
 		case PP::cv_qualifier::const_volatile:
-			return PP_FORWARD(f)(cast_unsafe(t + PP::add_const_volatile_tag));
+			return PP_FORWARD(f)(cast_unsafe(detail::add_cv_except_to_array(t, PP::value<PP::cv_qualifier::const_volatile>)));
 		}
 	}
 

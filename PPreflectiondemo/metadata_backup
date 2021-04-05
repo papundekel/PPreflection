@@ -32,8 +32,8 @@ template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::t
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructors<::S>> = PP::make_tuple(
 	PP::type_tuple<>,
 	PP::type_tuple<int>);
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::static_member_functions<::S>> = PP::type_tuple<
-	PPreflection::tags::global::S::g>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::static_member_functions<::S>> = PP::value_tuple<
+	PPreflection::overload_caster<types...>(::S::g)>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::member_functions<::S>> = PP::value_tuple<
 	&::S::f,
 	&::S::operator int>;
@@ -47,7 +47,7 @@ template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::t
 // ::S::g(int)
 template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<::S::g>> = detail::basic_static_member_function<::S::g>{};
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<::S::g>>> = "g"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::overloads<PP::value_t<::S::g>>> = PP::type<PPreflection::tags::global::S>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PP::value_t<&::S::g>>> = PP::type<::S>;
 
 // ::S::f(int) const
 template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<&::S::f>> = detail::basic_non_conversion_member_function<&::S::f>{};

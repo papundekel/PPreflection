@@ -115,7 +115,11 @@ namespace PPreflection
 		{
 			if (derived_to_base_reference_conversion)
 				r = derived_to_base_reference_conversion(r);
-			return r.with_cv_ref(type_target_reference->remove_reference().cv, type_target_reference->is_lvalue());
+				
+			if (type_target_reference)
+				return r.with_cv_ref(type_target_reference->remove_reference().cv, type_target_reference->is_lvalue());
+			else
+				return r;
 		}
 
 		dynamic_reference convert(dynamic_variable v, dynamic_variable& temp_variable) const noexcept

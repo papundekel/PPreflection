@@ -9,16 +9,17 @@
 
 namespace PPreflector
 {	
-	class namespace_function : public node_descriptor<clang::FunctionDecl, nested_descriptor<descriptor, descriptor>>
+	class static_function : public node_descriptor<clang::FunctionDecl, nested_descriptor<descriptor, descriptor>>
 	{
 	public:
-		namespace_function(const clang::FunctionDecl& decl, const descriptor& parent);
+		static_function(const clang::FunctionDecl& decl, const descriptor& parent);
 
 		void print_name_header(llvm::raw_ostream& out) const override final;
 		void print_name_own(llvm::raw_ostream& out) const override final;
 		void print_name_foreign(llvm::raw_ostream& out) const override final;
 		void print_parameter_types(llvm::raw_ostream& out) const;
-		void print_metadata_implementation(llvm::raw_ostream& out) const override final;
+		void print_metadata_object(llvm::raw_ostream& out) const override final;
+		void print_metadata_members(llvm::raw_ostream& out) const override final;
 
 	private:
 		static void print_parameter_type(llvm::raw_ostream& out, clang::ParmVarDecl* parameter);

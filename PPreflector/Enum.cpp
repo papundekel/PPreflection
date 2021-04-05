@@ -6,7 +6,7 @@
 #include "PP/unbounded.hpp"
 #include "PP/view_copy.hpp"
 
-#include "print_wrap.hpp"
+#include "printers.hpp"
 #include "strings.hpp"
 
 PPreflector::Enum::Enum(const clang::EnumDecl& decl, const descriptor& parent)
@@ -18,12 +18,12 @@ PPreflector::Enum::Enum(const clang::EnumDecl& decl, const descriptor& parent)
 
 void PPreflector::Enum::print_name_header(llvm::raw_ostream& out) const
 {
-	out << PPREFLECTOR_PW(print_qualified_name, *this);
+	out << PPREFLECTOR_MEMBER_PRINT(print_qualified_name, *this);
 }
 
 void PPreflector::Enum::print_name_own(llvm::raw_ostream& out) const
 {
-	out << "::" << PPREFLECTOR_PW(print_name_header, *this);
+	out << "::" << PPREFLECTOR_MEMBER_PRINT(print_name_header, *this);
 }
 
 void PPreflector::Enum::print_name_foreign(llvm::raw_ostream& out) const
@@ -31,12 +31,17 @@ void PPreflector::Enum::print_name_foreign(llvm::raw_ostream& out) const
 	print_name_own(out);
 }
 
-void PPreflector::Enum::print_metadata_implementation(llvm::raw_ostream& out) const
+void PPreflector::Enum::print_metadata_object(llvm::raw_ostream&) const
+{
+	// print nothing
+}
+
+void PPreflector::Enum::print_metadata_members(llvm::raw_ostream& out) const
 {
 	print_metadata_name(out);
 	print_metadata_parent(out);
 
-	print_members(out, enum_values, "enum_values", "PP::value_tuple");
+	print_members(out, enum_values, "enum_values", printer_value_tuple);
 
 	for (const auto& ev : enum_values)
 		ev.print_metadata_name(out);
