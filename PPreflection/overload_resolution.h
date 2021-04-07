@@ -6,6 +6,7 @@
 
 #include "args_to_types.hpp"
 #include "conversion_sequence.hpp"
+#include "functions/namespace_function.h"
 
 namespace PPreflection
 {
@@ -52,45 +53,35 @@ namespace PPreflection
 			return false;
 		}
 
-		constexpr bool has_worse_conversion(const viable_function& other) const noexcept
-		{
-			bool exists_worse_conversion = false;
-
-			for (auto [my_sequence, other_sequence] : PP::zip_view_pack(conversion_sequences, other.conversion_sequences))
-			{
-				if (other_sequence > my_sequence)
-				{
-					exists_worse_conversion = true;
-					break;
-				}
-			}
-
-			return exists_worse_conversion;
-		}
-
-		constexpr bool has_better_conversion(const viable_function& other) const noexcept
-		{
-			bool exists_better_conversion = false;
-
-			for (auto [my_sequence, other_sequence] : PP::zip_view_pack(conversion_sequences, other.conversion_sequences))
-			{
-				if (my_sequence > other_sequence)
-				{
-					exists_better_conversion = true;
-					break;
-				}
-			}
-
-			return exists_better_conversion;
-		}
-
 		constexpr bool operator>(const viable_function& other) const noexcept
 		{
-			return !has_worse_conversion(other) &&
-			(
-				has_better_conversion(other) ||
-				false
-			);
+			bool has_worse_sequence = false;
+			bool has_better_sequence = false;
+
+			for (auto [my_sequence, other_sequence] : PP::zip_view_pack(conversion_sequences, other.conversion_sequences))
+			{
+				auto compare_sequence = my_sequence <=> other_sequence;
+				if (compare_sequence < 0)
+				{
+					has_worse_sequence = true;
+					if (has_better_sequence)
+						break;
+				}
+				else if (compare_sequence > 0)
+				{
+					has_better_sequence = true;
+					if (has_worse_sequence)
+						break;
+				}
+			}
+
+			if (!has_worse_sequence)
+			{
+				if (has_better_sequence)
+					return true;
+			}
+
+			return false;
 		}
 
 		constexpr const function& get_function() const noexcept

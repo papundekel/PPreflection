@@ -1,5 +1,9 @@
 #include "visitor.hpp"
 
+#include "pragma_push.hpp"
+#include "llvm/Support/raw_ostream.h"
+#include "pragma_pop.hpp"
+
 #include "printers.hpp"
 
 PPreflector::visitor::visitor(clang::CompilerInstance& ci)
@@ -13,7 +17,8 @@ bool PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 	if (auto* named_declaration_ptr = clang::dyn_cast<clang::NamedDecl>(declaration); named_declaration_ptr && !clang::isa<clang::ParmVarDecl>(named_declaration_ptr))
 	{
 		auto& named_declaration = *named_declaration_ptr;
-		if (is_reserved(named_declaration))
+		if (is_reserved(named_declaration) ||
+			named_declaration.isTemplated())
 			return true;
 
 		if (auto* namespace_declaration_ptr = clang::dyn_cast<clang::NamespaceDecl>(named_declaration_ptr))
@@ -31,9 +36,9 @@ bool PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 			auto& function_declaration = *function_declaration_ptr;
 
 			if (!function_declaration.isFirstDecl() ||
-				function_declaration.isTemplated() ||
 				function_declaration.isMain() ||
-				function_declaration.isVariadic())
+				function_declaration.isVariadic() || 
+				function_declaration.isOverloadedOperator())
 				return true;
 
 			// is namespace function
@@ -60,7 +65,13 @@ bool PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 		{
 			auto& class_declaration = *class_declaration_ptr;
 
-			if (!class_declaration.hasDefinition())
+			if (!class_declaration.isFirstDecl() ||
+				!class_declaration.hasDefinition() ||
+				clang::isa<clang::ClassTemplateSpecializationDecl>(class_declaration) ||
+				class_declaration.isUnion())
+				return true;
+
+			if (auto* p = class_declaration.getTypedefNameForAnonDecl(); p && is_reserved(*p))
 				return true;
 
 			// is class in namespace scope
@@ -154,7 +165,10 @@ bool PPreflector::visitor::is_reserved(const clang::NamedDecl& d)
 	{
 		auto* ii = declname.getAsIdentifierInfo();
 		if (ii)
-			return ii->getName().contains("__");
+		{
+			auto name = ii->getName();
+			return name.contains("__") || (name.size() >= 2 && name[0] == '_' && name[1] >= 'A' && name[1] <= 'Z');
+		}
 	}
 
 	return false;

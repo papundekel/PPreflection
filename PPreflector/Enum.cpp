@@ -7,7 +7,6 @@
 #include "PP/view_copy.hpp"
 
 #include "printers.hpp"
-#include "strings.hpp"
 
 PPreflector::Enum::Enum(const clang::EnumDecl& decl, const descriptor& parent)
 	: node_descriptor<clang::EnumType, nested_descriptor<descriptor, descriptor>>(*clang::dyn_cast_or_null<clang::EnumType>(decl.getTypeForDecl()), parent)
@@ -38,10 +37,10 @@ void PPreflector::Enum::print_metadata_object(llvm::raw_ostream&) const
 
 void PPreflector::Enum::print_metadata_members(llvm::raw_ostream& out) const
 {
-	print_metadata_name(out);
-	print_metadata_parent(out);
+	out << PPREFLECTOR_MEMBER_PRINT(print_metadata_name, *this) << "\n"
+		<< PPREFLECTOR_MEMBER_PRINT(print_metadata_parent, *this) << "\n";
 
-	print_members(out, enum_values, "enum_values", printer_value_tuple);
+	print_members<"enum_values"_str>(out, enum_values, printer_value_tuple);
 
 	for (const auto& ev : enum_values)
 		ev.print_metadata_name(out);

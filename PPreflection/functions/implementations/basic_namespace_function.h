@@ -1,6 +1,6 @@
 #pragma once
 #include "../../basic_named_descriptor.h"
-#include "../static_function.h"
+#include "../namespace_function.h"
 #include "basic_static_function.h"
 
 namespace PPreflection::detail

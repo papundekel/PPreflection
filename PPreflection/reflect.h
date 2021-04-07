@@ -17,7 +17,7 @@ namespace PPreflection
 		template <typename T> struct namespaces;
 		template <typename T> struct functions;
 		template <typename T> struct base_classes;
-		template <typename T> struct nested_classes;
+		template <typename T> struct nested_types;
 		template <typename T> struct member_functions;
 		template <typename T> struct static_member_functions;
 		template <typename T> struct enum_values;
@@ -70,7 +70,7 @@ namespace PPreflection
 //
 // template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<C>> = "C"_sv;
 // template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<C>> = PP::type<parent>;
-// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<C>> = PP::type_tuple<nested_classes...>;
+// template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_types<C>> = PP::type_tuple<nested_types...>;
 // template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<C>> = PP::type_tuple<bases...>;
 // template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::static_member_functions<C>> = PP::type_tuple<static_member_functions...>;
 // template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::member_functions<C>> = PP::type_tuple<member_functions...>;

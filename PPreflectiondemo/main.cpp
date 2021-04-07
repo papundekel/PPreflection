@@ -4,13 +4,13 @@
 
 namespace N
 {
-	void print(const int&)
+	void print(const int& x)
 	{
-		std::cout << "a\n";
+		std::cout << x << "a\n";
 	}
-	void print(int&&)
+	void print(int& x)
 	{
-		std::cout << "b\n";
+		std::cout << x << "b\n";
 	}
 }
 
@@ -25,6 +25,8 @@ int main()
 	for (const auto& f : n.get_functions())
 		std::cout << f << "\n";
 
+	int a = 3;
+	n.invoke_qualified("print", { a });
 	n.invoke_qualified("print", { 5 });
 
 	std::cout.flush();

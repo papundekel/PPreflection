@@ -2,19 +2,18 @@
 
 namespace N
 {
-	class C
+	struct B
 	{
-		int x;
 
-	public:
-		C();
-		explicit C(int a);
-		~C();
+	};
 
-		int f(int a) const;
+	struct S : public B
+	{
+		explicit S(const S&) = delete;
 
-		static int g(int a);
+		void f() const&;
 
-		operator int() const;
+		static int g(double);
+		static double g(int);
 	};
 }

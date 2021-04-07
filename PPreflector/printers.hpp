@@ -77,4 +77,15 @@ namespace PPreflector
 				out << prefix << inner_printer << suffix;
 			};
 	};
+
+	template <auto prefix>
+	constexpr inline auto metadata_tag_printer = []
+	(const auto& inner_printer)
+	{
+		return [&inner_printer]
+			(llvm::raw_ostream& out)
+			{
+				out << "PPreflection::tags::" << prefix << "<" << inner_printer << ">";
+			};
+	};
 }

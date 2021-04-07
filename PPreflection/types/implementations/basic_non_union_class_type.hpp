@@ -20,11 +20,11 @@ namespace PPreflection::detail
 			return base_classes;
 		}
 
-		constexpr convertor_object base_pointer_conversion(const non_union_class_type& base) const noexcept override final
+		constexpr convertor_object base_pointer_conversion(const non_union_class_type&) const noexcept override final
 		{
 			return [](dynamic_reference){ return dynamic_object::create_void(); };
 		}
-		constexpr convertor_reference base_reference_conversion(const non_union_class_type& base) const noexcept override final
+		constexpr convertor_reference base_reference_conversion(const non_union_class_type&) const noexcept override final
 		{
 			return [](dynamic_reference r){ return r; };
 		}

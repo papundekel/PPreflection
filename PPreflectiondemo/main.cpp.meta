@@ -21,310 +21,187 @@ namespace PPreflection::tags
 }
 
 // ::
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global>> = PP::value_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global>> = PP::value_tuple<>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global>> = PP::type_tuple<
-	::__mbstate_t,
-	::_IO_FILE,
-	::_IO_FILE,
 	::max_align_t,
-	::__fsid_t,
 	::timespec,
 	::sched_param,
 	::cpu_set_t,
 	::timeval,
 	::timex,
-	::tm,
 	::itimerspec,
-	::__once_flag,
-	::pthread_mutexattr_t,
-	::pthread_condattr_t,
-	::pthread_attr_t,
-	::pthread_mutex_t,
-	::pthread_cond_t,
-	::pthread_rwlock_t,
-	::pthread_rwlockattr_t,
-	::pthread_barrier_t,
-	::pthread_barrierattr_t,
-	::__sigset_t,
-	::_pthread_cleanup_buffer>
+	::_pthread_cleanup_buffer>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global>> = PP::type_tuple<
 	PPreflection::tags::global::N,
 	PPreflection::tags::global::G,
-	PPreflection::tags::global::M>
-
-// ::__mbstate_t
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::__mbstate_t>> = "__mbstate_t"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::__mbstate_t>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::__mbstate_t>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::__mbstate_t>> = PP::type_tuple<>
-
-// ::_IO_FILE
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::_IO_FILE>> = "_IO_FILE"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::_IO_FILE>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::_IO_FILE>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::_IO_FILE>> = PP::type_tuple<>
-
-// ::_IO_FILE
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::_IO_FILE>> = "_IO_FILE"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::_IO_FILE>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::_IO_FILE>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::_IO_FILE>> = PP::type_tuple<>
+	PPreflection::tags::global::M>;
 
 // ::max_align_t
-
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::max_align_t>> = "max_align_t"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::max_align_t>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::max_align_t>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::max_align_t>> = PP::type_tuple<>
-
-// ::__fsid_t
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::__fsid_t>> = "__fsid_t"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::__fsid_t>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::__fsid_t>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::__fsid_t>> = PP::type_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_types<::max_align_t>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::max_align_t>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructors<::max_align_t>> = PP::make_tuple();
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::static_member_functions<::max_align_t>> = PP::value_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::member_functions<::max_align_t>> = PP::value_tuple<>;
 
 // ::timespec
-
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::timespec>> = "timespec"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::timespec>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::timespec>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::timespec>> = PP::type_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_types<::timespec>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::timespec>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructors<::timespec>> = PP::make_tuple();
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::static_member_functions<::timespec>> = PP::value_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::member_functions<::timespec>> = PP::value_tuple<>;
 
 // ::sched_param
-
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::sched_param>> = "sched_param"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::sched_param>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::sched_param>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::sched_param>> = PP::type_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_types<::sched_param>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::sched_param>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructors<::sched_param>> = PP::make_tuple();
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::static_member_functions<::sched_param>> = PP::value_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::member_functions<::sched_param>> = PP::value_tuple<>;
 
 // ::cpu_set_t
-
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::cpu_set_t>> = "cpu_set_t"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::cpu_set_t>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::cpu_set_t>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::cpu_set_t>> = PP::type_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_types<::cpu_set_t>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::cpu_set_t>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructors<::cpu_set_t>> = PP::make_tuple();
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::static_member_functions<::cpu_set_t>> = PP::value_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::member_functions<::cpu_set_t>> = PP::value_tuple<>;
 
 // ::timeval
-
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::timeval>> = "timeval"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::timeval>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::timeval>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::timeval>> = PP::type_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_types<::timeval>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::timeval>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructors<::timeval>> = PP::make_tuple();
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::static_member_functions<::timeval>> = PP::value_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::member_functions<::timeval>> = PP::value_tuple<>;
 
 // ::timex
-
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::timex>> = "timex"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::timex>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::timex>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::timex>> = PP::type_tuple<>
-
-// ::tm
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::tm>> = "tm"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::tm>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::tm>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::tm>> = PP::type_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_types<::timex>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::timex>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructors<::timex>> = PP::make_tuple();
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::static_member_functions<::timex>> = PP::value_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::member_functions<::timex>> = PP::value_tuple<>;
 
 // ::itimerspec
-
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::itimerspec>> = "itimerspec"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::itimerspec>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::itimerspec>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::itimerspec>> = PP::type_tuple<>
-
-// ::__once_flag
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::__once_flag>> = "__once_flag"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::__once_flag>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::__once_flag>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::__once_flag>> = PP::type_tuple<>
-
-// ::pthread_mutexattr_t
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::pthread_mutexattr_t>> = "pthread_mutexattr_t"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::pthread_mutexattr_t>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::pthread_mutexattr_t>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::pthread_mutexattr_t>> = PP::type_tuple<>
-
-// ::pthread_condattr_t
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::pthread_condattr_t>> = "pthread_condattr_t"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::pthread_condattr_t>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::pthread_condattr_t>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::pthread_condattr_t>> = PP::type_tuple<>
-
-// ::pthread_attr_t
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::pthread_attr_t>> = "pthread_attr_t"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::pthread_attr_t>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::pthread_attr_t>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::pthread_attr_t>> = PP::type_tuple<>
-
-// ::pthread_mutex_t
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::pthread_mutex_t>> = "pthread_mutex_t"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::pthread_mutex_t>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::pthread_mutex_t>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::pthread_mutex_t>> = PP::type_tuple<>
-
-// ::pthread_cond_t
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::pthread_cond_t>> = "pthread_cond_t"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::pthread_cond_t>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::pthread_cond_t>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::pthread_cond_t>> = PP::type_tuple<>
-
-// ::pthread_rwlock_t
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::pthread_rwlock_t>> = "pthread_rwlock_t"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::pthread_rwlock_t>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::pthread_rwlock_t>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::pthread_rwlock_t>> = PP::type_tuple<>
-
-// ::pthread_rwlockattr_t
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::pthread_rwlockattr_t>> = "pthread_rwlockattr_t"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::pthread_rwlockattr_t>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::pthread_rwlockattr_t>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::pthread_rwlockattr_t>> = PP::type_tuple<>
-
-// ::pthread_barrier_t
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::pthread_barrier_t>> = "pthread_barrier_t"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::pthread_barrier_t>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::pthread_barrier_t>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::pthread_barrier_t>> = PP::type_tuple<>
-
-// ::pthread_barrierattr_t
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::pthread_barrierattr_t>> = "pthread_barrierattr_t"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::pthread_barrierattr_t>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::pthread_barrierattr_t>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::pthread_barrierattr_t>> = PP::type_tuple<>
-
-// ::__sigset_t
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::__sigset_t>> = "__sigset_t"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::__sigset_t>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::__sigset_t>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::__sigset_t>> = PP::type_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_types<::itimerspec>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::itimerspec>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructors<::itimerspec>> = PP::make_tuple();
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::static_member_functions<::itimerspec>> = PP::value_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::member_functions<::itimerspec>> = PP::value_tuple<>;
 
 // ::_pthread_cleanup_buffer
-
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::_pthread_cleanup_buffer>> = "_pthread_cleanup_buffer"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::_pthread_cleanup_buffer>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::_pthread_cleanup_buffer>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::_pthread_cleanup_buffer>> = PP::type_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_types<::_pthread_cleanup_buffer>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::_pthread_cleanup_buffer>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructors<::_pthread_cleanup_buffer>> = PP::make_tuple();
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::static_member_functions<::_pthread_cleanup_buffer>> = PP::value_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::member_functions<::_pthread_cleanup_buffer>> = PP::value_tuple<>;
 
 // ::N
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::global::N> = PPreflection::detail::basic_namespace<PPreflection::tags::global::N>{};
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::tags::global::N>> = "N"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PPreflection::tags::global::N>> = PP::type<PPreflection::tags::global>;
-
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global::N>> = PP::value_tuple<
 	PPreflection::overload_caster<const int &>(::N::print),
-	PPreflection::overload_caster<int &&>(::N::print)>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::N>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::N>> = PP::type_tuple<>
+	PPreflection::overload_caster<int &>(::N::print)>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::N>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::N>> = PP::type_tuple<>;
 
 // ::N::print(const int &)
 template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<PPreflection::overload_caster<const int &>(::N::print)>> = PPreflection::detail::basic_namespace_function<PPreflection::overload_caster<const int &>(::N::print)>{};
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<PPreflection::overload_caster<const int &>(::N::print)>>> = "print"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PP::value_t<PPreflection::overload_caster<const int &>(::N::print)>>> = PP::type<PPreflection::tags::global::N>;
 
-// ::N::print(int &&)
-template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<PPreflection::overload_caster<int &&>(::N::print)>> = PPreflection::detail::basic_namespace_function<PPreflection::overload_caster<int &&>(::N::print)>{};
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<PPreflection::overload_caster<int &&>(::N::print)>>> = "print"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PP::value_t<PPreflection::overload_caster<int &&>(::N::print)>>> = PP::type<PPreflection::tags::global::N>;
+// ::N::print(int &)
+template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<PPreflection::overload_caster<int &>(::N::print)>> = PPreflection::detail::basic_namespace_function<PPreflection::overload_caster<int &>(::N::print)>{};
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<PPreflection::overload_caster<int &>(::N::print)>>> = "print"_sv;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PP::value_t<PPreflection::overload_caster<int &>(::N::print)>>> = PP::type<PPreflection::tags::global::N>;
 
 // ::G
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::global::G> = PPreflection::detail::basic_namespace<PPreflection::tags::global::G>{};
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::tags::global::G>> = "G"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PPreflection::tags::global::G>> = PP::type<PPreflection::tags::global>;
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global::G>> = PP::value_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global::G>> = PP::value_tuple<>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::G>> = PP::type_tuple<
 	::G::E,
-	::G::S>
+	::G::S>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::G>> = PP::type_tuple<
 	PPreflection::tags::global::G::A,
 	PPreflection::tags::global::G::B,
 	PPreflection::tags::global::G::C,
-	PPreflection::tags::global::G::D>
+	PPreflection::tags::global::G::D>;
 
 // ::G::E
-
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::G::E>> = "E"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::G::E>> = PP::type<PPreflection::tags::global::G>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::enum_values<::G::E>> = PP::value_tuple<
 	::G::a,
 	::G::tinko,
 	::G::cigi,
-	::G::bugi>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<::G::a>>> = "a"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<::G::tinko>>> = "tinko"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<::G::cigi>>> = "cigi"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<::G::bugi>>> = "bugi"_sv;
-
+	::G::bugi>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<::G::a>>> = "a"_sv;template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<::G::tinko>>> = "tinko"_sv;template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<::G::cigi>>> = "cigi"_sv;template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<::G::bugi>>> = "bugi"_sv;
 // ::G::S
-
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::G::S>> = "S"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::G::S>> = PP::type<PPreflection::tags::global::G>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::G::S>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::G::S>> = PP::type_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_types<::G::S>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::G::S>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructors<::G::S>> = PP::make_tuple();
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::static_member_functions<::G::S>> = PP::value_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::member_functions<::G::S>> = PP::value_tuple<>;
 
 // ::G::A
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::global::G::A> = PPreflection::detail::basic_namespace<PPreflection::tags::global::G::A>{};
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::tags::global::G::A>> = "A"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PPreflection::tags::global::G::A>> = PP::type<PPreflection::tags::global::G>;
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global::G::A>> = PP::value_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::G::A>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::G::A>> = PP::type_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global::G::A>> = PP::value_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::G::A>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::G::A>> = PP::type_tuple<>;
 
 // ::G::B
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::global::G::B> = PPreflection::detail::basic_namespace<PPreflection::tags::global::G::B>{};
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::tags::global::G::B>> = "B"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PPreflection::tags::global::G::B>> = PP::type<PPreflection::tags::global::G>;
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global::G::B>> = PP::value_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::G::B>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::G::B>> = PP::type_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global::G::B>> = PP::value_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::G::B>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::G::B>> = PP::type_tuple<>;
 
 // ::G::C
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::global::G::C> = PPreflection::detail::basic_namespace<PPreflection::tags::global::G::C>{};
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::tags::global::G::C>> = "C"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PPreflection::tags::global::G::C>> = PP::type<PPreflection::tags::global::G>;
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global::G::C>> = PP::value_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::G::C>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::G::C>> = PP::type_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global::G::C>> = PP::value_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::G::C>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::G::C>> = PP::type_tuple<>;
 
 // ::G::D
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::global::G::D> = PPreflection::detail::basic_namespace<PPreflection::tags::global::G::D>{};
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::tags::global::G::D>> = "D"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PPreflection::tags::global::G::D>> = PP::type<PPreflection::tags::global::G>;
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global::G::D>> = PP::value_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::G::D>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::G::D>> = PP::type_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global::G::D>> = PP::value_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::G::D>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::G::D>> = PP::type_tuple<>;
 
 // ::M
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::global::M> = PPreflection::detail::basic_namespace<PPreflection::tags::global::M>{};
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::tags::global::M>> = "M"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PPreflection::tags::global::M>> = PP::type<PPreflection::tags::global>;
-
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global::M>> = PP::value_tuple<
 	PPreflection::overload_caster<int>(::M::f),
 	PPreflection::overload_caster<int, int>(::M::f),
-	PPreflection::overload_caster<int, int, int>(::M::f)>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::M>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::M>> = PP::type_tuple<>
+	PPreflection::overload_caster<int, int, int>(::M::f)>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::M>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::M>> = PP::type_tuple<>;
 
 // ::M::f(int)
 template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<PPreflection::overload_caster<int>(::M::f)>> = PPreflection::detail::basic_namespace_function<PPreflection::overload_caster<int>(::M::f)>{};

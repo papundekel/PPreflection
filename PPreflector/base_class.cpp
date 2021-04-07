@@ -1,5 +1,9 @@
 #include "base_class.hpp"
 
+PPreflector::base_class::base_class(const clang::Type& t)
+	: node_descriptor<clang::Type, descriptor>(t)
+{}
+
 void PPreflector::base_class::print_name_header(llvm::raw_ostream&) const
 {
 	// print nothing

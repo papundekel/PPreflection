@@ -5,17 +5,44 @@
 
 PPreflector::Class::Class(const clang::CXXRecordDecl& decl, const descriptor& parent)
 	: node_descriptor<clang::RecordType, nested_descriptor<descriptor, descriptor>>(*clang::dyn_cast_or_null<clang::RecordType>(decl.getTypeForDecl()), parent)
-	, nested_classes()
+	, nested_types()
 	, base_classes()
-	//, constructors()
-	//, static_member_functions()
-	//, member_functions()
+	, constructors()
+	, static_member_functions()
+	, non_conversion_member_functions()
+	, conversion_functions()
 {
 	PP::view_copy(PP::push_back_iterator(base_classes) ^ PP::unbounded, decl.bases() | PP::transform([]
 		(const clang::CXXBaseSpecifier& base) -> auto&
 		{
 			return *base.getType().getTypePtr();
 		}));
+
+	for (const auto* method_ptr : decl.methods())
+	{
+		const auto& method = *method_ptr;
+
+		if (method.isTemplated() || 
+			clang::isa<clang::CXXConstructorDecl>(method))
+			continue;
+
+		if (method.isStatic())
+			static_member_functions.emplace_back(method, *this);
+		else if (const auto* conversion_method_ptr = clang::dyn_cast<clang::CXXConversionDecl>(&method); conversion_method_ptr)
+			conversion_functions.emplace_back(*conversion_method_ptr, *this);
+		else
+			non_conversion_member_functions.emplace_back(method, *this);
+	}
+
+	for (const auto* constructor_ptr : decl.ctors())
+	{
+		const auto& constructor = *constructor_ptr;
+
+		if (constructor.isTemplated())
+			continue;
+
+		constructors.emplace_back(constructor, *this);
+	}
 }
 
 void PPreflector::Class::print_name_header(llvm::raw_ostream& out) const
@@ -40,19 +67,20 @@ void PPreflector::Class::print_metadata_object(llvm::raw_ostream&) const
 
 void PPreflector::Class::print_metadata_members(llvm::raw_ostream& out) const
 {
-	print_metadata_name(out);
-	print_metadata_parent(out);
+	out << PPREFLECTOR_MEMBER_PRINT(print_metadata_name, *this) << "\n"
+		<< PPREFLECTOR_MEMBER_PRINT(print_metadata_parent, *this) << "\n";
 
-	print_members(out, nested_classes, "nested_classes", printer_type_tuple);
-	print_members(out, base_classes, "base_classes", printer_type_tuple);
-	//print_members(out, constructors, "constructors", printer_make_tuple);
-	//print_members(out, static_member_functions, "static_member_functions", printer_value_tuple);
-	//print_members(out, member_functions, "member_functions", printer_value_tuple);
+	print_members<"nested_types"_str>(out, nested_types, printer_type_tuple);
+	print_members<"base_classes"_str>(out, base_classes, printer_type_tuple);
+	print_members<"constructors"_str>(out, constructors, printer_make_tuple);
+	print_members<"static_member_functions"_str>(out, static_member_functions, printer_value_tuple);
+	print_members<"member_functions"_str>(out, PP::view_chain(as_descriptors_view(non_conversion_member_functions)) ^ as_descriptors_view(conversion_functions), printer_value_tuple);
 
 	for (const descriptor& d : PP::view_chain(
-			as_descriptors_view(nested_classes))/* ^
+			as_descriptors_view(nested_types)) ^
 			as_descriptors_view(constructors) ^
 			as_descriptors_view(static_member_functions) ^
-			as_descriptors_view(member_functions)*/)
+			as_descriptors_view(non_conversion_member_functions) ^
+			as_descriptors_view(conversion_functions))
 		d.print_metadata(out);
 }

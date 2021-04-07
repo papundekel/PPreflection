@@ -1,7 +1,6 @@
 #include "non_global_namespace.hpp"
 
 #include "printers.hpp"
-#include "strings.hpp"
 
 PPreflector::non_global_namespace::non_global_namespace(PP::size_t depth, const clang::NamespaceDecl& decl, const Namespace& parent)
 	: node_descriptor<clang::NamespaceDecl, nested_descriptor<Namespace, Namespace>>(decl, parent, depth)
@@ -34,7 +33,7 @@ void PPreflector::non_global_namespace::print_scoped_name_as_parent(llvm::raw_os
 
 void PPreflector::non_global_namespace::print_metadata_object(llvm::raw_ostream& out) const
 {
-	out << metadata_prefix << PPREFLECTOR_MEMBER_PRINT(print_name_own, *this) << "> = PPreflection::detail::basic_namespace<" << PPREFLECTOR_MEMBER_PRINT(print_name_own, *this) << ">{};\n";		
-	print_metadata_name(out);
-	print_metadata_parent(out);
+	out << printer_metadata(PPREFLECTOR_MEMBER_PRINT(print_name_own, *this)) << "PPreflection::detail::basic_namespace<" << PPREFLECTOR_MEMBER_PRINT(print_name_own, *this) << ">{};\n"
+		<< PPREFLECTOR_MEMBER_PRINT(print_metadata_name, *this) << "\n"
+		<< PPREFLECTOR_MEMBER_PRINT(print_metadata_parent, *this) << "\n";
 }

@@ -27,7 +27,7 @@ template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::t
 // ::S
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::S>> = "S"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::S>> = PP::type<PPreflection::tags::global>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::S>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_types<::S>> = PP::type_tuple<>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::S>> = PP::type_tuple<>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructors<::S>> = PP::make_tuple(
 	PP::type_tuple<>,

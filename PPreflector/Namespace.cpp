@@ -3,12 +3,8 @@
 #include "PP/transform_view.hpp"
 #include "PP/view_chain.hpp"
 
-#include "Class.hpp"
-#include "Enum.hpp"
 #include "for_each_with_delimiters.hpp"
-#include "non_global_namespace.hpp"
 #include "printers.hpp"
-#include "strings.hpp"
 
 PPreflector::Namespace::Namespace(PP::size_t depth)
 	: descriptor()
@@ -40,7 +36,7 @@ PPreflector::non_global_namespace& PPreflector::Namespace::add(clang::NamespaceD
 	return namespaces.emplace_back(depth + 1, n, *this);;
 }
 
-PPreflector::static_function& PPreflector::Namespace::add(clang::FunctionDecl& f)
+PPreflector::namespace_function& PPreflector::Namespace::add(clang::FunctionDecl& f)
 {
 	return functions.emplace_back(f, *this);
 }
@@ -88,9 +84,9 @@ void PPreflector::Namespace::print_layout(llvm::raw_ostream& out) const
 
 void PPreflector::Namespace::print_metadata_members(llvm::raw_ostream& out) const
 {
-	print_members(out, functions, "functions", printer_value_tuple);
-	print_members(out, PP::view_chain(as_descriptors_view(enums)) ^ as_descriptors_view(classes), "types", printer_type_tuple);
-	print_members(out, namespaces, "namespaces", printer_type_tuple);
+	print_members<"functions"_str>(out, functions, printer_value_tuple);
+	print_members<"types"_str>(out, PP::view_chain(as_descriptors_view(enums)) ^ as_descriptors_view(classes), printer_type_tuple);
+	print_members<"namespaces"_str>(out, namespaces, printer_type_tuple);
 
 	for (const descriptor& d : PP::view_chain(
 			as_descriptors_view(functions)) ^

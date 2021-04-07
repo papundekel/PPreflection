@@ -1,11 +1,14 @@
 #pragma once
+#include <compare>
+
+#include "PP/simple_view.hpp"
 #include "PP/type_disjunction_reference.hpp"
+#include "PP/view_subsequence_compare.hpp"
 
 #include "convertor.h"
 #include "cv_qualification_signature.hpp"
 #include "dynamic_variable.h"
-#include "functions/conversion_function.h"
-#include "functions/one_parameter_converting_constructor.h"
+#include "functions/function.h"
 #include "qualification_conversion.hpp"
 #include "types/non_array_object_type.h"
 #include "types/parameter_type_reference.h"
@@ -13,12 +16,17 @@
 
 namespace PPreflection
 {
-	enum conversion_sequence_rank : unsigned int
+	enum conversion_sequence_rank : int
 	{
 		exact_match = 2,
 		promotion = 1,
 		conversion = 0,
 	};
+
+	static constexpr bool partial_ordering_unequal(std::partial_ordering po) noexcept
+	{
+		return po == std::partial_ordering::less || po == std::partial_ordering::greater;
+	}
 
 	class standard_conversion_sequence
 	{
@@ -43,7 +51,7 @@ namespace PPreflection
 		friend class implicit_conversion_sequence;
 
 	private:
-		const type* type_source;
+		const referencable_type* type_source;
 		const non_array_object_type* type_target_value;
 		const reference_type* type_target_reference;
 
@@ -53,19 +61,21 @@ namespace PPreflection
 		convertor_object function_noexcept;
 		convertor_reference derived_to_base_reference_conversion;
 
-		unsigned int
-			rank : 2,
-			identity : 1,
-			load_present : 1,
-			has_qualification_conversion : 1,
-			enum_with_fixed_underlying_type : 1,
-			enum_to_promoted_fixed_type : 1,
-			converts_pointer_to_bool : 1,
-			converts_to_base_or_void_pointer : 1,
-			converts_to_void_pointer : 1;
+		int
+			rank : 3,
+			identity : 2,
+			load_present : 2,
+			has_qualification_conversion : 2,
+			enum_with_fixed_underlying_type : 2,
+			enum_to_promoted_fixed_type : 2,
+			converts_pointer_to_bool : 2,
+			converts_to_base_or_void_pointer : 2,
+			converts_to_void_pointer : 2,
+			source_lvalue : 2,
+			binds_implicit_parameter_no_ref : 2;
 
 	private:
-		constexpr standard_conversion_sequence(const type* source) noexcept
+		constexpr standard_conversion_sequence(const referencable_type* source, bool source_lvalue = false) noexcept
 			: type_source(source)
 			, type_target_value(nullptr)
 			, type_target_reference(nullptr)
@@ -83,6 +93,8 @@ namespace PPreflection
 			, converts_pointer_to_bool(false)
 			, converts_to_base_or_void_pointer(false)
 			, converts_to_void_pointer(false)
+			, source_lvalue(source_lvalue)
+			, binds_implicit_parameter_no_ref(false)
 		{}
 
 		constexpr standard_conversion_sequence() noexcept
@@ -90,8 +102,12 @@ namespace PPreflection
 		{}
 
 	public:
-		constexpr standard_conversion_sequence(const type& source) noexcept
+		constexpr standard_conversion_sequence(const referencable_type& source) noexcept
 			: standard_conversion_sequence(&source)
+		{}
+
+		constexpr standard_conversion_sequence(const reference_type& source) noexcept
+			: standard_conversion_sequence(&source.remove_reference().type, source.is_lvalue())
 		{}
 
 		static constexpr standard_conversion_sequence create_invalid() noexcept
@@ -263,63 +279,172 @@ namespace PPreflection
 				promotion_conversion ==	other.promotion_conversion &&
 				function_noexcept == other.function_noexcept &&
 				derived_to_base_reference_conversion == other.derived_to_base_reference_conversion &&
-				has_qualification_conversion && other.has_qualification_conversion &&
-				*type_target_value != *other.type_target_value;
+				has_qualification_conversion && other.has_qualification_conversion;
 		}
 
-		constexpr bool operator>(const standard_conversion_sequence& other) const noexcept
-		{
-			auto rank_this = get_rank();
-			auto rank_other = other.get_rank();
+		struct view_sentinel
+		{};
 
+		struct view_iterator
+		{
+			convertor_object to_pointer;
+			convertor_object promotion_conversion;
+			convertor_object function_noexcept;
+			bool has_qualification_conversion;
+
+			int position;
+
+			constexpr convertor_object operator*()
+			{
+				switch (position)
+				{
+				case 0:
+					return to_pointer;
+				case 1:
+					return promotion_conversion;
+				case 2:
+					return function_noexcept;
+				case 3:
+					[[fallthrough]];
+				default:
+					return nullptr;
+				}
+			}
+
+			constexpr void step()
+			{
+				switch (position)
+				{
+				case 0:
+					if (promotion_conversion)
+						{ position = 1; break; }
+					else
+						[[fallthrough]];
+				case 1:
+					if (function_noexcept)
+						{ position = 2; break; }
+					else
+						[[fallthrough]];
+				case 2:
+					if (has_qualification_conversion)
+						{ position = 3; break; }
+					else
+						[[fallthrough]];
+				case 3:
+					[[fallthrough]];
+				default:
+					position = 4; break;
+				}
+			}
+
+			constexpr bool operator==(view_sentinel) const
+			{
+				return position == 4;
+			}
+
+			constexpr auto begin() const
+			{
+				return *this;
+			}
+			constexpr auto end() const
+			{
+				return view_sentinel{};
+			}
+		};
+
+		constexpr int make_position() const
+		{
+			if (to_pointer)
+				return 0;
+			else if (promotion_conversion)
+				return 1;
+			else if (function_noexcept)
+				return 2;
+			else if (has_qualification_conversion)
+				return 3;
+			else
+				return 4;
+		}
+
+		constexpr auto make_view() const
+		{
+			return view_iterator(to_pointer, promotion_conversion, function_noexcept, has_qualification_conversion, make_position());
+		}
+
+		constexpr std::partial_ordering operator<=>(const standard_conversion_sequence& other) const noexcept
+		{
 			// 3.2.1
-			// UNIMPLEMENTED
-			// proper subsequence
+			if (auto compare_subsequence = PP::view_subsequence_compare(make_view(), other.make_view()); partial_ordering_unequal(compare_subsequence))
+				return compare_subsequence;
 
 			// 3.2.2
-			if (rank_this > rank_other)
-				return true;
+			auto compare_subsequence_rank = get_rank() <=> other.get_rank();
+
+			if (compare_subsequence_rank != 0)
+				return compare_subsequence_rank;
 
 			// 3.3.4
-			if (rank_this == rank_other)
+			else
 			{
 				// 4.1
-				if (!converts_pointer_to_bool && other.converts_pointer_to_bool)
-					return true;
+				if (auto compare_converts_pointer_to_bool = other.converts_pointer_to_bool <=> converts_pointer_to_bool; compare_converts_pointer_to_bool != 0)
+					return compare_converts_pointer_to_bool;
 
 				// 4.2
-				if (enum_with_fixed_underlying_type && other.enum_with_fixed_underlying_type &&
-					!enum_to_promoted_fixed_type && other.enum_to_promoted_fixed_type)
-					return true;
+				if (enum_with_fixed_underlying_type && other.enum_with_fixed_underlying_type)
+				{
+					auto compare_enum_to_promoted_fixed_type = other.enum_to_promoted_fixed_type <=> enum_to_promoted_fixed_type;
+					if (compare_enum_to_promoted_fixed_type != 0)
+						return compare_enum_to_promoted_fixed_type;
+				}
 
 				// 4.3
-				if (converts_to_base_or_void_pointer && other.converts_to_base_or_void_pointer &&
-					!converts_to_void_pointer && other.converts_to_void_pointer)
-					return true;
+				if (converts_to_base_or_void_pointer && other.converts_to_base_or_void_pointer)
+				{
+					auto compare_converts_to_void_pointer = other.converts_to_void_pointer <=> converts_to_void_pointer;
+					if (compare_converts_to_void_pointer != 0)
+						return compare_converts_to_void_pointer;
+				}
 
 				// 4.4
-				// UNIMPLEMENTED
+				// TODO
 				// Base -> Middle -> Derived
 			}
 
 			// 3.2.3
-			// UNIMPLEMENTED
-			// binding to rvalue > binding to lvalue
+			// slightly modified to:
+			// S1 and S2 include reference bindings (9.4.4) and neither refers to an implicit object parameter of
+			// a non-static member function declared without a ref-qualifier,
+			// and S1 binds an rvalue reference to an rvalue or an lvalue reference to an lvalue
+			// and S2 binds an lvalue reference to an rvalue or an rvalue reference to an lvalue
+			if (type_target_reference && other.type_target_reference &&
+				!binds_implicit_parameter_no_ref && !other.binds_implicit_parameter_no_ref)
+			{
+				auto compare_same_category = (source_lvalue == type_target_reference->is_lvalue()) <=> (other.source_lvalue == other.type_target_reference->is_lvalue());
+				if (compare_same_category != 0)
+					return compare_same_category;
+			}
 
 			// 3.2.4
-			// UNIMPLEMENTED
-			// binding lvalue function to rvalue > binding lvalue function to lvalue
+			// subsumed by the modified 3.2.3
 
 			// 3.2.5
-			if (identical_except_qualification(other) &&
-				cv_qualification_signature(*type_target_value).compatible(cv_qualification_signature(*other.type_target_value)))
-				return true;
+			if (identical_except_qualification(other))
+			{
+				auto compare_qualification = cv_qualification_signature(*type_target_value) <=> cv_qualification_signature(*other.type_target_value);
+				if (partial_ordering_unequal(compare_qualification))
+					return compare_qualification;
+			}
 
 			// 3.2.6
-			// UNIMPLEMENTED
-			// prefer binding to less cv-qualified reference
+			if (type_target_reference && other.type_target_reference)
+			{
+				auto compare_cv = other.type_target_reference->remove_reference().cv <=> type_target_reference->remove_reference().cv;
+				if (compare_cv != 0)
+					return compare_cv;
+			}
 
-			return false;
+			return std::partial_ordering::unordered;
 		}
 	};
 
@@ -435,17 +560,19 @@ namespace PPreflection
 				second_standard_conversion.type_target_reference = &target_type;
 		}
 
-		constexpr bool operator>(const implicit_conversion_sequence& other) const noexcept
+		constexpr std::partial_ordering operator<=>(const implicit_conversion_sequence& other) const noexcept
 		{
 			auto type_this = get_type();
 			auto type_other = other.get_type();
 
 			// 2.1
 			if (type_this == type::standard && type_other == type::user_defined)
-				return true;
+				return std::partial_ordering::greater;
+			else if (type_other == type::standard && type_this == type::user_defined)
+				return std::partial_ordering::less;
 
 			// 3.2
-			if (type_this == type::standard && type_other == type::standard &&
+			else if (type_this == type::standard && type_other == type::standard)
 				first_standard_conversion > other.first_standard_conversion)
 				return true;
 

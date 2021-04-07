@@ -27,7 +27,7 @@ namespace PPreflection::detail
 
 		static constexpr auto static_member_functions = reflector(PP::Template<tags::static_member_functions>, PP::type<const static_member_function&>);
 		static constexpr auto member_functions = reflector(PP::Template<tags::member_functions>, PP::type<const member_function&>);
-		static constexpr auto nested_classes = reflector(PP::Template<tags::nested_classes>, PP::type<const user_defined_type&>);
+		static constexpr auto nested_types = reflector(PP::Template<tags::nested_types>, PP::type<const user_defined_type&>);
 
 		static constexpr auto constructors = reflect_many(PP::type<const constructor&>,
 			PP::functor([]
@@ -36,7 +36,7 @@ namespace PPreflection::detail
 					return PP::Template<tags::constructor>[PP::type<T> += constructor_parameter_types];
 				}) + PPreflection::reflect(PP::type<tags::constructors<T>>));
 
-		static constexpr auto conversion_functions = &PP::tuple_filter([]
+		static constexpr auto conversion_functions = PP::type<const conversion_function&> & PP::tuple_filter([]
 			<typename F>
 			(const F& f)
 			{
@@ -66,9 +66,9 @@ namespace PPreflection::detail
 		{
 			return static_member_functions;
 		}
-		constexpr PP::any_view<PP::iterator_category::ra, const user_defined_type&> get_nested_classes() const noexcept override final
+		constexpr PP::any_view<PP::iterator_category::ra, const user_defined_type&> get_nested_types() const noexcept override final
 		{
-			return nested_classes;
+			return nested_types;
 		}
 	};
 }

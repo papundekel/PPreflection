@@ -39,3 +39,8 @@ constexpr void PPreflection::class_type::get_conversion_functions_inherited(PP::
 		for (const auto& bc : non_union_this_ptr->get_base_classes())
 			bc.get_conversion_functions_inherited(i_out);
 }
+
+constexpr PPreflection::standard_conversion_sequence PPreflection::class_type::make_standard_conversion_sequence_impl(const non_array_object_type&) const noexcept
+{
+	return standard_conversion_sequence::create_invalid();
+}

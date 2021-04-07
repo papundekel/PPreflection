@@ -11,7 +11,7 @@
 
 namespace PPreflector
 {
-	class static_function;
+	class namespace_function;
 	class non_global_namespace;
 	class Enum;
 	class Class;
@@ -20,7 +20,7 @@ namespace PPreflector
 	{
 		PP::size_t depth;
 		std::list<non_global_namespace> namespaces;
-		std::list<static_function> functions;
+		std::list<namespace_function> functions;
 		std::list<Enum> enums;
 		std::list<Class> classes;
 
@@ -36,7 +36,7 @@ namespace PPreflector
 		void print_metadata_members(llvm::raw_ostream& out) const override final;
 
 		non_global_namespace& add(clang::NamespaceDecl& n);
-		static_function& add(clang::FunctionDecl& f);
+		namespace_function& add(clang::FunctionDecl& f);
 		Enum& add(clang::EnumDecl& e);
 		Class& add(clang::CXXRecordDecl& c);
 

@@ -32,5 +32,7 @@ namespace PPreflection
 		constexpr const user_defined_type* get_nested_type(PP::string_view name) const noexcept;
 
 		constexpr void get_conversion_functions_inherited(PP::concepts::iterator auto i_out) const noexcept;
+
+		constexpr standard_conversion_sequence make_standard_conversion_sequence_impl(const non_array_object_type& target) const noexcept override final;
 	};
 }

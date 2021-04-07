@@ -9,7 +9,6 @@
 
 #include "for_each_with_delimiters.hpp"
 #include "printers.hpp"
-#include "strings.hpp"
 
 namespace PPreflector
 {
@@ -38,8 +37,13 @@ namespace PPreflector
 		static constexpr auto printer_value_tuple = container_printer<"PP::value_tuple<"_str, ">"_str>;
 		static constexpr auto printer_type_tuple = container_printer<"PP::type_tuple<"_str, ">"_str>;
 		static constexpr auto printer_make_tuple = container_printer<"PP::make_tuple("_str, ")"_str>;
+		static constexpr auto printer_type = container_printer<"PP::type<"_str, ">"_str>;
+		static constexpr auto printer_value_t = container_printer<"PP::value_t<"_str, ">"_str>;
+		static constexpr auto printer_metadata = container_printer<"template <> constexpr inline auto PPreflection::detail::metadata<"_str, "> = "_str>;
+		static constexpr auto printer_sv = container_printer<"\""_str, "\"_sv"_str>;
 
-		void print_members(llvm::raw_ostream& out, const auto& members, std::string_view members_name, const auto& container_printer) const;
+		template <auto tag_name>
+		void print_members(llvm::raw_ostream& out, const auto& members, const auto& container_printer) const;
 	};
 
 	auto as_descriptors_view(PP::concepts::view auto&& v)
@@ -68,7 +72,8 @@ namespace PPreflector
 	};
 }
 
-void PPreflector::descriptor::print_members(llvm::raw_ostream& out, const auto& members, std::string_view members_name, const auto& container_printer) const
+template <auto tag_name>
+void PPreflector::descriptor::print_members(llvm::raw_ostream& out, const auto& members, const auto& container_printer) const
 {
-	out << PPreflector::metadata_prefix << PPreflector::tags_namespace_name << members_name << "<" << PPREFLECTOR_MEMBER_PRINT(print_name_own, *this) << ">> = " << container_printer(for_each_member_helper(members)) << "\n";
+	out << printer_metadata(metadata_tag_printer<tag_name>(PPREFLECTOR_MEMBER_PRINT(print_name_own, *this))) << container_printer(for_each_member_helper(members)) << ";\n";
 }

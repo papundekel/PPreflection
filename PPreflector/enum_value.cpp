@@ -13,7 +13,7 @@ void PPreflector::enum_value::print_name_header(llvm::raw_ostream&) const
 
 void PPreflector::enum_value::print_name_own(llvm::raw_ostream& out) const
 {
-	out << "PP::value_t<" << PPREFLECTOR_MEMBER_PRINT(print_name_foreign, *this) << ">";
+	out << printer_value_t(PPREFLECTOR_MEMBER_PRINT(print_name_foreign, *this));
 }
 
 void PPreflector::enum_value::print_name_foreign(llvm::raw_ostream& out) const

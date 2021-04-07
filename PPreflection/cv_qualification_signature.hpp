@@ -1,8 +1,29 @@
 #pragma once
+#include <compare>
+
+#include "PP/simple_view.hpp"
+
 #include "types/types.h"
 
 namespace PPreflection
 {
+	static constexpr auto equality_to_partial_ordering(const auto& a, const auto& b) noexcept
+	{
+		return a == b ? std::partial_ordering::equivalent : std::partial_ordering::unordered;
+	}
+
+	static constexpr auto combine(std::partial_ordering a, std::partial_ordering b) noexcept
+	{
+		if (a == std::partial_ordering::unordered || b == std::partial_ordering::unordered)
+			return std::partial_ordering::unordered;
+		else if (a == b || b == std::partial_ordering::equivalent)
+			return a;
+		else if (a == std::partial_ordering::equivalent)
+			return b;
+		else
+			return std::partial_ordering::unordered;
+	}
+
 	class cv_qualification_signature
 	{
 		struct pointer
@@ -27,39 +48,47 @@ namespace PPreflection
 			std::variant<pointer, member_pointer, unknown_bound_array, known_bound_array, U> P;
 			PP::cv_qualifier cv;
 
-			constexpr bool compatible_P(const element& target) const noexcept
+			constexpr std::partial_ordering operator<=>(const element& other) const noexcept
 			{
-				bool same_index = P.index() == target.P.index();
+				auto compare_cv = other.cv <=> cv;
+				if (compare_cv == std::partial_ordering::unordered)
+					return std::partial_ordering::unordered;
 
-				return std::visit(PP::overloaded
+				return combine(compare_cv, std::visit(PP::overloaded
 				(
-					[&p = target.P](member_pointer mp_this)
+					[](member_pointer mp_this, member_pointer mp_target)
 					{
-						return std::visit(PP::overloaded
-						(
-							[mp_this](member_pointer mp_target){ return *mp_this.Class == *mp_target.Class; },
-							[](auto){ return false; }
-						), p);
+						return equality_to_partial_ordering(*mp_this.Class, *mp_target.Class);
 					},
-					[&p = target.P](known_bound_array a_this)
+					[](known_bound_array a_this, known_bound_array a_target)
 					{
-						return std::visit(PP::overloaded
-						(
-							[a_this](known_bound_array a_target){ return a_this.extent == a_target.extent; },
-							[](unknown_bound_array){ return true; },
-							[](auto){ return false; }
-						), p);
+						return equality_to_partial_ordering(a_this.extent, a_target.extent);
 					},
-					[&p = target.P](U u_this)
+					[](U u_this, U u_target)
 					{
-						return std::visit(PP::overloaded
-						(
-							[u_this](U u_target){ return *u_this.u == *u_target.u; },
-							[](auto){ return false; }
-						), p);
+						return equality_to_partial_ordering(*u_this.u, *u_target.u);
 					},
-					[same_index](auto){ return same_index; }
-				), P);
+					[](pointer, pointer)
+					{
+						return std::partial_ordering::equivalent;
+					},
+					[](known_bound_array, unknown_bound_array)
+					{
+						return std::partial_ordering::greater;
+					},
+					[](unknown_bound_array, known_bound_array)
+					{
+						return std::partial_ordering::less;
+					},
+					[](unknown_bound_array, unknown_bound_array)
+					{
+						return std::partial_ordering::equivalent;
+					},
+					[](auto, auto)
+					{
+						return std::partial_ordering::unordered;
+					}
+				), P, other.P));
 			}
 		};
 
@@ -68,17 +97,17 @@ namespace PPreflection
 
 	public:
 		constexpr explicit cv_qualification_signature(const pointer_type& type)
-			: elements(2)
+			: elements(3)
 		{
 			register_elements(type);			
 		}
 		constexpr explicit cv_qualification_signature(const pointer_to_member_type& type)
-			: elements(2)
+			: elements(3)
 		{
 			register_elements(type);
 		}
 		constexpr explicit cv_qualification_signature(const non_array_object_type& type)
-			: elements(2)
+			: elements(3)
 		{
 			if (const auto* p = dynamic_cast<const pointer_type*>(&type); p)
 				register_elements(*p);
@@ -86,35 +115,55 @@ namespace PPreflection
 				register_elements(*p);
 		}
 
-		constexpr bool compatible(cv_qualification_signature target) const noexcept
+		constexpr std::partial_ordering operator<=>(cv_qualification_signature other) const noexcept
 		{
-			if (elements.count() != target.elements.count())
-				return false;
+			if (elements.count() != other.elements.count())
+				return std::partial_ordering::unordered;
 
-			for (auto [element_this, element_target] : PP::zip_view_pack(elements, target.elements))
+			auto difference = std::partial_ordering::equivalent;
+			PP::size_t index_first_difference = 0;
+			
 			{
-				if (!(element_target.cv >= element_this.cv))
-					return false;
-				
-				if (!element_this.compatible_P(element_target))
-					return false;
-			}
+				PP::size_t i = 0;
 
-			auto first_diff = PP::view_find(*PP::functor([]
-				(const element& element_this, const element& element_target)
+				for (auto [element_this, element_other] : PP::zip_view_pack(elements, other.elements))
 				{
-					return
-						element_target.cv > element_this.cv ||
-						(element_this.P.index() != element_target.P.index());
-				}), PP::zip_view_pack(elements, target.elements))[PP::value_1];
+					auto compare_element = element_this <=> element_other;
+					
+					if (compare_element == std::partial_ordering::unordered)
+					{
+						return std::partial_ordering::unordered;
+					}
+					else if (compare_element != std::partial_ordering::equivalent)
+					{
+						if (difference == std::partial_ordering::equivalent)
+						{
+							difference = compare_element;
+							index_first_difference = i;
+						}
+						else if (difference != compare_element)
+							return std::partial_ordering::unordered;
+					}
 
-			for (auto i = target.elements.begin(); i != first_diff; ++i)
-			{
-				if (!PP::cv_is_const(i->cv))
-					return false;
+					++i;
+				}
 			}
 
-			return true;
+			if (difference == std::partial_ordering::equivalent)
+				return std::partial_ordering::equivalent;
+
+			auto make_view = [index_first_difference](const auto& elements)
+			{
+				return PP::simple_view(elements.begin(), elements.begin() + index_first_difference);
+			};
+
+			for (auto& element : make_view(difference == std::partial_ordering::less ? elements : other.elements))
+			{
+				if (!PP::cv_is_const(element.cv))
+					return std::partial_ordering::unordered;
+			}
+
+			return difference;
 		}
 
 	private:

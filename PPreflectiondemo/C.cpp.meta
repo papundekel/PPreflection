@@ -13,27 +13,69 @@ namespace PPreflection::tags
 }
 
 // ::
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global>> = PP::value_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global>> = PP::type_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global>> = PP::value_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global>> = PP::type_tuple<>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global>> = PP::type_tuple<
-	PPreflection::tags::global::N>
+	PPreflection::tags::global::N>;
 
 // ::N
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::global::N> = PPreflection::detail::basic_namespace<PPreflection::tags::global::N>{};
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PPreflection::tags::global::N>> = "N"_sv;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PPreflection::tags::global::N>> = PP::type<PPreflection::tags::global>;
-
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global::N>> = PP::value_tuple<>
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::functions<PPreflection::tags::global::N>> = PP::value_tuple<>;
 template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::types<PPreflection::tags::global::N>> = PP::type_tuple<
-	::N::C>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::N>> = PP::type_tuple<>
+	::N::B,
+	::N::S>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::namespaces<PPreflection::tags::global::N>> = PP::type_tuple<>;
 
-// ::N::C
+// ::N::B
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::N::B>> = "B"_sv;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::N::B>> = PP::type<PPreflection::tags::global::N>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_types<::N::B>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::N::B>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructors<::N::B>> = PP::make_tuple(
+	PP::type_tuple<const N::B &>,
+	PP::type_tuple<N::B &&>);
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::static_member_functions<::N::B>> = PP::value_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::member_functions<::N::B>> = PP::value_tuple<>;
 
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::N::C>> = "C"_sv;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::N::C>> = PP::type<PPreflection::tags::global::N>;
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_classes<::N::C>> = PP::type_tuple<>
-template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::N::C>> = PP::type_tuple<>
+// ::N::B::B(const N::B &)
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructor<::N::B, const N::B &>> = PPreflection::detail::basic_constructor<::N::B, const N::B &>{};
+
+// ::N::B::B(N::B &&)
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructor<::N::B, N::B &&>> = PPreflection::detail::basic_constructor<::N::B, N::B &&>{};
+
+// ::N::S
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<::N::S>> = "S"_sv;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<::N::S>> = PP::type<PPreflection::tags::global::N>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::nested_types<::N::S>> = PP::type_tuple<>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::base_classes<::N::S>> = PP::type_tuple<
+	::N::B>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructors<::N::S>> = PP::make_tuple(
+	PP::type_tuple<const N::S &>);
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::static_member_functions<::N::S>> = PP::value_tuple<
+	PPreflection::overload_caster<double>(::N::S::g),
+	PPreflection::overload_caster<int>(::N::S::g)>;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::member_functions<::N::S>> = PP::value_tuple<
+	PPreflection::overload_member_caster<PP::cv_qualifier::Const, PP::ref_qualifier::lvalue>(::N::S::f)>;
+
+// ::N::S::S(const N::S &)
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::constructor<::N::S, const N::S &>> = PPreflection::detail::basic_constructor<::N::S, const N::S &>{};
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::is_explicit<::N::S, const N::S &>> = PP::value_true;
+
+// ::N::S::g(double)
+template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<PPreflection::overload_caster<double>(::N::S::g)>> = PPreflection::detail::basic_static_member_function<PPreflection::overload_caster<double>(::N::S::g)>{};
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<PPreflection::overload_caster<double>(::N::S::g)>>> = "g"_sv;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PP::value_t<PPreflection::overload_caster<double>(::N::S::g)>>> = PP::type<::N::S>;
+
+// ::N::S::g(int)
+template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<PPreflection::overload_caster<int>(::N::S::g)>> = PPreflection::detail::basic_static_member_function<PPreflection::overload_caster<int>(::N::S::g)>{};
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<PPreflection::overload_caster<int>(::N::S::g)>>> = "g"_sv;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PP::value_t<PPreflection::overload_caster<int>(::N::S::g)>>> = PP::type<::N::S>;
+
+// ::N::S::f() const&
+template <> constexpr inline auto PPreflection::detail::metadata<PP::value_t<PPreflection::overload_member_caster<PP::cv_qualifier::Const, PP::ref_qualifier::lvalue>(::N::S::f)>> = PPreflection::detail::basic_non_conversion_member_function<PPreflection::overload_member_caster<PP::cv_qualifier::Const, PP::ref_qualifier::lvalue>(::N::S::f)>{};
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::name<PP::value_t<PPreflection::overload_member_caster<PP::cv_qualifier::Const, PP::ref_qualifier::lvalue>(::N::S::f)>>> = "f"_sv;
+template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::parent<PP::value_t<PPreflection::overload_member_caster<PP::cv_qualifier::Const, PP::ref_qualifier::lvalue>(::N::S::f)>>> = PP::type<::N::S>;
 
 #endif
