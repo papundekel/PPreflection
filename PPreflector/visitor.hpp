@@ -15,7 +15,7 @@ namespace PPreflector
 	{
 		clang::ASTContext& context;
 		global_namespace global;
-		std::map<const clang::NamespaceDecl*, PP::ref_wrap<non_global_namespace>> map_namespaces;
+		std::map<const clang::NamespaceDecl*, PP::ref_wrap<non_global_namespace&>> map_namespaces;
 
 	public:
 		explicit visitor(clang::CompilerInstance& ci);
