@@ -10,9 +10,9 @@ namespace PPreflection
 	class reference_type : public detail::non_user_defined_type<type>
 	{
 	public:
-		constexpr PP::type_disjunction_reference<reference_type, pointable_type> cast_down(PP::overload_tag<type>) const noexcept override final
+		constexpr PP::variant<const reference_type&, const pointable_type&> cast_down(PP::overload_tag<type>) const noexcept override final
 		{
-			return *this;
+			return {PP::placeholder, *this};
 		}
 		
 		constexpr virtual cv_type<referencable_type> remove_reference() const noexcept = 0;
@@ -21,12 +21,6 @@ namespace PPreflection
 
 		constexpr auto make_reference(bool lvalue) const noexcept;
 		constexpr auto make_reference() const noexcept;
-
-		constexpr bool can_be_initialized(const reference_type&) const noexcept
-		{
-			// TODO
-			return true;
-		}
 
 		constexpr bool has_name(PP::string_view) const noexcept override final
 		{

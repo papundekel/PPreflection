@@ -10,27 +10,27 @@ namespace PPreflection
 {
 	constexpr bool valid_return_type_for_conversion(return_type_reference return_type, const class_type& target_type) noexcept
 	{
-		return return_type.visit(PP::overloaded
+		return PP::visit(PP::overloaded
 		(
 			[&target_type](const non_array_object_type& t){ return same_or_derived_from(t, target_type); },
 			[&target_type](const reference_type& rt){ return same_or_derived_from(rt.remove_reference().type, target_type); },
 			[](const void_type&){ return false; }
-		));
+		), return_type);
 	}
 
 	constexpr standard_conversion_sequence valid_return_type_for_conversion(return_type_reference return_type, const non_array_object_type& target_type) noexcept
 	{
-		return return_type.visit(PP::overloaded
+		return PP::visit(PP::overloaded
 		(
 			[&target_type](const non_array_object_type& t) { return t.make_standard_conversion_sequence(target_type); },
 			[&target_type](const reference_type& rt) { return rt.remove_reference().type.make_standard_conversion_sequence(target_type); },
 			[](const void_type&){ return standard_conversion_sequence::create_invalid(); }
-		));
+		), return_type);
 	}
 
 	constexpr bool is_rvalue_or_function_lvalue(const reference_type& t) noexcept
 	{
-		return !t.is_lvalue() || t.remove_reference().type.cast_down().holds_alternative(PP::type<function_type>);
+		return !t.is_lvalue() || t.remove_reference().type.cast_down().holds_alternative(PP::type<const function_type&>);
 	}
 
 	constexpr bool valid_return_type_for_conversion(PP::concepts::value auto lvalue, const reference_type& return_type) noexcept
@@ -43,7 +43,7 @@ namespace PPreflection
 
 	constexpr standard_conversion_sequence valid_return_type_for_conversion(PP::concepts::value auto lvalue, return_type_reference return_type, const reference_type& target_type) noexcept
 	{
-		return return_type.visit(PP::overloaded
+		return PP::visit(PP::overloaded
 		(
 			[](const non_array_object_type&){ return standard_conversion_sequence::create_invalid(); },
 			[lvalue, &target_type](const reference_type& rt)
@@ -69,7 +69,7 @@ namespace PPreflection
 				return sequence;
 			},
 			[](const void_type&){ return standard_conversion_sequence::create_invalid(); }
-		));
+		), return_type);
 	}
 
 	constexpr implicit_conversion_sequence initialization_sequence(const non_array_object_type& target_type, const referencable_type& initializer_type_non_class)
@@ -278,13 +278,36 @@ namespace PPreflection
 
 		return sequence;
 	}
-
-	constexpr implicit_conversion_sequence initialization_sequence(parameter_type_reference target_type, const reference_type& initializer_type, bool can_use_user_defined)
+	
+	constexpr implicit_conversion_sequence initialization_sequence(cv_type<class_type> referenced_target_cv_type, const reference_type& initializer_type, bool)
 	{
-		return target_type.visit([&initializer_type, can_use_user_defined]
+		auto sequence = implicit_conversion_sequence::create_invalid();
+
+		auto referenced_initializer_cv_type = initializer_type.remove_reference();
+
+		bool same = referenced_target_cv_type.type == referenced_initializer_cv_type.type;
+		auto [derived, initializer_class_ptr, target_class_ptr] = derived_from(referenced_initializer_cv_type.type, referenced_target_cv_type.type);
+
+		if ((same || derived) && referenced_target_cv_type >= referenced_initializer_cv_type)
+		{
+			standard_conversion_sequence standard_sequence(initializer_type);
+
+			standard_sequence.set_validity(referenced_target_cv_type);
+			if (derived)
+				standard_sequence.set_derived_to_base_reference_conversion(initializer_class_ptr->base_reference_conversion(*target_class_ptr));
+
+			sequence = implicit_conversion_sequence::create_standard(standard_sequence);
+		}
+
+		return sequence;
+	}
+
+	constexpr implicit_conversion_sequence initialization_sequence(parameter_type_olr_reference target_type, const reference_type& initializer_type, bool can_use_user_defined)
+	{
+		return PP::visit([&initializer_type, can_use_user_defined]
 			(const auto& target_type)
 			{
 				return initialization_sequence(target_type, initializer_type, can_use_user_defined);
-			});
+			}, target_type);
 	}
 }

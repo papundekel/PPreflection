@@ -1,7 +1,6 @@
 #pragma once
 #include "PP/static_cast.hpp"
-#include "PP/type_disjunction_reference.hpp"
-#include "PP/view.hpp"
+#include "PP/variant.hpp"
 
 #include "make_equal_operator_visitor.h"
 #include "non_array_object_type.h"
@@ -11,27 +10,22 @@ namespace PPreflection
 {
 	namespace detail
 	{
-		using parameter_type_reference_base = PP::type_disjunction_reference<reference_type, non_array_object_type>;
+		using parameter_type_reference_base = PP::variant<const reference_type&, const non_array_object_type&>;
 	}
 
 	class parameter_type_reference : public detail::parameter_type_reference_base
 	{
 	public:
-		constexpr parameter_type_reference(const reference_type& rt)
-			: detail::parameter_type_reference_base(rt)
+		constexpr parameter_type_reference(const reference_type& t)
+			: detail::parameter_type_reference_base(PP::placeholder, t)
 		{}
-		constexpr parameter_type_reference(const non_array_object_type& naot)
-			: detail::parameter_type_reference_base(naot)
+		constexpr parameter_type_reference(const non_array_object_type& t)
+			: detail::parameter_type_reference_base(PP::placeholder, t)
 		{}
-
-		constexpr bool can_be_initialized(const reference_type& initializer) const noexcept
-		{
-			return visit([&initializer](const auto& x) { return x.can_be_initialized(initializer); });
-		}
 
 		constexpr const type& to_type() const
 		{
-			return visit(PP::static__cast * PP::type<const type&>);
+			return PP::visit(PP::static__cast * PP::type<const type&>, *this);
 		}
 
 		constexpr operator const type&() const
@@ -44,27 +38,9 @@ namespace PPreflection
 			return &(const type&)*this;
 		}
 
-		static constexpr bool can_initialize_many(PP::concepts::view auto&& parameter_types, PP::concepts::view auto&& argument_types) noexcept
-		{
-			if (PP::view_count(parameter_types) != PP::view_count(argument_types))
-				return false;
-
-			auto a = PP::view_begin(argument_types);
-			for (auto p = PP::view_begin(parameter_types); p != PP::view_end(parameter_types); ++p, ++a)
-			{
-				const reference_type& arg_type = *a;
-				parameter_type_reference par_type = *p;
-
-				if (!par_type.can_be_initialized(arg_type))
-					return false;
-			}
-
-			return true;
-		}
-
 		constexpr bool operator==(parameter_type_reference other) const noexcept
 		{
-			return visit(make_equal_operator_visitor(other));
+			return PP::visit(make_equal_operator_visitor(other), *this);
 		}
 	};
 }

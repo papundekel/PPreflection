@@ -4,13 +4,25 @@
 
 namespace N
 {
-	void print(const int& x)
+	struct B
 	{
-		std::cout << x << "a\n";
+		void f() const
+		{
+			std::cout << "f";
+		}
+	};
+	struct D : public B{};
+	
+	void print(const B& x)
+	{
+		x.f();
+		std::cout << "\n";
 	}
-	void print(int& x)
+	void print(const D& x)
 	{
-		std::cout << x << "b\n";
+		x.f();
+		x.f();
+		std::cout << "\n";
 	}
 }
 
@@ -25,9 +37,10 @@ int main()
 	for (const auto& f : n.get_functions())
 		std::cout << f << "\n";
 
-	int a = 3;
-	n.invoke_qualified("print", { a });
-	n.invoke_qualified("print", { 5 });
+	N::B b;
+	N::D d;
+	n.invoke_qualified("print", { b });
+	n.invoke_qualified("print", { d });
 
 	std::cout.flush();
 	return 0;

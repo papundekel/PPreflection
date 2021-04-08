@@ -38,7 +38,7 @@ namespace PPreflection::detail
 
 		static constexpr auto conversion_functions = PP::type<const conversion_function&> & PP::tuple_filter([]
 			<typename F>
-			(const F& f)
+			(const F&)
 			{
 				return PP::value<PP::concepts::derived_from<F, conversion_function>>;
 			}, PPreflection::reflect + PPreflection::reflect(PP::type<tags::member_functions<T>>));

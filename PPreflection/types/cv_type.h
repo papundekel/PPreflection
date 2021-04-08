@@ -74,9 +74,9 @@ namespace PPreflection
 		}
 
 		template <typename OtherType>
-		constexpr bool operator>=(cv_type<OtherType> other) const noexcept
+		constexpr auto operator<=>(cv_type<OtherType> other) const noexcept
 		{
-			return cv >= other.cv;
+			return cv <=> other.cv;
 		}
 
 		constexpr virtual bool has_name(PP::string_view name) const noexcept override final
@@ -86,10 +86,10 @@ namespace PPreflection
 
 		constexpr parent_descriptor_reference get_parent(void*) const noexcept override final;
 
-		constexpr PP::type_disjunction_reference<reference_type, pointable_type> cast_down(PP::overload_tag<PPreflection::type>) const noexcept override final
+		constexpr PP::variant<const reference_type&, const pointable_type&> cast_down(PP::overload_tag<PPreflection::type>) const noexcept override final
 		{
 			if constexpr (PP::type<Type> != PP::type<PPreflection::type>)
-				return type;
+				return {PP::placeholder, type};
 			else
 				return type.cast_down();
 		}

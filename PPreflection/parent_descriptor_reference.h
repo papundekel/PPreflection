@@ -1,5 +1,5 @@
 #pragma once
-#include "PP/type_disjunction_reference.hpp"
+#include "PP/variant.hpp"
 
 namespace PPreflection
 {
@@ -7,11 +7,12 @@ namespace PPreflection
 	class class_type;
 	class Namespace;
 
-	constexpr inline struct parent_descriptor_none_tag_t {} parent_descriptor_none_tag{};
+	struct parent_descriptor_none_tag_t
+	{};
 
 	namespace detail
 	{
-		using parent_descriptor_reference_base = PP::type_disjunction_reference<class_type, Namespace, parent_descriptor_none_tag_t>;
+		using parent_descriptor_reference_base = PP::variant<const class_type&, const Namespace&, parent_descriptor_none_tag_t>;
 	}
 
 	class parent_descriptor_reference

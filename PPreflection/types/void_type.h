@@ -8,9 +8,9 @@ namespace PPreflection
 	class void_type : public detail::non_user_defined_type<detail::named_type<pointable_type>>
 	{
 	public:
-		constexpr PP::type_disjunction_reference<void_type, referencable_type> cast_down(PP::overload_tag<pointable_type>) const noexcept override final
+		constexpr PP::variant<const void_type&, const referencable_type&> cast_down(PP::overload_tag<pointable_type>) const noexcept override final
 		{
-			return *this;
+			return {PP::placeholder, *this};
 		}
 
 		constexpr PP::string_view get_name() const noexcept override final

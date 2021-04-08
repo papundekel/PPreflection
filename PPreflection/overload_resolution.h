@@ -14,7 +14,7 @@ namespace PPreflection
 	{
 		for (const function& f : PP_FORWARD(candidates))
 		{
-			if (PP::view_count(f.parameter_types()) == argument_count)
+			if (PP::view_count(f.parameter_types_olr()) == argument_count)
 			{
 				*viable_i++ = f;
 			}
@@ -29,7 +29,7 @@ namespace PPreflection
 
 	public:
 		explicit viable_function(const function& f) noexcept
-			: conversion_sequences(PP::view_count(f.parameter_types()))
+			: conversion_sequences(PP::view_count(f.parameter_types_olr()))
 			, return_value_sequence(standard_conversion_sequence::create_invalid())
 			, f(f)
 		{}

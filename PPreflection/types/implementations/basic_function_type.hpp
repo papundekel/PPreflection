@@ -18,6 +18,7 @@ namespace PPreflection::detail
 		static constexpr auto info = PP::get_function_info(PP::type<T>);
 
 		static constexpr auto parameter_types_ = function_type::reflect_parameter_types(info.parameter_types);
+		static constexpr auto parameter_types_olr_ = function_type::reflect_parameter_types_olr(info.parameter_types);
 
 		constexpr return_type_reference return_type() const noexcept override final
 		{
@@ -25,7 +26,11 @@ namespace PPreflection::detail
 		}
 		constexpr PP::any_view<PP::iterator_category::ra, parameter_type_reference> parameter_types() const noexcept override final
 		{
-			return parameter_types_;
+			return this->parameter_types_;
+		}
+		constexpr PP::any_view<PP::iterator_category::ra, parameter_type_olr_reference> parameter_types_olr() const noexcept override final
+		{
+			return this->parameter_types_olr_;
 		}
 		constexpr bool is_noexcept() const noexcept override final
 		{

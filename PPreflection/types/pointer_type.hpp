@@ -46,7 +46,7 @@ constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_type:
 			if (pointed_to_target.cv != pointed_to_this.cv)
 				sequence.set_qualification();
 		}
-		else if (cv_qualification_signature(*this).compatible(cv_qualification_signature(target)))
+		else if (cv_qualification_signature(*this) >= cv_qualification_signature(target))
 		{
 			sequence.set_validity(target);
 			sequence.set_qualification();

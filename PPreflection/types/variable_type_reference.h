@@ -1,5 +1,5 @@
 #pragma once
-#include "PP/type_disjunction_reference.hpp"
+#include "PP/variant.hpp"
 #include "known_bound_array_type.h"
 #include "unknown_bound_array_type.h"
 #include "void_type.h"
@@ -7,7 +7,7 @@
 
 /*namespace detail
 {
-	using variable_type_reference_base = PP::type_disjunction_reference<
+	using variable_type_reference_base = PP::variant<
 		reference_type,
 		void_type,
 		known_bound_array_type,

@@ -5,7 +5,7 @@
 #include "../convertor.h"
 #include "../print_cv.h"
 #include "non_user_defined_type.h"
-#include "parameter_type_reference.h"
+#include "parameter_type_olr_reference.h"
 #include "referencable_type.h"
 #include "return_type_reference.h"
 
@@ -16,13 +16,14 @@ namespace PPreflection
 	class function_type : public detail::non_user_defined_type<referencable_type>
 	{
 	public:
-		constexpr PP::type_disjunction_reference<function_type, object_type> cast_down(PP::overload_tag<referencable_type>) const noexcept override final
+		constexpr PP::variant<const function_type&, const object_type&> cast_down(PP::overload_tag<referencable_type>) const noexcept override final
 		{
-			return *this;
+			return {PP::placeholder, *this};
 		}
 
 		constexpr virtual return_type_reference return_type() const noexcept = 0;
 		constexpr virtual PP::any_view<PP::iterator_category::ra, parameter_type_reference> parameter_types() const noexcept = 0;
+		constexpr virtual PP::any_view<PP::iterator_category::ra, parameter_type_olr_reference> parameter_types_olr() const noexcept = 0;
 		constexpr virtual bool is_noexcept() const noexcept = 0;
 		constexpr virtual PP::cv_qualifier get_function_cv_qualifier() const noexcept = 0;
 		constexpr virtual PP::ref_qualifier get_function_ref_qualifier() const noexcept = 0;
@@ -60,6 +61,10 @@ namespace PPreflection
 		static constexpr auto reflect_parameter_types(PP::concepts::tuple auto&& types)
 		{
 			return PP::tuple_map_to_array(PP::type<parameter_type_reference>, type::reflect, PP_FORWARD(types));
+		}
+		static constexpr auto reflect_parameter_types_olr(PP::concepts::tuple auto&& types)
+		{
+			return PP::tuple_map_to_array(PP::type<parameter_type_olr_reference>, type::reflect, PP_FORWARD(types));
 		}
 
 		constexpr virtual convertor_object function_to_pointer_conversion() const noexcept = 0;

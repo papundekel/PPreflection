@@ -13,11 +13,11 @@ namespace PPreflection
 	class referencable_type : public pointable_type
 	{
 	public:
-		constexpr PP::type_disjunction_reference<void_type, referencable_type> cast_down(PP::overload_tag<pointable_type>) const noexcept override final
+		constexpr PP::variant<const void_type&, const referencable_type&> cast_down(PP::overload_tag<pointable_type>) const noexcept override final
 		{
-			return *this;
+			return {PP::placeholder, *this};
 		}
-		constexpr virtual PP::type_disjunction_reference<function_type, object_type> cast_down(PP::overload_tag<referencable_type> = {}) const noexcept = 0;
+		constexpr virtual PP::variant<const function_type&, const object_type&> cast_down(PP::overload_tag<referencable_type> = {}) const noexcept = 0;
 
 		constexpr virtual standard_conversion_sequence make_standard_conversion_sequence(const non_array_object_type& target) const noexcept = 0;
 	};

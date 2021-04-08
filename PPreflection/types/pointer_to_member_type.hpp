@@ -43,7 +43,7 @@ constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_to_me
 		{
 			compatible_member_type = true;
 		}
-		else if (cv_qualification_signature(*this).compatible(cv_qualification_signature(target)))
+		else if (cv_qualification_signature(*this) >= cv_qualification_signature(target))
 		{
 			sequence.set_rank(conversion_sequence_rank::exact_match);
 			sequence.set_qualification();

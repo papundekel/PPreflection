@@ -11,11 +11,11 @@ namespace PPreflection
 	class complete_object_type : public object_type
 	{
 	public:
-		constexpr PP::type_disjunction_reference<unknown_bound_array_type, complete_object_type> cast_down(PP::overload_tag<object_type>) const noexcept override final
+		constexpr PP::variant<const unknown_bound_array_type&, const complete_object_type&> cast_down(PP::overload_tag<object_type>) const noexcept override final
 		{
-			return *this;
+			return {PP::placeholder, *this};
 		}
-		constexpr virtual PP::type_disjunction_reference<known_bound_array_type, non_array_object_type> cast_down(PP::overload_tag<complete_object_type> = {}) const noexcept = 0;
+		constexpr virtual PP::variant<const known_bound_array_type&, const non_array_object_type&> cast_down(PP::overload_tag<complete_object_type> = {}) const noexcept = 0;
 
 		constexpr virtual const reference_type& get_reference_type(bool lvalue, PP::cv_qualifier cv) const noexcept = 0;
 

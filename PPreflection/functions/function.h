@@ -12,6 +12,7 @@
 #include "../descriptor.h"
 #include "../dynamic_variable.h"
 #include "../types/function_type.h"
+#include "../types/parameter_type_olr_reference.h"
 #include "../types/return_type_reference.h"
 
 namespace PPreflection
@@ -67,6 +68,11 @@ namespace PPreflection
 		constexpr bool is_noexcept() const noexcept
 		{
 			return get_function_type().is_noexcept();
+		}
+
+		constexpr virtual PP::any_view<PP::iterator_category::ra, parameter_type_olr_reference> parameter_types_olr() const noexcept
+		{
+			return get_function_type().parameter_types_olr();
 		}
 
 		inline dynamic_variable invoke(PP::any_view<PP::iterator_category::ra, dynamic_reference> args = {}, void* = nullptr) const noexcept;

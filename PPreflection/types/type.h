@@ -8,7 +8,7 @@
 #include "PP/tuple_get.hpp"
 #include "PP/tuple_make_array.hpp"
 #include "PP/tuple_map.hpp"
-#include "PP/type_disjunction_reference.hpp"
+#include "PP/variant.hpp"
 #include "PP/type_tuple.hpp"
 #include "PP/value_t_static_cast.hpp"
 #include "PP/view.hpp"
@@ -118,7 +118,7 @@ namespace PPreflection
 			print_name_suffix(out);
 		}
 
-		constexpr virtual PP::type_disjunction_reference<reference_type, pointable_type> cast_down(PP::overload_tag<type> = {}) const noexcept = 0;
+		constexpr virtual PP::variant<const reference_type&, const pointable_type&> cast_down(PP::overload_tag<type> = {}) const noexcept = 0;
 
 		static constexpr void print_parameter_types(PP::simple_ostream& out, PP::concepts::view auto&& parameter_types) noexcept
 		{

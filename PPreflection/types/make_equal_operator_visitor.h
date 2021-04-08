@@ -7,7 +7,7 @@ namespace PPreflection
 		return [reference]
 			(const auto& t)
 			{
-				return reference.visit(PP::overloaded
+				return PP::visit(PP::overloaded
 				(
 					[&t]
 					(decltype(t) u)
@@ -15,7 +15,7 @@ namespace PPreflection
 						return t == u;
 					},
 					[](auto&) { return false; }
-				));
+				), reference);
 			};
 	}
 }

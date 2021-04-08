@@ -9,13 +9,13 @@ namespace PPreflection
 	class pointer_to_member_type : public detail::non_user_defined_type<pointer_base_type>
 	{
 	public:
-		constexpr PP::type_disjunction_reference<
-			non_void_fundamental_type,
-			pointer_type,
-			pointer_to_member_type,
-			user_defined_type> cast_down(PP::overload_tag<non_array_object_type>) const noexcept override final
+		constexpr PP::variant<
+			const non_void_fundamental_type&,
+			const pointer_type&,
+			const pointer_to_member_type&,
+			const user_defined_type&> cast_down(PP::overload_tag<non_array_object_type>) const noexcept override final
 		{
-			return *this;
+			return {PP::placeholder, *this};
 		}
 
 		constexpr virtual const class_type& get_class_type() const noexcept = 0;

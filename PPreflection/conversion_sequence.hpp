@@ -2,7 +2,7 @@
 #include <compare>
 
 #include "PP/simple_view.hpp"
-#include "PP/type_disjunction_reference.hpp"
+#include "PP/variant.hpp"
 #include "PP/view_subsequence_compare.hpp"
 
 #include "convertor.h"
@@ -53,7 +53,7 @@ namespace PPreflection
 	private:
 		const referencable_type* type_source;
 		const non_array_object_type* type_target_value;
-		const reference_type* type_target_reference;
+		const referencable_type* type_target_reference;
 
 		load_conversion load;
 		convertor_object to_pointer;
@@ -72,6 +72,8 @@ namespace PPreflection
 			converts_to_base_or_void_pointer : 2,
 			converts_to_void_pointer : 2,
 			source_lvalue : 2,
+			target_lvalue : 2,
+			target_cv : 3,
 			binds_implicit_parameter_no_ref : 2;
 
 	private:
@@ -94,6 +96,8 @@ namespace PPreflection
 			, converts_to_base_or_void_pointer(false)
 			, converts_to_void_pointer(false)
 			, source_lvalue(source_lvalue)
+			, target_lvalue(false)
+			, target_cv((int)PP::cv_qualifier::none)
 			, binds_implicit_parameter_no_ref(false)
 		{}
 
@@ -109,6 +113,11 @@ namespace PPreflection
 		constexpr standard_conversion_sequence(const reference_type& source) noexcept
 			: standard_conversion_sequence(&source.remove_reference().type, source.is_lvalue())
 		{}
+
+		constexpr auto get_target_cv() const noexcept
+		{
+			return (PP::cv_qualifier)target_cv;
+		}
 
 		static constexpr standard_conversion_sequence create_invalid() noexcept
 		{
@@ -133,7 +142,7 @@ namespace PPreflection
 				r = derived_to_base_reference_conversion(r);
 				
 			if (type_target_reference)
-				return r.with_cv_ref(type_target_reference->remove_reference().cv, type_target_reference->is_lvalue());
+				return r.with_cv_ref(get_target_cv(), target_lvalue);
 			else
 				return r;
 		}
@@ -189,9 +198,20 @@ namespace PPreflection
 		{
 			type_target_value = &new_target_type;
 		}
+		constexpr void set_validity(cv_type<referencable_type> new_target_cv_type, bool is_lvalue) noexcept
+		{
+			type_target_reference = &new_target_cv_type.type;
+			target_lvalue = is_lvalue;
+			target_cv = (int)new_target_cv_type.cv;
+		}
 		constexpr void set_validity(const reference_type& new_target_type) noexcept
 		{
-			type_target_reference = &new_target_type;
+			set_validity(new_target_type.remove_reference(), new_target_type.is_lvalue());
+		}
+		constexpr void set_validity(cv_type<class_type> new_target_cv_type) noexcept
+		{
+			set_validity(new_target_cv_type, true);
+			binds_implicit_parameter_no_ref = true;
 		}
 		constexpr void set_load(const class_type& target) noexcept
 		{
@@ -420,7 +440,7 @@ namespace PPreflection
 			if (type_target_reference && other.type_target_reference &&
 				!binds_implicit_parameter_no_ref && !other.binds_implicit_parameter_no_ref)
 			{
-				auto compare_same_category = (source_lvalue == type_target_reference->is_lvalue()) <=> (other.source_lvalue == other.type_target_reference->is_lvalue());
+				auto compare_same_category = (source_lvalue == target_lvalue) <=> (other.source_lvalue == other.target_lvalue);
 				if (compare_same_category != 0)
 					return compare_same_category;
 			}
@@ -439,7 +459,7 @@ namespace PPreflection
 			// 3.2.6
 			if (type_target_reference && other.type_target_reference)
 			{
-				auto compare_cv = other.type_target_reference->remove_reference().cv <=> type_target_reference->remove_reference().cv;
+				auto compare_cv = other.target_cv <=> target_cv;
 				if (compare_cv != 0)
 					return compare_cv;
 			}
@@ -555,9 +575,9 @@ namespace PPreflection
 		constexpr void set_reference_bind(const reference_type& target_type) noexcept
 		{
 			if (!user_defined_conversion.present())
-				first_standard_conversion.type_target_reference = &target_type;
+				first_standard_conversion.set_validity(target_type);
 			else
-				second_standard_conversion.type_target_reference = &target_type;
+				second_standard_conversion.set_validity(target_type);
 		}
 
 		constexpr std::partial_ordering operator<=>(const implicit_conversion_sequence& other) const noexcept
@@ -568,21 +588,18 @@ namespace PPreflection
 			// 2.1
 			if (type_this == type::standard && type_other == type::user_defined)
 				return std::partial_ordering::greater;
-			else if (type_other == type::standard && type_this == type::user_defined)
+			else if (type_this == type::user_defined && type_other == type::standard)
 				return std::partial_ordering::less;
 
 			// 3.2
 			else if (type_this == type::standard && type_other == type::standard)
-				first_standard_conversion > other.first_standard_conversion)
-				return true;
+				return first_standard_conversion <=> other.first_standard_conversion;
 
 			// 3.3
-			if (type_this == type::user_defined && type_other == type::user_defined &&
-				user_defined_conversion.same_user_defined_function(other.user_defined_conversion) &&
-				second_standard_conversion > other.second_standard_conversion)
-				return true;
+			else if (type_this == type::user_defined && type_other == type::user_defined && user_defined_conversion.same_user_defined_function(other.user_defined_conversion))
+				return second_standard_conversion <=> other.second_standard_conversion;
 
-			return false;
+			return std::partial_ordering::unordered;
 		}
 
 		constexpr bool is_valid() const noexcept

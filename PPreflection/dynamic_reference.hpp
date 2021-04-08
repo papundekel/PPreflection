@@ -18,12 +18,12 @@ inline auto PPreflection::dynamic_reference::cast_unsafe(PP::concepts::type auto
 
 inline auto PPreflection::dynamic_reference::cast(PP::concepts::type auto t) const -> PP_GET_TYPE(t)&&
 {
-	constexpr auto T = PP_COPY_TYPE(t) + PP::add_rvalue_tag;
+//	constexpr auto T = PP_COPY_TYPE(t) + PP::add_rvalue_tag;
 
-	if (type::reflect(T).can_be_initialized(get_type().make_reference(PP::value<!PP::is_rvalue_reference(T)>)))
+	//if (type::reflect(T).can_be_initialized(get_type().make_reference(PP::value<!PP::is_rvalue_reference(T)>)))
 		return cast_unsafe(t);
-	else
-		throw bad_cast_exception{};
+//	else
+	//	throw bad_cast_exception{};
 }
 
 inline auto* PPreflection::dynamic_reference::get_ptr(PP::concepts::type auto t) const
