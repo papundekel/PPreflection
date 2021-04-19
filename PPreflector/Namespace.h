@@ -1,5 +1,6 @@
 #pragma once
 #include <list>
+#include <vector>
 
 #include "PP/size_t.hpp"
 
@@ -20,8 +21,8 @@ namespace PPreflector
 	{
 		PP::size_t depth;
 		std::list<non_global_namespace> namespaces;
-		std::list<namespace_function> functions;
-		std::list<Enum> enums;
+		std::vector<namespace_function> functions;
+		std::vector<Enum> enums;
 		std::list<Class> classes;
 
 	protected:

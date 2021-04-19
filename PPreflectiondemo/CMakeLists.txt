@@ -4,7 +4,8 @@ add_executable(PPreflectiondemo
 "animals.cpp"
 "main.cpp"
 "reactions.cpp"
-"visitor.cpp"
+"visitor_reference.cpp"
+"visitor_reflection.cpp"
 )
 target_compile_features(PPreflectiondemo PUBLIC cxx_std_20)
 set_target_properties(PPreflectiondemo PROPERTIES COMPILE_FLAGS "-ftemplate-backtrace-limit=0 -fconcepts-diagnostics-depth=5")

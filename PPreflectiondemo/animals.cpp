@@ -24,3 +24,28 @@ const char* animals::elk::name() const noexcept
 {
 	return "elk";
 }
+
+void animals::ape::accept(visitors::animal_visitor& visitor)
+{
+	visitor.visit(*this);
+}
+
+void animals::bat::accept(visitors::animal_visitor& visitor)
+{
+	visitor.visit(*this);
+}
+
+void animals::cat::accept(visitors::animal_visitor& visitor)
+{
+	visitor.visit(*this);
+}
+
+void animals::dog::accept(visitors::animal_visitor& visitor)
+{
+	visitor.visit(*this);
+}
+
+void animals::elk::accept(visitors::animal_visitor& visitor)
+{
+	visitor.visit(*this);
+}

@@ -4,6 +4,7 @@
 #include "llvm/Support/raw_ostream.h"
 #include "pragma_pop.hpp"
 
+#include "for_each_with_delimiters.hpp"
 #include "printers.hpp"
 
 PPreflector::visitor::visitor(clang::CompilerInstance& ci)
@@ -77,7 +78,7 @@ bool PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 			// is class in namespace scope
 			if (auto* parent_namespace_ptr = get_namespace_parent(class_declaration))
 			{
-				parent_namespace_ptr->add(class_declaration);
+				classes.push_back(parent_namespace_ptr->add(class_declaration));
 			}
 		}
 	}
@@ -94,14 +95,30 @@ void PPreflector::visitor::print(llvm::raw_ostream& out) const
 			"namespace PPreflection::tags\n"
 			"{\n"
 		<<	PPREFLECTOR_MEMBER_PRINT(print_layout, global)
-		<< 	"}\n";
-	
-	global.print_metadata(out);
-
-	out << 	"\n"
+		<< 	"}\n"
+		<<	PPREFLECTOR_MEMBER_PRINT(print_metadata, global) << "\n"
 			"namespace PPreflection\n"
 			"{\n"
 			"\tconstexpr inline const Namespace& global_namespace = reflect(PP::type<tags::global>);\n"
+			"}\n"
+			"\n"
+			"const PPreflection::non_union_class_type& PPreflection::reflect_polymorphic(std::type_index type)\n"
+			"{\n"
+			"\tstatic const auto map = type_info_map(PP::type_tuple<\n";
+
+	for_each_with_delimiters([&out]
+		(const Class& c)
+		{
+			out << "\t\t" << PPREFLECTOR_MEMBER_PRINT(print_name_foreign, c);
+		}, [&out]
+		()
+		{
+			out << ",\n";
+		}, classes);
+
+	out <<	">);\n"
+			"\n"
+			"\treturn map.get(type);\n"
 			"}\n"
 			"\n"
 			"#endif\n";
@@ -176,3 +193,8 @@ bool PPreflector::visitor::is_reserved(const clang::NamedDecl& d)
 
 	return false;
 }
+
+//bool PPreflector::visitor::shouldTraversePostOrder() const
+//{
+//	return true;
+//}

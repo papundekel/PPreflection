@@ -9,7 +9,9 @@
 
 #include "animals.hpp"
 #include "reactions.hpp"
-#include "visitor.hpp"
+
+#include "visitor_reference.hpp"
+#include "visitor_reflection.hpp"
 
 auto generate_zoo(PP::size_t count)
 {
@@ -54,6 +56,18 @@ auto generate_zoo(PP::size_t count)
 	return zoo;
 }
 
+auto now()
+{
+	return std::chrono::system_clock::now();
+}
+
+using time_point = decltype(now());
+
+void print_duration(time_point time)
+{
+	std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(now() - time).count() << '\n';
+}
+
 int main()
 {
 	PP::size_t count;
@@ -61,18 +75,31 @@ int main()
 
 	auto zoo = generate_zoo(count);
 
-	dynamic_reaction_visitor visitor;
+	visitors::visitor_reference v_reference;
 
-	auto time_start = std::chrono::system_clock::now();
+	auto time = now();
+
+	for (const auto& animal_ptr : zoo)
+	{
+		animal_ptr->accept(v_reference);
+	}
+
+	std::cout << animals::value << '\n';
+	animals::value = -1;
+
+	print_duration(time);
+	visitors::visitor_reflection v_reflection;
+
+	time = now();
 	
 	for (const auto& animal_ptr : zoo)
 	{
-		visitor.react_to(*animal_ptr);
+		v_reflection.react_to(*animal_ptr);
 	}
 
-	auto time_end = std::chrono::system_clock::now();
+	std::cout << animals::value << '\n';
 
-	std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(time_end - time_start).count() << '\n';
+	print_duration(time);
 
 	std::cout.flush();
 	return 0;

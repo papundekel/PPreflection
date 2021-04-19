@@ -24,7 +24,9 @@ PPreflector::Class::Class(const clang::CXXRecordDecl& decl, const descriptor& pa
 
 		if (method.isTemplated() || 
 			clang::isa<clang::CXXConstructorDecl>(method) ||
-			clang::isa<clang::CXXDestructorDecl>(method))
+			clang::isa<clang::CXXDestructorDecl>(method) ||
+			method.isCopyAssignmentOperator() ||
+			method.isMoveAssignmentOperator())
 			continue;
 
 		if (method.isStatic())

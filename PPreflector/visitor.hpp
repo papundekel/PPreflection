@@ -6,6 +6,7 @@
 #include "clang/Frontend/CompilerInstance.h"
 #include "pragma_pop.hpp"
 
+#include "Class.hpp"
 #include "global_namespace.hpp"
 #include "non_global_namespace.hpp"
 
@@ -16,6 +17,7 @@ namespace PPreflector
 		clang::ASTContext& context;
 		global_namespace global;
 		std::map<const clang::NamespaceDecl*, PP::ref_wrap<non_global_namespace&>> map_namespaces;
+		std::vector<PP::ref_wrap<const Class&>> classes;
 
 	public:
 		explicit visitor(clang::CompilerInstance& ci);
@@ -24,6 +26,8 @@ namespace PPreflector
 		void print(llvm::raw_ostream& out) const;
 		void clear_temps();
 		void remove_unwanted();
+
+		//bool shouldTraversePostOrder() const;
 
 	private:
 		Namespace* get_namespace_parent(clang::DeclContext& declaration_context);

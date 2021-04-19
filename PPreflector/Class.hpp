@@ -1,4 +1,7 @@
 #pragma once
+#include <list>
+#include <vector>
+
 #include "pragma_push.hpp"
 #include "clang/AST/DeclCXX.h"
 #include "pragma_pop.hpp"
@@ -16,11 +19,11 @@ namespace PPreflector
 	class Class : public node_descriptor<clang::RecordType, nested_descriptor<descriptor, descriptor>>
 	{
 		std::list<Class> nested_types;
-		std::list<base_class> base_classes;
-		std::list<constructor> constructors;
-		std::list<static_member_function> static_member_functions;
-		std::list<non_conversion_member_function> non_conversion_member_functions;
-		std::list<conversion_function> conversion_functions;
+		std::vector<base_class> base_classes;
+		std::vector<constructor> constructors;
+		std::vector<static_member_function> static_member_functions;
+		std::vector<non_conversion_member_function> non_conversion_member_functions;
+		std::vector<conversion_function> conversion_functions;
 
 	public:
 		Class(const clang::CXXRecordDecl& decl, const descriptor& parent);
