@@ -2,16 +2,19 @@
 #include <iosfwd>
 
 #include "PP/get_type.hpp"
-#include "PP/simple_ostream.hpp"
-#include "PP/simple_vector.hpp"
 #include "PP/string_view.hpp"
 #include "PP/view.hpp"
 
-#include "parent_descriptor_reference.h"
+namespace PP
+{
+	class simple_ostream;
+}
 
 namespace PPreflection
 {
 	using namespace PP::literals;
+
+	class parent_descriptor_reference;
 
 	class descriptor
 	{

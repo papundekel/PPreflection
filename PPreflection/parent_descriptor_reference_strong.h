@@ -2,10 +2,11 @@
 #include "PP/variant.hpp"
 
 #include "descriptor.h"
-#include "parent_descriptor_reference.h"
 
 namespace PPreflection
 {
+	class Namespace;
+
 	namespace detail
 	{
 		using parent_descriptor_reference_strong_base = PP::variant<const class_type&, const Namespace&>;

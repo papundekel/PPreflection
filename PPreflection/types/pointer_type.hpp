@@ -2,7 +2,8 @@
 #include "pointer_type.h"
 
 #include "../cv_qualification_signature.hpp"
-#include "derived_from.hpp"
+#include "cv_type.h"
+#include "derived_from.h"
 
 constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_type::make_standard_conversion_sequence_impl(const pointer_type& target) const noexcept
 {
@@ -32,7 +33,7 @@ constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_type:
 		{
 			sequence.set_validity(target);
 			sequence.set_rank(conversion_sequence_rank::conversion);
-			sequence.set_promotion_conversion(pointed_to_this_class_ptr->base_pointer_conversion(*pointed_to_target_class_ptr));
+			sequence.set_promotion_conversion(pointed_to_this_class_ptr->pointer_conversion_to_base(*pointed_to_target_class_ptr));
 			sequence.set_converts_to_base_pointer();
 			if (pointed_to_target.cv != pointed_to_this.cv)
 				sequence.set_qualification();

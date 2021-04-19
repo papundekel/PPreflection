@@ -2,7 +2,7 @@
 #include "PP/concepts/reference.hpp"
 #include "PP/get_cv.hpp"
 
-#include "../reference_type.h"
+#include "../reference_type.hpp"
 #include "basic_type.hpp"
 
 namespace PPreflection::detail

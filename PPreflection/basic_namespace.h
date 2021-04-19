@@ -1,6 +1,5 @@
 #pragma once
 #include "PP/template_t.hpp"
-#include "PP/tuple_map_to_array.hpp"
 
 #include "basic_named_descriptor.h"
 #include "Namespace.h"
@@ -22,10 +21,11 @@ namespace PPreflection
 			constexpr const Namespace& get_parent() const noexcept override final
 			{
 				if constexpr (PP::type<ID> != PP::type<tags::global>)
-					return PPreflection::reflect(PPreflection::reflect(PP::type<tags::parent<ID>>));
+					return reflect(reflect(PP::type<tags::parent<ID>>));
 				else
 					return *this;
 			}
+			
 			constexpr PP::any_view<PP::iterator_category::ra, const Namespace&> get_namespaces() const noexcept override final
 			{
 				return namespaces;

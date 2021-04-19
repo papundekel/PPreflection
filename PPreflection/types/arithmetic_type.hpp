@@ -1,6 +1,8 @@
 #pragma once
 #include "arithmetic_type.h"
 
+#include "../conversion_sequence.h"
+
 constexpr PPreflection::standard_conversion_sequence PPreflection::arithmetic_type::make_standard_conversion_sequence_impl(const non_array_object_type& target) const noexcept
 {
 	standard_conversion_sequence sequence(*this);

@@ -1,46 +1,78 @@
+#include <chrono>
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
+#include <memory>
+#include <vector>
 
-#include "PPreflection/reflect.hpp"
+#include "PP/size_t.hpp"
 
-namespace N
+#include "animals.hpp"
+#include "reactions.hpp"
+#include "visitor.hpp"
+
+auto generate_zoo(PP::size_t count)
 {
-	struct B
+	using namespace PP::literals;
+
+	std::vector<std::unique_ptr<animals::animal>> zoo;
+
+	zoo.reserve(count);
+
+	std::srand(std::time(nullptr));
+
+	for (auto i = 0_z; i != count; ++i)
 	{
-		void f() const
+		std::unique_ptr<animals::animal> ptr;
+
+		auto x = std::rand() % 5;
+
+		switch (x)
 		{
-			std::cout << "f";
+			case 0:
+				ptr = std::make_unique<animals::ape>();
+				break;
+			case 1:
+				ptr = std::make_unique<animals::bat>();
+				break;
+			case 2:
+				ptr = std::make_unique<animals::cat>();
+				break;
+			case 3:
+				ptr = std::make_unique<animals::dog>();
+				break;
+			case 4:
+				ptr = std::make_unique<animals::elk>();
+				break;
+			default:
+				break;
 		}
-	};
-	struct D : public B{};
-	
-	void print(const B& x)
-	{
-		x.f();
-		std::cout << "\n";
+
+		zoo.push_back(std::move(ptr));
 	}
-	void print(const D& x)
-	{
-		x.f();
-		x.f();
-		std::cout << "\n";
-	}
+
+	return zoo;
 }
-
-#include "f.hpp"
-
-#include "main.cpp.meta"
 
 int main()
 {
-	const auto& n = *PPreflection::global_namespace.get_namespace("N");
+	PP::size_t count;
+	std::cin >> count;
 
-	for (const auto& f : n.get_functions())
-		std::cout << f << "\n";
+	auto zoo = generate_zoo(count);
 
-	N::B b;
-	N::D d;
-	n.invoke_qualified("print", { b });
-	n.invoke_qualified("print", { d });
+	dynamic_reaction_visitor visitor;
+
+	auto time_start = std::chrono::system_clock::now();
+	
+	for (const auto& animal_ptr : zoo)
+	{
+		visitor.react_to(*animal_ptr);
+	}
+
+	auto time_end = std::chrono::system_clock::now();
+
+	std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(time_end - time_start).count() << '\n';
 
 	std::cout.flush();
 	return 0;

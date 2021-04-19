@@ -1,16 +1,17 @@
 #pragma once
 #include "PP/any_iterator.hpp"
 
-#include "../dynamic_variable.h"
+#include "../dynamic_reference.h"
 #include "user_defined_type.h"
 
 namespace PPreflection
 {
 	class constructor;
-	class member_function;
 	class conversion_function;
-	class static_member_function;
+	class dynamic_object;
+	class member_function;
 	class non_union_class_type;
+	class static_member_function;
 
 	class class_type : public user_defined_type
 	{

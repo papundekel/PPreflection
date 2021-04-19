@@ -1,6 +1,6 @@
 #pragma once
+#include "PP/small_optimized_vector.hpp"
 #include "PP/string_view.hpp"
-#include "PP/simple_vector.hpp"
 
 #include "../dynamic_object.h"
 #include "dynamic_user_defined_type.h"
@@ -11,27 +11,19 @@ namespace PPreflection
 {
 	class dynamic_enum_type final : public detail::dynamic_user_defined_type<enum_type>
 	{
-		class dynamic_enum_value final : public enum_value
+		class dynamic_enum_value final : public detail::dynamic_named_descriptor<enum_value>
 		{
-			PP::simple_vector<char> name;
 			dynamic_object value;
 			const enum_type& parent;
 
 		public:
 			constexpr dynamic_enum_value(PP::string_view name, dynamic_object&& value, const enum_type& parent) noexcept
-				: name()
+				: detail::dynamic_named_descriptor<enum_value>(name)
 				, value(PP::move(value))
 				, parent(parent)
-			{
-				for (char c : name)
-					this->name.push_back(c);
-			}
+			{}
 
-			constexpr PP::string_view get_name() const noexcept override final
-			{
-				return name;
-			}
-			constexpr dynamic_object get_value() const noexcept override final
+			dynamic_object get_value() const noexcept override final
 			{
 				return dynamic_object::create_shallow_copy(value);
 			}
@@ -42,7 +34,7 @@ namespace PPreflection
 			}
 		};
 
-		PP::simple_vector<dynamic_enum_value> values;
+		PP::small_optimized_vector<dynamic_enum_value, 4> values;
 		const integral_type& underlying_type;
 
 	public:

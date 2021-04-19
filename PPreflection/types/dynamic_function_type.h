@@ -1,6 +1,6 @@
 #pragma once
 #include "PP/view.hpp"
-#include "PP/simple_vector.hpp"
+#include "PP/small_optimized_vector.hpp"
 
 #include "function_type.h"
 
@@ -9,7 +9,7 @@ namespace PPreflection
 	class dynamic_function_type final : public function_type
 	{
 		return_type_reference return_type_;
-		PP::simple_vector<parameter_type_reference> parameter_types_;
+		PP::small_optimized_vector<parameter_type_reference, 4> parameter_types_;
 		PP::cv_qualifier cv;
 		PP::ref_qualifier ref;
 		bool Noexcept;
@@ -22,11 +22,14 @@ namespace PPreflection
 			PP::cv_qualifier cv = PP::cv_qualifier::none,
 			PP::ref_qualifier ref = PP::ref_qualifier::none) noexcept
 			: return_type_(return_type)
-			, parameter_types_(PP_FORWARD(parameter_types))
+			, parameter_types_()
 			, cv(cv)
 			, ref(ref)
 			, Noexcept(Noexcept)
-		{}
+		{
+			for (auto pt : PP_FORWARD(parameter_types))
+				parameter_types_.push_back(pt);
+		}
 
 		constexpr return_type_reference return_type() const noexcept override final
 		{

@@ -3,7 +3,6 @@
 #include "PP/remove_extent.hpp"
 
 #include "../complete_object_type.h"
-#include "basic_object_type.hpp"
 
 namespace PPreflection::detail
 {

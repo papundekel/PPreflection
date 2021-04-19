@@ -1,7 +1,6 @@
 #pragma once
 #include "function_type.h"
 
-#include "../conversion_sequence.hpp"
 #include "pointer_type.h"
 
 constexpr PPreflection::standard_conversion_sequence PPreflection::function_type::make_standard_conversion_sequence(const non_array_object_type& target) const noexcept

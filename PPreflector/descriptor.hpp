@@ -20,8 +20,10 @@ namespace PPreflector
 		virtual void print_name_header(llvm::raw_ostream& out) const = 0;
 		virtual void print_name_own(llvm::raw_ostream& out) const = 0;
 		virtual void print_name_foreign(llvm::raw_ostream& out) const = 0;
-		virtual void print_metadata_object(llvm::raw_ostream& out) const = 0;
+
 		virtual void print_metadata_members(llvm::raw_ostream& out) const = 0;
+		virtual void print_metadata_traits(llvm::raw_ostream& out) const = 0;
+		virtual void print_metadata_object(llvm::raw_ostream& out) const = 0;
 
 		virtual void print_qualified_name(llvm::raw_ostream& out) const = 0;
 		virtual void print_name(llvm::raw_ostream& out) const = 0;
@@ -43,7 +45,7 @@ namespace PPreflector
 		static constexpr auto printer_sv = container_printer<"\""_str, "\"_sv"_str>;
 
 		template <auto tag_name>
-		void print_members(llvm::raw_ostream& out, const auto& members, const auto& container_printer) const;
+		llvm::raw_ostream& print_members(llvm::raw_ostream& out, const auto& members, const auto& container_printer) const;
 	};
 
 	auto as_descriptors_view(PP::concepts::view auto&& v)
@@ -73,7 +75,7 @@ namespace PPreflector
 }
 
 template <auto tag_name>
-void PPreflector::descriptor::print_members(llvm::raw_ostream& out, const auto& members, const auto& container_printer) const
+llvm::raw_ostream& PPreflector::descriptor::print_members(llvm::raw_ostream& out, const auto& members, const auto& container_printer) const
 {
-	out << printer_metadata(metadata_tag_printer<tag_name>(PPREFLECTOR_MEMBER_PRINT(print_name_own, *this))) << container_printer(for_each_member_helper(members)) << ";\n";
+	return out << printer_metadata(metadata_tag_printer<tag_name>(PPREFLECTOR_MEMBER_PRINT(print_name_own, *this))) << container_printer(for_each_member_helper(members)) << ";";
 }

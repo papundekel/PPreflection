@@ -25,7 +25,12 @@ namespace PPreflection::detail
 
 	template <typename Class, typename Base, typename... Parameters>
 	class basic_constructor_base : public basic_constructor_base_base<Class, Base, Parameters...>
-	{};
+	{
+		constexpr const class_type& get_parent() const noexcept override final
+		{
+			return type::reflect(PP::type<Class>);
+		}
+	};
 
 	template <typename Class, typename... Parameters>
 	class basic_constructor_general final
@@ -34,7 +39,7 @@ namespace PPreflection::detail
 		dynamic_object invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator) const noexcept override final
 		{
 			if constexpr (PP::concepts::destructible<Class>)
-				return call_with_arguments_cast_to_parameter_types([]
+				return this->call_with_arguments_cast_to_parameter_types([]
 					(auto&&... args)
 					{
 						return dynamic_object::create(PP::type<Class>, PP_FORWARD(args)...);

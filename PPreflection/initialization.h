@@ -1,10 +1,13 @@
 #pragma once
 #include "PP/array.hpp"
+#include "PP/view_chain.hpp"
 
-#include "conversion_sequence.hpp"
+#include "conversion_function_olr.h"
+#include "conversion_sequence.h"
+#include "functions/constructor.h"
 #include "overload_resolution.h"
 #include "types/class_type.h"
-#include "types/derived_from.hpp"
+#include "types/derived_from.h"
 
 namespace PPreflection
 {
@@ -62,7 +65,7 @@ namespace PPreflection
 					{
 						sequence.set_validity(target_type);
 						if (derived)
-							sequence.set_derived_to_base_reference_conversion(rt_class_ptr->base_reference_conversion(*target_class_ptr));
+							sequence.set_derived_to_base_reference_conversion(rt_class_ptr->reference_conversion_to_base(*target_class_ptr));
 					}
 				}
 
@@ -100,7 +103,8 @@ namespace PPreflection
 	constexpr void push_conversion_candidates(
 		const class_type& target_type,
 		const class_type& initializer_type,
-		auto& candidates,
+		auto& candidates_constructor,
+		auto& candidates_conversion,
 		auto& return_value_sequences,
 		bool can_use_user_defined)
 	{
@@ -108,18 +112,18 @@ namespace PPreflection
 
 		if (same_or_derived || can_use_user_defined)
 		{
-			push_constructor_candidates(target_type, candidates, return_value_sequences);
+			push_constructor_candidates(target_type, candidates_constructor, return_value_sequences);
 		}
 		else if (!same_or_derived && can_use_user_defined)
 		{
-			PP::simple_vector<PP::reference_wrapper<const conversion_function&>> conversion_functions;
+			PP::small_optimized_vector<PP::reference_wrapper<const conversion_function&>, 8> conversion_functions;
 			initializer_type.get_conversion_functions_inherited(PP::push_back_iterator(conversion_functions));
 
 			for (const conversion_function& cf : conversion_functions)
 			{
 				if (!cf.is_explicit() && valid_return_type_for_conversion(cf.return_type(), target_type))
 				{
-					candidates.push_back(cf);
+					candidates_conversion.push_back(cf, initializer_type);
 					if (cf.return_type().as_type() != target_type)
 						return_value_sequences.push_back(standard_conversion_sequence::create_load(target_type));
 					else
@@ -135,7 +139,7 @@ namespace PPreflection
 		auto& candidates,
 		auto& return_value_sequences)
 	{
-		PP::simple_vector<PP::reference_wrapper<const conversion_function&>> conversion_functions;
+		PP::small_optimized_vector<PP::reference_wrapper<const conversion_function&>, 8> conversion_functions;
 		initializer_type.get_conversion_functions_inherited(PP::push_back_iterator(conversion_functions));
 
 		for (const conversion_function& cf : conversion_functions)
@@ -144,7 +148,7 @@ namespace PPreflection
 
 			if (!cf.is_explicit() && sequence.is_valid())
 			{
-				candidates.push_back(cf);
+				candidates.push_back(cf, initializer_type);
 				return_value_sequences.push_back(sequence);
 			}
 		}
@@ -163,7 +167,7 @@ namespace PPreflection
 
 		const auto& initializer_class = *initializer_class_ptr;
 
-		PP::simple_vector<PP::reference_wrapper<const conversion_function&>> conversion_functions;
+		PP::small_optimized_vector<PP::reference_wrapper<const conversion_function&>, 8> conversion_functions;
 		initializer_class.get_conversion_functions_inherited(PP::push_back_iterator(conversion_functions));
 
 		for (const conversion_function& cf : conversion_functions)
@@ -172,7 +176,7 @@ namespace PPreflection
 
 			if (!cf.is_explicit() && sequence.is_valid())
 			{
-				candidates.push_back(cf);
+				candidates.push_back(cf, initializer_class);
 				return_value_sequences.push_back(sequence);
 			}
 		}
@@ -187,29 +191,45 @@ namespace PPreflection
 			return initialization_sequence(target_type, initializer_type.remove_reference().type);
 		else
 		{
-			PP::simple_vector<PP::reference_wrapper<const function&>> candidates(4);
-			PP::simple_vector<standard_conversion_sequence> return_value_sequences(4);
-
 			if (target_type_class_ptr)
 			{
 				const auto& target_type_class = *target_type_class_ptr;
 				if (initializer_type_class_ptr)
-					push_conversion_candidates(target_type_class, *initializer_type_class_ptr, candidates, return_value_sequences, can_use_user_defined);
+				{
+					PP::small_optimized_vector<PP::reference_wrapper<const function&>, 8> candidates_constructor;
+					PP::small_optimized_vector<conversion_function_olr, 8> candidates_conversion;
+					PP::small_optimized_vector<standard_conversion_sequence, 4> return_value_sequences;
+
+					push_conversion_candidates(target_type_class, *initializer_type_class_ptr, candidates_constructor, candidates_conversion, return_value_sequences, can_use_user_defined);
+					
+					return overload_resolution(
+							PP::view_chain(candidates_constructor | PP::transform(PP::static__cast * PP::type<const function&>)) ^
+							(candidates_conversion | PP::transform(PP::static__cast * PP::type<const function&>)),
+						initializer_type,
+						return_value_sequences);
+				}
 				else if (can_use_user_defined)
+				{
+					PP::small_optimized_vector<PP::reference_wrapper<const function&>, 8> candidates;
+					PP::small_optimized_vector<standard_conversion_sequence, 4> return_value_sequences;
+
 					push_constructor_candidates(target_type_class, candidates, return_value_sequences);
+
+					return overload_resolution(candidates, initializer_type, return_value_sequences);
+				}
 			}
 			else if (initializer_type_class_ptr && can_use_user_defined)
+			{
+				PP::small_optimized_vector<conversion_function_olr, 8> candidates;
+				PP::small_optimized_vector<standard_conversion_sequence, 4> return_value_sequences;
+
 				push_conversion_candidates(target_type, *initializer_type_class_ptr, candidates, return_value_sequences);
 
-			auto [result, error_code] = overload_resolution(candidates, PP::forward_as_array(initializer_type), return_value_sequences, false);
-
-			if (result)
-				return result->make_conversion_sequence();
-			else if (error_code == overload_resolution_error::ambiguous)
-				return implicit_conversion_sequence::create_ambiguous();
-			else// if (error_code == overload_resolution_error::invalid)
-				return implicit_conversion_sequence::create_invalid();
+				return overload_resolution(candidates, initializer_type, return_value_sequences);
+			}
 		}
+
+		return implicit_conversion_sequence::create_invalid();
 	}
 
 	constexpr implicit_conversion_sequence initialization_sequence(const reference_type& target_type, const reference_type& initializer_type, bool can_use_user_defined)
@@ -230,14 +250,14 @@ namespace PPreflection
 
 				standard_sequence.set_validity(target_type);
 				if (derived)
-					standard_sequence.set_derived_to_base_reference_conversion(initializer_class_ptr->base_reference_conversion(*target_class_ptr));
+					standard_sequence.set_derived_to_base_reference_conversion(initializer_class_ptr->reference_conversion_to_base(*target_class_ptr));
 
 				sequence = implicit_conversion_sequence::create_standard(standard_sequence);
 			}
 			else if (can_use_user_defined && !same && !derived)
 			{
-				PP::simple_vector<PP::reference_wrapper<const function&>> candidates(4);
-				PP::simple_vector<standard_conversion_sequence> return_value_sequences(4);
+				PP::small_optimized_vector<conversion_function_olr, 8> candidates;
+				PP::small_optimized_vector<standard_conversion_sequence, 4> return_value_sequences;
 				push_conversion_candidates(PP::value_true, target_type, referenced_initializer_cv_type.type, candidates, return_value_sequences);
 
 				sequence = overload_resolution(candidates, initializer_type, return_value_sequences);
@@ -246,20 +266,20 @@ namespace PPreflection
 		
 		if (!sequence.is_valid() && ((target_type.is_lvalue() && referenced_target_cv_type.cv == PP::cv_qualifier::Const) || !target_type.is_lvalue()))
 		{
-			if (is_rvalue_or_function_lvalue(target_type) && (same || derived) && referenced_target_cv_type >= referenced_initializer_cv_type)
+			if (is_rvalue_or_function_lvalue(initializer_type) && (same || derived) && referenced_target_cv_type >= referenced_initializer_cv_type)
 			{
 				standard_conversion_sequence standard_sequence(initializer_type);
 
 				standard_sequence.set_validity(target_type);
 				if (derived)
-					standard_sequence.set_derived_to_base_reference_conversion(initializer_class_ptr->base_reference_conversion(*target_class_ptr));
+					standard_sequence.set_derived_to_base_reference_conversion(initializer_class_ptr->reference_conversion_to_base(*target_class_ptr));
 
 				sequence = implicit_conversion_sequence::create_standard(standard_sequence);
 			}
 			else if (can_use_user_defined && !same && !derived)
 			{
-				PP::simple_vector<PP::reference_wrapper<const function&>> candidates(4);
-				PP::simple_vector<standard_conversion_sequence> return_value_sequences(4);
+				PP::small_optimized_vector<conversion_function_olr, 8> candidates;
+				PP::small_optimized_vector<standard_conversion_sequence, 4> return_value_sequences;
 				push_conversion_candidates(PP::value_false, target_type, referenced_initializer_cv_type.type, candidates, return_value_sequences);
 
 				sequence = overload_resolution(candidates, initializer_type, return_value_sequences);
@@ -271,7 +291,8 @@ namespace PPreflection
 				if (referenced_target_object_ptr)
 				{
 					sequence = initialization_sequence(*referenced_target_object_ptr, initializer_type, can_use_user_defined);
-					sequence.set_reference_bind(target_type);
+					if (sequence.is_valid())
+						sequence.set_reference_bind(target_type);
 				}
 			}
 		}
@@ -294,7 +315,7 @@ namespace PPreflection
 
 			standard_sequence.set_validity(referenced_target_cv_type);
 			if (derived)
-				standard_sequence.set_derived_to_base_reference_conversion(initializer_class_ptr->base_reference_conversion(*target_class_ptr));
+				standard_sequence.set_derived_to_base_reference_conversion(initializer_class_ptr->reference_conversion_to_base(*target_class_ptr));
 
 			sequence = implicit_conversion_sequence::create_standard(standard_sequence);
 		}

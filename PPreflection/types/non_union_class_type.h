@@ -12,8 +12,9 @@ namespace PPreflection
 			return this;
 		}
 
-		constexpr virtual convertor_object base_pointer_conversion(const non_union_class_type& base) const noexcept = 0;
+		constexpr virtual convertor_object pointer_conversion_to_base(const non_union_class_type& base) const noexcept = 0;
 
-		constexpr virtual convertor_reference base_reference_conversion(const non_union_class_type& base) const noexcept = 0;
+		constexpr virtual convertor_reference reference_conversion_to_base(const non_union_class_type& base) const noexcept = 0;
+		constexpr virtual convertor_reference reference_conversion_to_derived(const non_union_class_type& base) const noexcept = 0;
 	};
 }

@@ -89,9 +89,7 @@ void PPreflector::visitor::print(llvm::raw_ostream& out) const
 {
 	out <<	"#ifndef PPREFLECTOR_GUARD\n"
 			"#pragma once\n"
-			"#include \"PP/value_tuple.hpp\"\n"
-			"\n"
-			"#include \"PPreflection/reflect.hpp\"\n"
+			"#include \"PPreflection/meta.hpp\"\n"
 			"\n"
 			"namespace PPreflection::tags\n"
 			"{\n"
@@ -101,6 +99,11 @@ void PPreflector::visitor::print(llvm::raw_ostream& out) const
 	global.print_metadata(out);
 
 	out << 	"\n"
+			"namespace PPreflection\n"
+			"{\n"
+			"\tconstexpr inline const Namespace& global_namespace = reflect(PP::type<tags::global>);\n"
+			"}\n"
+			"\n"
 			"#endif\n";
 }
 
@@ -146,7 +149,7 @@ void PPreflector::visitor::register_namespace(clang::NamespaceDecl& child_declar
 	if (!parent)
 		return;
 
-	auto& child_namespace = parent->add(child_declaration);
+	[[maybe_unused]] auto& child_namespace = parent->add(child_declaration);
 
 	assert(map_namespaces.try_emplace(&child_declaration, child_namespace).second);
 }

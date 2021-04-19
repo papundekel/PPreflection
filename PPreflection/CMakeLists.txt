@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 3.8)
 
 add_library(PPreflection
 "descriptor.cpp"
+"dynamic_object.cpp"
 "dynamic_variable.cpp"
 "types/known_bound_array_type.cpp"
 "types/null_type.cpp"

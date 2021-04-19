@@ -1,17 +1,18 @@
 #pragma once
+#include "PP/add_cv.hpp"
+#include "PP/add_reference.hpp"
 #include "PP/concepts/derived_from.hpp"
 #include "PP/cv_qualifier.hpp"
 #include "PP/dynamic_cast.hpp"
-#include "PP/add_cv.hpp"
-#include "PP/add_reference.hpp"
+#include "PP/variant.hpp"
 
 #include "../print_cv.h"
 #include "type.h"
 
 namespace PPreflection
 {
-	template <typename Type>
-	struct cv_type;
+	template <typename>
+	class cv_type;
 
 	template <typename Type>
 	struct cv_type_ptr

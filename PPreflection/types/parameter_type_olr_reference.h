@@ -3,12 +3,12 @@
 
 #include "class_type.h"
 #include "cv_type.h"
-#include "non_array_object_type.h"
 #include "parameter_type_reference.h"
-#include "reference_type.h"
 
 namespace PPreflection
 {
+	class reference_type;
+
 	namespace detail
 	{
 		using parameter_type_olr_reference_base = PP::variant<const reference_type&, const non_array_object_type&, cv_type<class_type>>;

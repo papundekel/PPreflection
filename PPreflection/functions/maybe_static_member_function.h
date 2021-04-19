@@ -1,9 +1,10 @@
 #pragma once
-#include "../types/class_type.h"
 #include "function.h"
 
 namespace PPreflection
 {
+	class class_type;
+
 	namespace detail
 	{
 		class maybe_static_member_function : public function

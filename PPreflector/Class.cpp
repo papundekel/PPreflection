@@ -23,7 +23,8 @@ PPreflector::Class::Class(const clang::CXXRecordDecl& decl, const descriptor& pa
 		const auto& method = *method_ptr;
 
 		if (method.isTemplated() || 
-			clang::isa<clang::CXXConstructorDecl>(method))
+			clang::isa<clang::CXXConstructorDecl>(method) ||
+			clang::isa<clang::CXXDestructorDecl>(method))
 			continue;
 
 		if (method.isStatic())
@@ -60,22 +61,8 @@ void PPreflector::Class::print_name_foreign(llvm::raw_ostream& out) const
 	print_name_own(out);
 }
 
-void PPreflector::Class::print_metadata_object(llvm::raw_ostream&) const
-{
-	// print nothing
-}
-
 void PPreflector::Class::print_metadata_members(llvm::raw_ostream& out) const
 {
-	out << PPREFLECTOR_MEMBER_PRINT(print_metadata_name, *this) << "\n"
-		<< PPREFLECTOR_MEMBER_PRINT(print_metadata_parent, *this) << "\n";
-
-	print_members<"nested_types"_str>(out, nested_types, printer_type_tuple);
-	print_members<"base_classes"_str>(out, base_classes, printer_type_tuple);
-	print_members<"constructors"_str>(out, constructors, printer_make_tuple);
-	print_members<"static_member_functions"_str>(out, static_member_functions, printer_value_tuple);
-	print_members<"member_functions"_str>(out, PP::view_chain(as_descriptors_view(non_conversion_member_functions)) ^ as_descriptors_view(conversion_functions), printer_value_tuple);
-
 	for (const descriptor& d : PP::view_chain(
 			as_descriptors_view(nested_types)) ^
 			as_descriptors_view(constructors) ^
@@ -83,4 +70,22 @@ void PPreflector::Class::print_metadata_members(llvm::raw_ostream& out) const
 			as_descriptors_view(non_conversion_member_functions) ^
 			as_descriptors_view(conversion_functions))
 		d.print_metadata(out);
+}
+
+void PPreflector::Class::print_metadata_traits(llvm::raw_ostream& out) const
+{
+	out << PPREFLECTOR_MEMBER_PRINT(print_metadata_name, *this) << "\n"
+		<< PPREFLECTOR_MEMBER_PRINT(print_metadata_parent, *this) << "\n";
+
+	print_members<"nested_types"_str>(out, nested_types, printer_type_tuple) << "\n";
+	print_members<"base_classes"_str>(out, base_classes, printer_type_tuple) << "\n";
+	print_members<"constructors"_str>(out, constructors, printer_make_tuple) << "\n";
+	print_members<"static_member_functions"_str>(out, static_member_functions, printer_value_tuple) << "\n";
+	print_members<"non_conversion_member_functions"_str>(out, non_conversion_member_functions, printer_value_tuple) << "\n";
+	print_members<"conversion_functions"_str>(out, conversion_functions, printer_value_tuple) << "\n";
+}
+
+void PPreflector::Class::print_metadata_object(llvm::raw_ostream&) const
+{
+	// print nothing
 }

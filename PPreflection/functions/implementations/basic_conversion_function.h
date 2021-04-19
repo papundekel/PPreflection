@@ -12,7 +12,7 @@ namespace PPreflection::detail
 	template <auto mf>
 	class basic_conversion_function : public basic_member_function<mf, conversion_function>
 	{
-		dynamic_variable invoke_unsafe_conversion(dynamic_reference caller) const noexcept override final
+		dynamic_variable invoke_unsafe(dynamic_reference caller) const override final
 		{
 			return this->invoke_helper(
 				[this, caller]() -> decltype(auto)

@@ -1,9 +1,9 @@
 #pragma once
 #include "pointer_to_member_type.h"
 
+#include "../conversion_sequence.h"
 #include "../cv_qualification_signature.hpp"
-#include "class_type.h"
-#include "derived_from.hpp"
+#include "derived_from.h"
 
 constexpr bool PPreflection::pointer_to_member_type::operator==(const pointer_to_member_type& other) const noexcept
 {
@@ -60,7 +60,7 @@ constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_to_me
 			{
 				sequence.set_validity(target);
 				sequence.set_rank(conversion_sequence_rank::conversion);
-				sequence.set_promotion_conversion(base_pointer_conversion(*non_union_class_target));
+				sequence.set_promotion_conversion(target.pointer_conversion_to_base(*non_union_class_this));
 			}
 		}
 		else

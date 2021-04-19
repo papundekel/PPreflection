@@ -3,6 +3,7 @@
 
 #include "../unknown_bound_array_type.h"
 #include "basic_array_type.hpp"
+#include "basic_object_type.hpp"
 
 namespace PPreflection::detail
 {

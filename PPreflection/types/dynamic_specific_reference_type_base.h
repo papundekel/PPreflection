@@ -1,4 +1,5 @@
 #pragma once
+#include "cv_type.h"
 #include "reference_type.h"
 
 namespace PPreflection

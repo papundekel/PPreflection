@@ -17,10 +17,10 @@ void PPreflector::constructor::print_name_foreign(llvm::raw_ostream& out) const
 
 void PPreflector::constructor::print_metadata_object(llvm::raw_ostream& out) const
 {
-	out << printer_metadata(metadata_tag_printer<"constructor"_str>(PPREFLECTOR_MEMBER_PRINT(print_id, *this))) << "PPreflection::detail::basic_constructor<" << PPREFLECTOR_MEMBER_PRINT(print_id, *this) << ">{};\n";
+	out << printer_metadata(metadata_tag_printer<"constructor"_str>(PPREFLECTOR_MEMBER_PRINT(print_id, *this))) << "PPreflection::detail::basic_constructor<" << PPREFLECTOR_MEMBER_PRINT(print_id, *this) << ">{};";
 }
 
-void PPreflector::constructor::print_metadata_members(llvm::raw_ostream& out) const
+void PPreflector::constructor::print_metadata_traits(llvm::raw_ostream& out) const
 {
 	if (this->get_node().isExplicit())
 		out << printer_metadata(metadata_tag_printer<"is_explicit"_str>(PPREFLECTOR_MEMBER_PRINT(print_id, *this))) << "PP::value_true;\n";

@@ -4,6 +4,7 @@
 #include "PP/concepts/fundamental_types.hpp"
 #include "PP/concepts/reference.hpp"
 #include "PP/overloaded.hpp"
+#include "PP/utility/move.hpp"
 
 #include "dynamic_object.h"
 #include "dynamic_reference.h"

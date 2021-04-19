@@ -1,5 +1,5 @@
 #pragma once
-#include "../parent_descriptor_reference.h"
+#include "../parent_descriptor_reference_strong.h"
 #include "dynamic_named_descriptor.h"
 #include "user_defined_type.h"
 

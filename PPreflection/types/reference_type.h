@@ -1,10 +1,12 @@
 #pragma once
-#include "cv_type.h"
 #include "non_user_defined_type.h"
 #include "type.h"
 
 namespace PPreflection
 {
+	template <typename>
+	class cv_type;
+
 	class referencable_type;
 
 	class reference_type : public detail::non_user_defined_type<type>
@@ -24,7 +26,6 @@ namespace PPreflection
 
 		constexpr bool has_name(PP::string_view) const noexcept override final
 		{
-			// TODO
 			return false;
 		}
 		constexpr void print_name_prefix(PP::simple_ostream& out) const noexcept override final;

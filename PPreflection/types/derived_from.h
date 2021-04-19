@@ -14,7 +14,7 @@ namespace PPreflection
 
 	constexpr bool derived_from(const non_union_class_type& derived, const non_union_class_type& base)
 	{
-		PP::simple_vector<PP::reference_wrapper<const non_union_class_type&>> stack;
+		PP::small_optimized_vector<PP::reference_wrapper<const non_union_class_type&>, 8> stack;
 
 		fill_with_base_classes(derived, stack);
 

@@ -1,12 +1,10 @@
 #pragma once
-#include <optional>
-
+#include "PP/empty_view.hpp"
 #include "PP/optional.hpp"
 #include "PP/push_back_iterator.hpp"
+#include "PP/small_optimized_vector.hpp"
 
-#include "args_to_types.hpp"
-#include "conversion_sequence.hpp"
-#include "functions/namespace_function.h"
+#include "conversion_sequence.h"
 
 namespace PPreflection
 {
@@ -23,13 +21,13 @@ namespace PPreflection
 
 	class viable_function
 	{
-		PP::simple_vector<implicit_conversion_sequence> conversion_sequences;
+		PP::small_optimized_vector<implicit_conversion_sequence, 4> conversion_sequences;
 		standard_conversion_sequence return_value_sequence;
 		PP::reference_wrapper<const function&> f;
 
 	public:
 		explicit viable_function(const function& f) noexcept
-			: conversion_sequences(PP::view_count(f.parameter_types_olr()))
+			: conversion_sequences()
 			, return_value_sequence(standard_conversion_sequence::create_invalid())
 			, f(f)
 		{}
@@ -75,11 +73,18 @@ namespace PPreflection
 				}
 			}
 
-			if (!has_worse_sequence)
-			{
-				if (has_better_sequence)
-					return true;
-			}
+			// 2
+			if (has_worse_sequence)
+				return false;
+				
+			// 2.1
+			if (has_better_sequence)
+				return true;
+
+			// 2.2
+			if (return_value_sequence.is_valid() && other.return_value_sequence.is_valid() &&
+				return_value_sequence > other.return_value_sequence)
+				return true;
 
 			return false;
 		}
@@ -98,8 +103,8 @@ namespace PPreflection
 
 		dynamic_variable invoke(PP::concepts::view auto&& arguments)
 		{
-			PP::simple_vector<dynamic_variable> converted_arguments;
-			PP::simple_vector<dynamic_reference> converted_argument_references;
+			PP::small_optimized_vector<dynamic_variable, 8> converted_arguments;
+			PP::small_optimized_vector<dynamic_reference, 8> converted_argument_references;
 
 			for (auto [sequence, argument] : PP::zip_view_pack(conversion_sequences, PP_FORWARD(arguments)))
 			{
@@ -161,7 +166,7 @@ namespace PPreflection
 		PP::concepts::view auto&& return_value_sequences,
 		bool can_use_user_defined)
 	{
-		PP::simple_vector<viable_function> viable_functions;
+		PP::small_optimized_vector<viable_function, 8> viable_functions;
 
 		pick_viable_candidates(PP_FORWARD(candidates), PP::view_count(argument_types), PP::push_back_iterator(viable_functions));
 
@@ -199,5 +204,12 @@ namespace PPreflection
 			return implicit_conversion_sequence::create_ambiguous();
 		else// if (error_code == overload_resolution_error::invalid)
 			return implicit_conversion_sequence::create_invalid();
+	}
+
+	constexpr auto overload_resolution(
+		PP::concepts::view auto&& candidates,
+		PP::concepts::view auto&& argument_types)
+	{
+		return overload_resolution(PP_FORWARD(candidates), PP_FORWARD(argument_types), PP::empty_view<standard_conversion_sequence>{}, true);
 	}
 }

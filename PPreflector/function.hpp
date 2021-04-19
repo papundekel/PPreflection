@@ -22,6 +22,11 @@ namespace PPreflector
 			: node_descriptor<FDecl, nested_descriptor<descriptor, descriptor>>(decl, parent)
 		{}
 
+		void print_metadata_members(llvm::raw_ostream&) const override final
+		{
+			// print nothing
+		}
+
 	protected:
 		void print_parameter_types(llvm::raw_ostream& out) const
 		{

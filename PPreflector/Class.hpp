@@ -28,7 +28,9 @@ namespace PPreflector
 		void print_name_header(llvm::raw_ostream& out) const override final;
 		void print_name_own(llvm::raw_ostream& out) const override final;
 		void print_name_foreign(llvm::raw_ostream& out) const override final;
-		void print_metadata_object(llvm::raw_ostream&) const override final;
+
 		void print_metadata_members(llvm::raw_ostream& out) const override final;
+		void print_metadata_traits(llvm::raw_ostream& out) const override final;
+		void print_metadata_object(llvm::raw_ostream&) const override final;
 	};
 }

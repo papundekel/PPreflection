@@ -24,6 +24,11 @@ void PPreflector::base_class::print_metadata_object(llvm::raw_ostream&) const
 	// print nothing
 }
 
+void PPreflector::base_class::print_metadata_traits(llvm::raw_ostream&) const
+{
+	// print nothing
+}
+
 void PPreflector::base_class::print_metadata_members(llvm::raw_ostream&) const
 {
 	// print nothing

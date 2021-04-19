@@ -47,7 +47,7 @@ namespace PPreflector
 		{
 			const auto& decl = this->get_node();
 
-			out << "PPreflection::overload_member_caster<" << decl.getMethodQualifiers() << ", " << decl.getRefQualifier() << PPREFLECTOR_MEMBER_PRINT(print_parameter_types_leading_comma, *this) << ">(::" << PPREFLECTOR_MEMBER_PRINT(print_qualified_name, *this) << ")";
+			out << "PPreflection::overload_member_caster<" << decl.getMethodQualifiers() << ", " << decl.getRefQualifier() << PPREFLECTOR_MEMBER_PRINT(print_parameter_types_leading_comma, *this) << ">(&::" << PPREFLECTOR_MEMBER_PRINT(print_qualified_name, *this) << ")";
 		}
 	};
 }

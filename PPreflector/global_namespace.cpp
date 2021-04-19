@@ -38,9 +38,9 @@ void PPreflector::global_namespace::print_scoped_name_as_parent(llvm::raw_ostrea
 	// print nothing
 }
 
-void PPreflector::global_namespace::print_metadata_object(llvm::raw_ostream&) const
+void PPreflector::global_namespace::print_metadata_object(llvm::raw_ostream& out) const
 {
-	// print nothing
+	out << "template <> constexpr inline auto PPreflection::detail::metadata<PPreflection::tags::global> = PPreflection::detail::basic_namespace<PPreflection::tags::global>{};\n";
 }
 
 const PPreflector::descriptor* PPreflector::global_namespace::get_parent(void*) const

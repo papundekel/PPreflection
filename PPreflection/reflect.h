@@ -4,8 +4,6 @@
 #include "PP/value_t.hpp"
 #include "PP/view.hpp"
 
-#include "overload_cast.h"
-
 namespace PPreflection
 {
 	namespace tags
@@ -19,6 +17,8 @@ namespace PPreflection
 		template <typename T> struct base_classes;
 		template <typename T> struct nested_types;
 		template <typename T> struct member_functions;
+		template <typename T> struct non_conversion_member_functions;
+		template <typename T> struct conversion_functions;
 		template <typename T> struct static_member_functions;
 		template <typename T> struct enum_values;
 		template <typename T> struct enum_fixed_type;
@@ -35,8 +35,8 @@ namespace PPreflection
 
 	namespace detail
 	{
-		constexpr auto&& reflect_helper(PP::concepts::type auto t) noexcept;
-		constexpr auto&& reflect_helper(PP::concepts::value auto v) noexcept
+		constexpr auto& reflect_helper(PP::concepts::type auto t) noexcept;
+		constexpr auto& reflect_helper(PP::concepts::value auto v) noexcept
 		{
 			return reflect_helper(PP_DECLTYPE(PP::to_value_t(v)));
 		}

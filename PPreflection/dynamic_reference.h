@@ -1,6 +1,4 @@
 #pragma once
-#include <variant>
-
 #include "PP/concepts/same_except_cvref.hpp"
 #include "PP/get_type.hpp"
 #include "PP/reinterpret_cast.hpp"
@@ -16,9 +14,16 @@ namespace PPreflection
 	{
 		friend class dynamic_object;
 
-		std::variant<void*, void(*)()> ptr;
+		union 
+		{
+			void* ptr_object;
+			void(*ptr_function)();
+		};
+		
 		cv_type_ptr<referencable_type> referenced_type_cv;
-		bool is_lvalue;
+		int
+			is_lvalue : 1,
+			is_function : 1;
 
 	public:
 		dynamic_reference(const dynamic_reference&) = default;
@@ -30,26 +35,36 @@ namespace PPreflection
 			PP::concepts::different_except_cvref<decltype(r), dynamic_variable>;
 
 	private:
-		constexpr dynamic_reference(const void* ptr, const reference_type& t) noexcept
-			: ptr(const_cast<void*>(ptr))
-			, referenced_type_cv(&t.remove_reference())
-			, is_lvalue(t.is_lvalue())
+		constexpr dynamic_reference(const volatile void* ptr, const reference_type& t) noexcept
+			: dynamic_reference(PP::placeholder, const_cast<void*>(ptr), t)
 		{}
+
 		template <typename Return, typename... Parameters>
 		constexpr dynamic_reference(Return (*ptr)(Parameters...), const reference_type& t) noexcept
-			: ptr((void(*)())ptr)
+			: dynamic_reference(PP::placeholder, (void(*)())ptr, t)
+		{}
+
+		template <typename T>
+		constexpr dynamic_reference(PP::placeholder_t, T* ptr, const reference_type& t) noexcept
+			: ptr_object(nullptr)
 			, referenced_type_cv(&t.remove_reference())
 			, is_lvalue(t.is_lvalue())
-		{}
+			, is_function(PP::concepts::function<T>)
+		{
+			if constexpr (PP::concepts::function<T>)
+				ptr_function = ptr;
+			else
+				ptr_object = ptr;
+		}
 
 	public:
 		dynamic_reference& operator=(const dynamic_reference&) = default;
 
 		struct bad_cast_exception {};
 
-		constexpr dynamic_reference_type get_type() const noexcept
+		constexpr auto get_type() const noexcept
 		{
-			return {*referenced_type_cv, is_lvalue};
+			return dynamic_reference_type(*referenced_type_cv, is_lvalue);
 		}
 
 		inline auto cast_unsafe(PP::concepts::type auto t) const noexcept -> PP_GET_TYPE(t)&&;
@@ -60,6 +75,7 @@ namespace PPreflection
 		inline auto&& get_ref(PP::concepts::type auto t) const&&;
 
 		inline decltype(auto) visit(PP::concepts::type auto t, auto&& f) const;
+		inline decltype(auto) visit_ptr(PP::concepts::type auto t, auto&& f) const;
 
 		constexpr void* get_void_ptr() const;
 
@@ -74,7 +90,10 @@ namespace PPreflection
 	private:
 		constexpr auto* reinterpret(PP::concepts::type auto t) const
 		{
-			return std::visit([t](auto* p) -> decltype(auto) { return PP::reinterpret__cast(t, p); }, ptr);
+			if (is_function)
+				return PP::reinterpret__cast(t, ptr_function);
+			else
+				return PP::reinterpret__cast(t, ptr_object);
 		}
 	};
 }

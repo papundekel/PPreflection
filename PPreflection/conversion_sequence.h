@@ -1,8 +1,6 @@
 #pragma once
 #include <compare>
 
-#include "PP/simple_view.hpp"
-#include "PP/variant.hpp"
 #include "PP/view_subsequence_compare.hpp"
 
 #include "convertor.h"
@@ -10,12 +8,12 @@
 #include "dynamic_variable.h"
 #include "functions/function.h"
 #include "qualification_conversion.hpp"
-#include "types/non_array_object_type.h"
-#include "types/parameter_type_reference.h"
 #include "types/reference_type.h"
 
 namespace PPreflection
 {
+	class non_array_object_type;
+
 	enum conversion_sequence_rank : int
 	{
 		exact_match = 2,
@@ -394,7 +392,7 @@ namespace PPreflection
 		constexpr std::partial_ordering operator<=>(const standard_conversion_sequence& other) const noexcept
 		{
 			// 3.2.1
-			if (auto compare_subsequence = PP::view_subsequence_compare(make_view(), other.make_view()); partial_ordering_unequal(compare_subsequence))
+			if (auto compare_subsequence = PP::view_subsequence_compare(other.make_view(), make_view()); partial_ordering_unequal(compare_subsequence))
 				return compare_subsequence;
 
 			// 3.2.2

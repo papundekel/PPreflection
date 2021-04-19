@@ -33,7 +33,9 @@ namespace PPreflector
 		void print_name_foreign(llvm::raw_ostream& out) const override final;
 
 		void print_layout(llvm::raw_ostream& out) const;
+
 		void print_metadata_members(llvm::raw_ostream& out) const override final;
+		void print_metadata_traits(llvm::raw_ostream& out) const override;
 
 		non_global_namespace& add(clang::NamespaceDecl& n);
 		namespace_function& add(clang::FunctionDecl& f);

@@ -3,6 +3,7 @@
 #include "PP/concepts/derived_from.hpp"
 #include "PP/concepts/destructible.hpp"
 #include "PP/destroy_at.hpp"
+#include "PP/tuple_concat.hpp"
 #include "PP/tuple_filter.hpp"
 #include "PP/tuple_map.hpp"
 #include "PP/tuple_prepend.hpp"
@@ -23,10 +24,14 @@ namespace PPreflection::detail
 		static_assert(PP::concepts::derived_from<Base, class_type>);
 		static_assert(PP::concepts::class_type<T>);
 
-		static constexpr auto reflector = reflect_many_helper * PP::type<T>;
+		static inline auto reflector = reflect_many_helper * PP::type<T>;
 
 		static constexpr auto static_member_functions = reflector(PP::Template<tags::static_member_functions>, PP::type<const static_member_function&>);
-		static constexpr auto member_functions = reflector(PP::Template<tags::member_functions>, PP::type<const member_function&>);
+		static constexpr auto conversion_functions = reflector(PP::Template<tags::conversion_functions>, PP::type<const conversion_function&>);
+
+		static constexpr auto member_functions = PP::type<const member_function&> &
+			PPreflection::reflect + PP::tuple_concats(PPreflection::reflect + PP::type_tuple<tags::non_conversion_member_functions<T>, tags::conversion_functions<T>>);
+
 		static constexpr auto nested_types = reflector(PP::Template<tags::nested_types>, PP::type<const user_defined_type&>);
 
 		static constexpr auto constructors = reflect_many(PP::type<const constructor&>,
@@ -35,13 +40,6 @@ namespace PPreflection::detail
 				{
 					return PP::Template<tags::constructor>[PP::type<T> += constructor_parameter_types];
 				}) + PPreflection::reflect(PP::type<tags::constructors<T>>));
-
-		static constexpr auto conversion_functions = PP::type<const conversion_function&> & PP::tuple_filter([]
-			<typename F>
-			(const F&)
-			{
-				return PP::value<PP::concepts::derived_from<F, conversion_function>>;
-			}, PPreflection::reflect + PPreflection::reflect(PP::type<tags::member_functions<T>>));
 
 	public:
 		void destroy(void* ptr) const noexcept override final

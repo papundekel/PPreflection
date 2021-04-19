@@ -1,6 +1,8 @@
 #pragma once
 #include "parent_descriptor_reference_strong.h"
 
+#include "parent_descriptor_reference.h"
+
 constexpr PPreflection::parent_descriptor_reference_strong::parent_descriptor_reference_strong(const class_type& d) noexcept
 	: detail::parent_descriptor_reference_strong_base(PP::placeholder, d)
 {}

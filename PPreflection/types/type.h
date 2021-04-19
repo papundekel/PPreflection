@@ -3,18 +3,24 @@
 #include "PP/get_type.hpp"
 #include "PP/overload_tag.hpp"
 #include "PP/same.hpp"
+#include "PP/simple_ostream.hpp"
 #include "PP/tuple_find_dynamic.hpp"
 #include "PP/tuple_fold.hpp"
 #include "PP/tuple_get.hpp"
 #include "PP/tuple_make_array.hpp"
 #include "PP/tuple_map.hpp"
-#include "PP/variant.hpp"
 #include "PP/type_tuple.hpp"
 #include "PP/value_t_static_cast.hpp"
 #include "PP/view.hpp"
 
 #include "../descriptor.h"
 #include "../get_type_class.hpp"
+
+namespace PP
+{
+	template <typename...>
+	class variant;
+}
 
 namespace PPreflection
 {
@@ -174,11 +180,10 @@ namespace PPreflection
 
 constexpr auto PPreflection::type::reflect_helper(PP::concepts::tuple auto&& types) noexcept
 {
-	constexpr auto super_class = PP::type<super_class_type>;
-	auto class_types = PP::tuple_map(get_type_class_type, PP_FORWARD(types));
-	constexpr auto common_class = PP_COPY_TYPE(PP::tuple_foldr(common_type_class, super_class, class_types));
+	constexpr auto common_class = PP_COPY_TYPE(
+		PP::tuple_foldr(common_type_class, PP::type<super_class_type>, get_type_class_type + PP_FORWARD(types)));
 
-	static_assert(common_class != super_class, "type::reflect: the types dont have a common type category");
+	static_assert(common_class != PP::type<super_class_type>, "type::reflect: the types don't have a common type category");
 
 	return PP::tuple_make_array(common_class + PP::add_const_tag + PP::add_lvalue_tag, type::reflect, PP_FORWARD(types));
 }

@@ -2,10 +2,12 @@
 #include "PP/add_cv_ref.hpp"
 #include "PP/apply_template.hpp"
 #include "PP/apply_transform.hpp"
+#include "PP/array.hpp"
 #include "PP/conditional.hpp"
 #include "PP/pointer_to_member_info.hpp"
 #include "PP/template_t.hpp"
 #include "PP/utility/forward.hpp"
+#include "PP/view_chain.hpp"
 
 #include "../../types/non_union_class_type.h"
 #include "../../types/parameter_type_olr_reference.h"
@@ -25,7 +27,8 @@ namespace PPreflection::detail
 	protected:
 		static constexpr auto class_type_ = PP::get_pointer_to_member_info(PP_DECLTYPE(mf)).class_type;
 		
-		static constexpr auto caller_type = PP::conditional(PP::value<basic_member_function::ref != PP::ref_qualifier::rvalue>, class_type_ + PP::add_lvalue_tag, class_type_);
+		static constexpr auto caller_type = PP::add_cv(PP::value<basic_member_function::cv>, class_type_) + PP::conditional(
+			PP::value<basic_member_function::ref != PP::ref_qualifier::rvalue>,	PP::add_lvalue_tag,	PP::add_rvalue_tag);
 
 		static constexpr auto make_implicit_parameter() noexcept
 		{
@@ -35,8 +38,8 @@ namespace PPreflection::detail
 				return type::reflect(PP::add_cv_ref(PP::value<basic_member_function::cv>, PP::value<basic_member_function::ref>, class_type_));
 		}
 
-		static constexpr auto parameter_types_olr_tail = type::reflect + basic_member_function::parameter_types;
-		static constexpr auto parameter_types_olr_ = PP::type<parameter_type_olr_reference> & PP::tuple_prepend(make_implicit_parameter(), parameter_types_olr_tail);
+		static constexpr const auto parameter_types_olr_tail_array = PP::type<parameter_type_olr_reference> & type::reflect + basic_member_function::parameter_types;
+		static constexpr parameter_type_olr_reference parameter_types_olr_head = make_implicit_parameter();
 
 	private:
 		constexpr const class_type& get_parent() const noexcept override final
@@ -46,7 +49,7 @@ namespace PPreflection::detail
 
 		constexpr PP::any_view<PP::iterator_category::ra, parameter_type_olr_reference> parameter_types_olr() const noexcept override final
 		{
-			return this->parameter_types_olr_;
+			return PP::view_chain(PP::simple_view(&parameter_types_olr_head, &parameter_types_olr_head + 1)) ^ parameter_types_olr_tail_array;
 		}
 	};
 }

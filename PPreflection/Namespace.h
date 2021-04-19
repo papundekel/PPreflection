@@ -4,10 +4,12 @@
 #include "PP/view_equal.hpp"
 
 #include "descriptor.h"
+#include "dynamic_reference.h"
 #include "named_descriptor.h"
 
 namespace PPreflection
 {
+	class dynamic_variable;
 	class user_defined_type;
 	class namespace_function;
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "../parent_descriptor_reference.h"
 #include "../parent_descriptor_reference_strong.h"
 #include "named_type.h"
 #include "non_array_object_type.h"

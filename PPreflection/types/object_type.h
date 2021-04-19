@@ -1,5 +1,4 @@
 #pragma once
-#include "PP/cv_qualifier.hpp"
 #include "PP/size_t.hpp"
 
 #include "referencable_type.h"

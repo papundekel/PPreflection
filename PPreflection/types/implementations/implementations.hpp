@@ -1,4 +1,5 @@
 #pragma once
+#include "../null_type.h"
 #include "basic_reference_type.hpp"
 #include "basic_function_type.hpp"
 #include "basic_unknown_bound_array_type.hpp"

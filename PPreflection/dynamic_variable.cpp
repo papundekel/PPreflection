@@ -1,12 +1,17 @@
-#include "dynamic_variable.hpp"
+#include "dynamic_variable.h"
 
 #include "descriptor.hpp"
-#include "dynamic_reference.hpp"
-#include "functions/functions.hpp"
-#include "overload_resolution.hpp"
+#include "dynamic_object.hpp"
+#include "functions/function.hpp"
 #include "parent_descriptor_reference.hpp"
 #include "parent_descriptor_reference_strong.hpp"
-#include "types/types.hpp"
+#include "types/class_type.hpp"
+#include "types/cv_type.hpp"
+#include "types/known_bound_array_type.hpp"
+#include "types/non_user_defined_type.hpp"
+#include "types/pointer_to_member_type.hpp"
+#include "types/reference_type.hpp"
+#include "types/unknown_bound_array_type.hpp"
 
 PPreflection::dynamic_variable PPreflection::dynamic_variable::create_invalid(dynamic_object::invalid_code code) noexcept
 {

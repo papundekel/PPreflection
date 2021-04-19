@@ -1,4 +1,6 @@
 #pragma once
+#include <variant>
+
 #include "PP/concepts/invocable.hpp"
 #include "PP/concepts/same_except_cvref.hpp"
 #include "PP/get_type.hpp"
@@ -15,6 +17,8 @@ namespace PPreflection
 
 	class dynamic_object
 	{
+		friend class null_type;
+
 	public:
 		enum class invalid_code
 		{
@@ -29,9 +33,15 @@ namespace PPreflection
 	private:
 		struct void_tag {};
 
+		struct small_byte_array
+		{
+			alignas(max_align_t) char bytes[sizeof(void*)];
+		};
+
 		union data
 		{
-			alignas(max_align_t) mutable void* ptr;
+			small_byte_array small_bytes;
+			void* ptr;
 			invalid_code code;
 
 			constexpr data() noexcept
@@ -40,9 +50,42 @@ namespace PPreflection
 			explicit constexpr data(invalid_code code) noexcept
 				: code(code)
 			{}
+			explicit constexpr data(small_byte_array small_bytes) noexcept
+				: small_bytes(small_bytes)
+			{}
 			explicit constexpr data(void* ptr) noexcept
 				: ptr(ptr)
 			{}
+		};
+
+		class allocated_ptr
+		{
+			union
+			{
+				small_byte_array small_bytes;
+				void* ptr;
+			};
+			bool is_small;
+
+		public:
+			constexpr allocated_ptr(void* ptr) noexcept
+				: ptr(ptr)
+				, is_small(false)
+			{}
+			constexpr allocated_ptr() noexcept
+				: small_bytes()
+				, is_small(true)
+			{}
+
+			constexpr data initialize_and_get(auto initializer) noexcept
+			{
+				initializer(is_small ? &small_bytes : ptr);
+
+				if (is_small)
+					return data(small_bytes);
+				else
+					return data(ptr);
+			}
 		};
 
 		class deleter
@@ -69,28 +112,6 @@ namespace PPreflection
 			}
 		};
 
-		class allocated_ptr
-		{
-			void* ptr;
-			bool small;
-
-		public:
-			constexpr allocated_ptr() noexcept
-				: ptr(nullptr)
-				, small(true)
-			{}
-			constexpr allocated_ptr(void* ptr) noexcept
-				: ptr(ptr)
-				, small(false)
-			{}
-
-			constexpr void* initialize_and_get(auto i) noexcept
-			{
-				i(small ? &ptr : ptr);
-				return ptr;
-			}
-		};
-
 	private:
 		PP::scoped<PP::unique<data, PP::default_releaser>, deleter> x;
 
@@ -103,7 +124,8 @@ namespace PPreflection
 		explicit constexpr dynamic_object(invalid_code code) noexcept
 			: x(PP::in_place_tag, 0, PP::unique_default_releaser_tag, code)
 		{}
-		constexpr dynamic_object(cv_type<complete_object_type> cv_type, void* data) noexcept;
+		constexpr dynamic_object(cv_type<complete_object_type> cv_type, PP::concepts::invocable auto&& initializer) noexcept;
+		constexpr dynamic_object(cv_type<complete_object_type> cv_type, data data) noexcept;
 
 	public:
 		dynamic_object& operator=(dynamic_object&&) = default;
@@ -119,7 +141,7 @@ namespace PPreflection
 
 		static constexpr dynamic_object create(PP::concepts::type auto t, auto&&... args);
 		static constexpr dynamic_object create_copy(auto&& arg);
-		static constexpr dynamic_object create_shallow_copy(dynamic_reference r) noexcept;
+		static dynamic_object create_shallow_copy(dynamic_reference r) noexcept;
 
 		constexpr cv_type<complete_object_type> get_cv_type() const noexcept;
 
@@ -140,13 +162,14 @@ namespace PPreflection
 		}
 	
 	private:
-		static constexpr void* get_address(auto& unique, const complete_object_type& t) noexcept;
-		constexpr void* get_address() const noexcept;
+		static constexpr auto* get_address(auto& unique, const complete_object_type& t) noexcept;
+		constexpr const void* get_address() const noexcept;
 
 		constexpr dynamic_reference reference_cast_helper(PP::concepts::value auto rvalue) const;
 
-		static constexpr allocated_ptr allocate(const complete_object_type& t) noexcept;
-		static constexpr void* allocate_and_initialize(PP::concepts::invocable auto&& i) noexcept;
+		static allocated_ptr allocate(const auto& t) noexcept;
+
+		static constexpr data allocate_and_initialize(PP::concepts::invocable auto&& i) noexcept;
 
 		constexpr bool has_valid_type() const noexcept
 		{

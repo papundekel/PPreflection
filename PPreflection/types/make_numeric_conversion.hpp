@@ -1,6 +1,6 @@
 #pragma once
-#include "arithmetic_type_strong.h"
 #include "../convertor.h"
+#include "arithmetic_type_strong.h"
 
 namespace PPreflection
 {
@@ -10,7 +10,7 @@ namespace PPreflection
 			(PP::concepts::type auto t)
 			{
 				return create_convertor_object(t_this, PP::value<[]
-					(auto&& x)
+					(auto x)
 					{
 						return (PP_GET_TYPE(t))x;
 					}>);

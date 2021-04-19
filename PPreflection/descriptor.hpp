@@ -1,15 +1,17 @@
 #pragma once
 #include "descriptor.h"
 
+#include "PP/simple_ostream.hpp"
+#include "PP/small_optimized_vector.hpp"
+
 #include "parent_descriptor_reference.h"
 #include "reflect.h"
-#include "types/types.h"
 
 constexpr void PPreflection::descriptor::print_name(PP::simple_ostream& out) const noexcept
 {
 	print_name_before_parent(out);
 
-	PP::simple_vector<const descriptor*> descriptors(2);
+	PP::small_optimized_vector<const descriptor*, 4> descriptors;
 
 	for (const descriptor* parent = get_parent().as_descriptor(); parent != nullptr; parent = parent->get_parent().as_descriptor())
 		descriptors.push_back(parent);

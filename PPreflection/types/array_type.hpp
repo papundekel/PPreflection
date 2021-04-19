@@ -1,7 +1,7 @@
 #pragma once
 #include "array_type.h"
 
-#include "../conversion_sequence.hpp"
+#include "../conversion_sequence.h"
 #include "pointer_type.h"
 
 template <typename Base>

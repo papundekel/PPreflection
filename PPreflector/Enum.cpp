@@ -30,18 +30,21 @@ void PPreflector::Enum::print_name_foreign(llvm::raw_ostream& out) const
 	print_name_own(out);
 }
 
-void PPreflector::Enum::print_metadata_object(llvm::raw_ostream&) const
+void PPreflector::Enum::print_metadata_members(llvm::raw_ostream& out) const
 {
-	// print nothing
+	for (const auto& ev : enum_values)
+		ev.print_metadata_name(out);
 }
 
-void PPreflector::Enum::print_metadata_members(llvm::raw_ostream& out) const
+void PPreflector::Enum::print_metadata_traits(llvm::raw_ostream& out) const
 {
 	out << PPREFLECTOR_MEMBER_PRINT(print_metadata_name, *this) << "\n"
 		<< PPREFLECTOR_MEMBER_PRINT(print_metadata_parent, *this) << "\n";
 
 	print_members<"enum_values"_str>(out, enum_values, printer_value_tuple);
+}
 
-	for (const auto& ev : enum_values)
-		ev.print_metadata_name(out);
+void PPreflector::Enum::print_metadata_object(llvm::raw_ostream&) const
+{
+	// print nothing
 }

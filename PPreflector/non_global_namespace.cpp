@@ -31,9 +31,14 @@ void PPreflector::non_global_namespace::print_scoped_name_as_parent(llvm::raw_os
 	out << PPREFLECTOR_MEMBER_PRINT(print_scoped_name_as_parent, get_parent()) << PPREFLECTOR_MEMBER_PRINT(print_unscoped_name, *this) << "::";
 }
 
+void PPreflector::non_global_namespace::print_metadata_traits(llvm::raw_ostream& out) const
+{
+	out << PPREFLECTOR_MEMBER_PRINT(print_metadata_name, *this) << "\n"
+		<< PPREFLECTOR_MEMBER_PRINT(print_metadata_parent, *this) << "\n"
+		<< PPREFLECTOR_MEMBER_PRINT(Namespace::print_metadata_traits, *this);
+}
+
 void PPreflector::non_global_namespace::print_metadata_object(llvm::raw_ostream& out) const
 {
-	out << printer_metadata(PPREFLECTOR_MEMBER_PRINT(print_name_own, *this)) << "PPreflection::detail::basic_namespace<" << PPREFLECTOR_MEMBER_PRINT(print_name_own, *this) << ">{};\n"
-		<< PPREFLECTOR_MEMBER_PRINT(print_metadata_name, *this) << "\n"
-		<< PPREFLECTOR_MEMBER_PRINT(print_metadata_parent, *this) << "\n";
+	out << printer_metadata(PPREFLECTOR_MEMBER_PRINT(print_name_own, *this)) << "PPreflection::detail::basic_namespace<" << PPREFLECTOR_MEMBER_PRINT(print_name_own, *this) << ">{};\n";
 }

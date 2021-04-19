@@ -1,11 +1,13 @@
 #pragma once
 #include "../convertor.h"
-#include "cv_type.h"
 #include "non_user_defined_type.h"
 #include "pointer_base_type.h"
 
 namespace PPreflection
 {
+	template <typename>
+	class cv_type;
+
 	class pointer_type : public detail::non_user_defined_type<pointer_base_type>
 	{
 	public:
@@ -20,7 +22,7 @@ namespace PPreflection
 
 		constexpr bool has_name(PP::string_view) const noexcept override final
 		{
-			return false; // TODO
+			return false;
 		}
 		constexpr void print_name_prefix(PP::simple_ostream& out) const noexcept override final
 		{

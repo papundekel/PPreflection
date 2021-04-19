@@ -3,7 +3,6 @@
 #include "../types/class_type.h"
 #include "../types/make_reference_type.h"
 #include "../types/reference_type.h"
-#include "../types/referencable_type.hpp"
 #include "member_function.h"
 
 constexpr void PPreflection::member_function::print_name_after_parent(PP::simple_ostream& out) const noexcept
@@ -25,7 +24,7 @@ constexpr void PPreflection::member_function::print_name_after_parent(PP::simple
 	print_noexcept(out);
 }
 
-inline PPreflection::dynamic_variable PPreflection::member_function::invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator, void*) const noexcept
+inline PPreflection::dynamic_variable PPreflection::member_function::invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator, void*) const
 {
 	return invoke_unsafe(*arg_iterator, PP::iterator_next(arg_iterator));
 }

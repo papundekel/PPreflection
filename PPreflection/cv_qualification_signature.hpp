@@ -2,8 +2,14 @@
 #include <compare>
 
 #include "PP/simple_view.hpp"
+#include "PP/small_optimized_vector.hpp"
 
-#include "types/types.h"
+#include "types/arithmetic_type_strong.h"
+#include "types/class_type.h"
+#include "types/known_bound_array_type.h"
+#include "types/pointer_to_member_type.h"
+#include "types/pointer_type.h"
+#include "types/unknown_bound_array_type.h"
 
 namespace PPreflection
 {
@@ -93,21 +99,21 @@ namespace PPreflection
 		};
 
 	private:
-		PP::simple_vector<element> elements;
+		PP::small_optimized_vector<element, 4> elements;
 
 	public:
 		constexpr explicit cv_qualification_signature(const pointer_type& type)
-			: elements(3)
+			: elements()
 		{
 			register_elements(type);			
 		}
 		constexpr explicit cv_qualification_signature(const pointer_to_member_type& type)
-			: elements(3)
+			: elements()
 		{
 			register_elements(type);
 		}
 		constexpr explicit cv_qualification_signature(const non_array_object_type& type)
-			: elements(3)
+			: elements()
 		{
 			if (const auto* p = dynamic_cast<const pointer_type*>(&type); p)
 				register_elements(*p);

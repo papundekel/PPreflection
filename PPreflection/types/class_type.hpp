@@ -1,9 +1,8 @@
 #pragma once
 #include "class_type.h"
 
-#include "../descriptor.h"
-#include "../functions/constructor.h"
-#include "derived_from.hpp"
+#include "../conversion_sequence.h"
+#include "non_union_class_type.h"
 
 inline PPreflection::dynamic_object PPreflection::class_type::create_instance(PP::any_view<PP::iterator_category::ra, dynamic_reference>) const noexcept
 {

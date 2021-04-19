@@ -2,13 +2,10 @@
 
 #include "PP/array_ostream.hpp"
 
-#include "dynamic_object.hpp"
-#include "dynamic_reference.hpp"
-#include "Namespace.hpp"
 #include "parent_descriptor_reference.hpp"
-#include "parent_descriptor_reference_strong.hpp"
-#include "types/types.hpp"
-#include "functions/functions.hpp"
+#include "types/cv_type.hpp"
+#include "types/non_user_defined_type.hpp"
+#include "types/reference_type.hpp"
 
 std::ostream& PPreflection::operator<<(std::ostream& out, const PPreflection::descriptor& d)
 {
