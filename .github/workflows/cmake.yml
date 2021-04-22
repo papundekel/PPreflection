@@ -18,7 +18,7 @@ jobs:
 
     - run:   |
              sudo apt update
-             sudo apt install g++-10 cmake ninja-build libclang-12-dev
+             sudo apt install g++-11 cmake ninja-build libclang-12-dev
       shell: bash
       
     - run: ls /usr/lib/llvm-12/include
@@ -31,7 +31,7 @@ jobs:
       working-directory: ${{github.workspace}}/build
       run: cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=$BUILD_TYPE -S ${{github.workspace}} -B $GITHUB_WORKSPACE -G Ninja
       env:
-        CXX:  g++-10
+        CXX:  g++-11
 
     - name: Build
       working-directory: ${{github.workspace}}/build
