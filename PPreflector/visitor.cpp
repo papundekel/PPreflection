@@ -27,7 +27,8 @@ bool PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 			auto& namespace_declaration = *namespace_declaration_ptr;
 
 			if (!namespace_declaration.isFirstDecl() ||
-				namespace_declaration.isStdNamespace())
+				namespace_declaration.isStdNamespace() ||
+				namespace_declaration.isAnonymousNamespace())
 				return true;
 
 			register_namespace(namespace_declaration);

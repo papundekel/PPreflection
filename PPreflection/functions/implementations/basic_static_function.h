@@ -11,7 +11,7 @@ namespace PPreflection::detail
 	protected:
 		dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator, void*) const noexcept override final
 		{
-			return this->invoke_helper(f, arg_iterator, this->parameter_types);
+			return this->invoke_helper(f, PP::move(arg_iterator), this->parameter_types);
 		}
 	};
 }

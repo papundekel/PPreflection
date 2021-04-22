@@ -43,7 +43,7 @@ namespace PPreflection::detail
 					(auto&&... args)
 					{
 						return dynamic_object::create(PP::type<Class>, PP_FORWARD(args)...);
-					}, arg_iterator, this->parameter_types);
+					}, PP::move(arg_iterator), this->parameter_types);
 			else
 				return dynamic_object::create_invalid(dynamic_object::invalid_code::indestructible_return_value);
 		}

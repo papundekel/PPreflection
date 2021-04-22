@@ -83,11 +83,12 @@ int main()
 	{
 		animal_ptr->accept(v_reference);
 	}
+	
+	print_duration(time);
 
 	std::cout << animals::value << '\n';
 	animals::value = -1;
 
-	print_duration(time);
 	visitors::visitor_reflection v_reflection;
 
 	time = now();
@@ -97,9 +98,9 @@ int main()
 		v_reflection.react_to(*animal_ptr);
 	}
 
-	std::cout << animals::value << '\n';
-
 	print_duration(time);
+
+	std::cout << animals::value << '\n';
 
 	std::cout.flush();
 	return 0;

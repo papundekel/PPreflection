@@ -5,7 +5,7 @@
 
 PPreflection::dynamic_variable PPreflection::constructor::invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator, void*) const
 {
-	return dynamic_variable(invoke_unsafe(arg_iterator));
+	return dynamic_variable(invoke_unsafe(PP::move(arg_iterator)));
 }
 
 PPreflection::dynamic_object PPreflection::constructor::invoke(PP::any_view<PP::iterator_category::ra, dynamic_reference>) const

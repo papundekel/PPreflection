@@ -14,7 +14,7 @@ namespace PPreflection::detail
 				[this, caller](auto&&... args) -> decltype(auto)
 				{
 					return (caller.cast_unsafe(this->caller_type).*mf)(PP_FORWARD(args)...);
-				}, arg_iterator, this->parameter_types);
+				}, PP::move(arg_iterator), this->parameter_types);
 		}
 	};
 }

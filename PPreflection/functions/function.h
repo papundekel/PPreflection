@@ -32,17 +32,17 @@ namespace PPreflection
 				(dynamic_reference ref, PP::concepts::type auto t) -> auto&&
 				{
 					return ref.cast_unsafe(t);
-				}, !make_view_tuple(PP::tuple_count_value_t(parameter_types), arg_iterator), parameter_types);
+				}, !make_view_tuple(PP::tuple_count_value_t(parameter_types), PP::move(arg_iterator)), parameter_types);
 
 			return PP::tuple_apply(PP_FORWARD(f), PP::move(args));
 		}
 
 		static inline dynamic_variable invoke_helper(auto&& f, auto arg_iterator, auto parameter_types)
 		{
-			return dynamic_variable::create([&f, arg_iterator, parameter_types]
+			return dynamic_variable::create([&f, i = PP::move(arg_iterator), parameter_types]
 				() -> decltype(auto)
 				{
-					return call_with_arguments_cast_to_parameter_types(PP_FORWARD(f), arg_iterator, parameter_types);
+					return call_with_arguments_cast_to_parameter_types(PP_FORWARD(f), PP::move(i), parameter_types);
 				});
 		}
 

@@ -59,20 +59,34 @@ namespace PPreflection
 		convertor_object function_noexcept;
 		convertor_reference derived_to_base_reference_conversion;
 
-		int
-			rank : 3,
-			identity : 2,
-			load_present : 2,
-			has_qualification_conversion : 2,
-			enum_with_fixed_underlying_type : 2,
-			enum_to_promoted_fixed_type : 2,
-			converts_pointer_to_bool : 2,
-			converts_to_base_or_void_pointer : 2,
-			converts_to_void_pointer : 2,
-			source_lvalue : 2,
-			target_lvalue : 2,
-			target_cv : 3,
-			binds_implicit_parameter_no_ref : 2;
+		//int
+		//	rank : 3,
+		//	target_cv : 3,
+		//	identity : 2,
+		//	load_present : 2,
+		//	has_qualification_conversion : 2,
+		//	enum_with_fixed_underlying_type : 2,
+		//	enum_to_promoted_fixed_type : 2,
+		//	converts_pointer_to_bool : 2,
+		//	converts_to_base_or_void_pointer : 2,
+		//	binds_implicit_parameter_no_ref : 2,
+		//	converts_to_void_pointer : 2,
+		//	source_lvalue : 2,
+		//	target_lvalue : 2;
+
+		conversion_sequence_rank rank;
+		PP::cv_qualifier target_cv;
+		bool identity;
+		bool load_present;
+		bool has_qualification_conversion;
+		bool enum_with_fixed_underlying_type;
+		bool enum_to_promoted_fixed_type;
+		bool converts_pointer_to_bool;
+		bool converts_to_base_or_void_pointer;
+		bool converts_to_void_pointer;
+		bool binds_implicit_parameter_no_ref;
+		bool source_lvalue;
+		bool target_lvalue;
 
 	private:
 		constexpr standard_conversion_sequence(const referencable_type* source, bool source_lvalue = false) noexcept
@@ -85,6 +99,7 @@ namespace PPreflection
 			, function_noexcept(nullptr)
 			, derived_to_base_reference_conversion(nullptr)
 			, rank(conversion_sequence_rank::exact_match)
+			, target_cv(PP::cv_qualifier::none)
 			, identity(false)
 			, load_present(false)
 			, has_qualification_conversion(false)
@@ -93,10 +108,9 @@ namespace PPreflection
 			, converts_pointer_to_bool(false)
 			, converts_to_base_or_void_pointer(false)
 			, converts_to_void_pointer(false)
+			, binds_implicit_parameter_no_ref(false)
 			, source_lvalue(source_lvalue)
 			, target_lvalue(false)
-			, target_cv((int)PP::cv_qualifier::none)
-			, binds_implicit_parameter_no_ref(false)
 		{}
 
 		constexpr standard_conversion_sequence() noexcept
@@ -200,7 +214,7 @@ namespace PPreflection
 		{
 			type_target_reference = &new_target_cv_type.type;
 			target_lvalue = is_lvalue;
-			target_cv = (int)new_target_cv_type.cv;
+			target_cv = new_target_cv_type.cv;
 		}
 		constexpr void set_validity(const reference_type& new_target_type) noexcept
 		{
@@ -484,8 +498,7 @@ namespace PPreflection
 			if (conversion)
 			{
 				auto temp = PP::make_array(r);
-				auto i = PP::make_any_iterator(PP::view_begin(temp));
-				return conversion->invoke_unsafe(i);
+				return conversion->invoke_unsafe(PP::make_any_iterator(PP::view_begin(temp)));
 			}
 			else
 				return dynamic_variable::create_invalid(dynamic_object::invalid_code::overload_resolution_error);
@@ -505,7 +518,6 @@ namespace PPreflection
 		{
 			conversion = &new_conversion;
 		}
-
 
 		constexpr bool same_user_defined_function(const user_defined_conversion_t& other) const noexcept
 		{

@@ -12,7 +12,7 @@ namespace PPreflection
 		virtual dynamic_variable invoke_unsafe(dynamic_reference caller, PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator) const = 0;
 
 	protected:
-		inline dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator, void*) const override final;
+		dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator, void*) const override final;
 
 	public:
 		constexpr void print_name_after_parent(PP::simple_ostream& out) const noexcept override final;
@@ -26,6 +26,6 @@ namespace PPreflection
 			return get_function_type().get_function_cv_qualifier();
 		}
 
-		inline dynamic_variable invoke(dynamic_reference caller, PP::any_view<PP::iterator_category::ra, dynamic_reference> args = {}) const;
+		//inline dynamic_variable invoke(dynamic_reference caller, PP::any_view<PP::iterator_category::ra, dynamic_reference> args = {}) const;
 	};
 }

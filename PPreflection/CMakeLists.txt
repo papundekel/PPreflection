@@ -4,6 +4,7 @@ add_library(PPreflection
 "descriptor.cpp"
 "dynamic_object.cpp"
 "dynamic_variable.cpp"
+"functions/member_function.cpp"
 "types/known_bound_array_type.cpp"
 "types/null_type.cpp"
 )
