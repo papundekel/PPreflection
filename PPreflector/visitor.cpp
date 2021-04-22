@@ -138,26 +138,21 @@ void PPreflector::visitor::remove_unwanted()
 PPreflector::Namespace* PPreflector::visitor::get_namespace_parent(clang::DeclContext& declaration_context)
 {
 	auto* parent = declaration_context.getParent();
-	if (parent)
+
+	assert(parent != nullptr);
+
+	if (auto* namespace_parent = clang::dyn_cast_or_null<clang::NamespaceDecl>(parent))
 	{
-		if (auto* namespace_parent = clang::dyn_cast_or_null<clang::NamespaceDecl>(parent))
-		{
-			auto i = map_namespaces.find(namespace_parent->getOriginalNamespace());
-			if (i != map_namespaces.end())
-				return &i->second.get();
-			else
-				return nullptr;
-		}
-		else if (clang::isa<clang::TranslationUnitDecl>(parent))
-			return &global;
+		auto i = map_namespaces.find(namespace_parent->getOriginalNamespace());
+		if (i != map_namespaces.end())
+			return &i->second.get();
 		else
 			return nullptr;
 	}
-	else
-	{
-		llvm::outs() << "saujimave\n";
+	else if (clang::isa<clang::TranslationUnitDecl>(parent))
 		return &global;
-	}
+	else
+		return nullptr;
 }
 
 void PPreflector::visitor::register_namespace(clang::NamespaceDecl& child_declaration)
@@ -167,9 +162,11 @@ void PPreflector::visitor::register_namespace(clang::NamespaceDecl& child_declar
 	if (!parent)
 		return;
 
-	[[maybe_unused]] auto& child_namespace = parent->add(child_declaration);
+	auto& child_namespace = parent->add(child_declaration);
+	
+	[[maybe_unused]] auto success = map_namespaces.try_emplace(&child_declaration, child_namespace).second;
 
-	assert(map_namespaces.try_emplace(&child_declaration, child_namespace).second);
+	assert(success);
 }
 
 llvm::raw_ostream& PPreflector::visitor::print_name(llvm::raw_ostream& out, const clang::NamedDecl& d)
