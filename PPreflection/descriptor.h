@@ -30,7 +30,7 @@ namespace PPreflection
 		static constexpr PP::string_view reflect_name(PP::concepts::type auto t) noexcept;
 
 		static constexpr auto get_descriptor(PP::string_view name, PP::concepts::view auto&& descriptors) noexcept
-			-> decltype(&PP::declval(PP::view_base(PP_DECLTYPE(descriptors))))
+			-> decltype(&PP::declval(PP::view_type_base(PP_DECLTYPE(descriptors))))
 		{
 			for (const auto& d : PP_FORWARD(descriptors))
 				if (d.has_name(name))

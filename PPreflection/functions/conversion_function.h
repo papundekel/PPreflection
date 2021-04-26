@@ -21,7 +21,7 @@ namespace PPreflection
 
 		constexpr bool has_name(PP::string_view) const noexcept override final
 		{
-			return false;
+			return true;
 		}
 
 		constexpr void print_name_implementation(PP::simple_ostream& out) const noexcept override final
@@ -29,11 +29,6 @@ namespace PPreflection
 			out.write("operator ");
 			const type& rt = return_type();
 			rt.print_name(out);
-		}
-
-		dynamic_variable invoke(dynamic_reference) const
-		{
-			return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
 		}
 	};
 }

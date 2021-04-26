@@ -28,12 +28,17 @@ constexpr const PPreflection::user_defined_type* PPreflection::Namespace::get_ty
 	return get_descriptor(name, get_types());
 }
 
-PPreflection::dynamic_variable PPreflection::Namespace::invoke(PP::string_view, PP::any_view<PP::iterator_category::ra, dynamic_reference>) const
+PPreflection::dynamic_variable PPreflection::Namespace::invoke_qualified(PP::string_view function_name, PP::concepts::view auto&& arguments) const
 {
-	return dynamic_variable::create_invalid(dynamic_object::invalid_code::no_valid_overload);
+	return invoke_qualified_impl(function_name, PP_FORWARD(arguments));
 }
 
-PPreflection::dynamic_variable PPreflection::Namespace::invoke_qualified(PP::string_view function_name, PP::any_view<PP::iterator_category::ra, dynamic_reference> args) const
+PPreflection::dynamic_variable PPreflection::Namespace::invoke_qualified(PP::string_view function_name, const std::initializer_list<dynamic_reference>& arguments) const
 {
-	return candidate_functions(get_functions()).trim_name(function_name).invoke(PP::move(args));
+	return invoke_qualified_impl(function_name, arguments);
+}
+
+PPreflection::dynamic_variable PPreflection::Namespace::invoke_qualified_impl(PP::string_view function_name, PP::concepts::view auto&& args) const
+{
+	return candidate_functions(get_functions()).trim_by_name(function_name).invoke(PP_FORWARD(args));
 }

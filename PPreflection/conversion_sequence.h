@@ -6,6 +6,7 @@
 #include "convertor.h"
 #include "cv_qualification_signature.hpp"
 #include "dynamic_variable.h"
+#include "functions/constructor.h"
 #include "functions/function.h"
 #include "qualification_conversion.hpp"
 #include "types/reference_type.h"
@@ -26,27 +27,24 @@ namespace PPreflection
 		return po == std::partial_ordering::less || po == std::partial_ordering::greater;
 	}
 
+	class implicit_conversion_sequence;
+
 	class standard_conversion_sequence
 	{
+		friend implicit_conversion_sequence;
+
 		struct load_conversion
 		{
-			const class_type* c;
+			PP::unique_pointer<PP::pointer_new<implicit_conversion_sequence>> argument_conversion;
+			const constructor* c;
 
 			constexpr bool operator==(const load_conversion& other) const noexcept
 			{
 				return c == other.c;
 			}
 
-			dynamic_object operator()(dynamic_reference r) const
-			{
-				if (c)
-					return c->copy_initialize_same_or_derived(r);
-				else
-					return dynamic_object::create_shallow_copy(r);
-			}
+			inline dynamic_object operator()(dynamic_reference r) const;
 		};
-
-		friend class implicit_conversion_sequence;
 
 	private:
 		const referencable_type* type_source;
@@ -93,7 +91,7 @@ namespace PPreflection
 			: type_source(source)
 			, type_target_value(nullptr)
 			, type_target_reference(nullptr)
-			, load(nullptr)
+			, load({}, nullptr)
 			, to_pointer(nullptr)
 			, promotion_conversion(nullptr)
 			, function_noexcept(nullptr)
@@ -206,6 +204,7 @@ namespace PPreflection
 		{
 			rank = new_rank;
 		}
+
 		constexpr void set_validity(const non_array_object_type& new_target_type) noexcept
 		{
 			type_target_value = &new_target_type;
@@ -225,13 +224,8 @@ namespace PPreflection
 			set_validity(new_target_cv_type, true);
 			binds_implicit_parameter_no_ref = true;
 		}
-		constexpr void set_load(const class_type& target) noexcept
-		{
-			load_present = true;
-			load.c = &target;
-			type_target_value = &target;
-			identity = false;
-		}
+
+		constexpr void set_load(const class_type& target, const constructor& c, implicit_conversion_sequence argument_conversion) noexcept;
 		constexpr void set_load(const non_array_object_type& target) noexcept
 		{
 			load_present = true;
@@ -239,6 +233,7 @@ namespace PPreflection
 			type_target_value = &target;
 			identity = false;
 		}
+
 		constexpr void set_to_pointer(convertor_object convertor) noexcept
 		{
 			to_pointer = convertor;
@@ -496,10 +491,7 @@ namespace PPreflection
 		dynamic_variable convert(dynamic_reference r) const
 		{
 			if (conversion)
-			{
-				auto temp = PP::make_array(r);
-				return conversion->invoke_unsafe(PP::make_any_iterator(PP::view_begin(temp)));
-			}
+				return conversion->invoke_unsafe(PP::make_any_iterator(PP::view_begin(PP::make_array(r))));
 			else
 				return dynamic_variable::create_invalid(dynamic_object::invalid_code::overload_resolution_error);
 		}
@@ -559,26 +551,20 @@ namespace PPreflection
 		static constexpr auto create_standard(standard_conversion_sequence sequence) noexcept
 		{
 			implicit_conversion_sequence s;
-			s.first_standard_conversion = sequence;
+			s.first_standard_conversion = PP::move(sequence);
 			return s;
 		}
 
-		constexpr auto with_first_standard_conversion(standard_conversion_sequence sequence) const noexcept
+		constexpr auto with_user_defined_conversion(const function& new_conversion) && noexcept
 		{
-			auto copy = *this;
-			copy.first_standard_conversion = sequence;
-			return copy;
-		}
-		constexpr auto with_user_defined_conversion(const function& new_conversion) const noexcept
-		{
-			auto copy = *this;
+			auto copy = PP::move(*this);
 			copy.user_defined_conversion.set_conversion(new_conversion);
 			return copy;
 		}
-		constexpr auto with_second_standard_conversion(standard_conversion_sequence sequence) const noexcept
+		constexpr auto with_second_standard_conversion(standard_conversion_sequence sequence) && noexcept
 		{
-			auto copy = *this;
-			copy.second_standard_conversion = sequence;
+			auto copy = PP::move(*this);
+			copy.second_standard_conversion = PP::move(sequence);
 			return copy;
 		}
 
@@ -652,4 +638,25 @@ namespace PPreflection
 			}
 		}
 	};
+}
+
+PPreflection::dynamic_object PPreflection::standard_conversion_sequence::load_conversion::operator()(dynamic_reference r) const
+{
+	if (c)
+	{
+		auto converted_argument = dynamic_variable::create_void();
+		auto converted_argument_reference = argument_conversion->convert(r, converted_argument);
+		return c->invoke_unsafe(PP::make_any_iterator(&converted_argument_reference));
+	}
+	else
+		return dynamic_object::create_shallow_copy(r);
+}
+
+constexpr void PPreflection::standard_conversion_sequence::set_load(const class_type& target, const constructor& c, implicit_conversion_sequence argument_conversion) noexcept
+{
+	load_present = true;
+	load.argument_conversion = PP::make_unique_copy(PP::unique_tag_new, PP::move(argument_conversion));
+	load.c = &c;
+	type_target_value = &target;
+	identity = false;
 }

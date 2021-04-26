@@ -75,8 +75,6 @@ namespace PPreflection
 			return get_function_type().parameter_types_olr();
 		}
 
-		inline dynamic_variable invoke(PP::any_view<PP::iterator_category::ra, dynamic_reference> args = {}, void* = nullptr) const;
-
 		constexpr virtual parent_descriptor_reference_strong get_parent(int = 0) const noexcept = 0;
 		constexpr parent_descriptor_reference get_parent(void*) const noexcept override final
 		{

@@ -18,6 +18,8 @@ namespace PPreflection
 		constexpr parent_descriptor_reference get_parent(void*) const noexcept override final;
 
 	public:
+		class global;
+
 		constexpr virtual const Namespace& get_parent() const noexcept = 0;
 
 		constexpr virtual PP::any_view<PP::iterator_category::ra, const Namespace&> get_namespaces() const noexcept = 0;
@@ -33,9 +35,10 @@ namespace PPreflection
 		constexpr const Namespace* get_namespace(PP::string_view name) const noexcept;
 		constexpr const user_defined_type* get_type(PP::string_view name) const noexcept;
 
-		inline dynamic_variable invoke(PP::string_view function_name, PP::any_view<PP::iterator_category::ra, dynamic_reference> args = {}) const;
-		inline dynamic_variable invoke_qualified(PP::string_view function_name, PP::any_view<PP::iterator_category::ra, dynamic_reference> args = {}) const;
+		inline dynamic_variable invoke_qualified(PP::string_view function_name, PP::concepts::view auto&& arguments) const;
+		inline dynamic_variable invoke_qualified(PP::string_view function_name, const std::initializer_list<dynamic_reference>& arguments) const;
 
-		class global;
+	private:
+		inline dynamic_variable invoke_qualified_impl(PP::string_view function_name, PP::concepts::view auto&& arguments) const;
 	};
 }

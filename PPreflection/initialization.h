@@ -82,7 +82,7 @@ namespace PPreflection
 		if (standard_sequence.is_identity())
 			standard_sequence.set_load(target_type);
 
-		return implicit_conversion_sequence::create_standard(standard_sequence);
+		return implicit_conversion_sequence::create_standard(PP::move(standard_sequence));
 	}
 	
 	constexpr void push_constructor_candidates(
@@ -149,7 +149,7 @@ namespace PPreflection
 			if (!cf.is_explicit() && sequence.is_valid())
 			{
 				candidates.push_back(cf, initializer_type);
-				return_value_sequences.push_back(sequence);
+				return_value_sequences.push_back((standard_conversion_sequence&&)(sequence));
 			}
 		}
 	}
@@ -177,7 +177,7 @@ namespace PPreflection
 			if (!cf.is_explicit() && sequence.is_valid())
 			{
 				candidates.push_back(cf, initializer_class);
-				return_value_sequences.push_back(sequence);
+				return_value_sequences.push_back((standard_conversion_sequence&&)sequence);
 			}
 		}
 	}
@@ -252,7 +252,7 @@ namespace PPreflection
 				if (derived)
 					standard_sequence.set_derived_to_base_reference_conversion(initializer_class_ptr->reference_conversion_to_base(*target_class_ptr));
 
-				sequence = implicit_conversion_sequence::create_standard(standard_sequence);
+				sequence = implicit_conversion_sequence::create_standard(PP::move(standard_sequence));
 			}
 			else if (can_use_user_defined && !same && !derived)
 			{
@@ -274,7 +274,7 @@ namespace PPreflection
 				if (derived)
 					standard_sequence.set_derived_to_base_reference_conversion(initializer_class_ptr->reference_conversion_to_base(*target_class_ptr));
 
-				sequence = implicit_conversion_sequence::create_standard(standard_sequence);
+				sequence = implicit_conversion_sequence::create_standard(PP::move(standard_sequence));
 			}
 			else if (can_use_user_defined && !same && !derived)
 			{
@@ -317,7 +317,7 @@ namespace PPreflection
 			if (derived)
 				standard_sequence.set_derived_to_base_reference_conversion(initializer_class_ptr->reference_conversion_to_base(*target_class_ptr));
 
-			sequence = implicit_conversion_sequence::create_standard(standard_sequence);
+			sequence = implicit_conversion_sequence::create_standard(PP::move(standard_sequence));
 		}
 
 		return sequence;

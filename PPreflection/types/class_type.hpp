@@ -2,12 +2,8 @@
 #include "class_type.h"
 
 #include "../conversion_sequence.h"
+#include "../initialization.h"
 #include "non_union_class_type.h"
-
-inline PPreflection::dynamic_object PPreflection::class_type::create_instance(PP::any_view<PP::iterator_category::ra, dynamic_reference>) const noexcept
-{
-	return dynamic_object::create_invalid(dynamic_object::invalid_code::no_valid_overload);
-}
 
 constexpr void PPreflection::class_type::get_member_function_overloads(PP::string_view name, PP::concepts::iterator auto i_out) const noexcept
 {

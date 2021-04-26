@@ -2,6 +2,9 @@
 
 #include "../descriptor.hpp"
 #include "../dynamic_object.hpp"
+#include "../functions/function.hpp"
+#include "../functions/member_function.hpp"
+#include "../overload_resolution.hpp"
 #include "../parent_descriptor_reference.hpp"
 #include "../parent_descriptor_reference_strong.hpp"
 #include "array_type.hpp"

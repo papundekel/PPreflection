@@ -7,7 +7,7 @@ namespace PPreflection
 	class class_type;
 	class reference_type;
 
-	class member_function : public detail::maybe_static_member_function
+	class member_function : public maybe_static_member_function
 	{
 		virtual dynamic_variable invoke_unsafe(dynamic_reference caller, PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator) const = 0;
 
@@ -25,7 +25,5 @@ namespace PPreflection
 		{
 			return get_function_type().get_function_cv_qualifier();
 		}
-
-		//inline dynamic_variable invoke(dynamic_reference caller, PP::any_view<PP::iterator_category::ra, dynamic_reference> args = {}) const;
 	};
 }

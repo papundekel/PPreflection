@@ -26,8 +26,3 @@ constexpr void PPreflection::member_function::print_name_after_parent(PP::simple
 
 	print_noexcept(out);
 }
-
-//inline PPreflection::dynamic_variable PPreflection::member_function::invoke(dynamic_reference, PP::any_view<PP::iterator_category::ra, dynamic_reference>) const
-//{
-//	return dynamic_variable::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
-//}

@@ -3,6 +3,7 @@
 #include "PP/optional.hpp"
 #include "PP/push_back_iterator.hpp"
 #include "PP/small_optimized_vector.hpp"
+#include "PP/utility/move.hpp"
 
 #include "conversion_sequence.h"
 
@@ -27,7 +28,7 @@ namespace PPreflection
 	protected:
 		constexpr implicit_conversion_sequence get_first_sequence() const noexcept
 		{
-			return conversion_sequences[0];
+			return (implicit_conversion_sequence&&)(conversion_sequences[0]);
 		}
 
 	public:
@@ -115,14 +116,14 @@ namespace PPreflection
 
 		constexpr void set_return_value_sequence(standard_conversion_sequence sequence) noexcept
 		{
-			return_value_sequence = sequence;
+			return_value_sequence = PP::move(sequence);
 		}
 
 		constexpr auto make_conversion_sequence() const noexcept
 		{
 			return get_first_sequence()
 				.with_user_defined_conversion(get_function())
-				.with_second_standard_conversion(return_value_sequence);
+				.with_second_standard_conversion((standard_conversion_sequence&&)(return_value_sequence));
 		}
 
 		constexpr bool operator>(const viable_function_with_return_sequence& other) const noexcept
@@ -202,7 +203,7 @@ namespace PPreflection
 		if constexpr (with_return_value_sequences)
 		{
 			for (auto [vf, s] : PP::zip_view_pack(viable_functions, return_value_sequences))
-				vf.set_return_value_sequence(s);
+				vf.set_return_value_sequence(PP::move(s));
 		}
 
 		for (viable_function& vf : viable_functions)

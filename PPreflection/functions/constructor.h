@@ -6,13 +6,12 @@
 
 namespace PPreflection
 {
-	class constructor : public detail::named_function<detail::maybe_static_member_function>
+	class constructor : public detail::named_function<maybe_static_member_function>
 	{
-		virtual dynamic_object invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator) const = 0;
 		inline dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator, void*) const override final;
 
 	public:
-		inline dynamic_object invoke(PP::any_view<PP::iterator_category::ra, dynamic_reference> args = {}) const;
+		virtual dynamic_object invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator) const = 0;
 
 		constexpr virtual bool is_explicit() const noexcept = 0;
 

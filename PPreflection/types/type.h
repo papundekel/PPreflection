@@ -7,8 +7,8 @@
 #include "PP/tuple_find_dynamic.hpp"
 #include "PP/tuple_fold.hpp"
 #include "PP/tuple_get.hpp"
-#include "PP/tuple_make_array.hpp"
 #include "PP/tuple_map.hpp"
+#include "PP/tuple_map_to_array.hpp"
 #include "PP/type_tuple.hpp"
 #include "PP/value_t_static_cast.hpp"
 #include "PP/view.hpp"
@@ -185,5 +185,5 @@ constexpr auto PPreflection::type::reflect_helper(PP::concepts::tuple auto&& typ
 
 	static_assert(common_class != PP::type<super_class_type>, "type::reflect: the types don't have a common type category");
 
-	return PP::tuple_make_array(common_class + PP::add_const_tag + PP::add_lvalue_tag, type::reflect, PP_FORWARD(types));
+	return PP::tuple_map_to_array(common_class + PP::add_const_tag + PP::add_lvalue_tag, type::reflect, PP_FORWARD(types));
 }

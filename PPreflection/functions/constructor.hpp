@@ -7,8 +7,3 @@ PPreflection::dynamic_variable PPreflection::constructor::invoke_unsafe(PP::any_
 {
 	return dynamic_variable(invoke_unsafe(PP::move(arg_iterator)));
 }
-
-PPreflection::dynamic_object PPreflection::constructor::invoke(PP::any_view<PP::iterator_category::ra, dynamic_reference>) const
-{
-	return dynamic_object::create_invalid(dynamic_object::invalid_code::implicit_conversion_error);
-}

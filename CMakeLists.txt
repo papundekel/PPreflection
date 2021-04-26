@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.13)
 
-add_compile_options(-Wall -Wextra -pedantic -Werror)
+add_compile_options(
+	-Wall
+	-Wextra
+	-pedantic
+	-Werror
+#	-pg
+)
+#add_link_options(-pg)
 
 project(PPreflection)
 

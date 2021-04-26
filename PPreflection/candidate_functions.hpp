@@ -1,6 +1,7 @@
 #pragma once
 #include "PP/reference_wrapper.hpp"
 #include "PP/small_optimized_vector.hpp"
+#include "PP/transform_view.hpp"
 
 #include "args_to_types.hpp"
 #include "dynamic_object.h"
@@ -21,7 +22,7 @@ namespace PPreflection
 			: functions(candidate_functions_container::create_copy_view(PP_FORWARD(functions)))
 		{}
 
-		constexpr auto& trim_name(PP::string_view name)
+		constexpr auto& trim_by_name(PP::string_view name)
 		{
 			functions.remove([name]
 				(const function& f)
@@ -32,7 +33,7 @@ namespace PPreflection
 			return *this;
 		}
 
-		constexpr auto& trim_exact_argument_count(PP::size_t arg_count)
+		constexpr auto& trim_by_exact_argument_count(PP::size_t arg_count)
 		{
 			functions.remove([arg_count]
 				(const function& f)
@@ -43,11 +44,6 @@ namespace PPreflection
 			return *this;
 		}
 
-		const auto& get_functions_view() const
-		{
-			return functions;
-		}
-
 		dynamic_variable invoke(PP::concepts::view auto&& arguments) const
 		{
 			return invoke_impl(PP_FORWARD(arguments));
@@ -56,6 +52,16 @@ namespace PPreflection
 		dynamic_variable invoke(const std::initializer_list<dynamic_reference>& arguments) const
 		{
 			return invoke_impl(arguments);
+		}
+
+		auto begin() const
+		{
+			return functions.begin() & PP::transform(PP::unref);
+		}
+
+		auto end() const
+		{
+			return functions.end();
 		}
 
 	private:

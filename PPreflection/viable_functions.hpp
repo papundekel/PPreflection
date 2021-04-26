@@ -8,6 +8,7 @@
 
 #include "args_to_types.hpp"
 #include "overload_resolution.h"
+#include "reflect.h"
 
 namespace PPreflection
 {
@@ -18,8 +19,7 @@ namespace PPreflection
 
 		PP::small_optimized_vector<pair, 8> arg_function_pairs;
 
-	public:
-		constexpr viable_functions(PP::concepts::view auto&& candidates, PP::concepts::view auto&& argument_lists)
+		constexpr viable_functions(PP::placeholder_t, PP::concepts::view auto&& candidates, PP::concepts::view auto&& argument_lists)
 			: arg_function_pairs()
 		{
 			for (auto&& argument_list : PP_FORWARD(argument_lists))
@@ -30,11 +30,20 @@ namespace PPreflection
 			}
 		}
 
+	public:
+		constexpr viable_functions(PP::concepts::view auto&& candidates, PP::concepts::view auto&& argument_lists)
+			: viable_functions(PP::placeholder, PP_FORWARD(candidates), PP_FORWARD(argument_lists))
+		{}
+
+		constexpr viable_functions(PP::concepts::view auto&& candidates, PP::concepts::tuple auto&&... argument_tuples)
+			: viable_functions(PP::placeholder, PP_FORWARD(candidates),
+				PP::make_simple_view < PP::tuple_map_forward_array * type::reflect + PP::forward_as_tuple(PP_FORWARD(argument_tuples)...))
+		{}
+
 		dynamic_variable invoke(PP::concepts::view auto&& arguments) const
 		{
 			return invoke_impl(PP_FORWARD(arguments));
 		}
-
 		dynamic_variable invoke(const std::initializer_list<dynamic_reference>& arguments) const
 		{
 			return invoke_impl(arguments);

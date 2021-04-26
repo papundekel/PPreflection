@@ -14,7 +14,7 @@ namespace PPreflection
 
         constexpr bool has_name(PP::string_view) const noexcept override final
         {
-            return false;
+            return true;
         }
         constexpr void print_name_prefix(PP::simple_ostream& out) const noexcept override final
         {
