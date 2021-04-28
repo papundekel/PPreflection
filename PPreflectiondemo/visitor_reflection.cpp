@@ -1,12 +1,10 @@
 #include "visitor_reflection.hpp"
 
-#include "PP/any_iterator.hpp"
-
-#include "PPreflection/PPreflection.hpp"
-
 #include "reactions.hpp"
 
 #include "visitor_reflection.cpp.meta"
+
+#ifndef PPREFLECTOR_GUARD
 
 namespace
 {
@@ -32,3 +30,5 @@ void visitors::visitor_reflection::react_to(const animals::animal& animal)
 
 	viables.invoke({ PPreflection::dynamic_polymorphic_reference(animal) });
 }
+
+#endif

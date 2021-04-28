@@ -90,6 +90,7 @@ bool PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 void PPreflector::visitor::print(llvm::raw_ostream& out) const
 {
 	out <<	"#ifndef PPREFLECTOR_GUARD\n"
+			"\n"
 			"#pragma once\n"
 			"#include \"PPreflection/meta.hpp\"\n"
 			"\n"
