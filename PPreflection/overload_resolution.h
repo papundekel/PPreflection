@@ -11,7 +11,7 @@ namespace PPreflection
 {
 	constexpr void pick_viable_candidates(PP::concepts::view auto&& candidates, PP::size_t argument_count, auto viable_i)
 	{
-		for (const function& f : PP_FORWARD(candidates))
+		for (const auto& f : PP_FORWARD(candidates) | PP::transform(PP::unref))
 		{
 			if (PP::view_count(f.parameter_types_olr()) == argument_count)
 			{
@@ -20,25 +20,25 @@ namespace PPreflection
 		}
 	}
 
+	template <typename Function>
 	class viable_function
 	{
 		PP::small_optimized_vector<implicit_conversion_sequence, 4> conversion_sequences;
-		PP::reference_wrapper<const function&> f;
-
-	protected:
-		constexpr implicit_conversion_sequence get_first_sequence() const noexcept
-		{
-			return (implicit_conversion_sequence&&)(conversion_sequences[0]);
-		}
+		PP::reference_wrapper<const Function&> f;
 
 	public:
-		explicit constexpr viable_function(const function& f) noexcept
+		explicit constexpr viable_function(const Function& f) noexcept
 			: conversion_sequences()
 			, f(f)
 		{}
 
 		viable_function(viable_function&&) = default;
 		viable_function& operator=(viable_function&&) = default;
+
+		constexpr implicit_conversion_sequence get_first_sequence() const noexcept
+		{
+			return /*PP::move*/(implicit_conversion_sequence&&)(conversion_sequences[0]);
+		}
 
 		constexpr void make_conversion_sequences(PP::concepts::view auto&& argument_types, bool can_use_user_defined);
 
@@ -84,7 +84,7 @@ namespace PPreflection
 			return false;
 		}
 
-		constexpr const function& get_function() const noexcept
+		constexpr const Function& get_function() const noexcept
 		{
 			return f;
 		}
@@ -104,13 +104,14 @@ namespace PPreflection
 		}
 	};
 
-	class viable_function_with_return_sequence : public viable_function
+	template <typename Function>
+	class viable_function_with_return_sequence : public viable_function<Function>
 	{
 		standard_conversion_sequence return_value_sequence;
 
 	public:
-		constexpr explicit viable_function_with_return_sequence(const function& f)
-			: viable_function(f)
+		constexpr explicit viable_function_with_return_sequence(const Function& f)
+			: viable_function<Function>(f)
 			, return_value_sequence(standard_conversion_sequence::create_invalid())
 		{}
 
@@ -121,14 +122,14 @@ namespace PPreflection
 
 		constexpr auto make_conversion_sequence() const noexcept
 		{
-			return get_first_sequence()
-				.with_user_defined_conversion(get_function())
-				.with_second_standard_conversion((standard_conversion_sequence&&)(return_value_sequence));
+			return this->get_first_sequence()
+				.with_user_defined_conversion(this->get_function())
+				.with_second_standard_conversion(/*PP::move*/(standard_conversion_sequence&&)(return_value_sequence));
 		}
 
 		constexpr bool operator>(const viable_function_with_return_sequence& other) const noexcept
 		{
-			if ((const viable_function&)*this > other)
+			if ((const viable_function<Function>&)*this > other)
 				return true;
 
 			// 2.2
@@ -180,21 +181,24 @@ namespace PPreflection
 		ambiguous,
 	};
 
-	template <bool with_return_value_sequences>
+	template <bool with_return_value_sequences, typename Function>
 	using viable_function_type_helper = PP_GET_TYPE(PP::conditional(
 		PP::value<with_return_value_sequences>,
-		PP::type<viable_function_with_return_sequence>,
-		PP::type<viable_function>));
+		PP::type<viable_function_with_return_sequence<Function>>,
+		PP::type<viable_function<Function>>));
 
 	constexpr auto overload_resolution(
 		PP::concepts::view auto&& candidates,
 		PP::concepts::view auto&& argument_types,
 		auto&& return_value_sequences,
 		bool can_use_user_defined) 
-			-> PP::tuple<PP::optional<viable_function_type_helper<PP::concepts::view<decltype(return_value_sequences)>>>, overload_resolution_error>
+			-> PP::tuple<
+				PP::optional<viable_function_type_helper<PP::concepts::view<decltype(return_value_sequences)>, PP_GET_TYPE(~PP_DECLTYPE(PP::unref(*PP::view_begin(candidates))))>>,
+				overload_resolution_error>
 	{
 		constexpr bool with_return_value_sequences = PP::concepts::view<decltype(return_value_sequences)>;
-		using viable_function_type = viable_function_type_helper<with_return_value_sequences>;
+		using candidate_type = PP_GET_TYPE(~PP_DECLTYPE(PP::unref(*PP::view_begin(candidates))));
+		using viable_function_type = viable_function_type_helper<with_return_value_sequences, candidate_type>;
 
 		PP::small_optimized_vector<viable_function_type, 8> viable_functions;
 
@@ -206,10 +210,10 @@ namespace PPreflection
 				vf.set_return_value_sequence(PP::move(s));
 		}
 
-		for (viable_function& vf : viable_functions)
+		for (auto& vf : viable_functions)
 			vf.make_conversion_sequences(argument_types, can_use_user_defined);
 
-		viable_functions.remove([](const viable_function& vf){ return vf.has_invalid_conversion(); });
+		viable_functions.remove([](const viable_function_type& vf){ return vf.has_invalid_conversion(); });
 
 		auto [winner, is_ambiguous] = pick_best_viable_function(viable_functions);
 

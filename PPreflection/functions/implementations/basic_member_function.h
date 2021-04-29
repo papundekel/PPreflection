@@ -5,6 +5,7 @@
 #include "PP/array.hpp"
 #include "PP/conditional.hpp"
 #include "PP/pointer_to_member_info.hpp"
+#include "PP/singular_view.hpp"
 #include "PP/template_t.hpp"
 #include "PP/utility/forward.hpp"
 #include "PP/view_chain.hpp"
@@ -49,7 +50,7 @@ namespace PPreflection::detail
 
 		constexpr PP::any_view<PP::iterator_category::ra, parameter_type_olr_reference> parameter_types_olr() const noexcept override final
 		{
-			return PP::view_chain(PP::simple_view(&parameter_types_olr_head, &parameter_types_olr_head + 1)) ^ parameter_types_olr_tail_array;
+			return PP::view_chain(PP::make_singular_view(parameter_types_olr_head)) ^ parameter_types_olr_tail_array;
 		}
 	};
 }

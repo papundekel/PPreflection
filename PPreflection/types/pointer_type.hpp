@@ -7,7 +7,7 @@
 
 constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_type::make_standard_conversion_sequence_impl(const pointer_type& target) const noexcept
 {
-	standard_conversion_sequence sequence(*this);
+	standard_conversion_sequence sequence;
 
 	auto pointed_to_this = remove_pointer();
 	auto pointed_to_target = target.remove_pointer();
@@ -59,7 +59,7 @@ constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_type:
 
 constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_type::make_standard_conversion_sequence_impl(const non_array_object_type& target) const noexcept
 {
-	standard_conversion_sequence sequence(*this);
+	standard_conversion_sequence sequence;
 
 	if (const auto* target_pointer_ptr = dynamic_cast<const pointer_type*>(&target); target_pointer_ptr)
 	{

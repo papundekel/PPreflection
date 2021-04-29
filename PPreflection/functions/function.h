@@ -23,6 +23,7 @@ namespace PPreflection
 	class function : public descriptor
 	{
 		friend class Namespace;
+		template <typename>
 		friend class viable_function;
 
 	protected:

@@ -3,7 +3,7 @@
 
 constexpr PPreflection::standard_conversion_sequence PPreflection::enum_type::make_standard_conversion_sequence_impl(const non_array_object_type& target) const noexcept
 {
-	standard_conversion_sequence sequence(*this);
+	standard_conversion_sequence sequence;
 
 	if (is_scoped())
 		return sequence;

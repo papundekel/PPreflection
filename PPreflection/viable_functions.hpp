@@ -15,7 +15,7 @@ namespace PPreflection
 	class viable_functions
 	{
 		using argument_list_type = PP::small_optimized_vector<PP::reference_wrapper<const reference_type&>, 8>;
-		using pair = PP::tuple<argument_list_type, PP::optional<viable_function>>;
+		using pair = PP::tuple<argument_list_type, PP::optional<viable_function<function>>>;
 
 		PP::small_optimized_vector<pair, 8> arg_function_pairs;
 

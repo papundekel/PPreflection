@@ -14,7 +14,7 @@ constexpr bool PPreflection::pointer_to_member_type::operator==(const pointer_to
 
 constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_to_member_type::make_standard_conversion_sequence_impl(const pointer_to_member_type& target) const noexcept
 {
-	standard_conversion_sequence sequence(*this);
+	standard_conversion_sequence sequence;
 
 	auto member_this = get_member_type();
 	auto member_target = target.get_member_type();
@@ -74,7 +74,7 @@ constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_to_me
 
 constexpr PPreflection::standard_conversion_sequence PPreflection::pointer_to_member_type::make_standard_conversion_sequence_impl(const non_array_object_type& target) const noexcept
 {
-	standard_conversion_sequence sequence(*this);
+	standard_conversion_sequence sequence;
 
 	if (const auto* target_pointer_to_member_ptr = dynamic_cast<const pointer_to_member_type*>(&target); target_pointer_to_member_ptr)
 	{

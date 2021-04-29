@@ -47,7 +47,6 @@ namespace PPreflection
 		};
 
 	private:
-		const referencable_type* type_source;
 		const non_array_object_type* type_target_value;
 		const referencable_type* type_target_reference;
 
@@ -56,21 +55,6 @@ namespace PPreflection
 		convertor_object promotion_conversion;
 		convertor_object function_noexcept;
 		convertor_reference derived_to_base_reference_conversion;
-
-		//int
-		//	rank : 3,
-		//	target_cv : 3,
-		//	identity : 2,
-		//	load_present : 2,
-		//	has_qualification_conversion : 2,
-		//	enum_with_fixed_underlying_type : 2,
-		//	enum_to_promoted_fixed_type : 2,
-		//	converts_pointer_to_bool : 2,
-		//	converts_to_base_or_void_pointer : 2,
-		//	binds_implicit_parameter_no_ref : 2,
-		//	converts_to_void_pointer : 2,
-		//	source_lvalue : 2,
-		//	target_lvalue : 2;
 
 		conversion_sequence_rank rank;
 		PP::cv_qualifier target_cv;
@@ -87,11 +71,10 @@ namespace PPreflection
 		bool target_lvalue;
 
 	private:
-		constexpr standard_conversion_sequence(const referencable_type* source, bool source_lvalue = false) noexcept
-			: type_source(source)
-			, type_target_value(nullptr)
+		constexpr standard_conversion_sequence(bool source_lvalue) noexcept
+			: type_target_value(nullptr)
 			, type_target_reference(nullptr)
-			, load({}, nullptr)
+			, load(nullptr, nullptr)
 			, to_pointer(nullptr)
 			, promotion_conversion(nullptr)
 			, function_noexcept(nullptr)
@@ -111,23 +94,14 @@ namespace PPreflection
 			, target_lvalue(false)
 		{}
 
-		constexpr standard_conversion_sequence() noexcept
-			: standard_conversion_sequence(nullptr)
-		{}
-
 	public:
-		constexpr standard_conversion_sequence(const referencable_type& source) noexcept
-			: standard_conversion_sequence(&source)
+		constexpr standard_conversion_sequence() noexcept
+			: standard_conversion_sequence(false)
 		{}
 
 		constexpr standard_conversion_sequence(const reference_type& source) noexcept
-			: standard_conversion_sequence(&source.remove_reference().type, source.is_lvalue())
+			: standard_conversion_sequence(source.is_lvalue())
 		{}
-
-		constexpr auto get_target_cv() const noexcept
-		{
-			return (PP::cv_qualifier)target_cv;
-		}
 
 		static constexpr standard_conversion_sequence create_invalid() noexcept
 		{
@@ -139,11 +113,10 @@ namespace PPreflection
 			sequence.identity = true;
 			return sequence;
 		}
-		static constexpr standard_conversion_sequence create_load(const auto& target) noexcept
+
+		constexpr auto get_target_cv() const noexcept
 		{
-			standard_conversion_sequence sequence;
-			sequence.set_load(target);
-			return sequence;
+			return (PP::cv_qualifier)target_cv;
 		}
 
 		dynamic_reference do_reference_binding(dynamic_reference r) const noexcept
@@ -226,11 +199,11 @@ namespace PPreflection
 		}
 
 		constexpr void set_load(const class_type& target, const constructor& c, implicit_conversion_sequence argument_conversion) noexcept;
-		constexpr void set_load(const non_array_object_type& target) noexcept
+		constexpr void set_load(const non_array_object_type& target_non_class) noexcept
 		{
 			load_present = true;
 			load.c = nullptr;
-			type_target_value = &target;
+			type_target_value = &target_non_class;
 			identity = false;
 		}
 
