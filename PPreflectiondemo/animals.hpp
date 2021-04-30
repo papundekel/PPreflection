@@ -12,37 +12,42 @@ namespace animals
 	struct animal
 	{
 		virtual const char* name() const noexcept = 0;
-		virtual void accept(visitors::animal_visitor& visitor) = 0;
+		virtual void		accept(visitors::animal_visitor& visitor) = 0;
 	};
 
-	struct ape final : public animal
+	struct ape final
+		: public animal
 	{
 		const char* name() const noexcept override final;
-		void accept(visitors::animal_visitor& visitor) override final;
+		void		accept(visitors::animal_visitor& visitor) override final;
 	};
 
-	struct bat final : public animal
+	struct bat final
+		: public animal
 	{
 		const char* name() const noexcept override final;
-		void accept(visitors::animal_visitor& visitor) override final;
+		void		accept(visitors::animal_visitor& visitor) override final;
 	};
 
-	struct cat final : public animal
+	struct cat final
+		: public animal
 	{
 		const char* name() const noexcept override final;
-		void accept(visitors::animal_visitor& visitor) override final;
+		void		accept(visitors::animal_visitor& visitor) override final;
 	};
 
-	struct dog final : public animal
+	struct dog final
+		: public animal
 	{
 		const char* name() const noexcept override final;
-		void accept(visitors::animal_visitor& visitor) override final;
+		void		accept(visitors::animal_visitor& visitor) override final;
 	};
 
-	struct elk final : public animal
+	struct elk final
+		: public animal
 	{
 		const char* name() const noexcept override final;
-		void accept(visitors::animal_visitor& visitor) override final;
+		void		accept(visitors::animal_visitor& visitor) override final;
 	};
 }
 

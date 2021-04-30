@@ -16,12 +16,15 @@
 #include "types/reference_type.hpp"
 #include "types/unknown_bound_array_type.hpp"
 
-PPreflection::dynamic_variable PPreflection::dynamic_variable::create_invalid(dynamic_object::invalid_code code) noexcept
+PPreflection::dynamic_variable
+PPreflection::dynamic_variable::create_invalid(
+	dynamic_object::invalid_code code) noexcept
 {
 	return dynamic_variable(dynamic_object::create_invalid(code));
 }
 
-PPreflection::dynamic_variable PPreflection::dynamic_variable::create_void() noexcept
+PPreflection::dynamic_variable
+PPreflection::dynamic_variable::create_void() noexcept
 {
 	return dynamic_variable(dynamic_object::create_void());
 }

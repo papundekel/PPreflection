@@ -13,7 +13,8 @@
 #include "visitor_reference.hpp"
 #include "visitor_reflection.hpp"
 
-auto generate_zoo(PP::size_t count)
+auto
+generate_zoo(PP::size_t count)
 {
 	using namespace PP::literals;
 
@@ -56,19 +57,25 @@ auto generate_zoo(PP::size_t count)
 	return zoo;
 }
 
-auto now()
+auto
+now()
 {
 	return std::chrono::system_clock::now();
 }
 
 using time_point = decltype(now());
 
-void print_duration(time_point time)
+void
+print_duration(time_point time)
 {
-	std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(now() - time).count() << '\n';
+	std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(now() -
+																	   time)
+					 .count()
+			  << '\n';
 }
 
-int main()
+int
+main()
 {
 	PP::size_t count;
 	std::cin >> count;
@@ -83,7 +90,7 @@ int main()
 	{
 		animal_ptr->accept(v_reference);
 	}
-	
+
 	print_duration(time);
 
 	std::cout << animals::value << '\n';
@@ -92,7 +99,7 @@ int main()
 	visitors::visitor_reflection v_reflection;
 
 	time = now();
-	
+
 	for (const auto& animal_ptr : zoo)
 	{
 		v_reflection.react_to(*animal_ptr);

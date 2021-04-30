@@ -18,7 +18,8 @@ namespace PPreflection::detail
 		static constexpr auto ref = info.ref;
 
 	public:
-		constexpr const function_type& get_function_type() const noexcept override final
+		constexpr const function_type& get_function_type()
+			const noexcept override final
 		{
 			return type::reflect(function_type_);
 		}

@@ -12,23 +12,32 @@
 namespace PPreflection::detail
 {
 	template <typename T>
-	class basic_pointer_type final : public basic_pointer_base_type<T, basic_complete_object_type<T, pointer_type>>
+	class basic_pointer_type final
+		: public basic_pointer_base_type<
+			  T,
+			  basic_complete_object_type<T, pointer_type>>
 	{
 		static_assert(PP::concepts::pointer<T>);
 
 		static constexpr auto pointed_to_type = PP::remove_pointer(PP::type<T>);
 
-		constexpr cv_type<pointable_type> remove_pointer() const noexcept override final
+		constexpr cv_type<pointable_type> remove_pointer()
+			const noexcept override final
 		{
 			return type::reflect_cv(pointed_to_type);
 		}
 
-		constexpr convertor_object void_conversion() const noexcept override final
+		constexpr convertor_object void_conversion()
+			const noexcept override final
 		{
 			if constexpr (!PP::is_function(pointed_to_type))
-				return create_convertor_object(PP::type<T>, PP::value<PP::to_void_ptr>);
+				return create_convertor_object(PP::type<T>,
+											   PP::value<PP::to_void_ptr>);
 			else
-				return [](dynamic_reference) -> dynamic_object { throw 0; };
+				return [](dynamic_reference) -> dynamic_object
+				{
+					throw 0;
+				};
 		}
 	};
 }

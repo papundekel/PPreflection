@@ -1,6 +1,6 @@
+#include "pragma_pop.hpp"
 #include "pragma_push.hpp"
 #include "clang/Frontend/FrontendPluginRegistry.h"
-#include "pragma_pop.hpp"
 
 #include "action.hpp"
 

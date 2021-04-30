@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
 
+#include "pragma_pop.hpp"
 #include "pragma_push.hpp"
 #include "clang/AST/Type.h"
-#include "pragma_pop.hpp"
 
 #include "descriptor.hpp"
 #include "enum_value.hpp"
@@ -12,7 +12,9 @@
 
 namespace PPreflector
 {
-	class Enum : public node_descriptor<clang::EnumType, nested_descriptor<descriptor, descriptor>>
+	class Enum
+		: public node_descriptor<clang::EnumType,
+								 nested_descriptor<descriptor, descriptor>>
 	{
 		std::vector<enum_value> enum_values;
 
@@ -23,7 +25,8 @@ namespace PPreflector
 		void print_name_own(llvm::raw_ostream& out) const override final;
 		void print_name_foreign(llvm::raw_ostream& out) const override final;
 
-		void print_metadata_members(llvm::raw_ostream& out) const override final;
+		void print_metadata_members(
+			llvm::raw_ostream& out) const override final;
 		void print_metadata_traits(llvm::raw_ostream& out) const override final;
 		void print_metadata_object(llvm::raw_ostream& out) const override final;
 	};

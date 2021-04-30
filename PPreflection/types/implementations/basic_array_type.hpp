@@ -19,12 +19,14 @@ namespace PPreflection::detail
 			return type::reflect_cv(element_type);
 		}
 
-		constexpr convertor_object array_to_pointer_conversion() const noexcept override final
+		constexpr convertor_object array_to_pointer_conversion()
+			const noexcept override final
 		{
 			return create_convertor_object_to_value(PP::type<T>);
 		}
 
-		constexpr const pointer_type& get_pointer_to_element() const noexcept override final
+		constexpr const pointer_type& get_pointer_to_element()
+			const noexcept override final
 		{
 			return type::reflect(PP::add_pointer(element_type));
 		}

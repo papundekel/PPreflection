@@ -5,7 +5,8 @@
 namespace PPreflection::detail
 {
 	template <typename T, typename Base>
-	class basic_non_array_object_type : public basic_complete_object_type<T, Base>
+	class basic_non_array_object_type
+		: public basic_complete_object_type<T, Base>
 	{
 		constexpr PP::size_t alignment() const noexcept override final
 		{

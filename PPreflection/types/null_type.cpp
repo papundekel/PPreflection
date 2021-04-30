@@ -25,7 +25,12 @@ namespace
 	constexpr auto null = PPreflection::null_type{};
 }
 
-PPreflection::dynamic_object PPreflection::null_type::create_instance() const noexcept
+PPreflection::dynamic_object
+PPreflection::null_type::create_instance() const noexcept
 {
-	return dynamic_object(null, []{ return nullptr; });
+	return dynamic_object(null,
+						  []
+						  {
+							  return nullptr;
+						  });
 }

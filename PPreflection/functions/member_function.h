@@ -9,13 +9,20 @@ namespace PPreflection
 
 	class member_function : public maybe_static_member_function
 	{
-		virtual dynamic_variable invoke_unsafe(dynamic_reference caller, PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator) const = 0;
+		virtual dynamic_variable invoke_unsafe(
+			dynamic_reference caller,
+			PP::any_iterator<PP::iterator_category::ra, dynamic_reference>
+				arg_iterator) const = 0;
 
 	protected:
-		dynamic_variable invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator, void*) const override final;
+		dynamic_variable invoke_unsafe(
+			PP::any_iterator<PP::iterator_category::ra, dynamic_reference>
+				arg_iterator,
+			void*) const override final;
 
 	public:
-		constexpr void print_name_after_parent(PP::simple_ostream& out) const noexcept override final;
+		constexpr void print_name_after_parent(
+			PP::simple_ostream& out) const noexcept override final;
 
 		constexpr PP::ref_qualifier get_ref_qualifier() const noexcept
 		{

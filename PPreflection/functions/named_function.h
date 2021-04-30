@@ -10,9 +10,10 @@ namespace PPreflection::detail
 	class named_function : public named_descriptor<Base>
 	{
 		static_assert(PP::concepts::derived_from<Base, function>);
-		
+
 	public:
-		constexpr void print_name_implementation(PP::simple_ostream& out) const noexcept override final
+		constexpr void print_name_implementation(
+			PP::simple_ostream& out) const noexcept override final
 		{
 			out.write(this->get_name());
 		}

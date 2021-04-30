@@ -4,7 +4,6 @@
 #include "unknown_bound_array_type.h"
 #include "void_type.h"
 
-
 /*namespace detail
 {
 	using variable_type_reference_base = PP::variant<

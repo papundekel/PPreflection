@@ -14,7 +14,8 @@ namespace PPreflection::detail
 	public:
 		constexpr virtual PP::string_view get_name() const noexcept = 0;
 
-		constexpr bool has_name(PP::string_view name) const noexcept override final
+		constexpr bool has_name(
+			PP::string_view name) const noexcept override final
 		{
 			return PP::view_equal(get_name(), name);
 		}

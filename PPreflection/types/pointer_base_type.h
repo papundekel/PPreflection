@@ -8,6 +8,7 @@ namespace PPreflection
 	public:
 		constexpr virtual convertor_object bool_conversion() const noexcept = 0;
 
-		constexpr virtual convertor_object null_pointer_conversion() const noexcept = 0;
+		constexpr virtual convertor_object null_pointer_conversion()
+			const noexcept = 0;
 	};
 }

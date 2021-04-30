@@ -2,7 +2,7 @@
 #include "static_function.hpp"
 
 namespace PPreflector
-{	
+{
 	class static_member_function : public static_function
 	{
 	public:

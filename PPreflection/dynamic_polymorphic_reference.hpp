@@ -11,7 +11,8 @@ namespace PPreflection
 		constexpr auto T = ~PP_DECLTYPE(obj);
 
 		if constexpr (PP::is_non_union_class(T))
-			return reflect_polymorphic(typeid(obj)).reference_conversion_to_derived(reflect(T))(PP_FORWARD(obj));
+			return reflect_polymorphic(typeid(obj))
+				.reference_conversion_to_derived(reflect(T))(PP_FORWARD(obj));
 		else
 			return PP_FORWARD(obj);
 	}

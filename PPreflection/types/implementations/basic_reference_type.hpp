@@ -12,7 +12,8 @@ namespace PPreflection::detail
 	{
 		static_assert(PP::concepts::reference<T>);
 
-		constexpr cv_type<referencable_type> remove_reference() const noexcept override final
+		constexpr cv_type<referencable_type> remove_reference()
+			const noexcept override final
 		{
 			return type::reflect_cv(!PP::type<T>);
 		}

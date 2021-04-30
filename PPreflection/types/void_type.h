@@ -5,12 +5,16 @@
 
 namespace PPreflection
 {
-	class void_type : public detail::non_user_defined_type<detail::named_type<pointable_type>>
+	class void_type
+		: public detail::non_user_defined_type<
+			  detail::named_type<pointable_type>>
 	{
 	public:
-		constexpr PP::variant<const void_type&, const referencable_type&> cast_down(PP::overload_tag<pointable_type>) const noexcept override final
+		constexpr PP::variant<const void_type&, const referencable_type&>
+			cast_down(
+				PP::overload_tag<pointable_type>) const noexcept override final
 		{
-			return {PP::placeholder, *this};
+			return { PP::placeholder, *this };
 		}
 
 		constexpr PP::string_view get_name() const noexcept override final
@@ -21,7 +25,8 @@ namespace PPreflection
 		{
 			return true;
 		}
-		constexpr bool operator==(const type& other) const noexcept override final
+		constexpr bool operator==(
+			const type& other) const noexcept override final
 		{
 			return compare(*this, other);
 		}

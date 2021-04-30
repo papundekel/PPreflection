@@ -15,15 +15,18 @@
 
 namespace PPreflection::detail
 {
-	static constexpr PP::size_t get_alignment(const PPreflection::complete_object_type& t) noexcept
+	static constexpr PP::size_t get_alignment(
+		const PPreflection::complete_object_type& t) noexcept
 	{
 		return t.alignment();
 	}
-	static constexpr PP::size_t get_alignment(PP::concepts::type auto t) noexcept
+	static constexpr PP::size_t get_alignment(
+		PP::concepts::type auto t) noexcept
 	{
 		return PP::size_of(t);
 	}
-	static constexpr PP::size_t get_size(const PPreflection::complete_object_type& t) noexcept
+	static constexpr PP::size_t get_size(
+		const PPreflection::complete_object_type& t) noexcept
 	{
 		return t.size();
 	}
@@ -33,54 +36,76 @@ namespace PPreflection::detail
 	}
 	static constexpr bool is_small_type(const auto& t) noexcept
 	{
-		return get_alignment(t) <= alignof(max_align_t) && get_size(t) <= sizeof(void*);
+		return get_alignment(t) <= alignof(max_align_t) &&
+			   get_size(t) <= sizeof(void*);
 	}
 }
 
-constexpr PPreflection::dynamic_object::deleter::deleter(cv_type<complete_object_type> t) noexcept
+constexpr PPreflection::dynamic_object::deleter::deleter(
+	cv_type<complete_object_type> t) noexcept
 	: type_(PP::unique_default_releaser_tag, &t.type)
 	, cv(t.cv)
 {}
 
-constexpr const PPreflection::complete_object_type& PPreflection::dynamic_object::deleter::get_type() const
+constexpr const PPreflection::complete_object_type&
+PPreflection::dynamic_object::deleter::get_type() const
 {
 	return *type_.get_object();
 }
 
-constexpr PP::cv_qualifier PPreflection::dynamic_object::deleter::get_cv() const
+constexpr PP::cv_qualifier
+PPreflection::dynamic_object::deleter::get_cv() const
 {
 	return cv;
 }
 
-constexpr PPreflection::dynamic_object::dynamic_object(PP::concepts::invocable auto&& i)
-	: dynamic_object(type::reflect_cv(PP_DECLTYPE(PP_FORWARD(i)())), PP_FORWARD(i))
+constexpr PPreflection::dynamic_object::dynamic_object(
+	PP::concepts::invocable auto&& i)
+	: dynamic_object(type::reflect_cv(PP_DECLTYPE(PP_FORWARD(i)())),
+					 PP_FORWARD(i))
 {}
 
-constexpr PPreflection::dynamic_object::dynamic_object(cv_type<complete_object_type> cv_type, PP::concepts::invocable auto&& i) noexcept
+constexpr PPreflection::dynamic_object::dynamic_object(
+	cv_type<complete_object_type>  cv_type,
+	PP::concepts::invocable auto&& i) noexcept
 	: dynamic_object(cv_type, allocate_and_initialize(PP_FORWARD(i)))
 {}
 
-constexpr PPreflection::dynamic_object::dynamic_object(cv_type<complete_object_type> cv_type, data data) noexcept
+constexpr PPreflection::dynamic_object::dynamic_object(
+	cv_type<complete_object_type> cv_type,
+	data						  data) noexcept
 	: x(PP::in_place_tag, cv_type, PP::unique_default_releaser_tag, data)
 {}
 
-constexpr PPreflection::dynamic_object PPreflection::dynamic_object::create(PP::concepts::type auto t, auto&&... args)
+constexpr PPreflection::dynamic_object
+PPreflection::dynamic_object::create(PP::concepts::type auto t, auto&&... args)
 {
-	return dynamic_object([&args...]() { return PP_GET_TYPE(t)(PP_FORWARD(args)...); });
+	return dynamic_object(
+		[&args...]()
+		{
+			return PP_GET_TYPE(t)(PP_FORWARD(args)...);
+		});
 }
 
-constexpr PPreflection::dynamic_object PPreflection::dynamic_object::create_copy(auto&& arg)
+constexpr PPreflection::dynamic_object
+PPreflection::dynamic_object::create_copy(auto&& arg)
 {
 	using T = PP_GET_TYPE(~PP_DECLTYPE(arg));
-	return dynamic_object([&arg]() { return T(PP_FORWARD(arg)); });
+	return dynamic_object(
+		[&arg]()
+		{
+			return T(PP_FORWARD(arg));
+		});
 }
 
-constexpr PPreflection::cv_type<PPreflection::complete_object_type> PPreflection::dynamic_object::get_cv_type() const noexcept
+constexpr PPreflection::cv_type<PPreflection::complete_object_type>
+PPreflection::dynamic_object::get_cv_type() const noexcept
 {
-	return {get_type(), x.get_destructor().get_cv()};
+	return { get_type(), x.get_destructor().get_cv() };
 }
 
-constexpr const PPreflection::complete_object_type& PPreflection::dynamic_object::get_type() const noexcept
+constexpr const PPreflection::complete_object_type&
+PPreflection::dynamic_object::get_type() const noexcept
 {
 	return x.get_destructor().get_type();
 }
@@ -90,7 +115,8 @@ constexpr PPreflection::dynamic_object::operator dynamic_reference() const
 	return reference_cast_helper(PP::value_true);
 }
 
-constexpr PPreflection::dynamic_reference PPreflection::dynamic_object::move() const
+constexpr PPreflection::dynamic_reference
+PPreflection::dynamic_object::move() const
 {
 	return reference_cast_helper(PP::value_false);
 }
@@ -100,7 +126,8 @@ constexpr PPreflection::dynamic_object::operator bool() const noexcept
 	return get_error_code() == invalid_code::none;
 }
 
-constexpr PPreflection::dynamic_object::invalid_code PPreflection::dynamic_object::get_error_code() const noexcept
+constexpr PPreflection::dynamic_object::invalid_code
+PPreflection::dynamic_object::get_error_code() const noexcept
 {
 	if (has_valid_type())
 		return invalid_code::none;
@@ -108,12 +135,16 @@ constexpr PPreflection::dynamic_object::invalid_code PPreflection::dynamic_objec
 		return x.get_object().get_object().code;
 }
 
-constexpr bool PPreflection::dynamic_object::is_void() const noexcept
+constexpr bool
+PPreflection::dynamic_object::is_void() const noexcept
 {
 	return !has_valid_type() && (bool)*this;
 }
 
-constexpr auto* PPreflection::dynamic_object::get_address(auto& unique, const complete_object_type& t) noexcept
+constexpr auto*
+PPreflection::dynamic_object::get_address(
+	auto&						unique,
+	const complete_object_type& t) noexcept
 {
 	auto& data = unique.get_object();
 
@@ -125,42 +156,52 @@ constexpr auto* PPreflection::dynamic_object::get_address(auto& unique, const co
 	return ptr;
 }
 
-constexpr const void* PPreflection::dynamic_object::get_address() const noexcept
+constexpr const void*
+PPreflection::dynamic_object::get_address() const noexcept
 {
 	return get_address(x.get_object(), get_cv_type().type);
 }
 
-constexpr PPreflection::dynamic_reference PPreflection::dynamic_object::reference_cast_helper(PP::concepts::value auto lvalue) const
+constexpr PPreflection::dynamic_reference
+PPreflection::dynamic_object::reference_cast_helper(
+	PP::concepts::value auto lvalue) const
 {
 	if (*this)
 	{
 		auto cv_type = get_cv_type();
-		return dynamic_reference(get_address(), dynamic_reference_type(cv_type, *lvalue));
-	}
-	else
+		return dynamic_reference(get_address(),
+								 dynamic_reference_type(cv_type, *lvalue));
+	} else
 		throw 0;
 }
 
-PPreflection::dynamic_object::allocated_ptr PPreflection::dynamic_object::allocate(const auto& t) noexcept
+PPreflection::dynamic_object::allocated_ptr
+PPreflection::dynamic_object::allocate(const auto& t) noexcept
 {
 	if (detail::is_small_type(t))
 		return {};
 	else
-		return {operator new(detail::get_alignment(t), std::align_val_t{detail::get_size(t)})};
+		return { operator new (detail::get_alignment(t),
+							   std::align_val_t{ detail::get_size(t) }) };
 }
 
-constexpr PPreflection::dynamic_object::data PPreflection::dynamic_object::allocate_and_initialize(PP::concepts::invocable auto&& i) noexcept
+constexpr PPreflection::dynamic_object::data
+PPreflection::dynamic_object::allocate_and_initialize(
+	PP::concepts::invocable auto&& i) noexcept
 {
 	using R = decltype(PP_FORWARD(i)());
-	
-	return allocate(PP::type<R>).initialize_and_get([&i]
-		(void* ptr)
-		{
-			new (ptr) R(PP_FORWARD(i)());
-		});
+
+	return allocate(PP::type<R>)
+		.initialize_and_get(
+			[&i](void* ptr)
+			{
+				new (ptr) R(PP_FORWARD(i)());
+			});
 }
 
-constexpr void PPreflection::dynamic_object::deleter::operator()(PP::unique<data, PP::default_releaser>& u) const
+constexpr void
+PPreflection::dynamic_object::deleter::operator()(
+	PP::unique<data, PP::default_releaser>& u) const
 {
 	auto type_p = type_.get_object();
 	if (!type_p)

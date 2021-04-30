@@ -37,20 +37,20 @@ namespace PPreflection
 
 	PP_FUNCTOR(get_type_class_value_t, PP::concepts::type auto t)
 	{
-		return PP::value<type_class(PP::tuple_find_dynamic(PP::cal(PP::partial_tag, PP::value_1, PP_COPY_TYPE(t)),
-			PP::make_tuple(
-				PP::is_reference,
-				PP::is_void,
-				PP::is_function,
-				PP::is_unbounded_array,
-				PP::is_bounded_array,
-				PP::is_null,
-				PP::is_integral,
-				PP::is_floating_point,
-				PP::is_pointer,
-				PP::is_pointer_to_member,
-				PP::is_class,
-				PP::is_union,
-				PP::is_enum)))>;
+		return PP::value<type_class(PP::tuple_find_dynamic(
+			PP::cal(PP::partial_tag, PP::value_1, PP_COPY_TYPE(t)),
+			PP::make_tuple(PP::is_reference,
+						   PP::is_void,
+						   PP::is_function,
+						   PP::is_unbounded_array,
+						   PP::is_bounded_array,
+						   PP::is_null,
+						   PP::is_integral,
+						   PP::is_floating_point,
+						   PP::is_pointer,
+						   PP::is_pointer_to_member,
+						   PP::is_class,
+						   PP::is_union,
+						   PP::is_enum)))>;
 	});
 }

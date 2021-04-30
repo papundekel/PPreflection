@@ -19,12 +19,17 @@
 namespace PPreflection::detail
 {
 	template <typename Class, typename Base, typename... Parameters>
-	using basic_constructor_base_base = PP_GET_TYPE(PP::Template<basic_function>(
-		PP::make_function_type(PP::type<Class(Parameters...)>, PP::value<PP::concepts::constructible_noexcept<Class, Parameters...>>),
-		PP::type<Base>));
+	using basic_constructor_base_base =
+		PP_GET_TYPE(PP::Template<basic_function>(
+			PP::make_function_type(
+				PP::type<Class(Parameters...)>,
+				PP::value<PP::concepts::constructible_noexcept<Class,
+															   Parameters...>>),
+			PP::type<Base>));
 
 	template <typename Class, typename Base, typename... Parameters>
-	class basic_constructor_base : public basic_constructor_base_base<Class, Base, Parameters...>
+	class basic_constructor_base
+		: public basic_constructor_base_base<Class, Base, Parameters...>
 	{
 		constexpr const class_type& get_parent() const noexcept override final
 		{
@@ -36,16 +41,22 @@ namespace PPreflection::detail
 	class basic_constructor_general final
 		: public basic_constructor_base<Class, constructor, Parameters...>
 	{
-		dynamic_object invoke_unsafe(PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator) const noexcept override final
+		dynamic_object invoke_unsafe(
+			PP::any_iterator<PP::iterator_category::ra, dynamic_reference>
+				arg_iterator) const noexcept override final
 		{
 			if constexpr (PP::concepts::destructible<Class>)
-				return this->call_with_arguments_cast_to_parameter_types([]
-					(auto&&... args)
+				return this->call_with_arguments_cast_to_parameter_types(
+					[](auto&&... args)
 					{
-						return dynamic_object::create(PP::type<Class>, PP_FORWARD(args)...);
-					}, PP::move(arg_iterator), this->parameter_types);
+						return dynamic_object::create(PP::type<Class>,
+													  PP_FORWARD(args)...);
+					},
+					PP::move(arg_iterator),
+					this->parameter_types);
 			else
-				return dynamic_object::create_invalid(dynamic_object::invalid_code::indestructible_return_value);
+				return dynamic_object::create_invalid(
+					dynamic_object::invalid_code::indestructible_return_value);
 		}
 
 		constexpr bool is_explicit() const noexcept override final
@@ -56,25 +67,35 @@ namespace PPreflection::detail
 
 	template <typename Class, typename Parameter>
 	class basic_constructor_opc final
-		: public basic_constructor_base<Class, one_parameter_converting_constructor, Parameter>
+		: public basic_constructor_base<Class,
+										one_parameter_converting_constructor,
+										Parameter>
 	{
-		dynamic_object invoke_unsafe(dynamic_reference arg) const noexcept override final
+		dynamic_object invoke_unsafe(
+			dynamic_reference arg) const noexcept override final
 		{
-			return dynamic_object::create(PP::type<Class>, arg.cast_unsafe(PP::type<Parameter>));
+			return dynamic_object::create(PP::type<Class>,
+										  arg.cast_unsafe(PP::type<Parameter>));
 		}
 
-		constexpr parameter_type_reference get_parameter_type() const noexcept override final
+		constexpr parameter_type_reference get_parameter_type()
+			const noexcept override final
 		{
 			return type::reflect(PP::type<Parameter>);
 		}
 	};
 
 	template <typename Class, typename... Parameters>
-	using basic_constructor = PP_GET_TYPE(([](PP::concepts::type auto class_type, PP::concepts::type auto... parameter_types)
+	using basic_constructor = PP_GET_TYPE((
+		[](PP::concepts::type auto class_type,
+		   PP::concepts::type auto... parameter_types)
 		{
 			return [class_type, parameter_types...]
 			{
-				return PP::conditional(PP_SIZEOF___(parameter_types) != PP::value_1 || reflect(PP::Template<tags::is_explicit>(class_type, parameter_types...)),
+				return PP::conditional(
+					PP_SIZEOF___(parameter_types) != PP::value_1 ||
+						reflect(PP::Template<tags::is_explicit>(
+							class_type, parameter_types...)),
 					PP::Template<basic_constructor_general>,
 					PP::Template<basic_constructor_opc>);
 			}()(class_type, parameter_types...);

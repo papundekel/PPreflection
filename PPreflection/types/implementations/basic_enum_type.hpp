@@ -18,7 +18,8 @@ namespace PPreflection::detail
 	{
 		constexpr PP::string_view get_name() const noexcept override final
 		{
-			return PPreflection::reflect(PP::type<tags::name<PP::value_t<value>>>);
+			return PPreflection::reflect(
+				PP::type<tags::name<PP::value_t<value>>>);
 		}
 		constexpr dynamic_object get_value() const noexcept override final
 		{
@@ -40,21 +41,28 @@ namespace PPreflection::detail
 	{
 		static_assert(PP::concepts::enum_type<T>);
 
-		static constexpr auto enum_values_basic = make_basic_enum_value + PPreflection::reflect(PP::type<tags::enum_values<T>>);
+		static constexpr auto enum_values_basic =
+			make_basic_enum_value +
+			PPreflection::reflect(PP::type<tags::enum_values<T>>);
 
-		static constexpr auto enum_values_array = PP::static__cast * PP::type<const enum_value&> << enum_values_basic;
+		static constexpr auto enum_values_array =
+			PP::static__cast * PP::type<const enum_value&> << enum_values_basic;
 
-		static constexpr bool scoped = PP::has_implicit_conversion_to_arithmetic_type(PP::type<T>);
+		static constexpr bool scoped =
+			PP::has_implicit_conversion_to_arithmetic_type(PP::type<T>);
 
-		static constexpr auto fixed_type = PPreflection::reflect(PP::type<tags::enum_fixed_type<T>>);
+		static constexpr auto fixed_type =
+			PPreflection::reflect(PP::type<tags::enum_fixed_type<T>>);
 		static constexpr auto has_fixed_type = fixed_type != PP::type<void>;
 
-		constexpr PP::any_view<PP::iterator_category::ra, const enum_value&> get_values() const noexcept override final
+		constexpr PP::any_view<PP::iterator_category::ra, const enum_value&>
+		get_values() const noexcept override final
 		{
 			return enum_values_array;
 		}
 
-		constexpr convertor_object conversion(const arithmetic_type& target) const noexcept override final
+		constexpr convertor_object conversion(
+			const arithmetic_type& target) const noexcept override final
 		{
 			return make_numeric_conversion(PP::type<T>, target);
 		}
@@ -69,7 +77,8 @@ namespace PPreflection::detail
 			return has_fixed_type;
 		}
 
-		constexpr const integral_type& get_underlying_type() const noexcept override final
+		constexpr const integral_type& get_underlying_type()
+			const noexcept override final
 		{
 			if constexpr (!scoped)
 				return type::reflect | PP::promotion_type <<= PP::type<T>;

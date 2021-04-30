@@ -10,7 +10,8 @@ namespace
 {
 	auto visitor_reflection_make_viables()
 	{
-		const auto& n = *PPreflection::global_namespace.get_namespace("reactions");
+		const auto& n =
+			*PPreflection::global_namespace.get_namespace("reactions");
 
 		return PPreflection::viable_functions(
 			PPreflection::candidate_functions(n.get_functions())
@@ -24,7 +25,8 @@ namespace
 	}
 }
 
-void visitors::visitor_reflection::react_to(const animals::animal& animal)
+void
+visitors::visitor_reflection::react_to(const animals::animal& animal)
 {
 	static const auto viables = visitor_reflection_make_viables();
 

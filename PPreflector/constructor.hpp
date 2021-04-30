@@ -1,7 +1,7 @@
 #pragma once
+#include "pragma_pop.hpp"
 #include "pragma_push.hpp"
 #include "clang/AST/DeclCXX.h"
-#include "pragma_pop.hpp"
 
 #include "function.hpp"
 

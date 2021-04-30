@@ -12,7 +12,10 @@ namespace PPreflection
 
 	namespace detail
 	{
-		using parent_descriptor_reference_base = PP::variant<const class_type&, const Namespace&, parent_descriptor_none_tag_t>;
+		using parent_descriptor_reference_base =
+			PP::variant<const class_type&,
+						const Namespace&,
+						parent_descriptor_none_tag_t>;
 	}
 
 	class parent_descriptor_reference
@@ -24,7 +27,7 @@ namespace PPreflection
 		constexpr parent_descriptor_reference() noexcept;
 
 		constexpr const descriptor* as_descriptor() const noexcept;
-		constexpr const Namespace* as_namespace() const noexcept;
+		constexpr const Namespace*	as_namespace() const noexcept;
 		constexpr const class_type* as_class() const noexcept;
 	};
 }

@@ -16,7 +16,8 @@ namespace PPreflection
 			PP::small_optimized_vector<char, 32> name;
 
 		public:
-			constexpr dynamic_named_descriptor(PP::string_view name, auto&&... args) noexcept
+			constexpr dynamic_named_descriptor(PP::string_view name,
+											   auto&&... args) noexcept
 				: Base(PP_FORWARD(args)...)
 				, name()
 			{

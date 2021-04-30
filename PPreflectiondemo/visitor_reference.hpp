@@ -3,7 +3,8 @@
 
 namespace visitors
 {
-	struct visitor_reference final : animal_visitor
+	struct visitor_reference final
+		: animal_visitor
 	{
 		void visit(animals::ape& ape) override final;
 		void visit(animals::bat& bat) override final;

@@ -2,7 +2,7 @@
 #include "member_function.hpp"
 
 namespace PPreflector
-{	
+{
 	class conversion_function : public member_function<clang::CXXConversionDecl>
 	{
 	public:

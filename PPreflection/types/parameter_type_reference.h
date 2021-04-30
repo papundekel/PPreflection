@@ -10,10 +10,12 @@ namespace PPreflection
 {
 	namespace detail
 	{
-		using parameter_type_reference_base = PP::variant<const reference_type&, const non_array_object_type&>;
+		using parameter_type_reference_base =
+			PP::variant<const reference_type&, const non_array_object_type&>;
 	}
 
-	class parameter_type_reference : public detail::parameter_type_reference_base
+	class parameter_type_reference
+		: public detail::parameter_type_reference_base
 	{
 	public:
 		constexpr parameter_type_reference(const reference_type& t)

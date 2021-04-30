@@ -1,9 +1,9 @@
 #pragma once
 #include <string_view>
 
+#include "pragma_pop.hpp"
 #include "pragma_push.hpp"
 #include "clang/AST/ASTConsumer.h"
-#include "pragma_pop.hpp"
 
 #include "visitor.hpp"
 

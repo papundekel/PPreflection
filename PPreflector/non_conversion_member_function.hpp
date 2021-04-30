@@ -2,8 +2,9 @@
 #include "member_function.hpp"
 
 namespace PPreflector
-{	
-	class non_conversion_member_function : public member_function<clang::CXXMethodDecl>
+{
+	class non_conversion_member_function
+		: public member_function<clang::CXXMethodDecl>
 	{
 	public:
 		using member_function<clang::CXXMethodDecl>::member_function;

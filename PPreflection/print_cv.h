@@ -1,6 +1,6 @@
 #pragma once
-#include "PP/simple_ostream.hpp"
 #include "PP/cv_qualifier.hpp"
+#include "PP/simple_ostream.hpp"
 
 namespace PPreflection
 {

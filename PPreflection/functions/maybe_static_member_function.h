@@ -11,7 +11,8 @@ namespace PPreflection
 		constexpr virtual const class_type& get_parent() const noexcept = 0;
 
 	private:
-		constexpr parent_descriptor_reference_strong get_parent(int) const noexcept override final
+		constexpr parent_descriptor_reference_strong get_parent(
+			int) const noexcept override final
 		{
 			return get_parent();
 		}

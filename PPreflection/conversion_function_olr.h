@@ -6,10 +6,12 @@ namespace PPreflection
 	class conversion_function_olr : public conversion_function
 	{
 		const conversion_function& inner_function;
-		const class_type& class_;
+		const class_type&		   class_;
 
 	public:
-		constexpr conversion_function_olr(const conversion_function& inner_function, const class_type& class_)
+		constexpr conversion_function_olr(
+			const conversion_function& inner_function,
+			const class_type&		   class_)
 			: inner_function(inner_function)
 			, class_(class_)
 		{}
@@ -22,11 +24,13 @@ namespace PPreflection
 		{
 			return inner_function.get_parent();
 		}
-		dynamic_variable invoke_unsafe(dynamic_reference caller) const override final
+		dynamic_variable invoke_unsafe(
+			dynamic_reference caller) const override final
 		{
 			return inner_function.invoke_unsafe(caller);
 		}
-		constexpr const function_type& get_function_type() const noexcept override final
+		constexpr const function_type& get_function_type()
+			const noexcept override final
 		{
 			return inner_function.get_function_type();
 		}

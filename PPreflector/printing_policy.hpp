@@ -1,7 +1,7 @@
 #pragma once
+#include "pragma_pop.hpp"
 #include "pragma_push.hpp"
 #include "clang/AST/PrettyPrinter.h"
-#include "pragma_pop.hpp"
 
 namespace PPreflector
 {

@@ -11,14 +11,24 @@ namespace PPreflection
 
 	namespace detail
 	{
-		using parameter_type_olr_reference_base = PP::variant<const reference_type&, const non_array_object_type&, cv_type<class_type>>;
+		using parameter_type_olr_reference_base =
+			PP::variant<const reference_type&,
+						const non_array_object_type&,
+						cv_type<class_type>>;
 	}
 
-	class parameter_type_olr_reference : public detail::parameter_type_olr_reference_base
+	class parameter_type_olr_reference
+		: public detail::parameter_type_olr_reference_base
 	{
-		static constexpr auto unwrap_parameter_type_reference(parameter_type_reference tr)
+		static constexpr auto unwrap_parameter_type_reference(
+			parameter_type_reference tr)
 		{
-			return PP::visit([](const auto& t) { return parameter_type_olr_reference(t); }, tr);
+			return PP::visit(
+				[](const auto& t)
+				{
+					return parameter_type_olr_reference(t);
+				},
+				tr);
 		}
 
 	public:

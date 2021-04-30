@@ -37,45 +37,44 @@ namespace PPreflection
 			{
 				PP_FORWARD(f)();
 				return dynamic_variable(dynamic_object::create_void());
-			}
-			else if constexpr (PP::is_reference(result_type))
+			} else if constexpr (PP::is_reference(result_type))
 				return dynamic_variable(dynamic_reference(PP_FORWARD(f)()));
 			else
 				return dynamic_variable(dynamic_object(PP_FORWARD(f)));
 		}
 		constexpr explicit operator bool() const noexcept
 		{
-			return std::visit(PP::overloaded
-			(
-				[](const dynamic_reference&)
-				{
-					return true;
-				},
-				[](const dynamic_object& o)
-				{
-					return (bool)o;
-				}
-			), dynamic);
+			return std::visit(PP::overloaded(
+								  [](const dynamic_reference&)
+								  {
+									  return true;
+								  },
+								  [](const dynamic_object& o)
+								  {
+									  return (bool)o;
+								  }),
+							  dynamic);
 		}
 		constexpr dynamic_object::invalid_code get_error_code() const noexcept
 		{
-			return std::visit(PP::overloaded{
-				[](const dynamic_reference&)
-				{
-					return dynamic_object::invalid_code::none;
-				},
-				[](const dynamic_object& o)
-				{
-					return o.get_error_code();
-				} }, dynamic);
+			return std::visit(
+				PP::overloaded{ [](const dynamic_reference&)
+								{
+									return dynamic_object::invalid_code::none;
+								},
+								[](const dynamic_object& o)
+								{
+									return o.get_error_code();
+								} },
+				dynamic);
 		}
 
-		static dynamic_variable create_invalid(dynamic_object::invalid_code code) noexcept;
+		static dynamic_variable create_invalid(
+			dynamic_object::invalid_code code) noexcept;
 		static dynamic_variable create_void() noexcept;
 
 	private:
-		static constexpr auto get_type_helper = PP::overloaded
-		(
+		static constexpr auto get_type_helper = PP::overloaded(
 			[](const dynamic_reference& r) -> cv_type<type>
 			{
 				return r.get_type();
@@ -87,8 +86,7 @@ namespace PPreflection
 			[](dynamic_object& o) -> cv_type<type>
 			{
 				return o.get_cv_type();
-			}
-		);
+			});
 
 	public:
 		constexpr auto get_type() noexcept
@@ -101,28 +99,44 @@ namespace PPreflection
 		}
 		constexpr operator dynamic_reference() const noexcept
 		{
-			return std::visit(PP::overloaded
-			(
-				[](const dynamic_reference& r) { return r; },
-				[](const dynamic_object& o) -> dynamic_reference { return o; }
-			), dynamic);
+			return std::visit(
+				PP::overloaded(
+					[](const dynamic_reference& r)
+					{
+						return r;
+					},
+					[](const dynamic_object& o) -> dynamic_reference
+					{
+						return o;
+					}),
+				dynamic);
 		}
 		constexpr dynamic_reference move() const noexcept
 		{
-			return std::visit(PP::overloaded
-			(
-				[](const dynamic_reference& r) { return r; },
-				[](const dynamic_object& o) { return o.move(); }
-			), dynamic);
+			return std::visit(PP::overloaded(
+								  [](const dynamic_reference& r)
+								  {
+									  return r;
+								  },
+								  [](const dynamic_object& o)
+								  {
+									  return o.move();
+								  }),
+							  dynamic);
 		}
 
 		constexpr dynamic_object move_object() && noexcept
 		{
-			return std::visit(PP::overloaded
-			(
-				[](dynamic_reference&) { return dynamic_object::create_void(); },
-				[](dynamic_object& o) { return PP::move(o); }
-			), dynamic);
+			return std::visit(PP::overloaded(
+								  [](dynamic_reference&)
+								  {
+									  return dynamic_object::create_void();
+								  },
+								  [](dynamic_object& o)
+								  {
+									  return PP::move(o);
+								  }),
+							  dynamic);
 		}
 	};
 }

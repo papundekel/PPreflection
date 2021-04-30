@@ -11,7 +11,10 @@ namespace PPreflection
 {
 	namespace detail
 	{
-		using return_type_reference_base = PP::variant<const reference_type&, const non_array_object_type&, const void_type&>;
+		using return_type_reference_base =
+			PP::variant<const reference_type&,
+						const non_array_object_type&,
+						const void_type&>;
 	}
 
 	class return_type_reference : public detail::return_type_reference_base

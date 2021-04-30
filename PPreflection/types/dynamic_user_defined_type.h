@@ -15,12 +15,15 @@ namespace PPreflection
 			parent_descriptor_reference_strong parent;
 
 		public:
-			constexpr dynamic_user_defined_type(PP::string_view name, parent_descriptor_reference_strong parent) noexcept
+			constexpr dynamic_user_defined_type(
+				PP::string_view					   name,
+				parent_descriptor_reference_strong parent) noexcept
 				: dynamic_named_descriptor<Base>(name)
 				, parent(parent)
 			{}
 
-			constexpr parent_descriptor_reference_strong get_parent(int) const noexcept override final
+			constexpr parent_descriptor_reference_strong get_parent(
+				int) const noexcept override final
 			{
 				return parent;
 			}

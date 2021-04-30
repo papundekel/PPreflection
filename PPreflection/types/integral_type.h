@@ -4,7 +4,5 @@
 namespace PPreflection
 {
 	class integral_type : public arithmetic_type
-	{
-		
-	};
+	{};
 }

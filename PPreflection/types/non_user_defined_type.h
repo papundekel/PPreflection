@@ -13,7 +13,8 @@ namespace PPreflection
 			static_assert(PP::concepts::derived_from<Base, descriptor>);
 
 		public:
-			constexpr parent_descriptor_reference get_parent(void* = nullptr) const noexcept override final;
+			constexpr parent_descriptor_reference get_parent(
+				void* = nullptr) const noexcept override final;
 		};
 	}
 }

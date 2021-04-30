@@ -14,38 +14,42 @@ namespace PPreflection
 	{
 		friend class dynamic_object;
 
-		union 
+		union
 		{
 			void* ptr_object;
-			void(*ptr_function)();
+			void (*ptr_function)();
 		};
-		
+
 		cv_type_ptr<referencable_type> referenced_type_cv;
-		int
-			is_lvalue : 1,
-			is_function : 1;
+		int							   is_lvalue : 1, is_function : 1;
 
 	public:
 		dynamic_reference(const dynamic_reference&) = default;
 
 		constexpr dynamic_reference(auto&& r) noexcept
-		requires 
-			PP::concepts::different_except_cvref<decltype(r), dynamic_reference> &&
-			PP::concepts::different_except_cvref<decltype(r), dynamic_object> &&
-			PP::concepts::different_except_cvref<decltype(r), dynamic_variable>;
+			requires PP::concepts::different_except_cvref<
+				decltype(r),
+				dynamic_reference>&& PP::concepts::
+				different_except_cvref<decltype(r), dynamic_object>&& PP::
+					concepts::different_except_cvref<decltype(r),
+													 dynamic_variable>;
 
 	private:
-		constexpr dynamic_reference(const volatile void* ptr, const reference_type& t) noexcept
+		constexpr dynamic_reference(const volatile void*  ptr,
+									const reference_type& t) noexcept
 			: dynamic_reference(PP::placeholder, const_cast<void*>(ptr), t)
 		{}
 
 		template <typename Return, typename... Parameters>
-		constexpr dynamic_reference(Return (*ptr)(Parameters...), const reference_type& t) noexcept
-			: dynamic_reference(PP::placeholder, (void(*)())ptr, t)
+		constexpr dynamic_reference(Return (*ptr)(Parameters...),
+									const reference_type& t) noexcept
+			: dynamic_reference(PP::placeholder, (void (*)())ptr, t)
 		{}
 
 		template <typename T>
-		constexpr dynamic_reference(PP::placeholder_t, T* ptr, const reference_type& t) noexcept
+		constexpr dynamic_reference(PP::placeholder_t,
+									T*					  ptr,
+									const reference_type& t) noexcept
 			: ptr_object(nullptr)
 			, referenced_type_cv(&t.remove_reference())
 			, is_lvalue(t.is_lvalue())
@@ -60,26 +64,30 @@ namespace PPreflection
 	public:
 		dynamic_reference& operator=(const dynamic_reference&) = default;
 
-		struct bad_cast_exception {};
+		struct bad_cast_exception
+		{};
 
 		constexpr auto get_type() const noexcept
 		{
 			return dynamic_reference_type(*referenced_type_cv, is_lvalue);
 		}
 
-		inline auto cast_unsafe(PP::concepts::type auto t) const noexcept -> PP_GET_TYPE(t)&&;
-		inline auto cast(PP::concepts::type auto t) const -> PP_GET_TYPE(t)&&;
+		inline auto cast_unsafe(PP::concepts::type auto t) const noexcept
+			-> PP_GET_TYPE(t) &&;
+		inline auto cast(PP::concepts::type auto t) const -> PP_GET_TYPE(t) &&;
 
 		inline auto*  get_ptr(PP::concepts::type auto t) const;
 		inline auto&  get_ref(PP::concepts::type auto t) const&;
 		inline auto&& get_ref(PP::concepts::type auto t) const&&;
 
 		inline decltype(auto) visit(PP::concepts::type auto t, auto&& f) const;
-		inline decltype(auto) visit_ptr(PP::concepts::type auto t, auto&& f) const;
+		inline decltype(auto) visit_ptr(PP::concepts::type auto t,
+										auto&&					f) const;
 
 		constexpr void* get_void_ptr() const;
 
-		constexpr dynamic_reference with_cv_ref(PP::cv_qualifier cv, bool is_lvalue) const noexcept
+		constexpr dynamic_reference with_cv_ref(PP::cv_qualifier cv,
+												bool is_lvalue) const noexcept
 		{
 			auto copy = *this;
 			copy.referenced_type_cv.cv = cv;

@@ -1,12 +1,12 @@
 #pragma once
+#include "pragma_pop.hpp"
 #include "pragma_push.hpp"
 #include "clang/AST/Decl.h"
-#include "pragma_pop.hpp"
 
 #include "function.hpp"
 
 namespace PPreflector
-{	
+{
 	class static_function : public function<clang::FunctionDecl>
 	{
 	public:
