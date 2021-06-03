@@ -37,7 +37,8 @@ namespace PPreflection
 			{
 				PP_FORWARD(f)();
 				return dynamic_variable(dynamic_object::create_void());
-			} else if constexpr (PP::is_reference(result_type))
+			}
+			else if constexpr (PP::is_reference(result_type))
 				return dynamic_variable(dynamic_reference(PP_FORWARD(f)()));
 			else
 				return dynamic_variable(dynamic_object(PP_FORWARD(f)));

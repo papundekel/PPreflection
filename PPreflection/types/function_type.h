@@ -31,7 +31,7 @@ namespace PPreflection
 		parameter_types() const noexcept = 0;
 		constexpr virtual PP::any_view<PP::iterator_category::ra,
 									   parameter_type_olr_reference>
-							   parameter_types_olr() const noexcept = 0;
+		parameter_types_olr() const noexcept = 0;
 		constexpr virtual bool is_noexcept() const noexcept = 0;
 		constexpr virtual PP::cv_qualifier get_function_cv_qualifier()
 			const noexcept = 0;
@@ -133,7 +133,8 @@ namespace PPreflection
 					return convertible_rank::Noexcept;
 				else
 					return convertible_rank::invalid;
-			} else
+			}
+			else
 				return convertible_rank::invalid;
 		}
 

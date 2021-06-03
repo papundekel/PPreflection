@@ -10,18 +10,18 @@ namespace PPreflection
 	{
 		return_type_reference return_type_;
 		PP::small_optimized_vector<parameter_type_reference, 4>
-						  parameter_types_;
-		PP::cv_qualifier  cv;
+			parameter_types_;
+		PP::cv_qualifier cv;
 		PP::ref_qualifier ref;
-		bool			  Noexcept;
+		bool Noexcept;
 
 	public:
 		constexpr dynamic_function_type(
-			return_type_reference	  return_type,
+			return_type_reference return_type,
 			PP::concepts::view auto&& parameter_types,
-			bool					  Noexcept = false,
-			PP::cv_qualifier		  cv = PP::cv_qualifier::none,
-			PP::ref_qualifier		  ref = PP::ref_qualifier::none) noexcept
+			bool Noexcept = false,
+			PP::cv_qualifier cv = PP::cv_qualifier::none,
+			PP::ref_qualifier ref = PP::ref_qualifier::none) noexcept
 			: return_type_(return_type)
 			, parameter_types_()
 			, cv(cv)

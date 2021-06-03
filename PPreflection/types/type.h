@@ -135,7 +135,7 @@ namespace PPreflection
 			cast_down(PP::overload_tag<type> = {}) const noexcept = 0;
 
 		static constexpr void print_parameter_types(
-			PP::simple_ostream&		  out,
+			PP::simple_ostream& out,
 			PP::concepts::view auto&& parameter_types) noexcept
 		{
 			out.write("(");
@@ -193,8 +193,8 @@ namespace PPreflection
 	};
 }
 
-constexpr auto
-PPreflection::type::reflect_helper(PP::concepts::tuple auto&& types) noexcept
+constexpr auto PPreflection::type::reflect_helper(
+	PP::concepts::tuple auto&& types) noexcept
 {
 	constexpr auto common_class =
 		PP_COPY_TYPE(PP::tuple_foldr(common_type_class,

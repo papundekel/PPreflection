@@ -68,7 +68,7 @@ namespace PPreflection
 		return detail::reflect_helper(x);
 	});
 
-	constexpr auto reflect_many(PP::concepts::type auto	   t,
+	constexpr auto reflect_many(PP::concepts::type auto t,
 								PP::concepts::tuple auto&& tuple) noexcept
 	{
 		return PP::tuple_map_to_array(t, reflect, PP_FORWARD(tuple));
@@ -76,7 +76,7 @@ namespace PPreflection
 
 	PP_FUNCTOR(reflect_many_helper,
 			   PP::concepts::type auto tag_type,
-			   auto					   Template,
+			   auto Template,
 			   PP::concepts::type auto t)
 	noexcept
 	{

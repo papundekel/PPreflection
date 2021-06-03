@@ -5,8 +5,7 @@
 #include "../cv_qualification_signature.hpp"
 #include "derived_from.h"
 
-constexpr bool
-PPreflection::pointer_to_member_type::operator==(
+constexpr bool PPreflection::pointer_to_member_type::operator==(
 	const pointer_to_member_type& other) const noexcept
 {
 	return get_class_type() == other.get_class_type() &&
@@ -44,13 +43,15 @@ PPreflection::pointer_to_member_type::make_standard_conversion_sequence_impl(
 				target.member_function_noexcept_conversion());
 			compatible_member_type = true;
 		}
-	} else
+	}
+	else
 	{
 		if (member_this == member_target)
 		{
 			compatible_member_type = true;
-		} else if (cv_qualification_signature(*this) >=
-				   cv_qualification_signature(target))
+		}
+		else if (cv_qualification_signature(*this) >=
+				 cv_qualification_signature(target))
 		{
 			sequence.set_rank(conversion_sequence_rank::exact_match);
 			sequence.set_qualification();
@@ -71,7 +72,8 @@ PPreflection::pointer_to_member_type::make_standard_conversion_sequence_impl(
 				sequence.set_promotion_conversion(
 					target.pointer_conversion_to_base(*non_union_class_this));
 			}
-		} else
+		}
+		else
 		{
 			sequence.set_validity(target);
 		}
@@ -92,9 +94,10 @@ PPreflection::pointer_to_member_type::make_standard_conversion_sequence_impl(
 	{
 		sequence = make_standard_conversion_sequence_impl(
 			*target_pointer_to_member_ptr);
-	} else if (const auto* target_bool_ptr =
-				   dynamic_cast<const arithmetic_type_strong<bool>*>(&target);
-			   target_bool_ptr)
+	}
+	else if (const auto* target_bool_ptr =
+				 dynamic_cast<const arithmetic_type_strong<bool>*>(&target);
+			 target_bool_ptr)
 	{
 		sequence.set_validity(target);
 		sequence.set_rank(conversion_sequence_rank::conversion);

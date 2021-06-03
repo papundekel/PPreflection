@@ -1,10 +1,12 @@
 #pragma once
 #include "PP/concepts/derived_from.hpp"
 
-#include "pragma_pop.hpp"
+// clang-format off
 #include "pragma_push.hpp"
 #include "clang/AST/Decl.h"
 #include "clang/AST/PrettyPrinter.h"
+#include "pragma_pop.hpp"
+// clang-format on
 
 #include "descriptor.hpp"
 #include "printing_policy.hpp"
@@ -30,8 +32,11 @@ namespace PPreflector
 				node.printQualifiedName(out);
 			else if constexpr (PP::concepts::derived_from<Node, clang::Type>)
 			{
-				clang::QualType::print(
-					&node, clang::Qualifiers(), out, printing_policy, "");
+				clang::QualType::print(&node,
+									   clang::Qualifiers(),
+									   out,
+									   printing_policy,
+									   "");
 			}
 		}
 		void print_name(llvm::raw_ostream& out) const override final

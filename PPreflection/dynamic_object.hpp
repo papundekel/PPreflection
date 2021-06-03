@@ -53,8 +53,7 @@ PPreflection::dynamic_object::deleter::get_type() const
 	return *type_.get_object();
 }
 
-constexpr PP::cv_qualifier
-PPreflection::dynamic_object::deleter::get_cv() const
+constexpr PP::cv_qualifier PPreflection::dynamic_object::deleter::get_cv() const
 {
 	return cv;
 }
@@ -66,19 +65,20 @@ constexpr PPreflection::dynamic_object::dynamic_object(
 {}
 
 constexpr PPreflection::dynamic_object::dynamic_object(
-	cv_type<complete_object_type>  cv_type,
+	cv_type<complete_object_type> cv_type,
 	PP::concepts::invocable auto&& i) noexcept
 	: dynamic_object(cv_type, allocate_and_initialize(PP_FORWARD(i)))
 {}
 
 constexpr PPreflection::dynamic_object::dynamic_object(
 	cv_type<complete_object_type> cv_type,
-	data						  data) noexcept
+	data data) noexcept
 	: x(PP::in_place_tag, cv_type, PP::unique_default_releaser_tag, data)
 {}
 
-constexpr PPreflection::dynamic_object
-PPreflection::dynamic_object::create(PP::concepts::type auto t, auto&&... args)
+constexpr PPreflection::dynamic_object PPreflection::dynamic_object::create(
+	PP::concepts::type auto t,
+	auto&&... args)
 {
 	return dynamic_object(
 		[&args...]()
@@ -115,8 +115,8 @@ constexpr PPreflection::dynamic_object::operator dynamic_reference() const
 	return reference_cast_helper(PP::value_true);
 }
 
-constexpr PPreflection::dynamic_reference
-PPreflection::dynamic_object::move() const
+constexpr PPreflection::dynamic_reference PPreflection::dynamic_object::move()
+	const
 {
 	return reference_cast_helper(PP::value_false);
 }
@@ -135,15 +135,13 @@ PPreflection::dynamic_object::get_error_code() const noexcept
 		return x.get_object().get_object().code;
 }
 
-constexpr bool
-PPreflection::dynamic_object::is_void() const noexcept
+constexpr bool PPreflection::dynamic_object::is_void() const noexcept
 {
 	return !has_valid_type() && (bool)*this;
 }
 
-constexpr auto*
-PPreflection::dynamic_object::get_address(
-	auto&						unique,
+constexpr auto* PPreflection::dynamic_object::get_address(
+	auto& unique,
 	const complete_object_type& t) noexcept
 {
 	auto& data = unique.get_object();
@@ -156,8 +154,7 @@ PPreflection::dynamic_object::get_address(
 	return ptr;
 }
 
-constexpr const void*
-PPreflection::dynamic_object::get_address() const noexcept
+constexpr const void* PPreflection::dynamic_object::get_address() const noexcept
 {
 	return get_address(x.get_object(), get_cv_type().type);
 }
@@ -171,7 +168,8 @@ PPreflection::dynamic_object::reference_cast_helper(
 		auto cv_type = get_cv_type();
 		return dynamic_reference(get_address(),
 								 dynamic_reference_type(cv_type, *lvalue));
-	} else
+	}
+	else
 		throw 0;
 }
 
@@ -199,8 +197,7 @@ PPreflection::dynamic_object::allocate_and_initialize(
 			});
 }
 
-constexpr void
-PPreflection::dynamic_object::deleter::operator()(
+constexpr void PPreflection::dynamic_object::deleter::operator()(
 	PP::unique<data, PP::default_releaser>& u) const
 {
 	auto type_p = type_.get_object();

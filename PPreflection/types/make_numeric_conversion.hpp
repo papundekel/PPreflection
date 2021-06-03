@@ -6,7 +6,7 @@ namespace PPreflection
 {
 	constexpr convertor_object make_numeric_conversion(
 		PP::concepts::type auto t_this,
-		const arithmetic_type&	target)
+		const arithmetic_type& target)
 	{
 		auto type_to_convertor = PP::functor(
 			[t_this](PP::concepts::type auto t)

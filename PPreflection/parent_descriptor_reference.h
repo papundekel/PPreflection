@@ -27,7 +27,7 @@ namespace PPreflection
 		constexpr parent_descriptor_reference() noexcept;
 
 		constexpr const descriptor* as_descriptor() const noexcept;
-		constexpr const Namespace*	as_namespace() const noexcept;
+		constexpr const Namespace* as_namespace() const noexcept;
 		constexpr const class_type* as_class() const noexcept;
 	};
 }

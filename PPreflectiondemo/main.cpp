@@ -13,8 +13,7 @@
 #include "visitor_reference.hpp"
 #include "visitor_reflection.hpp"
 
-auto
-generate_zoo(PP::size_t count)
+auto generate_zoo(PP::size_t count)
 {
 	using namespace PP::literals;
 
@@ -57,16 +56,14 @@ generate_zoo(PP::size_t count)
 	return zoo;
 }
 
-auto
-now()
+auto now()
 {
 	return std::chrono::system_clock::now();
 }
 
 using time_point = decltype(now());
 
-void
-print_duration(time_point time)
+void print_duration(time_point time)
 {
 	std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(now() -
 																	   time)
@@ -74,8 +71,7 @@ print_duration(time_point time)
 			  << '\n';
 }
 
-int
-main()
+int main()
 {
 	PP::size_t count;
 	std::cin >> count;

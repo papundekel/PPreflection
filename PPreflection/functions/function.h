@@ -29,8 +29,8 @@ namespace PPreflection
 	protected:
 		static constexpr decltype(auto)
 		call_with_arguments_cast_to_parameter_types(auto&& f,
-													auto   arg_iterator,
-													auto   parameter_types)
+													auto arg_iterator,
+													auto parameter_types)
 		{
 			auto args = PP::tuple_zip_with_pack(
 				[](dynamic_reference ref, PP::concepts::type auto t) -> auto&&
@@ -45,15 +45,17 @@ namespace PPreflection
 		}
 
 		static inline dynamic_variable invoke_helper(auto&& f,
-													 auto	arg_iterator,
-													 auto	parameter_types)
+													 auto arg_iterator,
+													 auto parameter_types)
 		{
 			return dynamic_variable::create(
 				[&f, i = PP::move(arg_iterator), parameter_types]() -> decltype(
 																		auto)
 				{
 					return call_with_arguments_cast_to_parameter_types(
-						PP_FORWARD(f), PP::move(i), parameter_types);
+						PP_FORWARD(f),
+						PP::move(i),
+						parameter_types);
 				});
 		}
 

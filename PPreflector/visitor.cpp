@@ -13,8 +13,7 @@ PPreflector::visitor::visitor(clang::CompilerInstance& ci)
 	, map_namespaces()
 {}
 
-bool
-PPreflector::visitor::VisitDecl(clang::Decl* declaration)
+bool PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 {
 	if (auto* named_declaration_ptr =
 			clang::dyn_cast<clang::NamedDecl>(declaration);
@@ -41,9 +40,10 @@ PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 				return true;
 
 			register_namespace(namespace_declaration);
-		} else if (auto* function_declaration_ptr =
-					   clang::dyn_cast<clang::FunctionDecl>(
-						   named_declaration_ptr))
+		}
+		else if (auto* function_declaration_ptr =
+					 clang::dyn_cast<clang::FunctionDecl>(
+						 named_declaration_ptr))
 		{
 			auto& function_declaration = *function_declaration_ptr;
 
@@ -59,8 +59,9 @@ PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 			{
 				parent_namespace_p->add(function_declaration);
 			}
-		} else if (auto* enum_declaration_ptr =
-					   clang::dyn_cast<clang::EnumDecl>(named_declaration_ptr))
+		}
+		else if (auto* enum_declaration_ptr =
+					 clang::dyn_cast<clang::EnumDecl>(named_declaration_ptr))
 		{
 			auto& enum_declaration = *enum_declaration_ptr;
 
@@ -74,9 +75,10 @@ PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 			{
 				parent_namespace_ptr->add(enum_declaration);
 			}
-		} else if (auto* class_declaration_ptr =
-					   clang::dyn_cast<clang::CXXRecordDecl>(
-						   named_declaration_ptr))
+		}
+		else if (auto* class_declaration_ptr =
+					 clang::dyn_cast<clang::CXXRecordDecl>(
+						 named_declaration_ptr))
 		{
 			auto& class_declaration = *class_declaration_ptr;
 
@@ -103,8 +105,7 @@ PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 	return true;
 }
 
-void
-PPreflector::visitor::print(llvm::raw_ostream& out) const
+void PPreflector::visitor::print(llvm::raw_ostream& out) const
 {
 	out << "#ifndef PPREFLECTOR_GUARD\n"
 		   "\n"
@@ -146,20 +147,17 @@ PPreflector::visitor::print(llvm::raw_ostream& out) const
 		   "#endif\n";
 }
 
-void
-PPreflector::visitor::clear_temps()
+void PPreflector::visitor::clear_temps()
 {
 	map_namespaces.clear();
 }
 
-void
-PPreflector::visitor::remove_unwanted()
+void PPreflector::visitor::remove_unwanted()
 {
 	global.remove_std();
 }
 
-PPreflector::Namespace*
-PPreflector::visitor::get_namespace_parent(
+PPreflector::Namespace* PPreflector::visitor::get_namespace_parent(
 	clang::DeclContext& declaration_context)
 {
 	auto* parent = declaration_context.getParent();
@@ -174,14 +172,14 @@ PPreflector::visitor::get_namespace_parent(
 			return &i->second.get();
 		else
 			return nullptr;
-	} else if (clang::isa<clang::TranslationUnitDecl>(parent))
+	}
+	else if (clang::isa<clang::TranslationUnitDecl>(parent))
 		return &global;
 	else
 		return nullptr;
 }
 
-void
-PPreflector::visitor::register_namespace(
+void PPreflector::visitor::register_namespace(
 	clang::NamespaceDecl& child_declaration)
 {
 	auto* parent = get_namespace_parent(child_declaration);
@@ -197,17 +195,15 @@ PPreflector::visitor::register_namespace(
 	assert(success);
 }
 
-llvm::raw_ostream&
-PPreflector::visitor::print_name(llvm::raw_ostream&		 out,
-								 const clang::NamedDecl& d)
+llvm::raw_ostream& PPreflector::visitor::print_name(llvm::raw_ostream& out,
+													const clang::NamedDecl& d)
 {
 	out << "::";
 	d.printQualifiedName(out);
 	return out;
 }
 
-bool
-PPreflector::visitor::is_reserved(const clang::NamedDecl& d)
+bool PPreflector::visitor::is_reserved(const clang::NamedDecl& d)
 {
 	auto declname = d.getDeclName();
 	if (declname.isIdentifier())

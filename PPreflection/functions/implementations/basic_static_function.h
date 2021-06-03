@@ -17,8 +17,9 @@ namespace PPreflection::detail
 				arg_iterator,
 			void*) const noexcept override final
 		{
-			return this->invoke_helper(
-				f, PP::move(arg_iterator), this->parameter_types);
+			return this->invoke_helper(f,
+									   PP::move(arg_iterator),
+									   this->parameter_types);
 		}
 	};
 }

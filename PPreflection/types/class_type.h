@@ -39,10 +39,10 @@ namespace PPreflection
 			dynamic_reference arg) const noexcept;
 
 		constexpr void get_member_function_overloads(
-			PP::string_view				name,
+			PP::string_view name,
 			PP::concepts::iterator auto i_out) const noexcept;
 		constexpr void get_static_member_function_overloads(
-			PP::string_view				name,
+			PP::string_view name,
 			PP::concepts::iterator auto i_out) const noexcept;
 		constexpr const user_defined_type* get_nested_type(
 			PP::string_view name) const noexcept;

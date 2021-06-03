@@ -15,11 +15,11 @@ namespace PPreflection
 		class dynamic_enum_value final
 			: public detail::dynamic_named_descriptor<enum_value>
 		{
-			dynamic_object	 value;
+			dynamic_object value;
 			const enum_type& parent;
 
 		public:
-			constexpr dynamic_enum_value(PP::string_view  name,
+			constexpr dynamic_enum_value(PP::string_view name,
 										 dynamic_object&& value,
 										 const enum_type& parent) noexcept
 				: detail::dynamic_named_descriptor<enum_value>(name)
@@ -40,13 +40,13 @@ namespace PPreflection
 		};
 
 		PP::small_optimized_vector<dynamic_enum_value, 4> values;
-		const integral_type&							  underlying_type;
+		const integral_type& underlying_type;
 
 	public:
 		constexpr dynamic_enum_type(
-			PP::string_view					   name,
-			PP::concepts::view auto&&		   values,
-			const integral_type&			   underlying_type,
+			PP::string_view name,
+			PP::concepts::view auto&& values,
+			const integral_type& underlying_type,
 			parent_descriptor_reference_strong parent) noexcept
 
 			: dynamic_user_defined_type<enum_type>(name, parent)

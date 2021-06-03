@@ -2,9 +2,11 @@
 #include <list>
 #include <vector>
 
-#include "pragma_pop.hpp"
+// clang-format off
 #include "pragma_push.hpp"
 #include "clang/AST/DeclCXX.h"
+#include "pragma_pop.hpp"
+// clang-format on
 
 #include "base_class.hpp"
 #include "constructor.hpp"
@@ -20,12 +22,12 @@ namespace PPreflector
 		: public node_descriptor<clang::RecordType,
 								 nested_descriptor<descriptor, descriptor>>
 	{
-		std::list<Class>					nested_types;
-		std::vector<base_class>				base_classes;
-		std::vector<constructor>			constructors;
+		std::list<Class> nested_types;
+		std::vector<base_class> base_classes;
+		std::vector<constructor> constructors;
 		std::vector<static_member_function> static_member_functions;
 		std::vector<non_conversion_member_function>
-										 non_conversion_member_functions;
+			non_conversion_member_functions;
 		std::vector<conversion_function> conversion_functions;
 
 	public:

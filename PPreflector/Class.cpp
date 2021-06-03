@@ -4,7 +4,7 @@
 #include "PP/view_chain.hpp"
 
 PPreflector::Class::Class(const clang::CXXRecordDecl& decl,
-						  const descriptor&			  parent)
+						  const descriptor& parent)
 	: node_descriptor<clang::RecordType,
 					  nested_descriptor<descriptor, descriptor>>(
 		  *clang::dyn_cast_or_null<clang::RecordType>(decl.getTypeForDecl()),
@@ -54,30 +54,24 @@ PPreflector::Class::Class(const clang::CXXRecordDecl& decl,
 
 		constructors.emplace_back(constructor, *this);
 	}
-
-	if (decl.needsImplicitDefaultConstructor())
 }
 
-void
-PPreflector::Class::print_name_header(llvm::raw_ostream& out) const
+void PPreflector::Class::print_name_header(llvm::raw_ostream& out) const
 {
 	out << PPREFLECTOR_MEMBER_PRINT(print_qualified_name, *this);
 }
 
-void
-PPreflector::Class::print_name_own(llvm::raw_ostream& out) const
+void PPreflector::Class::print_name_own(llvm::raw_ostream& out) const
 {
 	out << "::" << PPREFLECTOR_MEMBER_PRINT(print_name_header, *this);
 }
 
-void
-PPreflector::Class::print_name_foreign(llvm::raw_ostream& out) const
+void PPreflector::Class::print_name_foreign(llvm::raw_ostream& out) const
 {
 	print_name_own(out);
 }
 
-void
-PPreflector::Class::print_metadata_members(llvm::raw_ostream& out) const
+void PPreflector::Class::print_metadata_members(llvm::raw_ostream& out) const
 {
 	for (const descriptor& d :
 		 PP::view_chain(as_descriptors_view(nested_types)) ^
@@ -88,8 +82,7 @@ PPreflector::Class::print_metadata_members(llvm::raw_ostream& out) const
 		d.print_metadata(out);
 }
 
-void
-PPreflector::Class::print_metadata_traits(llvm::raw_ostream& out) const
+void PPreflector::Class::print_metadata_traits(llvm::raw_ostream& out) const
 {
 	out << PPREFLECTOR_MEMBER_PRINT(print_metadata_name, *this) << "\n"
 		<< PPREFLECTOR_MEMBER_PRINT(print_metadata_parent, *this) << "\n";
@@ -100,19 +93,22 @@ PPreflector::Class::print_metadata_traits(llvm::raw_ostream& out) const
 		<< "\n";
 	print_members<"constructors"_str>(out, constructors, printer_make_tuple)
 		<< "\n";
-	print_members<"static_member_functions"_str>(
-		out, static_member_functions, printer_value_tuple)
+	print_members<"static_member_functions"_str>(out,
+												 static_member_functions,
+												 printer_value_tuple)
 		<< "\n";
 	print_members<"non_conversion_member_functions"_str>(
-		out, non_conversion_member_functions, printer_value_tuple)
+		out,
+		non_conversion_member_functions,
+		printer_value_tuple)
 		<< "\n";
-	print_members<"conversion_functions"_str>(
-		out, conversion_functions, printer_value_tuple)
+	print_members<"conversion_functions"_str>(out,
+											  conversion_functions,
+											  printer_value_tuple)
 		<< "\n";
 }
 
-void
-PPreflector::Class::print_metadata_object(llvm::raw_ostream&) const
+void PPreflector::Class::print_metadata_object(llvm::raw_ostream&) const
 {
 	// print nothing
 }

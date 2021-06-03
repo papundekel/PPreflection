@@ -1,9 +1,11 @@
 #pragma once
 #include "PP/concepts/derived_from.hpp"
 
-#include "pragma_pop.hpp"
+// clang-format off
 #include "pragma_push.hpp"
 #include "clang/AST/Decl.h"
+#include "pragma_pop.hpp"
+// clang-format on
 
 #include "descriptor.hpp"
 #include "for_each_with_delimiters.hpp"
@@ -13,6 +15,7 @@
 
 namespace PPreflector
 {
+
 	template <typename FDecl>
 	requires PP::concepts::derived_from<FDecl,
 										clang::FunctionDecl> class function
@@ -32,7 +35,7 @@ namespace PPreflector
 		}
 
 	protected:
-		void print_parameter_types(llvm::raw_ostream& out) const
+		virtual void print_parameter_types(llvm::raw_ostream& out) const
 		{
 			for_each_with_delimiters(
 				[&out](auto* parameter)
@@ -46,7 +49,7 @@ namespace PPreflector
 				this->get_node().parameters());
 		}
 
-		void print_parameter_types_leading_comma(llvm::raw_ostream& out) const
+		virtual void print_parameter_types_leading_comma(llvm::raw_ostream& out) const
 		{
 			for (const auto* parameter : this->get_node().parameters())
 			{

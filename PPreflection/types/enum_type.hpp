@@ -22,17 +22,20 @@ PPreflection::enum_type::make_standard_conversion_sequence_impl(
 			sequence.set_rank(underlying_type == target
 								  ? conversion_sequence_rank::promotion
 								  : conversion_sequence_rank::conversion);
-		} else
+		}
+		else
 		{
 			if (underlying_type == target)
 			{
 				sequence.set_rank(conversion_sequence_rank::promotion);
 				sequence.set_enum_to_fixed_type();
-			} else if (underlying_type.promoted_type() == target)
+			}
+			else if (underlying_type.promoted_type() == target)
 			{
 				sequence.set_rank(conversion_sequence_rank::promotion);
 				sequence.set_enum_to_promoted_fixed_type();
-			} else
+			}
+			else
 				sequence.set_rank(conversion_sequence_rank::conversion);
 		}
 

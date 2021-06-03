@@ -7,8 +7,8 @@
 #include "types/non_user_defined_type.hpp"
 #include "types/reference_type.hpp"
 
-std::ostream&
-PPreflection::operator<<(std::ostream& out, const PPreflection::descriptor& d)
+std::ostream& PPreflection::operator<<(std::ostream& out,
+									   const PPreflection::descriptor& d)
 {
 	PP::std_ostream std_out(out);
 	d.print_name(std_out);

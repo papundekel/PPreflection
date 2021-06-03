@@ -39,7 +39,7 @@ namespace PPreflection
 	public:
 		constexpr virtual PP::any_view<PP::iterator_category::ra,
 									   const enum_value&>
-											   get_values() const noexcept = 0;
+		get_values() const noexcept = 0;
 		constexpr virtual const integral_type& get_underlying_type()
 			const noexcept = 0;
 		constexpr virtual bool is_scoped() const noexcept = 0;

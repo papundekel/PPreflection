@@ -5,17 +5,15 @@
 #include "../initialization.h"
 #include "non_union_class_type.h"
 
-constexpr void
-PPreflection::class_type::get_member_function_overloads(
-	PP::string_view				name,
+constexpr void PPreflection::class_type::get_member_function_overloads(
+	PP::string_view name,
 	PP::concepts::iterator auto i_out) const noexcept
 {
 	return get_descriptors(name, get_member_functions(), i_out);
 }
 
-constexpr void
-PPreflection::class_type::get_static_member_function_overloads(
-	PP::string_view				name,
+constexpr void PPreflection::class_type::get_static_member_function_overloads(
+	PP::string_view name,
 	PP::concepts::iterator auto i_out) const noexcept
 {
 	return get_descriptors(name, get_static_member_functions(), i_out);
@@ -35,8 +33,7 @@ inline PPreflection::dynamic_object
 		dynamic_object::invalid_code::no_valid_overload);
 }
 
-constexpr void
-PPreflection::class_type::get_conversion_functions_inherited(
+constexpr void PPreflection::class_type::get_conversion_functions_inherited(
 	PP::concepts::iterator auto i_out) const noexcept
 {
 	for (const auto& cf : get_conversion_functions())

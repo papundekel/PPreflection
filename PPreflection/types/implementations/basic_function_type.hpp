@@ -83,7 +83,8 @@ namespace PPreflection::detail
 					PP::value<[](auto* fp)
 							  {
 								  return PP::add_pointer(PP::make_function_type(
-									  PP::type<T>, PP::value_true))(fp);
+									  PP::type<T>,
+									  PP::value_true))(fp);
 							  }>);
 			else
 				return nullptr;

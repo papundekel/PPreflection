@@ -4,9 +4,11 @@
 #include "PP/concepts/fundamental_types.hpp"
 #include "PP/view_copy.hpp"
 
-#include "pragma_pop.hpp"
+// clang-format off
 #include "pragma_push.hpp"
 #include "llvm/Support/raw_ostream.h"
+#include "pragma_pop.hpp"
+// clang-format on
 
 namespace PPreflector
 {
@@ -19,7 +21,7 @@ namespace PPreflector
 		->PP::concepts::void_type;
 	};
 
-	llvm::raw_ostream& operator<<(llvm::raw_ostream&		  out,
+	llvm::raw_ostream& operator<<(llvm::raw_ostream& out,
 								  const printer_enabled auto& p)
 	{
 		p(out);
@@ -29,7 +31,7 @@ namespace PPreflector
 	template <typename F, typename T>
 	struct print_member_wrap
 	{
-		F		 printing_function;
+		F printing_function;
 		const T& printer;
 
 		void operator()(llvm::raw_ostream& out) const
@@ -60,7 +62,7 @@ namespace PPreflector
 	constant_string(const char (&)[count]) -> constant_string<count - 1>;
 
 	template <PP::size_t count>
-	llvm::raw_ostream& operator<<(llvm::raw_ostream&			out,
+	llvm::raw_ostream& operator<<(llvm::raw_ostream& out,
 								  const constant_string<count>& str)
 	{
 		out.write(str.chars, count);

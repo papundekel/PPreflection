@@ -1,7 +1,6 @@
 #include "static_member_function.hpp"
 
-void
-PPreflector::static_member_function::print_metadata_object(
+void PPreflector::static_member_function::print_metadata_object(
 	llvm::raw_ostream& out) const
 {
 	out << printer_metadata(PPREFLECTOR_MEMBER_PRINT(print_name_own, *this))

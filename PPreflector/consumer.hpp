@@ -1,9 +1,11 @@
 #pragma once
 #include <string_view>
 
-#include "pragma_pop.hpp"
+// clang-format off
 #include "pragma_push.hpp"
 #include "clang/AST/ASTConsumer.h"
+#include "pragma_pop.hpp"
+// clang-format on
 
 #include "visitor.hpp"
 

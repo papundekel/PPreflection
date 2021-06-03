@@ -3,9 +3,11 @@
 #include "PP/transform_view.hpp"
 #include "PP/view.hpp"
 
-#include "pragma_pop.hpp"
+// clang-format off
 #include "pragma_push.hpp"
 #include "llvm/Support/raw_ostream.h"
+#include "pragma_pop.hpp"
+// clang-format on
 
 #include "for_each_with_delimiters.hpp"
 #include "printers.hpp"
@@ -54,7 +56,7 @@ namespace PPreflector
 
 		template <auto tag_name>
 		llvm::raw_ostream& print_members(llvm::raw_ostream& out,
-										 const auto&		members,
+										 const auto& members,
 										 const auto& container_printer) const;
 	};
 
@@ -90,10 +92,10 @@ namespace PPreflector
 }
 
 template <auto tag_name>
-llvm::raw_ostream&
-PPreflector::descriptor::print_members(llvm::raw_ostream& out,
-									   const auto&		  members,
-									   const auto& container_printer) const
+llvm::raw_ostream& PPreflector::descriptor::print_members(
+	llvm::raw_ostream& out,
+	const auto& members,
+	const auto& container_printer) const
 {
 	return out << printer_metadata(metadata_tag_printer<tag_name>(
 					  PPREFLECTOR_MEMBER_PRINT(print_name_own, *this)))

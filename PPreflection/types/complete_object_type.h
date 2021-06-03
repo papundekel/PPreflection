@@ -24,6 +24,6 @@ namespace PPreflection
 				PP::overload_tag<complete_object_type> = {}) const noexcept = 0;
 
 		constexpr virtual PP::size_t size() const noexcept = 0;
-		constexpr virtual void		 destroy(void* ptr) const noexcept = 0;
+		constexpr virtual void destroy(void* ptr) const noexcept = 0;
 	};
 }

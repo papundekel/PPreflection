@@ -20,6 +20,8 @@ BraceWrapping:
   SplitEmptyFunction: false
   SplitEmptyRecord: false
 SpaceAfterTemplateKeyword: true
-AlignConsecutiveDeclarations: true
-#AlignOperands: AlignAfterOperator
-#BreakBeforeBinaryOperators: NonAssignment
+AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakAfterReturnType: None
+BinPackArguments: false
+BinPackParameters: false
+AllowAllArgumentsOnNextLine: false

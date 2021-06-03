@@ -1,6 +1,6 @@
-out
 .*/
-*.exe
-build/
-cpp.hint
-CMakeSettings.json
+/build/
+/CMakeSettings.json
+*.meta
+/metadata_backup
+/class_diagram.uxf

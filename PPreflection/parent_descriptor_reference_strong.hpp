@@ -73,8 +73,7 @@ PPreflection::parent_descriptor_reference_strong::get_parent(
 		},
 		*this);
 }
-constexpr bool
-PPreflection::parent_descriptor_reference_strong::has_name(
+constexpr bool PPreflection::parent_descriptor_reference_strong::has_name(
 	PP::string_view name) const noexcept
 {
 	return PP::visit(

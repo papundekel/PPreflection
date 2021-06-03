@@ -31,7 +31,8 @@ PPreflection::pointer_type::make_standard_conversion_sequence_impl(
 			sequence.set_function_noexcept(
 				pointed_to_this_function_ptr->function_noexcept_conversion());
 		}
-	} else if (pointed_to_target.cv >= pointed_to_this.cv)
+	}
+	else if (pointed_to_target.cv >= pointed_to_this.cv)
 	{
 		auto [derived, pointed_to_this_class_ptr, pointed_to_target_class_ptr] =
 			derived_from(pointed_to_this.type, pointed_to_target.type);
@@ -46,7 +47,8 @@ PPreflection::pointer_type::make_standard_conversion_sequence_impl(
 			sequence.set_converts_to_base_pointer();
 			if (pointed_to_target.cv != pointed_to_this.cv)
 				sequence.set_qualification();
-		} else if (dynamic_cast<const void_type*>(&pointed_to_target.type))
+		}
+		else if (dynamic_cast<const void_type*>(&pointed_to_target.type))
 		{
 			sequence.set_validity(target);
 			sequence.set_rank(conversion_sequence_rank::conversion);
@@ -54,8 +56,9 @@ PPreflection::pointer_type::make_standard_conversion_sequence_impl(
 			sequence.set_converts_to_void_pointer();
 			if (pointed_to_target.cv != pointed_to_this.cv)
 				sequence.set_qualification();
-		} else if (cv_qualification_signature(*this) >=
-				   cv_qualification_signature(target))
+		}
+		else if (cv_qualification_signature(*this) >=
+				 cv_qualification_signature(target))
 		{
 			sequence.set_validity(target);
 			sequence.set_qualification();
@@ -76,9 +79,10 @@ PPreflection::pointer_type::make_standard_conversion_sequence_impl(
 		target_pointer_ptr)
 	{
 		sequence = make_standard_conversion_sequence_impl(*target_pointer_ptr);
-	} else if (const auto* target_bool_ptr =
-				   dynamic_cast<const arithmetic_type_strong<bool>*>(&target);
-			   target_bool_ptr)
+	}
+	else if (const auto* target_bool_ptr =
+				 dynamic_cast<const arithmetic_type_strong<bool>*>(&target);
+			 target_bool_ptr)
 	{
 		sequence.set_validity(target);
 		sequence.set_rank(conversion_sequence_rank::conversion);

@@ -8,8 +8,8 @@
 #include "types/non_user_defined_type.hpp"
 #include "types/reference_type.hpp"
 
-PPreflection::dynamic_object
-PPreflection::dynamic_object::create_shallow_copy(dynamic_reference r) noexcept
+PPreflection::dynamic_object PPreflection::dynamic_object::create_shallow_copy(
+	dynamic_reference r) noexcept
 {
 	auto cv_type =
 		r.get_type().remove_reference().cast(PP::type<complete_object_type>);

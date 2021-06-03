@@ -95,7 +95,8 @@ namespace PPreflection::detail
 				return PP::conditional(
 					PP_SIZEOF___(parameter_types) != PP::value_1 ||
 						reflect(PP::Template<tags::is_explicit>(
-							class_type, parameter_types...)),
+							class_type,
+							parameter_types...)),
 					PP::Template<basic_constructor_general>,
 					PP::Template<basic_constructor_opc>);
 			}()(class_type, parameter_types...);

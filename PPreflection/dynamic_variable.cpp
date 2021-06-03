@@ -16,8 +16,7 @@
 #include "types/reference_type.hpp"
 #include "types/unknown_bound_array_type.hpp"
 
-PPreflection::dynamic_variable
-PPreflection::dynamic_variable::create_invalid(
+PPreflection::dynamic_variable PPreflection::dynamic_variable::create_invalid(
 	dynamic_object::invalid_code code) noexcept
 {
 	return dynamic_variable(dynamic_object::create_invalid(code));

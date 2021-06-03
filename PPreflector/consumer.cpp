@@ -10,8 +10,7 @@ PPreflector::consumer::consumer(clang::CompilerInstance& ci)
 	: visitor_(ci)
 {}
 
-void
-PPreflector::consumer::HandleTranslationUnit(clang::ASTContext& context)
+void PPreflector::consumer::HandleTranslationUnit(clang::ASTContext& context)
 {
 	auto* translation_unit_declaration = context.getTranslationUnitDecl();
 	visitor_.TraverseDecl(translation_unit_declaration);
@@ -27,8 +26,8 @@ PPreflector::consumer::HandleTranslationUnit(clang::ASTContext& context)
 	visitor_.print(out);
 }
 
-std::string_view
-PPreflector::consumer::get_main_file_name(clang::ASTContext& context)
+std::string_view PPreflector::consumer::get_main_file_name(
+	clang::ASTContext& context)
 {
 	auto& source_manager = context.getSourceManager();
 

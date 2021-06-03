@@ -11,10 +11,10 @@ namespace PPreflection
 	using convertor_object = dynamic_object (*)(dynamic_reference);
 
 	constexpr convertor_reference create_convertor_reference(
-		PP::concepts::type auto	 t,
+		PP::concepts::type auto t,
 		PP::concepts::value auto f) noexcept;
 	constexpr convertor_object create_convertor_object(
-		PP::concepts::type auto	 t,
+		PP::concepts::type auto t,
 		PP::concepts::value auto f) noexcept;
 
 	namespace detail

@@ -8,7 +8,7 @@ namespace PPreflection
 	class dynamic_array_type : public Base
 	{
 		cv_type<complete_object_type> inner_type;
-		dynamic_pointer_type		  element_pointer_type;
+		dynamic_pointer_type element_pointer_type;
 
 	public:
 		constexpr explicit dynamic_array_type(

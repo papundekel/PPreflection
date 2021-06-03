@@ -1,9 +1,11 @@
 #pragma once
 #include <memory>
 
-#include "pragma_pop.hpp"
+// clang-format off
 #include "pragma_push.hpp"
 #include "clang/Frontend/FrontendAction.h"
+#include "pragma_pop.hpp"
+// clang-format on
 
 #include "consumer.hpp"
 

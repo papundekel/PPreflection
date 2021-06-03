@@ -42,8 +42,8 @@ namespace PPreflection
 		union data
 		{
 			small_byte_array small_bytes;
-			void*			 ptr;
-			invalid_code	 code;
+			void* ptr;
+			invalid_code code;
 
 			constexpr data() noexcept
 				: ptr(nullptr)
@@ -64,7 +64,7 @@ namespace PPreflection
 			union
 			{
 				small_byte_array small_bytes;
-				void*			 ptr;
+				void* ptr;
 			};
 			bool is_small;
 
@@ -92,7 +92,7 @@ namespace PPreflection
 		class deleter
 		{
 			PP::unique<const complete_object_type*, PP::pointer_releaser> type_;
-			PP::cv_qualifier											  cv;
+			PP::cv_qualifier cv;
 
 		public:
 			constexpr deleter(cv_type<complete_object_type> t) noexcept;
@@ -103,8 +103,8 @@ namespace PPreflection
 			constexpr void operator()(
 				PP::unique<data, PP::default_releaser>& u) const;
 			constexpr const complete_object_type& get_type() const;
-			constexpr PP::cv_qualifier			  get_cv() const;
-			constexpr bool						  has_valid_type() const
+			constexpr PP::cv_qualifier get_cv() const;
+			constexpr bool has_valid_type() const
 			{
 				return type_.get_object();
 			}
@@ -128,10 +128,10 @@ namespace PPreflection
 			: x(PP::in_place_tag, 0, PP::unique_default_releaser_tag, code)
 		{}
 		constexpr dynamic_object(
-			cv_type<complete_object_type>  cv_type,
+			cv_type<complete_object_type> cv_type,
 			PP::concepts::invocable auto&& initializer) noexcept;
 		constexpr dynamic_object(cv_type<complete_object_type> cv_type,
-								 data						   data) noexcept;
+								 data data) noexcept;
 
 	public:
 		dynamic_object& operator=(dynamic_object&&) = default;
@@ -155,12 +155,12 @@ namespace PPreflection
 
 		constexpr const complete_object_type& get_type() const noexcept;
 
-		constexpr					operator dynamic_reference() const;
+		constexpr operator dynamic_reference() const;
 		constexpr dynamic_reference move() const;
 
-		constexpr explicit	   operator bool() const noexcept;
+		constexpr explicit operator bool() const noexcept;
 		constexpr invalid_code get_error_code() const noexcept;
-		constexpr bool		   is_void() const noexcept;
+		constexpr bool is_void() const noexcept;
 
 		constexpr dynamic_object cast(
 			const complete_object_type& target_type) && noexcept
@@ -172,7 +172,7 @@ namespace PPreflection
 
 	private:
 		static constexpr auto* get_address(
-			auto&						unique,
+			auto& unique,
 			const complete_object_type& t) noexcept;
 		constexpr const void* get_address() const noexcept;
 

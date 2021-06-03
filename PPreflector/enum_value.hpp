@@ -1,7 +1,9 @@
 #pragma once
-#include "pragma_pop.hpp"
+// clang-format off
 #include "pragma_push.hpp"
 #include "clang/AST/Decl.h"
+#include "pragma_pop.hpp"
+// clang-format on
 
 #include "descriptor.hpp"
 #include "node_descriptor.hpp"

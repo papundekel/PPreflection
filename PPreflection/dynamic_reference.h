@@ -21,7 +21,7 @@ namespace PPreflection
 		};
 
 		cv_type_ptr<referencable_type> referenced_type_cv;
-		int							   is_lvalue : 1, is_function : 1;
+		int is_lvalue : 1, is_function : 1;
 
 	public:
 		dynamic_reference(const dynamic_reference&) = default;
@@ -35,7 +35,7 @@ namespace PPreflection
 													 dynamic_variable>;
 
 	private:
-		constexpr dynamic_reference(const volatile void*  ptr,
+		constexpr dynamic_reference(const volatile void* ptr,
 									const reference_type& t) noexcept
 			: dynamic_reference(PP::placeholder, const_cast<void*>(ptr), t)
 		{}
@@ -48,7 +48,7 @@ namespace PPreflection
 
 		template <typename T>
 		constexpr dynamic_reference(PP::placeholder_t,
-									T*					  ptr,
+									T* ptr,
 									const reference_type& t) noexcept
 			: ptr_object(nullptr)
 			, referenced_type_cv(&t.remove_reference())
@@ -76,13 +76,13 @@ namespace PPreflection
 			-> PP_GET_TYPE(t) &&;
 		inline auto cast(PP::concepts::type auto t) const -> PP_GET_TYPE(t) &&;
 
-		inline auto*  get_ptr(PP::concepts::type auto t) const;
-		inline auto&  get_ref(PP::concepts::type auto t) const&;
+		inline auto* get_ptr(PP::concepts::type auto t) const;
+		inline auto& get_ref(PP::concepts::type auto t) const&;
 		inline auto&& get_ref(PP::concepts::type auto t) const&&;
 
 		inline decltype(auto) visit(PP::concepts::type auto t, auto&& f) const;
 		inline decltype(auto) visit_ptr(PP::concepts::type auto t,
-										auto&&					f) const;
+										auto&& f) const;
 
 		constexpr void* get_void_ptr() const;
 

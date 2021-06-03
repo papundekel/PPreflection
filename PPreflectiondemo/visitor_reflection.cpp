@@ -25,8 +25,7 @@ namespace
 	}
 }
 
-void
-visitors::visitor_reflection::react_to(const animals::animal& animal)
+void visitors::visitor_reflection::react_to(const animals::animal& animal)
 {
 	static const auto viables = visitor_reflection_make_viables();
 

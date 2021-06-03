@@ -60,7 +60,7 @@ namespace PPreflection
 						 unknown_bound_array,
 						 known_bound_array,
 						 U>
-							 P;
+				P;
 			PP::cv_qualifier cv;
 
 			constexpr std::partial_ordering operator<=>(
@@ -77,18 +77,21 @@ namespace PPreflection
 							[](member_pointer mp_this, member_pointer mp_target)
 							{
 								return equality_to_partial_ordering(
-									*mp_this.Class, *mp_target.Class);
+									*mp_this.Class,
+									*mp_target.Class);
 							},
 							[](known_bound_array a_this,
 							   known_bound_array a_target)
 							{
 								return equality_to_partial_ordering(
-									a_this.extent, a_target.extent);
+									a_this.extent,
+									a_target.extent);
 							},
 							[](U u_this, U u_target)
 							{
 								return equality_to_partial_ordering(
-									*u_this.u, *u_target.u);
+									*u_this.u,
+									*u_target.u);
 							},
 							[](pointer, pointer)
 							{
@@ -148,7 +151,7 @@ namespace PPreflection
 			if (elements.count() != other.elements.count())
 				return std::partial_ordering::unordered;
 
-			auto	   difference = std::partial_ordering::equivalent;
+			auto difference = std::partial_ordering::equivalent;
 			PP::size_t index_first_difference = 0;
 
 			{
@@ -162,14 +165,16 @@ namespace PPreflection
 					if (compare_element == std::partial_ordering::unordered)
 					{
 						return std::partial_ordering::unordered;
-					} else if (compare_element !=
-							   std::partial_ordering::equivalent)
+					}
+					else if (compare_element !=
+							 std::partial_ordering::equivalent)
 					{
 						if (difference == std::partial_ordering::equivalent)
 						{
 							difference = compare_element;
 							index_first_difference = i;
-						} else if (difference != compare_element)
+						}
+						else if (difference != compare_element)
 							return std::partial_ordering::unordered;
 					}
 

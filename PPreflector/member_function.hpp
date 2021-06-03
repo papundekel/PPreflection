@@ -1,14 +1,16 @@
 #pragma once
-#include "pragma_pop.hpp"
+// clang-format off
 #include "pragma_push.hpp"
 #include "clang/AST/DeclCXX.h"
+#include "pragma_pop.hpp"
+// clang-format on
 
 #include "function.hpp"
 
 namespace PPreflector
 {
 	llvm::raw_ostream& operator<<(llvm::raw_ostream& out, clang::Qualifiers cv);
-	llvm::raw_ostream& operator<<(llvm::raw_ostream&	  out,
+	llvm::raw_ostream& operator<<(llvm::raw_ostream& out,
 								  clang::RefQualifierKind ref);
 
 	template <typename MDecl>

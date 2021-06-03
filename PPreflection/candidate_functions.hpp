@@ -72,8 +72,9 @@ namespace PPreflection
 	private:
 		dynamic_variable invoke_impl(PP::concepts::view auto&& arguments) const
 		{
-			auto [f, error_code] = overload_resolution(
-				functions, args_to_types(PP_FORWARD(arguments)));
+			auto [f, error_code] =
+				overload_resolution(functions,
+									args_to_types(PP_FORWARD(arguments)));
 
 			if (f)
 				return f->invoke(PP_FORWARD(arguments));

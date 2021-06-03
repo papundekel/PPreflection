@@ -16,7 +16,7 @@ namespace PPreflection
 
 		public:
 			constexpr dynamic_user_defined_type(
-				PP::string_view					   name,
+				PP::string_view name,
 				parent_descriptor_reference_strong parent) noexcept
 				: dynamic_named_descriptor<Base>(name)
 				, parent(parent)

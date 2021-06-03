@@ -6,12 +6,12 @@ namespace PPreflection
 	class conversion_function_olr : public conversion_function
 	{
 		const conversion_function& inner_function;
-		const class_type&		   class_;
+		const class_type& class_;
 
 	public:
 		constexpr conversion_function_olr(
 			const conversion_function& inner_function,
-			const class_type&		   class_)
+			const class_type& class_)
 			: inner_function(inner_function)
 			, class_(class_)
 		{}

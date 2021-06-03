@@ -105,7 +105,7 @@ namespace PPreflection::detail
 		}
 
 		static constexpr auto get_conversion(
-			const auto&					convertors,
+			const auto& convertors,
 			const non_union_class_type& base_target) noexcept
 		{
 			auto classes_convertors =

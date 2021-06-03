@@ -17,7 +17,7 @@ namespace PPreflection
 	template <typename Type>
 	struct cv_type_ptr
 	{
-		const Type*		 type_ptr;
+		const Type* type_ptr;
 		PP::cv_qualifier cv;
 
 		template <typename OtherType>
@@ -34,7 +34,7 @@ namespace PPreflection
 	struct cv_type
 		: public type
 	{
-		const Type&		 type;
+		const Type& type;
 		PP::cv_qualifier cv;
 
 		constexpr cv_type(const Type& type, PP::cv_qualifier cv)

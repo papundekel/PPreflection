@@ -22,7 +22,7 @@ namespace PPreflection
 			const class_type&) noexcept;
 		constexpr parent_descriptor_reference_strong(const Namespace&) noexcept;
 
-		constexpr const Namespace*	as_namespace() const noexcept;
+		constexpr const Namespace* as_namespace() const noexcept;
 		constexpr const class_type* as_class() const noexcept;
 
 		constexpr void print_name_before_parent(

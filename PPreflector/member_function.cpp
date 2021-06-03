@@ -1,7 +1,7 @@
 #include "member_function.hpp"
 
-llvm::raw_ostream&
-PPreflector::operator<<(llvm::raw_ostream& out, clang::Qualifiers cv)
+llvm::raw_ostream& PPreflector::operator<<(llvm::raw_ostream& out,
+										   clang::Qualifiers cv)
 {
 	out << "PP::cv_qualifier::";
 
@@ -11,7 +11,8 @@ PPreflector::operator<<(llvm::raw_ostream& out, clang::Qualifiers cv)
 			out << "const_volatile";
 		else
 			out << "Const";
-	} else if (cv.hasVolatile())
+	}
+	else if (cv.hasVolatile())
 		out << "Volatile";
 	else
 		out << "none";
@@ -19,8 +20,8 @@ PPreflector::operator<<(llvm::raw_ostream& out, clang::Qualifiers cv)
 	return out;
 }
 
-llvm::raw_ostream&
-PPreflector::operator<<(llvm::raw_ostream& out, clang::RefQualifierKind ref)
+llvm::raw_ostream& PPreflector::operator<<(llvm::raw_ostream& out,
+										   clang::RefQualifierKind ref)
 {
 	out << "PP::ref_qualifier::";
 

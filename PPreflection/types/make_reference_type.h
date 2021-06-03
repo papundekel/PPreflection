@@ -16,7 +16,7 @@ namespace PPreflection
 	{
 		return dynamic_rvalue_reference_type(t);
 	}
-	constexpr auto make_reference_type(PP::concepts::value auto	  lvalue,
+	constexpr auto make_reference_type(PP::concepts::value auto lvalue,
 									   cv_type<referencable_type> t)
 	{
 		if constexpr (PP_GET_VALUE(lvalue))
@@ -25,7 +25,7 @@ namespace PPreflection
 			return make_rreference_type(t);
 	}
 	constexpr dynamic_reference_type make_reference_type(
-		bool					   lvalue,
+		bool lvalue,
 		cv_type<referencable_type> t)
 	{
 		return dynamic_reference_type(t, lvalue);

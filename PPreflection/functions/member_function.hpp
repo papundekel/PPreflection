@@ -8,8 +8,7 @@
 #include "../types/make_reference_type.h"
 #include "../types/reference_type.h"
 
-constexpr void
-PPreflection::member_function::print_name_after_parent(
+constexpr void PPreflection::member_function::print_name_after_parent(
 	PP::simple_ostream& out) const noexcept
 {
 	print_name_basic(out);

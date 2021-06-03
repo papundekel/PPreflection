@@ -1,7 +1,6 @@
 #include "namespace_function.hpp"
 
-void
-PPreflector::namespace_function::print_metadata_object(
+void PPreflector::namespace_function::print_metadata_object(
 	llvm::raw_ostream& out) const
 {
 	out << printer_metadata(PPREFLECTOR_MEMBER_PRINT(print_name_own, *this))

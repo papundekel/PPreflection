@@ -4,9 +4,11 @@
 
 #include "PP/size_t.hpp"
 
-#include "pragma_pop.hpp"
+// clang-format off
 #include "pragma_push.hpp"
 #include "clang/AST/Decl.h"
+#include "pragma_pop.hpp"
+// clang-format on
 
 #include "descriptor.hpp"
 
@@ -19,11 +21,11 @@ namespace PPreflector
 
 	class Namespace : public descriptor
 	{
-		PP::size_t						depth;
+		PP::size_t depth;
 		std::list<non_global_namespace> namespaces;
 		std::vector<namespace_function> functions;
-		std::vector<Enum>				enums;
-		std::list<Class>				classes;
+		std::vector<Enum> enums;
+		std::list<Class> classes;
 
 	protected:
 		Namespace(PP::size_t depth);
@@ -40,9 +42,9 @@ namespace PPreflector
 		void print_metadata_traits(llvm::raw_ostream& out) const override;
 
 		non_global_namespace& add(clang::NamespaceDecl& n);
-		namespace_function&	  add(clang::FunctionDecl& f);
-		Enum&				  add(clang::EnumDecl& e);
-		Class&				  add(clang::CXXRecordDecl& c);
+		namespace_function& add(clang::FunctionDecl& f);
+		Enum& add(clang::EnumDecl& e);
+		Class& add(clang::CXXRecordDecl& c);
 
 		void remove_std();
 

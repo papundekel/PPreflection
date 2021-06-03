@@ -1,9 +1,11 @@
 #pragma once
 #include <vector>
 
-#include "pragma_pop.hpp"
+// clang-format off
 #include "pragma_push.hpp"
 #include "clang/AST/Type.h"
+#include "pragma_pop.hpp"
+// clang-format on
 
 #include "descriptor.hpp"
 #include "enum_value.hpp"

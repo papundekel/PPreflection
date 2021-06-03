@@ -11,7 +11,7 @@ namespace PPreflection
 {
 	constexpr void pick_viable_candidates(PP::concepts::view auto&& candidates,
 										  PP::size_t argument_count,
-										  auto		 viable_i)
+										  auto viable_i)
 	{
 		for (const auto& f : PP_FORWARD(candidates) | PP::transform(PP::unref))
 		{
@@ -26,7 +26,7 @@ namespace PPreflection
 	class viable_function
 	{
 		PP::small_optimized_vector<implicit_conversion_sequence, 4>
-											   conversion_sequences;
+			conversion_sequences;
 		PP::reference_wrapper<const Function&> f;
 
 	public:
@@ -47,7 +47,7 @@ namespace PPreflection
 
 		constexpr void make_conversion_sequences(
 			PP::concepts::view auto&& argument_types,
-			bool					  can_use_user_defined);
+			bool can_use_user_defined);
 
 		constexpr bool has_invalid_conversion() const
 		{
@@ -63,8 +63,9 @@ namespace PPreflection
 			bool has_worse_sequence = false;
 			bool has_better_sequence = false;
 
-			for (auto [my_sequence, other_sequence] : PP::zip_view_pack(
-					 conversion_sequences, other.conversion_sequences))
+			for (auto [my_sequence, other_sequence] :
+				 PP::zip_view_pack(conversion_sequences,
+								   other.conversion_sequences))
 			{
 				auto compare_sequence = my_sequence <=> other_sequence;
 				if (compare_sequence < 0)
@@ -72,7 +73,8 @@ namespace PPreflection
 					has_worse_sequence = true;
 					if (has_better_sequence)
 						break;
-				} else if (compare_sequence > 0)
+				}
+				else if (compare_sequence > 0)
 				{
 					has_better_sequence = true;
 					if (has_worse_sequence)
@@ -163,7 +165,7 @@ namespace PPreflection
 		PP::concepts::view auto& viable_functions)
 	{
 		decltype(viable_functions.begin()) winner = nullptr;
-		bool							   ambiguous_winner = false;
+		bool ambiguous_winner = false;
 
 		for (auto& vf : viable_functions)
 		{
@@ -209,7 +211,7 @@ namespace PPreflection
 	constexpr auto overload_resolution(PP::concepts::view auto&& candidates,
 									   PP::concepts::view auto&& argument_types,
 									   auto&& return_value_sequences,
-									   bool	  can_use_user_defined)
+									   bool can_use_user_defined)
 		-> PP::tuple<PP::optional<viable_function_type_helper<
 						 PP::concepts::view<decltype(return_value_sequences)>,
 						 PP_GET_TYPE(~PP_DECLTYPE(
@@ -263,7 +265,7 @@ namespace PPreflection
 
 	constexpr implicit_conversion_sequence overload_resolution(
 		PP::concepts::view auto&& candidates,
-		const reference_type&	  argument_type,
+		const reference_type& argument_type,
 		PP::concepts::view auto&& return_value_sequences)
 	{
 		auto [result, error_code] =
@@ -283,7 +285,9 @@ namespace PPreflection
 	constexpr auto overload_resolution(PP::concepts::view auto&& candidates,
 									   PP::concepts::view auto&& argument_types)
 	{
-		return overload_resolution(
-			PP_FORWARD(candidates), PP_FORWARD(argument_types), nullptr, true);
+		return overload_resolution(PP_FORWARD(candidates),
+								   PP_FORWARD(argument_types),
+								   nullptr,
+								   true);
 	}
 }

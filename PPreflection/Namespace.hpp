@@ -19,8 +19,8 @@ PPreflection::Namespace::get_parent(void*) const noexcept
 		return {};
 }
 
-constexpr const PPreflection::Namespace*
-PPreflection::Namespace::get_namespace(PP::string_view name) const noexcept
+constexpr const PPreflection::Namespace* PPreflection::Namespace::get_namespace(
+	PP::string_view name) const noexcept
 {
 	return get_descriptor(name, get_namespaces());
 }
@@ -31,25 +31,22 @@ PPreflection::Namespace::get_type(PP::string_view name) const noexcept
 	return get_descriptor(name, get_types());
 }
 
-PPreflection::dynamic_variable
-PPreflection::Namespace::invoke_qualified(
-	PP::string_view			  function_name,
+PPreflection::dynamic_variable PPreflection::Namespace::invoke_qualified(
+	PP::string_view function_name,
 	PP::concepts::view auto&& arguments) const
 {
 	return invoke_qualified_impl(function_name, PP_FORWARD(arguments));
 }
 
-PPreflection::dynamic_variable
-PPreflection::Namespace::invoke_qualified(
-	PP::string_view									function_name,
+PPreflection::dynamic_variable PPreflection::Namespace::invoke_qualified(
+	PP::string_view function_name,
 	const std::initializer_list<dynamic_reference>& arguments) const
 {
 	return invoke_qualified_impl(function_name, arguments);
 }
 
-PPreflection::dynamic_variable
-PPreflection::Namespace::invoke_qualified_impl(
-	PP::string_view			  function_name,
+PPreflection::dynamic_variable PPreflection::Namespace::invoke_qualified_impl(
+	PP::string_view function_name,
 	PP::concepts::view auto&& args) const
 {
 	return candidate_functions(get_functions())

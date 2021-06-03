@@ -8,7 +8,7 @@
 #include "dynamic_reference.hpp"
 
 constexpr PPreflection::convertor_reference
-PPreflection::create_convertor_reference(PP::concepts::type auto  t,
+PPreflection::create_convertor_reference(PP::concepts::type auto t,
 										 PP::concepts::value auto f) noexcept
 {
 	return [](PPreflection::dynamic_reference ref)
@@ -20,9 +20,9 @@ PPreflection::create_convertor_reference(PP::concepts::type auto  t,
 	};
 }
 
-constexpr PPreflection::convertor_object
-PPreflection::create_convertor_object(PP::concepts::type auto  t,
-									  PP::concepts::value auto f) noexcept
+constexpr PPreflection::convertor_object PPreflection::create_convertor_object(
+	PP::concepts::type auto t,
+	PP::concepts::value auto f) noexcept
 {
 	return [](PPreflection::dynamic_reference ref)
 	{

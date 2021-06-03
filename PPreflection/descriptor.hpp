@@ -7,8 +7,8 @@
 #include "parent_descriptor_reference.h"
 #include "reflect.h"
 
-constexpr void
-PPreflection::descriptor::print_name(PP::simple_ostream& out) const noexcept
+constexpr void PPreflection::descriptor::print_name(
+	PP::simple_ostream& out) const noexcept
 {
 	print_name_before_parent(out);
 
@@ -28,8 +28,8 @@ PPreflection::descriptor::print_name(PP::simple_ostream& out) const noexcept
 	print_name_after_parent(out);
 }
 
-constexpr PP::string_view
-PPreflection::descriptor::reflect_name(PP::concepts::type auto t) noexcept
+constexpr PP::string_view PPreflection::descriptor::reflect_name(
+	PP::concepts::type auto t) noexcept
 {
 	return reflect(PP::type<tags::name<PP_GET_TYPE(t)>>);
 }

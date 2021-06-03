@@ -1,7 +1,9 @@
 #pragma once
-#include "pragma_pop.hpp"
+// clang-format off
 #include "pragma_push.hpp"
 #include "clang/AST/Decl.h"
+#include "pragma_pop.hpp"
+// clang-format on
 
 #include "Namespace.h"
 #include "nested_descriptor.hpp"
@@ -14,9 +16,9 @@ namespace PPreflector
 								 nested_descriptor<Namespace, Namespace>>
 	{
 	public:
-		non_global_namespace(PP::size_t					 depth,
+		non_global_namespace(PP::size_t depth,
 							 const clang::NamespaceDecl& decl,
-							 const Namespace&			 parent);
+							 const Namespace& parent);
 
 		bool is_std() const;
 

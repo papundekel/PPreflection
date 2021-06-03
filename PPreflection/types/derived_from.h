@@ -6,7 +6,7 @@ namespace PPreflection
 	namespace
 	{
 		constexpr void fill_with_base_classes(const non_union_class_type& c,
-											  auto&						  stack)
+											  auto& stack)
 		{
 			for (const non_union_class_type& base : c.get_base_classes())
 				stack.push_back(base);
@@ -49,8 +49,9 @@ namespace PPreflection
 								  *non_union_class_base_ptr);
 		}
 
-		return PP::make_tuple(
-			result, non_union_class_derived_ptr, non_union_class_base_ptr);
+		return PP::make_tuple(result,
+							  non_union_class_derived_ptr,
+							  non_union_class_base_ptr);
 	}
 
 	constexpr bool same_or_derived_from(const type& derived, const type& base)

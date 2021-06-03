@@ -47,15 +47,15 @@ namespace PPreflection
 			PP::string_view name) const noexcept;
 
 		inline dynamic_variable invoke_qualified(
-			PP::string_view			  function_name,
+			PP::string_view function_name,
 			PP::concepts::view auto&& arguments) const;
 		inline dynamic_variable invoke_qualified(
-			PP::string_view									function_name,
+			PP::string_view function_name,
 			const std::initializer_list<dynamic_reference>& arguments) const;
 
 	private:
 		inline dynamic_variable invoke_qualified_impl(
-			PP::string_view			  function_name,
+			PP::string_view function_name,
 			PP::concepts::view auto&& arguments) const;
 	};
 }
