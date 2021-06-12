@@ -1,4 +1,5 @@
 #pragma once
+#include "PP/constant_string.hpp"
 #include "PP/tuple_map_to_array.hpp"
 #include "PP/type_t.hpp"
 #include "PP/value_t.hpp"
@@ -51,37 +52,42 @@ namespace PPreflection
 		template <typename Class, typename Return>
 		struct conversion_function;
 
-		struct global;
+		template <PP::constant_string I>
+		struct global
+		{};
 	}
 
 	namespace detail
 	{
-		constexpr auto& reflect_helper(PP::concepts::type auto t) noexcept;
-		constexpr auto& reflect_helper(PP::concepts::value auto v) noexcept
+		static constexpr auto& reflect_helper(
+			PP::concepts::type auto t) noexcept;
+		static constexpr auto& reflect_helper(
+			PP::concepts::value auto v) noexcept
 		{
 			return reflect_helper(PP_DECLTYPE(PP::to_value_t(v)));
 		}
 	}
 
-	PP_FUNCTOR(reflect, auto x) -> decltype(auto)
-	{
-		return detail::reflect_helper(x);
-	});
+	static constexpr auto reflect = PP::functor(
+		[](auto x) -> decltype(auto)
+		{
+			return detail::reflect_helper(x);
+		});
 
-	constexpr auto reflect_many(PP::concepts::type auto t,
-								PP::concepts::tuple auto&& tuple) noexcept
+	static constexpr auto reflect_many(
+		PP::concepts::type auto t,
+		PP::concepts::tuple auto&& tuple) noexcept
 	{
 		return PP::tuple_map_to_array(t, reflect, PP_FORWARD(tuple));
 	}
 
-	PP_FUNCTOR(reflect_many_helper,
-			   PP::concepts::type auto tag_type,
-			   auto Template,
-			   PP::concepts::type auto t)
-	noexcept
-	{
-		return reflect_many(t, reflect(Template(tag_type)));
-	});
+	static constexpr auto reflect_many_helper = PP::functor(
+		[](PP::concepts::type auto tag_type,
+		   auto Template,
+		   PP::concepts::type auto t) noexcept
+		{
+			return reflect_many(t, reflect(Template(tag_type)));
+		});
 }
 
 // namespace

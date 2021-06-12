@@ -18,13 +18,6 @@ namespace PPreflection
 {
 	namespace detail
 	{
-		struct overload_caster__no_specialization
-		{};
-
-		template <typename Overload, PP::size_t Index>
-		constexpr inline overload_caster__no_specialization
-			overload_caster = {};
-
 		constexpr inline auto basic_types =
 			PP::template_tuple<basic_reference_type,
 							   basic_void_type,
@@ -40,82 +33,85 @@ namespace PPreflection
 							   basic_union_type,
 							   basic_enum_type>;
 
-		template <typename T>
-		constexpr inline auto metadata = basic_types[PP::value_t_static_cast(
+		template <PP::constant_string I, typename T>
+		constexpr auto metadata = basic_types[PP::value_t_static_cast(
 			PP::type_size_t,
 			get_type_class_value_t(PP::type<T>))](PP::type<T>)();
 
-		constexpr auto& reflect_helper(PP::concepts::type auto t) noexcept
+		static constexpr auto X() noexcept;
+
+		static constexpr auto& reflect_helper(
+			PP::concepts::type auto t) noexcept
 		{
-			return metadata<PP_GET_TYPE(PP::remove_cv(t))>;
+			return metadata<X(), PP_GET_TYPE(PP::remove_cv(t))>;
 		}
 
 		using namespace PP::literals;
 
-		template <>
-		constexpr inline auto metadata<tags::name<tags::global>> = ""_sv;
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<tags::global<I>>> = ""_sv;
 
-		template <>
-		constexpr inline auto metadata<tags::name<float>> = "float"_sv;
-		template <>
-		constexpr inline auto metadata<tags::name<double>> = "double"_sv;
-		template <>
-		constexpr inline auto metadata<tags::name<long double>> =
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<float>> = "float"_sv;
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<double>> = "double"_sv;
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<long double>> =
 			"long double"_sv;
-		template <>
-		constexpr inline auto metadata<tags::name<bool>> = "bool"_sv;
-		template <>
-		constexpr inline auto metadata<tags::name<char>> = "char"_sv;
-		template <>
-		constexpr inline auto metadata<tags::name<signed char>> =
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<bool>> = "bool"_sv;
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<char>> = "char"_sv;
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<signed char>> =
 			"signed char"_sv;
-		template <>
-		constexpr inline auto metadata<tags::name<unsigned char>> =
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<unsigned char>> =
 			"unsigned char"_sv;
-		template <>
-		constexpr inline auto metadata<tags::name<wchar_t>> = "wchar_t"_sv;
-		template <>
-		constexpr inline auto metadata<tags::name<short int>> = "short int"_sv;
-		template <>
-		constexpr inline auto metadata<tags::name<int>> = "int"_sv;
-		template <>
-		constexpr inline auto metadata<tags::name<long int>> = "long int"_sv;
-		template <>
-		constexpr inline auto metadata<tags::name<long long int>> =
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<wchar_t>> = "wchar_t"_sv;
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<short int>> =
+			"short int"_sv;
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<int>> = "int"_sv;
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<long int>> = "long int"_sv;
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<long long int>> =
 			"long long int"_sv;
-		template <>
-		constexpr inline auto metadata<tags::name<unsigned short int>> =
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<unsigned short int>> =
 			"unsigned short int"_sv;
-		template <>
-		constexpr inline auto metadata<tags::name<unsigned int>> =
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<unsigned int>> =
 			"unsigned int"_sv;
-		template <>
-		constexpr inline auto metadata<tags::name<unsigned long int>> =
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<unsigned long int>> =
 			"unsigned long int"_sv;
-		template <>
-		constexpr inline auto metadata<tags::name<unsigned long long int>> =
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<unsigned long long int>> =
 			"unsigned long long int"_sv;
 #ifdef __cpp_char8_t
-		template <>
-		constexpr inline auto metadata<tags::name<char8_t>> = "char8_t"_sv;
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<char8_t>> = "char8_t"_sv;
 #endif
 #ifdef __cpp_unicode_characters
-		template <>
-		constexpr inline auto metadata<tags::name<char16_t>> = "char16_t"_sv;
-		template <>
-		constexpr inline auto metadata<tags::name<char32_t>> = "char32_t"_sv;
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<char16_t>> = "char16_t"_sv;
+		template <PP::constant_string I>
+		constexpr inline auto metadata<I, tags::name<char32_t>> = "char32_t"_sv;
 #endif
 
-		template <typename Class, typename... Parameters>
+		template <PP::constant_string I, typename Class, typename... Parameters>
 		constexpr inline auto
-			metadata<tags::is_explicit<Class, Parameters...>> = PP::value_false;
+			metadata<I, tags::is_explicit<Class, Parameters...>> =
+				PP::value_false;
 
-		template <typename E>
-		constexpr inline auto metadata<tags::enum_fixed_type<E>> =
+		template <PP::constant_string I, typename E>
+		constexpr inline auto metadata<I, tags::enum_fixed_type<E>> =
 			PP::type_void;
 	}
-
-	constexpr inline const auto& float_type = reflect(PP::type<float>);
 }
 
 #endif

@@ -72,7 +72,7 @@ void PPreflector::Namespace::print_tabs(llvm::raw_ostream& out) const
 void PPreflector::Namespace::print_layout(llvm::raw_ostream& out) const
 {
 	out << PPREFLECTOR_MEMBER_PRINT(print_tabs, *this) << "struct "
-		<< PPREFLECTOR_MEMBER_PRINT(print_name, *this);
+		<< PPREFLECTOR_MEMBER_PRINT(print_layout_name, *this);
 
 	if (namespaces.empty())
 	{

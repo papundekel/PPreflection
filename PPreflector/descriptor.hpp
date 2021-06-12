@@ -49,7 +49,7 @@ namespace PPreflector
 		static constexpr auto printer_value_t =
 			container_printer<"PP::value_t<"_str, ">"_str>;
 		static constexpr auto printer_metadata = container_printer<
-			"template <> constexpr inline auto PPreflection::detail::metadata<"_str,
+			"\ttemplate <> constexpr inline auto metadata<X(), "_str,
 			"> = "_str>;
 		static constexpr auto printer_sv =
 			container_printer<"\""_str, "\"_sv"_str>;
@@ -78,9 +78,10 @@ namespace PPreflector
 			for_each_with_delimiters(
 				[&out](const descriptor& n)
 				{
+					// clang-format off
 					out << "\n"
-						   "\t"
-						<< PPREFLECTOR_MEMBER_PRINT(print_name_foreign, n);
+						<< "\t\t" << PPREFLECTOR_MEMBER_PRINT(print_name_foreign, n);
+					// clang-format on
 				},
 				[&out]()
 				{

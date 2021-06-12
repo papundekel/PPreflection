@@ -14,9 +14,8 @@ namespace PPreflector
 								  clang::RefQualifierKind ref);
 
 	template <typename MDecl>
-	requires PP::concepts::
-		derived_from<MDecl, clang::CXXMethodDecl> class member_function
-		: public function<MDecl>
+	requires PP::concepts::derived_from<MDecl, clang::CXXMethodDecl>
+	class member_function : public function<MDecl>
 	{
 	public:
 		using function<MDecl>::function;
@@ -54,8 +53,8 @@ namespace PPreflector
 		{
 			const auto& decl = this->get_node();
 
-			out << "PPreflection::overload_member_caster<"
-				<< decl.getMethodQualifiers() << ", " << decl.getRefQualifier()
+			out << "overload_member_caster<" << decl.getMethodQualifiers()
+				<< ", " << decl.getRefQualifier()
 				<< PPREFLECTOR_MEMBER_PRINT(print_parameter_types_leading_comma,
 											*this)
 				<< ">(&::"

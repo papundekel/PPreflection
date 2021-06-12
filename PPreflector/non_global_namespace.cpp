@@ -17,6 +17,12 @@ bool PPreflector::non_global_namespace::is_std() const
 	return get_node().isStdNamespace();
 }
 
+void PPreflector::non_global_namespace::print_layout_name(
+	llvm::raw_ostream& out) const
+{
+	print_name(out);
+}
+
 void PPreflector::non_global_namespace::print_name_parent(
 	llvm::raw_ostream& out) const
 {
@@ -54,6 +60,6 @@ void PPreflector::non_global_namespace::print_metadata_object(
 	llvm::raw_ostream& out) const
 {
 	out << printer_metadata(PPREFLECTOR_MEMBER_PRINT(print_name_own, *this))
-		<< "PPreflection::detail::basic_namespace<"
-		<< PPREFLECTOR_MEMBER_PRINT(print_name_own, *this) << ">{};\n";
+		<< "basic_namespace<" << PPREFLECTOR_MEMBER_PRINT(print_name_own, *this)
+		<< ">{};\n";
 }

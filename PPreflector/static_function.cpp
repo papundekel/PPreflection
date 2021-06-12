@@ -23,7 +23,7 @@ void PPreflector::static_function::print_name_own(llvm::raw_ostream& out) const
 void PPreflector::static_function::print_name_foreign(
 	llvm::raw_ostream& out) const
 {
-	out << "PPreflection::overload_caster<"
+	out << "overload_caster<"
 		<< PPREFLECTOR_MEMBER_PRINT(print_parameter_types, *this)
 		<< ">(::" << PPREFLECTOR_MEMBER_PRINT(print_qualified_name, *this)
 		<< ")";

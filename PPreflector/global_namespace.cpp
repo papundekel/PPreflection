@@ -11,7 +11,7 @@ PPreflector::global_namespace::global_namespace()
 void PPreflector::global_namespace::print_name_parent(
 	llvm::raw_ostream& out) const
 {
-	out << "PPreflection::tags";
+	out << "tags";
 }
 
 void PPreflector::global_namespace::print_qualified_name(
@@ -22,7 +22,13 @@ void PPreflector::global_namespace::print_qualified_name(
 
 void PPreflector::global_namespace::print_name(llvm::raw_ostream& out) const
 {
-	out << "global";
+	out << "global<X()>";
+}
+
+void PPreflector::global_namespace::print_layout_name(
+	llvm::raw_ostream& out) const
+{
+	out << "global<detail::X()>";
 }
 
 void PPreflector::global_namespace::print_unscoped_name(
@@ -46,10 +52,9 @@ void PPreflector::global_namespace::print_scoped_name_as_parent(
 void PPreflector::global_namespace::print_metadata_object(
 	llvm::raw_ostream& out) const
 {
-	out << "template <> constexpr inline auto "
-		   "PPreflection::detail::metadata<PPreflection::tags::global> = "
-		   "PPreflection::detail::basic_namespace<PPreflection::tags::global>{}"
-		   ";\n";
+	// clang-format off
+	out << "\ttemplate <> constexpr inline auto metadata<X(), tags::global<X()>> = basic_namespace<tags::global<X()>>{};";
+	// clang-format on
 }
 
 const PPreflector::descriptor* PPreflector::global_namespace::get_parent(

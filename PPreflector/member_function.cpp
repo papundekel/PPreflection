@@ -3,7 +3,7 @@
 llvm::raw_ostream& PPreflector::operator<<(llvm::raw_ostream& out,
 										   clang::Qualifiers cv)
 {
-	out << "PP::cv_qualifier::";
+	out << "CV::";
 
 	if (cv.hasConst())
 	{
@@ -23,7 +23,7 @@ llvm::raw_ostream& PPreflector::operator<<(llvm::raw_ostream& out,
 llvm::raw_ostream& PPreflector::operator<<(llvm::raw_ostream& out,
 										   clang::RefQualifierKind ref)
 {
-	out << "PP::ref_qualifier::";
+	out << "REF::";
 
 	switch (ref)
 	{

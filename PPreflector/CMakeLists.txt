@@ -15,7 +15,7 @@ add_llvm_library(PPreflector MODULE
 "constructor.cpp"
 "consumer.cpp"
 "conversion_function.cpp"
-"default_constructor.cpp"
+#"default_constructor.cpp"
 "descriptor.cpp"
 "Enum.cpp"
 "enum_value.cpp"

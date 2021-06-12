@@ -9,4 +9,10 @@
 #include "type_info_map.hpp"
 #include "types/implementations/implementations.hpp"
 
+namespace PPreflection::detail
+{
+	using CV = PP::cv_qualifier;
+	using REF = PP::ref_qualifier;
+}
+
 #endif

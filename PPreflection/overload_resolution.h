@@ -2,6 +2,7 @@
 #include "PP/empty_view.hpp"
 #include "PP/optional.hpp"
 #include "PP/push_back_iterator.hpp"
+#include "PP/simple_vector.hpp"
 #include "PP/small_optimized_vector.hpp"
 #include "PP/utility/move.hpp"
 
@@ -25,7 +26,7 @@ namespace PPreflection
 	template <typename Function>
 	class viable_function
 	{
-		PP::small_optimized_vector<implicit_conversion_sequence, 4>
+		PP::simple_vector<implicit_conversion_sequence>
 			conversion_sequences;
 		PP::reference_wrapper<const Function&> f;
 

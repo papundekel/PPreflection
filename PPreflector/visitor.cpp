@@ -82,7 +82,7 @@ bool PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 		{
 			auto& class_declaration = *class_declaration_ptr;
 
-			if (!class_declaration.isFirstDecl() ||
+			if (!class_declaration.isCompleteDefinition() ||
 				!class_declaration.hasDefinition() ||
 				clang::isa<clang::ClassTemplateSpecializationDecl>(
 					class_declaration) ||
@@ -107,20 +107,34 @@ bool PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 
 void PPreflector::visitor::print(llvm::raw_ostream& out) const
 {
+	// clang-format off
 	out << "#ifndef PPREFLECTOR_GUARD\n"
 		   "\n"
 		   "#pragma once\n"
 		   "#include \"PPreflection/meta.hpp\"\n"
 		   "\n"
+		   "namespace PPreflection::detail\n"
+		   "{\n"
+		   "\tstatic constexpr auto X() noexcept\n"
+		   "\t{\n"
+		   "\t\treturn PP::constant_string(__FILE__);\n"
+		   "\t}\n"
+		   "}\n"
+		   "\n"
 		   "namespace PPreflection::tags\n"
 		   "{\n"
+		   "\ttemplate <>\n"
 		<< PPREFLECTOR_MEMBER_PRINT(print_layout, global) << "}\n"
-		<< PPREFLECTOR_MEMBER_PRINT(print_metadata, global)
-		<< "\n"
+		   "\n"
+		   "namespace PPreflection::detail\n"
+		   "{"
+		<< PPREFLECTOR_MEMBER_PRINT(print_metadata, global) << "\n"
+		   "}\n"
+		   "\n"
 		   "namespace PPreflection\n"
 		   "{\n"
-		   "\tconstexpr inline const Namespace& global_namespace = "
-		   "reflect(PP::type<tags::global>);\n"
+		   "\tconstexpr static const Namespace& global_namespace = "
+		   "reflect(PP::type<tags::global<detail::X()>>);\n"
 		   "}\n"
 		   "\n"
 		   "const PPreflection::non_union_class_type& "
@@ -145,6 +159,7 @@ void PPreflector::visitor::print(llvm::raw_ostream& out) const
 		   "}\n"
 		   "\n"
 		   "#endif\n";
+	// clang-format on
 }
 
 void PPreflector::visitor::clear_temps()

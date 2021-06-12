@@ -12,10 +12,12 @@ const PPreflector::descriptor* PPreflector::descriptor::get_parent(void*) const
 
 void PPreflector::descriptor::print_metadata(llvm::raw_ostream& out) const
 {
+	// clang-format off
 	out << PPREFLECTOR_MEMBER_PRINT(print_metadata_members, *this) << "\n"
-		<< "// ::" << PPREFLECTOR_MEMBER_PRINT(print_name_header, *this) << "\n"
+		<< "\t// ::" << PPREFLECTOR_MEMBER_PRINT(print_name_header, *this) << "\n"
 		<< PPREFLECTOR_MEMBER_PRINT(print_metadata_traits, *this)
 		<< PPREFLECTOR_MEMBER_PRINT(print_metadata_object, *this);
+	// clang-format on
 }
 
 void PPreflector::descriptor::print_metadata_name(llvm::raw_ostream& out) const

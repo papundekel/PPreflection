@@ -9,6 +9,10 @@ namespace PPreflection
 {
 	namespace detail
 	{
+		template <PP::constant_string I>
+		void is_tag_global_helper(tags::global<I>) noexcept;
+		int is_tag_global_helper(auto&&) noexcept;
+
 		template <typename ID>
 		class basic_namespace : public basic_named_descriptor<ID, Namespace>
 		{
@@ -28,7 +32,8 @@ namespace PPreflection
 			constexpr const Namespace& get_parent()
 				const noexcept override final
 			{
-				if constexpr (PP::type<ID> != PP::type<tags::global>)
+				if constexpr (PP_DECLTYPE(is_tag_global_helper(
+								  PP::declval(PP::type<ID>))) != PP::type_void)
 					return reflect(reflect(PP::type<tags::parent<ID>>));
 				else
 					return *this;

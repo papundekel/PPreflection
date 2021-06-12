@@ -15,35 +15,38 @@
 
 namespace PPreflection::detail
 {
-	static constexpr PP::size_t get_alignment(
+	static constexpr auto get_alignment_impl(
 		const PPreflection::complete_object_type& t) noexcept
 	{
 		return t.alignment();
 	}
-	static constexpr PP::size_t get_alignment(
-		PP::concepts::type auto t) noexcept
+	static constexpr auto get_alignment_impl(PP::concepts::type auto t) noexcept
 	{
-		return PP::size_of(t);
+		return PP::alignment_of(t);
 	}
-	static constexpr PP::size_t get_size(
+	static constexpr auto get_alignment(const auto& t) noexcept
+	{
+		return std::align_val_t{get_alignment_impl(t)};
+	}
+	static constexpr auto get_size(
 		const PPreflection::complete_object_type& t) noexcept
 	{
 		return t.size();
 	}
-	static constexpr PP::size_t get_size(PP::concepts::type auto t) noexcept
+	static constexpr auto get_size(PP::concepts::type auto t) noexcept
 	{
-		return PP::alignment_of(t);
+		return PP::size_of(t);
 	}
 	static constexpr bool is_small_type(const auto& t) noexcept
 	{
-		return get_alignment(t) <= alignof(max_align_t) &&
+		return get_alignment_impl(t) <= alignof(max_align_t) &&
 			   get_size(t) <= sizeof(void*);
 	}
 }
 
 constexpr PPreflection::dynamic_object::deleter::deleter(
 	cv_type<complete_object_type> t) noexcept
-	: type_(PP::unique_default_releaser_tag, &t.type)
+	: type_(PP::movable_default_releaser_tag, &t.type)
 	, cv(t.cv)
 {}
 
@@ -73,7 +76,7 @@ constexpr PPreflection::dynamic_object::dynamic_object(
 constexpr PPreflection::dynamic_object::dynamic_object(
 	cv_type<complete_object_type> cv_type,
 	data data) noexcept
-	: x(PP::in_place_tag, cv_type, PP::unique_default_releaser_tag, data)
+	: x(PP::in_place_tag, cv_type, PP::movable_default_releaser_tag, data)
 {}
 
 constexpr PPreflection::dynamic_object PPreflection::dynamic_object::create(
@@ -101,7 +104,7 @@ PPreflection::dynamic_object::create_copy(auto&& arg)
 constexpr PPreflection::cv_type<PPreflection::complete_object_type>
 PPreflection::dynamic_object::get_cv_type() const noexcept
 {
-	return { get_type(), x.get_destructor().get_cv() };
+	return {get_type(), x.get_destructor().get_cv()};
 }
 
 constexpr const PPreflection::complete_object_type&
@@ -179,8 +182,7 @@ PPreflection::dynamic_object::allocate(const auto& t) noexcept
 	if (detail::is_small_type(t))
 		return {};
 	else
-		return { operator new (detail::get_alignment(t),
-							   std::align_val_t{ detail::get_size(t) }) };
+		return {operator new(detail::get_size(t), detail::get_alignment(t))};
 }
 
 constexpr PPreflection::dynamic_object::data
@@ -198,7 +200,7 @@ PPreflection::dynamic_object::allocate_and_initialize(
 }
 
 constexpr void PPreflection::dynamic_object::deleter::operator()(
-	PP::unique<data, PP::default_releaser>& u) const
+	PP::movable<data, PP::default_releaser>& u) const
 {
 	auto type_p = type_.get_object();
 	if (!type_p)
@@ -210,5 +212,5 @@ constexpr void PPreflection::dynamic_object::deleter::operator()(
 	type.destroy(ptr);
 
 	if (!detail::is_small_type(type))
-		operator delete(ptr);
+		operator delete(ptr, detail::get_alignment(type));
 }

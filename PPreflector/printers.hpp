@@ -2,6 +2,7 @@
 #include <string_view>
 
 #include "PP/concepts/fundamental_types.hpp"
+#include "PP/constant_string.hpp"
 #include "PP/view_copy.hpp"
 
 // clang-format off
@@ -17,8 +18,7 @@ namespace PPreflector
 	{
 		{
 			p(out)
-		}
-		->PP::concepts::void_type;
+			} -> PP::concepts::void_type;
 	};
 
 	llvm::raw_ostream& operator<<(llvm::raw_ostream& out,
@@ -49,27 +49,14 @@ namespace PPreflector
 		object))
 
 	template <PP::size_t count>
-	struct constant_string
-	{
-		char chars[count];
-
-		constexpr constant_string(const char (&string)[count + 1]) noexcept
-		{
-			PP::view_copy(chars, string);
-		}
-	};
-	template <PP::size_t count>
-	constant_string(const char (&)[count]) -> constant_string<count - 1>;
-
-	template <PP::size_t count>
 	llvm::raw_ostream& operator<<(llvm::raw_ostream& out,
-								  const constant_string<count>& str)
+								  const PP::constant_string<count>& str)
 	{
 		out.write(str.chars, count);
 		return out;
 	}
 
-	template <constant_string s>
+	template <PP::constant_string s>
 	constexpr auto operator""_str()
 	{
 		return s;
@@ -89,8 +76,7 @@ namespace PPreflector
 	{
 		return [&inner_printer](llvm::raw_ostream& out)
 		{
-			out << "PPreflection::tags::" << prefix << "<" << inner_printer
-				<< ">";
+			out << "tags::" << prefix << "<" << inner_printer << ">";
 		};
 	};
 }

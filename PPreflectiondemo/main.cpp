@@ -13,66 +13,74 @@
 #include "visitor_reference.hpp"
 #include "visitor_reflection.hpp"
 
-auto generate_zoo(PP::size_t count)
+#include "testik.hpp"
+
+namespace
 {
-	using namespace PP::literals;
-
-	std::vector<std::unique_ptr<animals::animal>> zoo;
-
-	zoo.reserve(count);
-
-	std::srand(std::time(nullptr));
-
-	for (auto i = 0_z; i != count; ++i)
+	auto generate_zoo(PP::size_t count)
 	{
-		std::unique_ptr<animals::animal> ptr;
+		using namespace PP::literals;
 
-		auto x = std::rand() % 5;
+		std::vector<std::unique_ptr<animals::animal>> zoo;
 
-		switch (x)
+		zoo.reserve(count);
+
+		std::srand(std::time(nullptr));
+
+		for (auto i = 0_z; i != count; ++i)
 		{
-			case 0:
-				ptr = std::make_unique<animals::ape>();
-				break;
-			case 1:
-				ptr = std::make_unique<animals::bat>();
-				break;
-			case 2:
-				ptr = std::make_unique<animals::cat>();
-				break;
-			case 3:
-				ptr = std::make_unique<animals::dog>();
-				break;
-			case 4:
-				ptr = std::make_unique<animals::elk>();
-				break;
-			default:
-				break;
+			std::unique_ptr<animals::animal> ptr;
+
+			auto x = std::rand() % 5;
+
+			switch (x)
+			{
+				case 0:
+					ptr = std::make_unique<animals::ape>();
+					break;
+				case 1:
+					ptr = std::make_unique<animals::bat>();
+					break;
+				case 2:
+					ptr = std::make_unique<animals::cat>();
+					break;
+				case 3:
+					ptr = std::make_unique<animals::dog>();
+					break;
+				case 4:
+					ptr = std::make_unique<animals::elk>();
+					break;
+				default:
+					break;
+			}
+
+			zoo.push_back(std::move(ptr));
 		}
 
-		zoo.push_back(std::move(ptr));
+		return zoo;
 	}
 
-	return zoo;
-}
+	auto now()
+	{
+		return std::chrono::system_clock::now();
+	}
 
-auto now()
-{
-	return std::chrono::system_clock::now();
-}
+	using time_point = decltype(now());
 
-using time_point = decltype(now());
-
-void print_duration(time_point time)
-{
-	std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(now() -
-																	   time)
-					 .count()
-			  << '\n';
+	void print_duration(time_point time)
+	{
+		std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(
+						 now() - time)
+						 .count()
+				  << '\n';
+	}
 }
 
 int main()
 {
+	N::f(N::D());
+	N::g();
+
 	PP::size_t count;
 	std::cin >> count;
 

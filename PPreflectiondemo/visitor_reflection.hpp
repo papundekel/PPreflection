@@ -1,4 +1,5 @@
 #pragma once
+#include "S.hpp"
 #include "animals.hpp"
 
 namespace visitors

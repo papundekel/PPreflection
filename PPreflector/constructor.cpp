@@ -24,8 +24,8 @@ void PPreflector::constructor::print_metadata_object(
 {
 	out << printer_metadata(metadata_tag_printer<"constructor"_str>(
 			   PPREFLECTOR_MEMBER_PRINT(print_id, *this)))
-		<< "PPreflection::detail::basic_constructor<"
-		<< PPREFLECTOR_MEMBER_PRINT(print_id, *this) << ">{};";
+		<< "basic_constructor<" << PPREFLECTOR_MEMBER_PRINT(print_id, *this)
+		<< ">{};";
 }
 
 void PPreflector::constructor::print_metadata_traits(

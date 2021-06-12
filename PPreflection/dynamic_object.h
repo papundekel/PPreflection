@@ -1,12 +1,13 @@
 #pragma once
+#include <cstddef>
 #include <variant>
 
 #include "PP/concepts/invocable.hpp"
 #include "PP/concepts/same_except_cvref.hpp"
 #include "PP/get_type.hpp"
+#include "PP/movable.hpp"
 #include "PP/scoped.hpp"
 #include "PP/string_view.hpp"
-#include "PP/unique.hpp"
 
 namespace PPreflection
 {
@@ -36,7 +37,7 @@ namespace PPreflection
 
 		struct small_byte_array
 		{
-			alignas(max_align_t) char bytes[sizeof(void*)];
+			alignas(std::max_align_t) char bytes[sizeof(void*)];
 		};
 
 		union data
@@ -91,31 +92,32 @@ namespace PPreflection
 
 		class deleter
 		{
-			PP::unique<const complete_object_type*, PP::pointer_releaser> type_;
+			PP::movable<const complete_object_type*, PP::nullptr_releaser>
+				type_;
 			PP::cv_qualifier cv;
 
 		public:
 			constexpr deleter(cv_type<complete_object_type> t) noexcept;
 			constexpr deleter(int = 0) noexcept
-				: type_(PP::unique_default_releaser_tag, nullptr)
+				: type_(PP::movable_default_releaser_tag, nullptr)
 			{}
 
 			constexpr void operator()(
-				PP::unique<data, PP::default_releaser>& u) const;
+				PP::movable<data, PP::default_releaser>& u) const;
 			constexpr const complete_object_type& get_type() const;
 			constexpr PP::cv_qualifier get_cv() const;
 			constexpr bool has_valid_type() const
 			{
-				return type_.get_object();
+				return type_[PP::tags::o];
 			}
 			constexpr void change_type(const complete_object_type& target_type)
 			{
-				type_.get_object() = &target_type;
+				type_[PP::tags::o] = &target_type;
 			}
 		};
 
 	private:
-		PP::scoped<PP::unique<data, PP::default_releaser>, deleter> x;
+		PP::scoped<PP::movable<data, PP::default_releaser>, deleter> x;
 
 	public:
 		dynamic_object() = default;
@@ -125,7 +127,7 @@ namespace PPreflection
 
 	private:
 		explicit constexpr dynamic_object(invalid_code code) noexcept
-			: x(PP::in_place_tag, 0, PP::unique_default_releaser_tag, code)
+			: x(PP::in_place_tag, 0, PP::movable_default_releaser_tag, code)
 		{}
 		constexpr dynamic_object(
 			cv_type<complete_object_type> cv_type,

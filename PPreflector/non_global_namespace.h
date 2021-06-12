@@ -25,6 +25,8 @@ namespace PPreflector
 	private:
 		void print_name_parent(llvm::raw_ostream& out) const override final;
 
+		void print_layout_name(llvm::raw_ostream& out) const override final;
+
 		void print_unscoped_name(llvm::raw_ostream& out) const override final;
 		void print_scoped_name_parent(
 			llvm::raw_ostream& out) const override final;
