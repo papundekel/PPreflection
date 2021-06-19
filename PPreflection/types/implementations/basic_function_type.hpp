@@ -57,7 +57,7 @@ namespace PPreflection::detail
 		constexpr const pointer_type& get_pointer_type()
 			const noexcept override final
 		{
-			return type::reflect | PP::add_pointer <<=
+			return type::reflect <<= PP::add_pointer <<=
 				   PP::make_function_type(PP::type<T>,
 										  PP::value<info.Noexcept>,
 										  PP::value<PP::cv_qualifier::none>,

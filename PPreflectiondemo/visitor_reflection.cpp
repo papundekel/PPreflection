@@ -31,12 +31,6 @@ void visitors::visitor_reflection::react_to(const animals::animal& animal)
 {
 	static const auto viables = visitor_reflection_make_viables();
 
-	for (auto& n : PPreflection::type::reflect(PP::type<S>)
-					   .get_parent()
-					   .as_namespace()
-					   ->get_namespaces())
-		std::cout << n << '\n';
-
 	viables.invoke({PPreflection::dynamic_polymorphic_reference(animal)});
 }
 

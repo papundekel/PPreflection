@@ -40,7 +40,7 @@ namespace PPreflection
 		constexpr const arithmetic_type& promoted_type()
 			const noexcept override final
 		{
-			return type::reflect | PP::promotion_type <<= PP::type<T>;
+			return type::reflect <<= PP::promotion_type <<= PP::type<T>;
 		}
 
 		constexpr convertor_object conversion(

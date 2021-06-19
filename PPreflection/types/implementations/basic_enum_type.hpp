@@ -81,7 +81,7 @@ namespace PPreflection::detail
 			const noexcept override final
 		{
 			if constexpr (!scoped)
-				return type::reflect | PP::promotion_type <<= PP::type<T>;
+				return type::reflect <<= PP::promotion_type <<= PP::type<T>;
 			else
 			{
 				if constexpr (has_fixed_type)
