@@ -16,13 +16,9 @@ PPreflector::Class::Class(const clang::CXXRecordDecl& decl,
 	, non_conversion_member_functions()
 	, conversion_functions()
 {
-	PP::view_copy(
-		PP::push_back_iterator(base_classes) ^ PP::unbounded,
-		decl.bases() |
-			PP::transform([](const clang::CXXBaseSpecifier& base) -> auto&
-						  {
-							  return *base.getType().getTypePtr();
-						  }));
+	for (auto& base : decl.bases())
+		if (base.getAccessSpecifier() == clang::AccessSpecifier::AS_public)
+			base_classes.emplace_back(*base.getType().getTypePtr());
 
 	for (const auto* method_ptr : decl.methods())
 	{

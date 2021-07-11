@@ -45,7 +45,14 @@ namespace PPreflection::detail
 			PP::any_iterator<PP::iterator_category::ra, dynamic_reference>
 				arg_iterator) const noexcept override final
 		{
-			if constexpr (PP::concepts::destructible<Class>)
+			if constexpr (!PP::concepts::destructible<Class>)
+				return dynamic_object::create_invalid(
+					dynamic_object::invalid_code::indestructible_return_value);
+			else if constexpr (!PP::concepts::constructible<Class,
+															Parameters...>)
+				return dynamic_object::create_invalid(
+					dynamic_object::invalid_code::abstract_class);
+			else
 				return this->call_with_arguments_cast_to_parameter_types(
 					[](auto&&... args)
 					{
@@ -54,9 +61,6 @@ namespace PPreflection::detail
 					},
 					PP::move(arg_iterator),
 					this->parameter_types);
-			else
-				return dynamic_object::create_invalid(
-					dynamic_object::invalid_code::indestructible_return_value);
 		}
 
 		constexpr bool is_explicit() const noexcept override final
@@ -74,8 +78,16 @@ namespace PPreflection::detail
 		dynamic_object invoke_unsafe(
 			dynamic_reference arg) const noexcept override final
 		{
-			return dynamic_object::create(PP::type<Class>,
-										  arg.cast_unsafe(PP::type<Parameter>));
+			if constexpr (!PP::concepts::destructible<Class>)
+				return dynamic_object::create_invalid(
+					dynamic_object::invalid_code::indestructible_return_value);
+			else if constexpr (!PP::concepts::constructible<Class, Parameter>)
+				return dynamic_object::create_invalid(
+					dynamic_object::invalid_code::abstract_class);
+			else
+				return dynamic_object::create(
+					PP::type<Class>,
+					arg.cast_unsafe(PP::type<Parameter>));
 		}
 
 		constexpr parameter_type_reference get_parameter_type()

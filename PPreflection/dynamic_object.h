@@ -29,6 +29,7 @@ namespace PPreflection
 			indestructible_return_value,
 			no_valid_overload,
 			overload_resolution_error,
+			abstract_class,
 		};
 
 	private:

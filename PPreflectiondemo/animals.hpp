@@ -13,6 +13,7 @@ namespace animals
 	{
 		virtual const char* name() const noexcept = 0;
 		virtual void accept(visitors::animal_visitor& visitor) = 0;
+		virtual ~animal() = default;
 	};
 
 	struct ape final
