@@ -17,7 +17,7 @@ namespace PPreflector
 			clang::CompilerInstance& CI,
 			clang::StringRef) override final;
 		bool ParseArgs(const clang::CompilerInstance&,
-					   const std::vector<std::string>&) override final;
+		               const std::vector<std::string>&) override final;
 		clang::PluginASTAction::ActionType getActionType() override final;
 	};
 }

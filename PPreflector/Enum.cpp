@@ -1,6 +1,6 @@
 #include "Enum.hpp"
 
-#include "PP/functional/operators.hpp"
+#include "PP/operators.hpp"
 #include "PP/push_back_iterator.hpp"
 #include "PP/transform_view.hpp"
 #include "PP/unbounded.hpp"
@@ -10,13 +10,13 @@
 
 PPreflector::Enum::Enum(const clang::EnumDecl& decl, const descriptor& parent)
 	: node_descriptor<clang::EnumType,
-					  nested_descriptor<descriptor, descriptor>>(
+                      nested_descriptor<descriptor, descriptor>>(
 		  *clang::dyn_cast_or_null<clang::EnumType>(decl.getTypeForDecl()),
 		  parent)
 	, enum_values()
 {
 	PP::view_copy(PP::push_back_iterator(enum_values) ^ PP::unbounded,
-				  decl.enumerators() | PP::transform(PP::der));
+	              decl.enumerators() | PP::transform(PP::der));
 }
 
 void PPreflector::Enum::print_name_header(llvm::raw_ostream& out) const

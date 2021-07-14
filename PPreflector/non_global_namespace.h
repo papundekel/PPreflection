@@ -13,12 +13,12 @@ namespace PPreflector
 {
 	class non_global_namespace
 		: public node_descriptor<clang::NamespaceDecl,
-								 nested_descriptor<Namespace, Namespace>>
+	                             nested_descriptor<Namespace, Namespace>>
 	{
 	public:
 		non_global_namespace(PP::size_t depth,
-							 const clang::NamespaceDecl& decl,
-							 const Namespace& parent);
+		                     const clang::NamespaceDecl& decl,
+		                     const Namespace& parent);
 
 		bool is_std() const;
 

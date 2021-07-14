@@ -17,10 +17,10 @@ namespace PPreflector
 {
 
 	template <typename FDecl>
-	requires PP::concepts::derived_from<FDecl,
-										clang::FunctionDecl> class function
+	requires PP::concepts::derived_from<FDecl, clang::FunctionDecl>
+	class function
 		: public node_descriptor<FDecl,
-								 nested_descriptor<descriptor, descriptor>>
+	                             nested_descriptor<descriptor, descriptor>>
 	{
 	public:
 		function(const FDecl& decl, const descriptor& parent)
@@ -49,7 +49,8 @@ namespace PPreflector
 				this->get_node().parameters());
 		}
 
-		virtual void print_parameter_types_leading_comma(llvm::raw_ostream& out) const
+		virtual void print_parameter_types_leading_comma(
+			llvm::raw_ostream& out) const
 		{
 			for (const auto* parameter : this->get_node().parameters())
 			{

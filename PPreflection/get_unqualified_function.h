@@ -1,5 +1,5 @@
 #pragma once
-#include "PP/functional/compose.hpp"
+#include "PP/compose.hpp"
 #include "PP/get_function_info.hpp"
 #include "PP/make_function_type.hpp"
 

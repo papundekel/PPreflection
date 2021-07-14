@@ -19,7 +19,7 @@ namespace PPreflector
 		clang::ASTContext& context;
 		global_namespace global;
 		std::map<const clang::NamespaceDecl*,
-				 PP::ref_wrap<non_global_namespace&>>
+		         PP::ref_wrap<non_global_namespace&>>
 			map_namespaces;
 		std::vector<PP::ref_wrap<const Class&>> classes;
 
@@ -39,7 +39,7 @@ namespace PPreflector
 		void register_namespace(clang::NamespaceDecl& child_declaration);
 
 		static llvm::raw_ostream& print_name(llvm::raw_ostream& out,
-											 const clang::NamedDecl& d);
+		                                     const clang::NamedDecl& d);
 		static bool is_reserved(const clang::NamedDecl& d);
 	};
 }

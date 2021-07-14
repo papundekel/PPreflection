@@ -7,16 +7,15 @@
 namespace PPreflector
 {
 	template <typename DescriptorParent, typename DescriptorBase>
-	requires PP::concepts::derived_from<DescriptorParent, descriptor>&&
-		PP::concepts::derived_from<DescriptorBase,
-								   descriptor> class nested_descriptor
-		: public DescriptorBase
+	requires PP::concepts::derived_from<DescriptorParent, descriptor> &&
+		PP::concepts::derived_from<DescriptorBase, descriptor>
+	class nested_descriptor : public DescriptorBase
 	{
 		const DescriptorParent& parent;
 
 	public:
 		explicit nested_descriptor(const DescriptorParent& parent,
-								   auto&&... args)
+		                           auto&&... args)
 			: DescriptorBase(PP_FORWARD(args)...)
 			, parent(parent)
 		{}

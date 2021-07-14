@@ -12,7 +12,7 @@ std::unique_ptr<clang::ASTConsumer> PPreflector::action::CreateASTConsumer(
 }
 
 bool PPreflector::action::ParseArgs(const clang::CompilerInstance&,
-									const std::vector<std::string>&)
+                                    const std::vector<std::string>&)
 {
 	return true;
 }

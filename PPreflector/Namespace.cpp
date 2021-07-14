@@ -93,9 +93,9 @@ void PPreflector::Namespace::print_metadata_members(
 	llvm::raw_ostream& out) const
 {
 	for (const descriptor& d : PP::view_chain(as_descriptors_view(functions)) ^
-								   as_descriptors_view(enums) ^
-								   as_descriptors_view(classes) ^
-								   as_descriptors_view(namespaces))
+	                               as_descriptors_view(enums) ^
+	                               as_descriptors_view(classes) ^
+	                               as_descriptors_view(namespaces))
 		d.print_metadata(out);
 }
 
@@ -103,9 +103,9 @@ void PPreflector::Namespace::print_metadata_traits(llvm::raw_ostream& out) const
 {
 	print_members<"functions"_str>(out, functions, printer_value_tuple) << "\n";
 	print_members<"types"_str>(out,
-							   PP::view_chain(as_descriptors_view(enums)) ^
-								   as_descriptors_view(classes),
-							   printer_type_tuple)
+	                           PP::view_chain(as_descriptors_view(enums)) ^
+	                               as_descriptors_view(classes),
+	                           printer_type_tuple)
 		<< "\n";
 	print_members<"namespaces"_str>(out, namespaces, printer_type_tuple)
 		<< "\n";

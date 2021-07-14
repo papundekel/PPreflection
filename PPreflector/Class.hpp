@@ -20,7 +20,7 @@ namespace PPreflector
 {
 	class Class
 		: public node_descriptor<clang::RecordType,
-								 nested_descriptor<descriptor, descriptor>>
+	                             nested_descriptor<descriptor, descriptor>>
 	{
 		std::list<Class> nested_types;
 		std::vector<base_class> base_classes;

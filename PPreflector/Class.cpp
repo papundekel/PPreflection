@@ -4,9 +4,9 @@
 #include "PP/view_chain.hpp"
 
 PPreflector::Class::Class(const clang::CXXRecordDecl& decl,
-						  const descriptor& parent)
+                          const descriptor& parent)
 	: node_descriptor<clang::RecordType,
-					  nested_descriptor<descriptor, descriptor>>(
+                      nested_descriptor<descriptor, descriptor>>(
 		  *clang::dyn_cast_or_null<clang::RecordType>(decl.getTypeForDecl()),
 		  parent)
 	, nested_types()
@@ -25,17 +25,17 @@ PPreflector::Class::Class(const clang::CXXRecordDecl& decl,
 		const auto& method = *method_ptr;
 
 		if (method.isTemplated() ||
-			clang::isa<clang::CXXConstructorDecl>(method) ||
-			clang::isa<clang::CXXDestructorDecl>(method) ||
-			method.isCopyAssignmentOperator() ||
-			method.isMoveAssignmentOperator())
+		    clang::isa<clang::CXXConstructorDecl>(method) ||
+		    clang::isa<clang::CXXDestructorDecl>(method) ||
+		    method.isCopyAssignmentOperator() ||
+		    method.isMoveAssignmentOperator())
 			continue;
 
 		if (method.isStatic())
 			static_member_functions.emplace_back(method, *this);
 		else if (const auto* conversion_method_ptr =
-					 clang::dyn_cast<clang::CXXConversionDecl>(&method);
-				 conversion_method_ptr)
+		             clang::dyn_cast<clang::CXXConversionDecl>(&method);
+		         conversion_method_ptr)
 			conversion_functions.emplace_back(*conversion_method_ptr, *this);
 		else
 			non_conversion_member_functions.emplace_back(method, *this);
@@ -70,11 +70,11 @@ void PPreflector::Class::print_name_foreign(llvm::raw_ostream& out) const
 void PPreflector::Class::print_metadata_members(llvm::raw_ostream& out) const
 {
 	for (const descriptor& d :
-		 PP::view_chain(as_descriptors_view(nested_types)) ^
-			 as_descriptors_view(constructors) ^
-			 as_descriptors_view(static_member_functions) ^
-			 as_descriptors_view(non_conversion_member_functions) ^
-			 as_descriptors_view(conversion_functions))
+	     PP::view_chain(as_descriptors_view(nested_types)) ^
+	         as_descriptors_view(constructors) ^
+	         as_descriptors_view(static_member_functions) ^
+	         as_descriptors_view(non_conversion_member_functions) ^
+	         as_descriptors_view(conversion_functions))
 		d.print_metadata(out);
 }
 
@@ -90,8 +90,8 @@ void PPreflector::Class::print_metadata_traits(llvm::raw_ostream& out) const
 	print_members<"constructors"_str>(out, constructors, printer_make_tuple)
 		<< "\n";
 	print_members<"static_member_functions"_str>(out,
-												 static_member_functions,
-												 printer_value_tuple)
+	                                             static_member_functions,
+	                                             printer_value_tuple)
 		<< "\n";
 	print_members<"non_conversion_member_functions"_str>(
 		out,
@@ -99,8 +99,8 @@ void PPreflector::Class::print_metadata_traits(llvm::raw_ostream& out) const
 		printer_value_tuple)
 		<< "\n";
 	print_members<"conversion_functions"_str>(out,
-											  conversion_functions,
-											  printer_value_tuple)
+	                                          conversion_functions,
+	                                          printer_value_tuple)
 		<< "\n";
 }
 

@@ -32,5 +32,5 @@ std::string_view PPreflector::consumer::get_main_file_name(
 	auto& source_manager = context.getSourceManager();
 
 	return source_manager.getFileEntryForID(source_manager.getMainFileID())
-		->getName();
+	    ->getName();
 }

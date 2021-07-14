@@ -56,14 +56,14 @@ namespace PPreflector
 
 		template <auto tag_name>
 		llvm::raw_ostream& print_members(llvm::raw_ostream& out,
-										 const auto& members,
-										 const auto& container_printer) const;
+		                                 const auto& members,
+		                                 const auto& container_printer) const;
 	};
 
 	auto as_descriptors_view(PP::concepts::view auto&& v)
 	{
 		return v | PP::transform([](const PPreflector::descriptor& d) -> auto&
-								 {
+		                         {
 									 return d;
 								 });
 	}
@@ -100,5 +100,5 @@ llvm::raw_ostream& PPreflector::descriptor::print_members(
 {
 	return out << printer_metadata(metadata_tag_printer<tag_name>(
 					  PPREFLECTOR_MEMBER_PRINT(print_name_own, *this)))
-			   << container_printer(for_each_member_helper(members)) << ";";
+	           << container_printer(for_each_member_helper(members)) << ";";
 }

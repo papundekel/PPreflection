@@ -14,9 +14,8 @@
 namespace PPreflector
 {
 	template <typename Node, typename Descriptor = descriptor>
-	requires PP::concepts::derived_from<Descriptor,
-										descriptor> class node_descriptor
-		: public Descriptor
+	requires PP::concepts::derived_from<Descriptor, descriptor>
+	class node_descriptor : public Descriptor
 	{
 		const Node& node;
 
@@ -33,10 +32,10 @@ namespace PPreflector
 			else if constexpr (PP::concepts::derived_from<Node, clang::Type>)
 			{
 				clang::QualType::print(&node,
-									   clang::Qualifiers(),
-									   out,
-									   printing_policy,
-									   "");
+				                       clang::Qualifiers(),
+				                       out,
+				                       printing_policy,
+				                       "");
 			}
 		}
 		void print_name(llvm::raw_ostream& out) const override final

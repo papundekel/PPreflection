@@ -16,7 +16,7 @@ namespace PPreflector
 {
 	class Enum
 		: public node_descriptor<clang::EnumType,
-								 nested_descriptor<descriptor, descriptor>>
+	                             nested_descriptor<descriptor, descriptor>>
 	{
 		std::vector<enum_value> enum_values;
 

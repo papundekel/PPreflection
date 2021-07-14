@@ -11,7 +11,7 @@ namespace PPreflector
 {
 	llvm::raw_ostream& operator<<(llvm::raw_ostream& out, clang::Qualifiers cv);
 	llvm::raw_ostream& operator<<(llvm::raw_ostream& out,
-								  clang::RefQualifierKind ref);
+	                              clang::RefQualifierKind ref);
 
 	template <typename MDecl>
 	requires PP::concepts::derived_from<MDecl, clang::CXXMethodDecl>
@@ -56,7 +56,7 @@ namespace PPreflector
 			out << "overload_member_caster<" << decl.getMethodQualifiers()
 				<< ", " << decl.getRefQualifier()
 				<< PPREFLECTOR_MEMBER_PRINT(print_parameter_types_leading_comma,
-											*this)
+			                                *this)
 				<< ">(&::"
 				<< PPREFLECTOR_MEMBER_PRINT(print_qualified_name, *this) << ")";
 		}

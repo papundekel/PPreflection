@@ -1,10 +1,10 @@
 #pragma once
+#include "PP/apply_partially.hpp"
 #include "PP/apply_template.hpp"
 #include "PP/concepts/constructible.hpp"
 #include "PP/concepts/destructible.hpp"
 #include "PP/conditional.hpp"
 #include "PP/construct_pack.hpp"
-#include "PP/functional/apply_partially.hpp"
 #include "PP/get_type.hpp"
 #include "PP/make_function_type.hpp"
 #include "PP/tuple_split.hpp"

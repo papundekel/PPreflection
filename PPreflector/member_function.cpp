@@ -1,7 +1,7 @@
 #include "member_function.hpp"
 
 llvm::raw_ostream& PPreflector::operator<<(llvm::raw_ostream& out,
-										   clang::Qualifiers cv)
+                                           clang::Qualifiers cv)
 {
 	out << "CV::";
 
@@ -21,7 +21,7 @@ llvm::raw_ostream& PPreflector::operator<<(llvm::raw_ostream& out,
 }
 
 llvm::raw_ostream& PPreflector::operator<<(llvm::raw_ostream& out,
-										   clang::RefQualifierKind ref)
+                                           clang::RefQualifierKind ref)
 {
 	out << "REF::";
 

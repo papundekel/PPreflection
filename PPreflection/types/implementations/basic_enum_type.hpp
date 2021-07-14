@@ -41,12 +41,12 @@ namespace PPreflection::detail
 	{
 		static_assert(PP::concepts::enum_type<T>);
 
-		static constexpr auto enum_values_basic =
+		static constexpr auto enum_values =
 			make_basic_enum_value +
 			PPreflection::reflect(PP::type<tags::enum_values<T>>);
 
 		static constexpr auto enum_values_array =
-			PP::static__cast * PP::type<const enum_value&> << enum_values_basic;
+			PP::static__cast * PP::type<const enum_value&> << enum_values;
 
 		static constexpr bool scoped =
 			PP::has_implicit_conversion_to_arithmetic_type(PP::type<T>);

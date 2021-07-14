@@ -16,86 +16,86 @@ PPreflector::visitor::visitor(clang::CompilerInstance& ci)
 bool PPreflector::visitor::VisitDecl(clang::Decl* declaration)
 {
 	if (auto* named_declaration_ptr =
-			clang::dyn_cast<clang::NamedDecl>(declaration);
-		named_declaration_ptr &&
-		!clang::isa<clang::ParmVarDecl>(named_declaration_ptr))
+	        clang::dyn_cast<clang::NamedDecl>(declaration);
+	    named_declaration_ptr &&
+	    !clang::isa<clang::ParmVarDecl>(named_declaration_ptr))
 	{
 		auto& named_declaration = *named_declaration_ptr;
 
 		auto access = named_declaration.getAccess();
 
 		if (is_reserved(named_declaration) || named_declaration.isTemplated() ||
-			access == clang::AccessSpecifier::AS_private ||
-			access == clang::AccessSpecifier::AS_protected)
+		    access == clang::AccessSpecifier::AS_private ||
+		    access == clang::AccessSpecifier::AS_protected)
 			return true;
 
 		if (auto* namespace_declaration_ptr =
-				clang::dyn_cast<clang::NamespaceDecl>(named_declaration_ptr))
+		        clang::dyn_cast<clang::NamespaceDecl>(named_declaration_ptr))
 		{
 			auto& namespace_declaration = *namespace_declaration_ptr;
 
 			if (!namespace_declaration.isFirstDecl() ||
-				namespace_declaration.isStdNamespace() ||
-				namespace_declaration.isAnonymousNamespace())
+			    namespace_declaration.isStdNamespace() ||
+			    namespace_declaration.isAnonymousNamespace())
 				return true;
 
 			register_namespace(namespace_declaration);
 		}
 		else if (auto* function_declaration_ptr =
-					 clang::dyn_cast<clang::FunctionDecl>(
+		             clang::dyn_cast<clang::FunctionDecl>(
 						 named_declaration_ptr))
 		{
 			auto& function_declaration = *function_declaration_ptr;
 
 			if (!function_declaration.isFirstDecl() ||
-				function_declaration.isMain() ||
-				function_declaration.isVariadic() ||
-				function_declaration.isOverloadedOperator())
+			    function_declaration.isMain() ||
+			    function_declaration.isVariadic() ||
+			    function_declaration.isOverloadedOperator())
 				return true;
 
 			// is namespace function
 			if (auto* parent_namespace_p =
-					get_namespace_parent(function_declaration))
+			        get_namespace_parent(function_declaration))
 			{
 				parent_namespace_p->add(function_declaration);
 			}
 		}
 		else if (auto* enum_declaration_ptr =
-					 clang::dyn_cast<clang::EnumDecl>(named_declaration_ptr))
+		             clang::dyn_cast<clang::EnumDecl>(named_declaration_ptr))
 		{
 			auto& enum_declaration = *enum_declaration_ptr;
 
 			if (!enum_declaration.isFirstDecl() ||
-				!enum_declaration.getIdentifier())
+			    !enum_declaration.getIdentifier())
 				return true;
 
 			// is enum in namespace scope
 			if (auto* parent_namespace_ptr =
-					get_namespace_parent(enum_declaration))
+			        get_namespace_parent(enum_declaration))
 			{
 				parent_namespace_ptr->add(enum_declaration);
 			}
 		}
 		else if (auto* class_declaration_ptr =
-					 clang::dyn_cast<clang::CXXRecordDecl>(
+		             clang::dyn_cast<clang::CXXRecordDecl>(
 						 named_declaration_ptr))
 		{
 			auto& class_declaration = *class_declaration_ptr;
 
 			if (!class_declaration.isCompleteDefinition() ||
-				!class_declaration.hasDefinition() ||
-				clang::isa<clang::ClassTemplateSpecializationDecl>(
+			    !class_declaration.hasDefinition() ||
+			    clang::isa<clang::ClassTemplateSpecializationDecl>(
 					class_declaration) ||
-				class_declaration.isUnion())
+			    class_declaration.isUnion())
 				return true;
 
 			if (auto* p = class_declaration.getTypedefNameForAnonDecl();
-				p && is_reserved(*p))
+			    p && is_reserved(*p))
 				return true;
 
 			// is class in namespace scope
 			if (auto* parent_namespace_ptr =
-					get_namespace_parent(class_declaration))
+			        get_namespace_parent(class_declaration))
 			{
 				classes.push_back(parent_namespace_ptr->add(class_declaration));
 			}
@@ -180,7 +180,7 @@ PPreflector::Namespace* PPreflector::visitor::get_namespace_parent(
 	assert(parent != nullptr);
 
 	if (auto* namespace_parent =
-			clang::dyn_cast_or_null<clang::NamespaceDecl>(parent))
+	        clang::dyn_cast_or_null<clang::NamespaceDecl>(parent))
 	{
 		auto i = map_namespaces.find(namespace_parent->getOriginalNamespace());
 		if (i != map_namespaces.end())
@@ -211,7 +211,7 @@ void PPreflector::visitor::register_namespace(
 }
 
 llvm::raw_ostream& PPreflector::visitor::print_name(llvm::raw_ostream& out,
-													const clang::NamedDecl& d)
+                                                    const clang::NamedDecl& d)
 {
 	out << "::";
 	d.printQualifiedName(out);
@@ -228,7 +228,7 @@ bool PPreflector::visitor::is_reserved(const clang::NamedDecl& d)
 		{
 			auto name = ii->getName();
 			return name.contains("__") || (name.size() >= 2 && name[0] == '_' &&
-										   name[1] >= 'A' && name[1] <= 'Z');
+			                               name[1] >= 'A' && name[1] <= 'Z');
 		}
 	}
 

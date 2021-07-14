@@ -22,7 +22,7 @@ namespace PPreflector
 	};
 
 	llvm::raw_ostream& operator<<(llvm::raw_ostream& out,
-								  const printer_enabled auto& p)
+	                              const printer_enabled auto& p)
 	{
 		p(out);
 		return out;
@@ -50,7 +50,7 @@ namespace PPreflector
 
 	template <PP::size_t count>
 	llvm::raw_ostream& operator<<(llvm::raw_ostream& out,
-								  const PP::constant_string<count>& str)
+	                              const PP::constant_string<count>& str)
 	{
 		out.write(str.chars, count);
 		return out;

@@ -7,9 +7,9 @@ PPreflector::non_global_namespace::non_global_namespace(
 	const clang::NamespaceDecl& decl,
 	const Namespace& parent)
 	: node_descriptor<clang::NamespaceDecl,
-					  nested_descriptor<Namespace, Namespace>>(decl,
-															   parent,
-															   depth)
+                      nested_descriptor<Namespace, Namespace>>(decl,
+                                                               parent,
+                                                               depth)
 {}
 
 bool PPreflector::non_global_namespace::is_std() const

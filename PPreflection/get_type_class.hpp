@@ -1,10 +1,10 @@
 #pragma once
+#include "PP/apply_partially.hpp"
 #include "PP/concepts/function.hpp"
 #include "PP/concepts/fundamental_types.hpp"
 #include "PP/concepts/pointable.hpp"
 #include "PP/concepts/reference.hpp"
-#include "PP/functional/apply_partially.hpp"
-#include "PP/functional/operators.hpp"
+#include "PP/operators.hpp"
 #include "PP/tuple_find_dynamic.hpp"
 
 namespace PPreflection
