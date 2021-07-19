@@ -12,10 +12,10 @@ namespace PPreflection
 	class enum_value : public detail::named_descriptor<descriptor>
 	{
 		constexpr virtual void print_name_before_parent(
-			PP::simple_ostream&) const noexcept
+			PP::ostream&) const noexcept
 		{}
 		constexpr virtual void print_name_after_parent(
-			PP::simple_ostream& out) const noexcept
+			PP::ostream& out) const noexcept
 		{
 			out.write(get_name());
 			// out.write(" = ");
@@ -38,7 +38,7 @@ namespace PPreflection
 	{
 	public:
 		constexpr virtual PP::any_view<PP::iterator_category::ra,
-									   const enum_value&>
+		                               const enum_value&>
 		get_values() const noexcept = 0;
 		constexpr virtual const integral_type& get_underlying_type()
 			const noexcept = 0;

@@ -21,8 +21,8 @@ namespace PPreflection
 	{
 		constexpr inline auto to_value_functor_value =
 			PP::value<[](auto&& x)
-					  {
-						  return PP_FORWARD(x);
+		              {
+						  return PP_F(x);
 					  }>;
 	}
 

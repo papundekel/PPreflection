@@ -35,7 +35,7 @@ PPreflection::dynamic_variable PPreflection::Namespace::invoke_qualified(
 	PP::string_view function_name,
 	PP::concepts::view auto&& arguments) const
 {
-	return invoke_qualified_impl(function_name, PP_FORWARD(arguments));
+	return invoke_qualified_impl(function_name, PP_F(arguments));
 }
 
 PPreflection::dynamic_variable PPreflection::Namespace::invoke_qualified(
@@ -50,6 +50,6 @@ PPreflection::dynamic_variable PPreflection::Namespace::invoke_qualified_impl(
 	PP::concepts::view auto&& args) const
 {
 	return candidate_functions(get_functions())
-		.trim_by_name(function_name)
-		.invoke(PP_FORWARD(args));
+	    .trim_by_name(function_name)
+	    .invoke(PP_F(args));
 }

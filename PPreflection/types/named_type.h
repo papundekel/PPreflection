@@ -13,12 +13,12 @@ namespace PPreflection::detail
 
 	public:
 		constexpr void print_name_prefix(
-			PP::simple_ostream& out) const noexcept override final
+			PP::ostream& out) const noexcept override final
 		{
 			out.write(this->get_name());
 		}
 		constexpr void print_name_suffix(
-			PP::simple_ostream&) const noexcept override final
+			PP::ostream&) const noexcept override final
 		{}
 	};
 }

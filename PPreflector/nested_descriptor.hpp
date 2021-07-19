@@ -16,7 +16,7 @@ namespace PPreflector
 	public:
 		explicit nested_descriptor(const DescriptorParent& parent,
 		                           auto&&... args)
-			: DescriptorBase(PP_FORWARD(args)...)
+			: DescriptorBase(PP_F(args)...)
 			, parent(parent)
 		{}
 

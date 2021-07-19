@@ -78,10 +78,10 @@ namespace
 
 int main()
 {
-	N::f(N::D());
-	N::g();
+	// N::f(N::D());
+	// N::g();
 
-	PP::size_t count;
+	PP::size_t count = 0;
 	std::cin >> count;
 
 	auto zoo = generate_zoo(count);
@@ -90,12 +90,14 @@ int main()
 
 	auto time = now();
 
-	for (const auto& animal_ptr : zoo)
-	{
-		animal_ptr->accept(v_reference);
-	}
+	// for (const auto& animal_ptr : zoo)
+	//{
+	//	animal_ptr->accept(v_reference);
+	//}
 
-	print_duration(time);
+	// print_duration(time);
+
+	zoo.back()->accept(v_reference);
 
 	std::cout << animals::value << '\n';
 	animals::value = -1;

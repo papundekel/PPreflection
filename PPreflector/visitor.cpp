@@ -7,9 +7,9 @@
 #include "for_each_with_delimiters.hpp"
 #include "printers.hpp"
 
-PPreflector::visitor::visitor(clang::CompilerInstance& ci)
-	: context(ci.getASTContext())
-	, global()
+PPreflector::visitor::visitor(clang::CompilerInstance&)
+	//: context(ci.getASTContext())
+	: global()
 	, map_namespaces()
 {}
 
@@ -113,18 +113,12 @@ void PPreflector::visitor::print(llvm::raw_ostream& out) const
 		   "#pragma once\n"
 		   "#include \"PPreflection/meta.hpp\"\n"
 		   "\n"
-		   "namespace PPreflection::detail\n"
-		   "{\n"
-		   "\tstatic constexpr auto X() noexcept\n"
-		   "\t{\n"
-		   "\t\treturn PP::constant_string(__FILE__);\n"
-		   "\t}\n"
-		   "}\n"
-		   "\n"
 		   "namespace PPreflection::tags\n"
 		   "{\n"
-		   "\ttemplate <>\n"
-		<< PPREFLECTOR_MEMBER_PRINT(print_layout, global) << "}\n"
+		   "\tnamespace\n"
+		   "\t{\n"
+		<< PPREFLECTOR_MEMBER_PRINT(print_layout, global) << "\t}\n"
+		   "}\n"
 		   "\n"
 		   "namespace PPreflection::detail\n"
 		   "{"
@@ -134,7 +128,7 @@ void PPreflector::visitor::print(llvm::raw_ostream& out) const
 		   "namespace PPreflection\n"
 		   "{\n"
 		   "\tconstexpr static const Namespace& global_namespace = "
-		   "reflect(PP::type<tags::global<detail::X()>>);\n"
+		   "reflect_descriptor(PP::type<tags::global>);\n"
 		   "}\n"
 		   "\n"
 		   "const PPreflection::non_union_class_type& "

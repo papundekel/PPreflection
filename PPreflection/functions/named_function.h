@@ -13,7 +13,7 @@ namespace PPreflection::detail
 
 	public:
 		constexpr void print_name_implementation(
-			PP::simple_ostream& out) const noexcept override final
+			PP::ostream& out) const noexcept override final
 		{
 			out.write(this->get_name());
 		}

@@ -17,8 +17,8 @@ namespace PPreflection
 
 		public:
 			constexpr dynamic_named_descriptor(PP::string_view name,
-											   auto&&... args) noexcept
-				: Base(PP_FORWARD(args)...)
+			                                   auto&&... args) noexcept
+				: Base(PP_F(args)...)
 				, name()
 			{
 				for (char c : name)

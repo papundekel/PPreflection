@@ -26,30 +26,28 @@ namespace PPreflection
 	public:
 		dynamic_reference(const dynamic_reference&) = default;
 
-		constexpr dynamic_reference(auto&& r) noexcept
-			requires PP::concepts::different_except_cvref<
-				decltype(r),
-				dynamic_reference>&& PP::concepts::
-				different_except_cvref<decltype(r), dynamic_object>&& PP::
-					concepts::different_except_cvref<decltype(r),
-													 dynamic_variable>;
+		constexpr dynamic_reference(auto&& r) noexcept requires
+			PP::concepts::different_except_cvref<decltype(r),
+		                                         dynamic_reference> &&
+			PP::concepts::different_except_cvref<decltype(r), dynamic_object> &&
+			PP::concepts::different_except_cvref<decltype(r), dynamic_variable>;
 
-	private:
-		constexpr dynamic_reference(const volatile void* ptr,
-									const reference_type& t) noexcept
-			: dynamic_reference(PP::placeholder, const_cast<void*>(ptr), t)
+	private
+		: constexpr dynamic_reference(const volatile void* ptr,
+		                              const reference_type& t) noexcept
+		: dynamic_reference(PP::placeholder, const_cast<void*>(ptr), t)
 		{}
 
 		template <typename Return, typename... Parameters>
 		constexpr dynamic_reference(Return (*ptr)(Parameters...),
-									const reference_type& t) noexcept
+		                            const reference_type& t) noexcept
 			: dynamic_reference(PP::placeholder, (void (*)())ptr, t)
 		{}
 
 		template <typename T>
 		constexpr dynamic_reference(PP::placeholder_t,
-									T* ptr,
-									const reference_type& t) noexcept
+		                            T* ptr,
+		                            const reference_type& t) noexcept
 			: ptr_object(nullptr)
 			, referenced_type_cv(&t.remove_reference())
 			, is_lvalue(t.is_lvalue())
@@ -73,8 +71,8 @@ namespace PPreflection
 		}
 
 		inline auto cast_unsafe(PP::concepts::type auto t) const noexcept
-			-> PP_GET_TYPE(t) &&;
-		inline auto cast(PP::concepts::type auto t) const -> PP_GET_TYPE(t) &&;
+			-> PP_GT(t) &&;
+		inline auto cast(PP::concepts::type auto t) const -> PP_GT(t) &&;
 
 		inline auto* get_ptr(PP::concepts::type auto t) const;
 		inline auto& get_ref(PP::concepts::type auto t) const&;
@@ -82,12 +80,12 @@ namespace PPreflection
 
 		inline decltype(auto) visit(PP::concepts::type auto t, auto&& f) const;
 		inline decltype(auto) visit_ptr(PP::concepts::type auto t,
-										auto&& f) const;
+		                                auto&& f) const;
 
 		constexpr void* get_void_ptr() const;
 
 		constexpr dynamic_reference with_cv_ref(PP::cv_qualifier cv,
-												bool is_lvalue) const noexcept
+		                                        bool is_lvalue) const noexcept
 		{
 			auto copy = *this;
 			copy.referenced_type_cv.cv = cv;

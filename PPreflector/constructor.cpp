@@ -22,10 +22,10 @@ void PPreflector::constructor::print_name_foreign(llvm::raw_ostream& out) const
 void PPreflector::constructor::print_metadata_object(
 	llvm::raw_ostream& out) const
 {
-	out << printer_metadata(metadata_tag_printer<"constructor"_str>(
+	out << printer_metadata_descriptor(metadata_tag_printer<"constructor"_str>(
 			   PPREFLECTOR_MEMBER_PRINT(print_id, *this)))
 		<< "basic_constructor<" << PPREFLECTOR_MEMBER_PRINT(print_id, *this)
-		<< ">{};";
+		<< ">{};\n";
 }
 
 void PPreflector::constructor::print_metadata_traits(

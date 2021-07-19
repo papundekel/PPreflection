@@ -1,5 +1,5 @@
 #pragma once
-#include "PP/simple_ostream.hpp"
+#include "PP/ostream.hpp"
 
 #include "member_function.h"
 
@@ -9,7 +9,7 @@
 #include "../types/reference_type.h"
 
 constexpr void PPreflection::member_function::print_name_after_parent(
-	PP::simple_ostream& out) const noexcept
+	PP::ostream& out) const noexcept
 {
 	print_name_basic(out);
 
@@ -28,4 +28,6 @@ constexpr void PPreflection::member_function::print_name_after_parent(
 	}
 
 	print_noexcept(out);
+
+	return_type().as_type().print_name_suffix(out);
 }

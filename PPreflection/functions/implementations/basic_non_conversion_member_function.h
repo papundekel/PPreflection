@@ -10,7 +10,7 @@ namespace PPreflection::detail
 		: public basic_member_function<
 			  mf,
 			  basic_named_descriptor<PP::value_t<mf>,
-									 non_conversion_member_function>>
+	                                 non_conversion_member_function>>
 	{
 		dynamic_variable invoke_unsafe(
 			dynamic_reference caller,
@@ -21,7 +21,7 @@ namespace PPreflection::detail
 				[this, caller](auto&&... args) -> decltype(auto)
 				{
 					return (caller.cast_unsafe(this->caller_type).*
-							mf)(PP_FORWARD(args)...);
+				            mf)(PP_F(args)...);
 				},
 				PP::move(arg_iterator),
 				this->parameter_types);

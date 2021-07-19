@@ -121,7 +121,6 @@ namespace PPreflection
 		PP::scoped<PP::movable<data, PP::default_releaser>, deleter> x;
 
 	public:
-		dynamic_object() = default;
 		dynamic_object(dynamic_object&&) = default;
 		explicit constexpr dynamic_object(
 			PP::concepts::invocable auto&& initializer);
@@ -134,7 +133,7 @@ namespace PPreflection
 			cv_type<complete_object_type> cv_type,
 			PP::concepts::invocable auto&& initializer) noexcept;
 		constexpr dynamic_object(cv_type<complete_object_type> cv_type,
-								 data data) noexcept;
+		                         data data) noexcept;
 
 	public:
 		dynamic_object& operator=(dynamic_object&&) = default;
@@ -150,7 +149,7 @@ namespace PPreflection
 		}
 
 		static constexpr dynamic_object create(PP::concepts::type auto t,
-											   auto&&... args);
+		                                       auto&&... args);
 		static constexpr dynamic_object create_copy(auto&& arg);
 		static dynamic_object create_shallow_copy(dynamic_reference r) noexcept;
 
@@ -182,7 +181,7 @@ namespace PPreflection
 		constexpr dynamic_reference reference_cast_helper(
 			PP::concepts::value auto rvalue) const;
 
-		static allocated_ptr allocate(const auto& t) noexcept;
+		static constexpr allocated_ptr allocate(const auto& t) noexcept;
 
 		static constexpr data allocate_and_initialize(
 			PP::concepts::invocable auto&& i) noexcept;

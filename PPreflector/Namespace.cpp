@@ -65,7 +65,7 @@ void PPreflector::Namespace::remove_std()
 
 void PPreflector::Namespace::print_tabs(llvm::raw_ostream& out) const
 {
-	for (PP::size_t i = 0; i != depth + 1; ++i)
+	for (PP::size_t i = 0; i != depth + 2; ++i)
 		out.write('\t');
 }
 

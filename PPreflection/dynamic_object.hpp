@@ -40,7 +40,7 @@ namespace PPreflection::detail
 	static constexpr bool is_small_type(const auto& t) noexcept
 	{
 		return get_alignment_impl(t) <= alignof(max_align_t) &&
-			   get_size(t) <= sizeof(void*);
+		       get_size(t) <= sizeof(void*);
 	}
 }
 
@@ -63,14 +63,13 @@ constexpr PP::cv_qualifier PPreflection::dynamic_object::deleter::get_cv() const
 
 constexpr PPreflection::dynamic_object::dynamic_object(
 	PP::concepts::invocable auto&& i)
-	: dynamic_object(type::reflect_cv(PP_DECLTYPE(PP_FORWARD(i)())),
-					 PP_FORWARD(i))
+	: dynamic_object(type::reflect_cv(PP_DECLTYPE(PP_F(i)())), PP_F(i))
 {}
 
 constexpr PPreflection::dynamic_object::dynamic_object(
 	cv_type<complete_object_type> cv_type,
 	PP::concepts::invocable auto&& i) noexcept
-	: dynamic_object(cv_type, allocate_and_initialize(PP_FORWARD(i)))
+	: dynamic_object(cv_type, allocate_and_initialize(PP_F(i)))
 {}
 
 constexpr PPreflection::dynamic_object::dynamic_object(
@@ -86,18 +85,18 @@ constexpr PPreflection::dynamic_object PPreflection::dynamic_object::create(
 	return dynamic_object(
 		[&args...]()
 		{
-			return PP_GET_TYPE(t)(PP_FORWARD(args)...);
+			return PP_GT(t)(PP_F(args)...);
 		});
 }
 
 constexpr PPreflection::dynamic_object
 PPreflection::dynamic_object::create_copy(auto&& arg)
 {
-	using T = PP_GET_TYPE(~PP_DECLTYPE(arg));
+	using T = PP_GT(~PP_DECLTYPE(arg));
 	return dynamic_object(
 		[&arg]()
 		{
-			return T(PP_FORWARD(arg));
+			return T(PP_F(arg));
 		});
 }
 
@@ -170,13 +169,13 @@ PPreflection::dynamic_object::reference_cast_helper(
 	{
 		auto cv_type = get_cv_type();
 		return dynamic_reference(get_address(),
-								 dynamic_reference_type(cv_type, *lvalue));
+		                         dynamic_reference_type(cv_type, *lvalue));
 	}
 	else
 		throw 0;
 }
 
-PPreflection::dynamic_object::allocated_ptr
+constexpr PPreflection::dynamic_object::allocated_ptr
 PPreflection::dynamic_object::allocate(const auto& t) noexcept
 {
 	if (detail::is_small_type(t))
@@ -189,13 +188,13 @@ constexpr PPreflection::dynamic_object::data
 PPreflection::dynamic_object::allocate_and_initialize(
 	PP::concepts::invocable auto&& i) noexcept
 {
-	using R = decltype(PP_FORWARD(i)());
+	using R = decltype(PP_F(i)());
 
 	return allocate(PP::type<R>)
-		.initialize_and_get(
+	    .initialize_and_get(
 			[&i](void* ptr)
 			{
-				new (ptr) R(PP_FORWARD(i)());
+				new (ptr) R(PP_F(i)());
 			});
 }
 

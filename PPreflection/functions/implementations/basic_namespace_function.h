@@ -12,13 +12,14 @@ namespace PPreflection::detail
 			  basic_named_descriptor<PP::value_t<f>, namespace_function>>
 	{
 		constexpr void print_name_implementation(
-			PP::simple_ostream& out) const noexcept override final
+			PP::ostream& out) const noexcept override final
 		{
 			out.write(this->get_name());
 		}
 		constexpr const Namespace& get_parent() const noexcept override final
 		{
-			return reflect(reflect(PP::type<tags::parent<PP::value_t<f>>>));
+			return reflect_descriptor(
+				reflect(PP::type<tags::parent<PP::value_t<f>>>));
 		}
 	};
 }

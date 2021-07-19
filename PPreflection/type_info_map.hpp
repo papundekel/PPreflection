@@ -20,21 +20,21 @@ namespace PPreflection
 	{
 		using pair =
 			PP::tuple<std::type_index,
-					  PP::reference_wrapper<const non_union_class_type&>>;
+		              PP::reference_wrapper<const non_union_class_type&>>;
 
 		pair key_values[Count];
 
 	public:
 		template <typename... T>
 		explicit type_info_map(PP::type_tuple_t<T...>)
-			: key_values{
-				pair(PP::placeholder, typeid(T), reflect(PP::type<T>))...
-			}
+			: key_values{pair(PP::placeholder,
+		                      typeid(T),
+		                      reflect_descriptor(PP::type<T>))...}
 		{
 			std::sort(key_values,
-					  key_values + Count,
-					  [](const pair& a, const pair& b)
-					  {
+			          key_values + Count,
+			          [](const pair& a, const pair& b)
+			          {
 						  return a[PP::value_0] < b[PP::value_0];
 					  });
 		}
@@ -42,10 +42,10 @@ namespace PPreflection
 		const non_union_class_type& get(std::type_index type) const
 		{
 			auto i = std::lower_bound(key_values,
-									  key_values + Count,
-									  type,
-									  [](const pair& p, std::type_index type)
-									  {
+			                          key_values + Count,
+			                          type,
+			                          [](const pair& p, std::type_index type)
+			                          {
 										  return p[PP::value_0] < type;
 									  });
 

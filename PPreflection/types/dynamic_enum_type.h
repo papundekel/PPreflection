@@ -20,8 +20,8 @@ namespace PPreflection
 
 		public:
 			constexpr dynamic_enum_value(PP::string_view name,
-										 dynamic_object&& value,
-										 const enum_type& parent) noexcept
+			                             dynamic_object&& value,
+			                             const enum_type& parent) noexcept
 				: detail::dynamic_named_descriptor<enum_value>(name)
 				, value(PP::move(value))
 				, parent(parent)
@@ -50,7 +50,7 @@ namespace PPreflection
 			parent_descriptor_reference_strong parent) noexcept
 
 			: dynamic_user_defined_type<enum_type>(name, parent)
-			, values(PP_FORWARD(values))
+			, values(PP_F(values))
 			, underlying_type(underlying_type)
 		{}
 

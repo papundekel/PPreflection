@@ -12,13 +12,13 @@ namespace PPreflection
 	{
 	public:
 		constexpr PP::variant<const non_void_fundamental_type&,
-							  const pointer_type&,
-							  const pointer_to_member_type&,
-							  const user_defined_type&>
+		                      const pointer_type&,
+		                      const pointer_to_member_type&,
+		                      const user_defined_type&>
 			cast_down(PP::overload_tag<non_array_object_type>)
 				const noexcept override final
 		{
-			return { PP::placeholder, *this };
+			return {PP::placeholder, *this};
 		}
 
 		constexpr bool has_name(PP::string_view) const noexcept override final
@@ -26,13 +26,13 @@ namespace PPreflection
 			return true;
 		}
 		constexpr void print_name_prefix(
-			PP::simple_ostream& out) const noexcept override final
+			PP::ostream& out) const noexcept override final
 		{
 			remove_pointer().print_name_prefix(out);
 			out.write("(*");
 		}
 		constexpr void print_name_suffix(
-			PP::simple_ostream& out) const noexcept override final
+			PP::ostream& out) const noexcept override final
 		{
 			out.write(")");
 			remove_pointer().print_name_suffix(out);

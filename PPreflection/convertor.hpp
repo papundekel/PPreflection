@@ -9,14 +9,14 @@
 
 constexpr PPreflection::convertor_reference
 PPreflection::create_convertor_reference(PP::concepts::type auto t,
-										 PP::concepts::value auto f) noexcept
+                                         PP::concepts::value auto f) noexcept
 {
 	return [](PPreflection::dynamic_reference ref)
 	{
 		return ref.visit(
 			PP_COPY_TYPE(t),
 			PP::compose(PP::construct_pack * PP::type<dynamic_reference>,
-						PP_GET_VALUE(f)));
+		                PP_GET_VALUE(f)));
 	};
 }
 
@@ -27,12 +27,12 @@ constexpr PPreflection::convertor_object PPreflection::create_convertor_object(
 	return [](PPreflection::dynamic_reference ref)
 	{
 		return ref.visit(PP_COPY_TYPE(t),
-						 [](auto&& value)
-						 {
+		                 [](auto&& value)
+		                 {
 							 return dynamic_object(
 								 [&value]()
 								 {
-									 return PP_GET_VALUE(f)(PP_FORWARD(value));
+									 return PP_GET_VALUE(f)(PP_F(value));
 								 });
 						 });
 	};

@@ -31,9 +31,9 @@ namespace PPreflection
 			return true;
 		}
 		constexpr void print_name_prefix(
-			PP::simple_ostream& out) const noexcept override final;
+			PP::ostream& out) const noexcept override final;
 		constexpr void print_name_suffix(
-			PP::simple_ostream& out) const noexcept override final;
+			PP::ostream& out) const noexcept override final;
 
 		constexpr bool operator==(const reference_type& other) const noexcept;
 		constexpr bool operator==(

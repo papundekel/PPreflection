@@ -34,10 +34,10 @@ namespace PPreflection
 		get_functions() const noexcept = 0;
 
 		constexpr void print_name_before_parent(
-			PP::simple_ostream&) const noexcept override final
+			PP::ostream&) const noexcept override final
 		{}
 		constexpr void print_name_after_parent(
-			PP::simple_ostream& out) const noexcept override final
+			PP::ostream& out) const noexcept override final
 		{
 			out.write(get_name());
 		}

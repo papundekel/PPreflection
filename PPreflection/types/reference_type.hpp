@@ -13,7 +13,7 @@ constexpr auto PPreflection::reference_type::make_reference() const noexcept
 	return make_reference(is_lvalue());
 }
 constexpr void PPreflection::reference_type::print_name_prefix(
-	PP::simple_ostream& out) const noexcept
+	PP::ostream& out) const noexcept
 {
 	remove_reference().print_name_prefix(out);
 
@@ -22,7 +22,7 @@ constexpr void PPreflection::reference_type::print_name_prefix(
 		out.write("&");
 }
 constexpr void PPreflection::reference_type::print_name_suffix(
-	PP::simple_ostream& out) const noexcept
+	PP::ostream& out) const noexcept
 {
 	out.write(")");
 	remove_reference().print_name_suffix(out);

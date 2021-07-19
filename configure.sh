@@ -1,0 +1,2 @@
+#!/bin/bash
+cmake -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_C_COMPILER:FILEPATH=gcc-11 -DCMAKE_CXX_COMPILER:FILEPATH=g++-11 -H. -Bbuild/Release -G Ninja

@@ -42,7 +42,7 @@ PPreflection::parent_descriptor_reference_strong::as_class() const noexcept
 }
 constexpr void
 PPreflection::parent_descriptor_reference_strong::print_name_before_parent(
-	PP::simple_ostream& out) const noexcept
+	PP::ostream& out) const noexcept
 {
 	PP::visit(
 		[&out](const descriptor& d)
@@ -53,7 +53,7 @@ PPreflection::parent_descriptor_reference_strong::print_name_before_parent(
 }
 constexpr void
 PPreflection::parent_descriptor_reference_strong::print_name_after_parent(
-	PP::simple_ostream& out) const noexcept
+	PP::ostream& out) const noexcept
 {
 	PP::visit(
 		[&out](const descriptor& d)

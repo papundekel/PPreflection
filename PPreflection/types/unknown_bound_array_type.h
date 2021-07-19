@@ -8,11 +8,11 @@ namespace PPreflection
 	{
 	public:
 		constexpr PP::variant<const unknown_bound_array_type&,
-							  const complete_object_type&>
+		                      const complete_object_type&>
 			cast_down(
 				PP::overload_tag<object_type>) const noexcept override final
 		{
-			return { PP::placeholder, *this };
+			return {PP::placeholder, *this};
 		}
 
 		constexpr bool has_name(PP::string_view) const noexcept override final
@@ -20,12 +20,12 @@ namespace PPreflection
 			return true;
 		}
 		constexpr void print_name_prefix(
-			PP::simple_ostream& out) const noexcept override final
+			PP::ostream& out) const noexcept override final
 		{
 			remove_extent().print_name_prefix(out);
 		}
 		constexpr void print_name_suffix(
-			PP::simple_ostream& out) const noexcept override final
+			PP::ostream& out) const noexcept override final
 		{
 			out.write("[]");
 			remove_extent().print_name_suffix(out);

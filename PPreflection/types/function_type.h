@@ -21,16 +21,16 @@ namespace PPreflection
 			cast_down(PP::overload_tag<referencable_type>)
 				const noexcept override final
 		{
-			return { PP::placeholder, *this };
+			return {PP::placeholder, *this};
 		}
 
 		constexpr virtual return_type_reference return_type()
 			const noexcept = 0;
 		constexpr virtual PP::any_view<PP::iterator_category::ra,
-									   parameter_type_reference>
+		                               parameter_type_reference>
 		parameter_types() const noexcept = 0;
 		constexpr virtual PP::any_view<PP::iterator_category::ra,
-									   parameter_type_olr_reference>
+		                               parameter_type_olr_reference>
 		parameter_types_olr() const noexcept = 0;
 		constexpr virtual bool is_noexcept() const noexcept = 0;
 		constexpr virtual PP::cv_qualifier get_function_cv_qualifier()
@@ -43,13 +43,13 @@ namespace PPreflection
 			return true;
 		}
 		constexpr void print_name_prefix(
-			PP::simple_ostream& out) const noexcept override final
+			PP::ostream& out) const noexcept override final
 		{
 			const type& return_type_ = return_type();
 			return_type_.print_name_prefix(out);
 		}
 		constexpr void print_name_suffix(
-			PP::simple_ostream& out) const noexcept override final
+			PP::ostream& out) const noexcept override final
 		{
 			type::print_parameter_types(out, parameter_types());
 
@@ -74,8 +74,8 @@ namespace PPreflection
 			PP::concepts::tuple auto&& types)
 		{
 			return PP::tuple_map_to_array(PP::type<parameter_type_reference>,
-										  type::reflect,
-										  PP_FORWARD(types));
+			                              type::reflect,
+			                              PP_F(types));
 		}
 		static constexpr auto reflect_parameter_types_olr(
 			PP::concepts::tuple auto&& types)
@@ -83,7 +83,7 @@ namespace PPreflection
 			return PP::tuple_map_to_array(
 				PP::type<parameter_type_olr_reference>,
 				type::reflect,
-				PP_FORWARD(types));
+				PP_F(types));
 		}
 
 		constexpr virtual convertor_object function_to_pointer_conversion()
@@ -94,12 +94,12 @@ namespace PPreflection
 		constexpr bool operator==(const function_type& other) const noexcept
 		{
 			return return_type() == other.return_type() &&
-				   PP::view_equal(parameter_types(), other.parameter_types()) &&
-				   is_noexcept() == other.is_noexcept() &&
-				   get_function_cv_qualifier() ==
-					   other.get_function_cv_qualifier() &&
-				   get_function_ref_qualifier() ==
-					   other.get_function_ref_qualifier();
+			       PP::view_equal(parameter_types(), other.parameter_types()) &&
+			       is_noexcept() == other.is_noexcept() &&
+			       get_function_cv_qualifier() ==
+			           other.get_function_cv_qualifier() &&
+			       get_function_ref_qualifier() ==
+			           other.get_function_ref_qualifier();
 		}
 		constexpr bool operator==(
 			const type& other) const noexcept override final

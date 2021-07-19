@@ -10,13 +10,13 @@
 #include "types/pointer_type.h"
 
 inline auto PPreflection::dynamic_reference::cast_unsafe(
-	PP::concepts::type auto t) const noexcept -> PP_GET_TYPE(t) &&
+	PP::concepts::type auto t) const noexcept -> PP_GT(t) &&
 {
-	return (PP_GET_TYPE(t) &&)(*reinterpret(PP::add_pointer(!t)));
+	return (PP_GT(t) &&)(*reinterpret(PP::add_pointer(!t)));
 }
 
 inline auto PPreflection::dynamic_reference::cast(
-	PP::concepts::type auto t) const -> PP_GET_TYPE(t) &&
+	PP::concepts::type auto t) const -> PP_GT(t) &&
 {
 	return cast_unsafe(t);
 }
@@ -38,11 +38,11 @@ inline auto&& PPreflection::dynamic_reference::get_ref(
 	return cast(t + PP::add_rvalue_tag);
 }
 
-constexpr PPreflection::dynamic_reference::dynamic_reference(auto&& r) noexcept
-	requires PP::concepts::different_except_cvref<decltype(r),
-												  dynamic_reference>&& PP::
-		concepts::different_except_cvref<decltype(r), dynamic_object>&& PP::
-			concepts::different_except_cvref<decltype(r), dynamic_variable>
+constexpr PPreflection::dynamic_reference::dynamic_reference(
+	auto&& r) noexcept requires
+	PP::concepts::different_except_cvref<decltype(r), dynamic_reference> &&
+	PP::concepts::different_except_cvref<decltype(r), dynamic_object> &&
+	PP::concepts::different_except_cvref<decltype(r), dynamic_variable>
 
 	: dynamic_reference(&r, type::reflect(PP_DECLTYPE(r)))
 {}
@@ -50,7 +50,7 @@ constexpr PPreflection::dynamic_reference::dynamic_reference(auto&& r) noexcept
 namespace PPreflection::detail
 {
 	constexpr auto add_cv_except_to_array(PP::concepts::value auto cv,
-										  PP::concepts::type auto t) noexcept
+	                                      PP::concepts::type auto t) noexcept
 	{
 		if constexpr (PP::is_array(PP_COPY_TYPE(t)))
 			return t;
@@ -68,29 +68,29 @@ inline decltype(auto) PPreflection::dynamic_reference::visit(
 		switch (referenced_type_cv.cv)
 		{
 			case PP::cv_qualifier::none:
-				return PP_FORWARD(f)(
+				return PP_F(f)(
 					cast_unsafe(detail::add_cv_except_to_array(
 									PP::value<PP::cv_qualifier::none>,
 									t) +
-								PP::add_lvalue_tag));
+				                PP::add_lvalue_tag));
 			case PP::cv_qualifier::Const:
-				return PP_FORWARD(f)(
+				return PP_F(f)(
 					cast_unsafe(detail::add_cv_except_to_array(
 									PP::value<PP::cv_qualifier::Const>,
 									t) +
-								PP::add_lvalue_tag));
+				                PP::add_lvalue_tag));
 			case PP::cv_qualifier::Volatile:
-				return PP_FORWARD(f)(
+				return PP_F(f)(
 					cast_unsafe(detail::add_cv_except_to_array(
 									PP::value<PP::cv_qualifier::Volatile>,
 									t) +
-								PP::add_lvalue_tag));
+				                PP::add_lvalue_tag));
 			case PP::cv_qualifier::const_volatile:
-				return PP_FORWARD(f)(
+				return PP_F(f)(
 					cast_unsafe(detail::add_cv_except_to_array(
 									PP::value<PP::cv_qualifier::const_volatile>,
 									t) +
-								PP::add_lvalue_tag));
+				                PP::add_lvalue_tag));
 		}
 	}
 	else
@@ -98,25 +98,25 @@ inline decltype(auto) PPreflection::dynamic_reference::visit(
 		switch (referenced_type_cv.cv)
 		{
 			case PP::cv_qualifier::none:
-				return PP_FORWARD(f)(cast_unsafe(detail::add_cv_except_to_array(
+				return PP_F(f)(cast_unsafe(detail::add_cv_except_to_array(
 					PP::value<PP::cv_qualifier::none>,
 					t)));
 			case PP::cv_qualifier::Const:
-				return PP_FORWARD(f)(cast_unsafe(detail::add_cv_except_to_array(
+				return PP_F(f)(cast_unsafe(detail::add_cv_except_to_array(
 					PP::value<PP::cv_qualifier::Const>,
 					t)));
 			case PP::cv_qualifier::Volatile:
-				return PP_FORWARD(f)(cast_unsafe(detail::add_cv_except_to_array(
+				return PP_F(f)(cast_unsafe(detail::add_cv_except_to_array(
 					PP::value<PP::cv_qualifier::Volatile>,
 					t)));
 			case PP::cv_qualifier::const_volatile:
-				return PP_FORWARD(f)(cast_unsafe(detail::add_cv_except_to_array(
+				return PP_F(f)(cast_unsafe(detail::add_cv_except_to_array(
 					PP::value<PP::cv_qualifier::const_volatile>,
 					t)));
 		}
 	}
 
-	return PP_FORWARD(f)(cast_unsafe(t));
+	return PP_F(f)(cast_unsafe(t));
 }
 
 inline decltype(auto) PPreflection::dynamic_reference::visit_ptr(
@@ -126,24 +126,24 @@ inline decltype(auto) PPreflection::dynamic_reference::visit_ptr(
 	static_assert(PP::is_pointable(PP_COPY_TYPE(t)));
 
 	switch (dynamic_cast<const pointer_type*>(referenced_type_cv.type_ptr)
-				->remove_pointer()
-				.cv)
+	            ->remove_pointer()
+	            .cv)
 	{
 		case PP::cv_qualifier::none:
-			return PP_FORWARD(f)(cast_unsafe(PP::add_pointer(
+			return PP_F(f)(cast_unsafe(PP::add_pointer(
 				PP::add_cv(PP::value<PP::cv_qualifier::none>, t))));
 		case PP::cv_qualifier::Const:
-			return PP_FORWARD(f)(cast_unsafe(PP::add_pointer(
+			return PP_F(f)(cast_unsafe(PP::add_pointer(
 				PP::add_cv(PP::value<PP::cv_qualifier::Const>, t))));
 		case PP::cv_qualifier::Volatile:
-			return PP_FORWARD(f)(cast_unsafe(PP::add_pointer(
+			return PP_F(f)(cast_unsafe(PP::add_pointer(
 				PP::add_cv(PP::value<PP::cv_qualifier::Volatile>, t))));
 		case PP::cv_qualifier::const_volatile:
-			return PP_FORWARD(f)(cast_unsafe(PP::add_pointer(
+			return PP_F(f)(cast_unsafe(PP::add_pointer(
 				PP::add_cv(PP::value<PP::cv_qualifier::const_volatile>, t))));
 	}
 
-	return PP_FORWARD(f)(cast_unsafe(
+	return PP_F(f)(cast_unsafe(
 		PP::add_pointer(PP::add_cv(PP::value<PP::cv_qualifier::none>, t))));
 }
 

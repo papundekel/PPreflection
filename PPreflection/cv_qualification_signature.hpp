@@ -14,17 +14,17 @@
 namespace PPreflection
 {
 	static constexpr auto equality_to_partial_ordering(const auto& a,
-													   const auto& b) noexcept
+	                                                   const auto& b) noexcept
 	{
 		return a == b ? std::partial_ordering::equivalent
-					  : std::partial_ordering::unordered;
+		              : std::partial_ordering::unordered;
 	}
 
 	static constexpr auto combine(std::partial_ordering a,
-								  std::partial_ordering b) noexcept
+	                              std::partial_ordering b) noexcept
 	{
 		if (a == std::partial_ordering::unordered ||
-			b == std::partial_ordering::unordered)
+		    b == std::partial_ordering::unordered)
 			return std::partial_ordering::unordered;
 		else if (a == b || b == std::partial_ordering::equivalent)
 			return a;
@@ -56,10 +56,10 @@ namespace PPreflection
 		struct element
 		{
 			std::variant<pointer,
-						 member_pointer,
-						 unknown_bound_array,
-						 known_bound_array,
-						 U>
+			             member_pointer,
+			             unknown_bound_array,
+			             known_bound_array,
+			             U>
 				P;
 			PP::cv_qualifier cv;
 
@@ -81,7 +81,7 @@ namespace PPreflection
 									*mp_target.Class);
 							},
 							[](known_bound_array a_this,
-							   known_bound_array a_target)
+				               known_bound_array a_target)
 							{
 								return equality_to_partial_ordering(
 									a_this.extent,
@@ -140,8 +140,8 @@ namespace PPreflection
 			if (const auto* p = dynamic_cast<const pointer_type*>(&type); p)
 				register_elements(*p);
 			else if (const auto* p =
-						 dynamic_cast<const pointer_to_member_type*>(&type);
-					 p)
+			             dynamic_cast<const pointer_to_member_type*>(&type);
+			         p)
 				register_elements(*p);
 		}
 
@@ -158,7 +158,7 @@ namespace PPreflection
 				PP::size_t i = 0;
 
 				for (auto [element_this, element_other] :
-					 PP::zip_view_pack(elements, other.elements))
+				     PP::zip_view_pack(elements, other.elements))
 				{
 					auto compare_element = element_this <=> element_other;
 
@@ -167,7 +167,7 @@ namespace PPreflection
 						return std::partial_ordering::unordered;
 					}
 					else if (compare_element !=
-							 std::partial_ordering::equivalent)
+					         std::partial_ordering::equivalent)
 					{
 						if (difference == std::partial_ordering::equivalent)
 						{
@@ -188,14 +188,14 @@ namespace PPreflection
 			auto make_view = [index_first_difference](const auto& elements)
 			{
 				return PP::simple_view(elements.begin(),
-									   elements.begin() +
-										   index_first_difference);
+				                       elements.begin() +
+				                           index_first_difference);
 			};
 
 			for (auto& element :
-				 make_view(difference == std::partial_ordering::less
-							   ? elements
-							   : other.elements))
+			     make_view(difference == std::partial_ordering::less
+			                   ? elements
+			                   : other.elements))
 			{
 				if (!PP::cv_is_const(element.cv))
 					return std::partial_ordering::unordered;
@@ -233,7 +233,7 @@ namespace PPreflection
 				if (member_pointer_ptr)
 				{
 					elements.push_back(
-						member_pointer{ &member_pointer_ptr->get_class_type() },
+						member_pointer{&member_pointer_ptr->get_class_type()},
 						t.cv);
 					t = member_pointer_ptr->get_member_type().to_type_ptr();
 					continue;
@@ -253,8 +253,7 @@ namespace PPreflection
 				if (known_bound_array_ptr)
 				{
 					elements.push_back(
-						known_bound_array{
-							known_bound_array_ptr->get_extent() },
+						known_bound_array{known_bound_array_ptr->get_extent()},
 						t.cv);
 					t = known_bound_array_ptr->remove_extent().to_type_ptr();
 					continue;
@@ -263,7 +262,7 @@ namespace PPreflection
 				break;
 			}
 
-			elements.push_back(U{ t.type_ptr }, t.cv);
+			elements.push_back(U{t.type_ptr}, t.cv);
 		}
 	};
 }

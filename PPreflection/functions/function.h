@@ -29,8 +29,8 @@ namespace PPreflection
 	protected:
 		static constexpr decltype(auto)
 		call_with_arguments_cast_to_parameter_types(auto&& f,
-													auto arg_iterator,
-													auto parameter_types)
+		                                            auto arg_iterator,
+		                                            auto parameter_types)
 		{
 			auto args = PP::tuple_zip_with_pack(
 				[](dynamic_reference ref, PP::concepts::type auto t) -> auto&&
@@ -38,37 +38,37 @@ namespace PPreflection
 					return ref.cast_unsafe(t);
 				},
 				!make_view_tuple(PP::tuple_count_value_t(parameter_types),
-								 PP::move(arg_iterator)),
+			                     PP::move(arg_iterator)),
 				parameter_types);
 
-			return PP::tuple_apply(PP_FORWARD(f), PP::move(args));
+			return PP::tuple_apply(PP_F(f), PP::move(args));
 		}
 
 		static inline dynamic_variable invoke_helper(auto&& f,
-													 auto arg_iterator,
-													 auto parameter_types)
+		                                             auto arg_iterator,
+		                                             auto parameter_types)
 		{
 			return dynamic_variable::create(
 				[&f,
-				 i = PP::move(arg_iterator),
-				 parameter_types]() -> decltype(auto)
+			     i = PP::move(arg_iterator),
+			     parameter_types]() -> decltype(auto)
 				{
 					return call_with_arguments_cast_to_parameter_types(
-						PP_FORWARD(f),
+						PP_F(f),
 						PP::move(i),
 						parameter_types);
 				});
 		}
 
 		constexpr virtual void print_name_implementation(
-			PP::simple_ostream& out) const noexcept = 0;
-		constexpr void print_name_basic(PP::simple_ostream& out) const noexcept;
-		constexpr void print_noexcept(PP::simple_ostream& out) const noexcept;
+			PP::ostream& out) const noexcept = 0;
+		constexpr void print_name_basic(PP::ostream& out) const noexcept;
+		constexpr void print_noexcept(PP::ostream& out) const noexcept;
 
 		constexpr void print_name_before_parent(
-			PP::simple_ostream& out) const noexcept override final;
+			PP::ostream& out) const noexcept override final;
 		constexpr void print_name_after_parent(
-			PP::simple_ostream& out) const noexcept override;
+			PP::ostream& out) const noexcept override;
 
 	public:
 		virtual dynamic_variable invoke_unsafe(
@@ -92,7 +92,7 @@ namespace PPreflection
 		}
 
 		constexpr virtual PP::any_view<PP::iterator_category::ra,
-									   parameter_type_olr_reference>
+		                               parameter_type_olr_reference>
 		parameter_types_olr() const noexcept
 		{
 			return get_function_type().parameter_types_olr();

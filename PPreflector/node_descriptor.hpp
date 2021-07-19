@@ -21,7 +21,7 @@ namespace PPreflector
 
 	public:
 		explicit node_descriptor(const Node& node, auto&&... args)
-			: Descriptor(PP_FORWARD(args)...)
+			: Descriptor(PP_F(args)...)
 			, node(node)
 		{}
 

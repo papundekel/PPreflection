@@ -19,13 +19,12 @@
 namespace PPreflection::detail
 {
 	template <typename Class, typename Base, typename... Parameters>
-	using basic_constructor_base_base =
-		PP_GET_TYPE(PP::Template<basic_function>(
-			PP::make_function_type(
-				PP::type<Class(Parameters...)>,
-				PP::value<PP::concepts::constructible_noexcept<Class,
-															   Parameters...>>),
-			PP::type<Base>));
+	using basic_constructor_base_base = PP_GT(PP::Template<basic_function>(
+		PP::make_function_type(
+			PP::type<Class(Parameters...)>,
+			PP::value<
+				PP::concepts::constructible_noexcept<Class, Parameters...>>),
+		PP::type<Base>));
 
 	template <typename Class, typename Base, typename... Parameters>
 	class basic_constructor_base
@@ -49,7 +48,7 @@ namespace PPreflection::detail
 				return dynamic_object::create_invalid(
 					dynamic_object::invalid_code::indestructible_return_value);
 			else if constexpr (!PP::concepts::constructible<Class,
-															Parameters...>)
+			                                                Parameters...>)
 				return dynamic_object::create_invalid(
 					dynamic_object::invalid_code::abstract_class);
 			else
@@ -57,7 +56,7 @@ namespace PPreflection::detail
 					[](auto&&... args)
 					{
 						return dynamic_object::create(PP::type<Class>,
-													  PP_FORWARD(args)...);
+					                                  PP_F(args)...);
 					},
 					PP::move(arg_iterator),
 					this->parameter_types);
@@ -72,8 +71,8 @@ namespace PPreflection::detail
 	template <typename Class, typename Parameter>
 	class basic_constructor_opc final
 		: public basic_constructor_base<Class,
-										one_parameter_converting_constructor,
-										Parameter>
+	                                    one_parameter_converting_constructor,
+	                                    Parameter>
 	{
 		dynamic_object invoke_unsafe(
 			dynamic_reference arg) const noexcept override final
@@ -98,9 +97,9 @@ namespace PPreflection::detail
 	};
 
 	template <typename Class, typename... Parameters>
-	using basic_constructor = PP_GET_TYPE((
+	using basic_constructor = PP_GT((
 		[](PP::concepts::type auto class_type,
-		   PP::concepts::type auto... parameter_types)
+	       PP::concepts::type auto... parameter_types)
 		{
 			return [class_type, parameter_types...]
 			{

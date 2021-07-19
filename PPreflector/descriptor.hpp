@@ -49,8 +49,11 @@ namespace PPreflector
 		static constexpr auto printer_value_t =
 			container_printer<"PP::value_t<"_str, ">"_str>;
 		static constexpr auto printer_metadata = container_printer<
-			"\ttemplate <> constexpr inline auto metadata<X(), "_str,
+			"\ttemplate <> constexpr inline auto metadata<"_str,
 			"> = "_str>;
+		static constexpr auto printer_metadata_descriptor = container_printer<
+			"\ttemplate <> constexpr inline auto metadata<tags::descriptor<"_str,
+			">> = "_str>;
 		static constexpr auto printer_sv =
 			container_printer<"\""_str, "\"_sv"_str>;
 

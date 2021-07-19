@@ -22,13 +22,13 @@ void PPreflector::global_namespace::print_qualified_name(
 
 void PPreflector::global_namespace::print_name(llvm::raw_ostream& out) const
 {
-	out << "global<X()>";
+	out << "global";
 }
 
 void PPreflector::global_namespace::print_layout_name(
 	llvm::raw_ostream& out) const
 {
-	out << "global<detail::X()>";
+	out << "global";
 }
 
 void PPreflector::global_namespace::print_unscoped_name(
@@ -53,7 +53,7 @@ void PPreflector::global_namespace::print_metadata_object(
 	llvm::raw_ostream& out) const
 {
 	// clang-format off
-	out << "\ttemplate <> constexpr inline auto metadata<X(), tags::global<X()>> = basic_namespace<tags::global<X()>>{};";
+	out << "\ttemplate <> constexpr inline auto metadata<tags::descriptor<tags::global>> = basic_namespace<tags::global>{};";
 	// clang-format on
 }
 

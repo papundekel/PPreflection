@@ -15,6 +15,5 @@ PPreflection::dynamic_variable PPreflection::member_function::invoke_unsafe(
 	PP::any_iterator<PP::iterator_category::ra, dynamic_reference> arg_iterator,
 	void*) const
 {
-	return invoke_unsafe(*arg_iterator,
-						 PP::iterator_next(PP::move(arg_iterator)));
+	return invoke_unsafe(*arg_iterator, PP::iterator_next(arg_iterator));
 }

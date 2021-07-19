@@ -20,9 +20,9 @@ namespace PPreflection
 	{
 		template <typename T>
 		using arithmetic_type_strong_base =
-			PP_GET_TYPE(PP::conditional(PP::value<PP::concepts::integral<T>>,
-										PP::type<integral_type>,
-										PP::type<arithmetic_type>));
+			PP_GT(PP::conditional(PP::value<PP::concepts::integral<T>>,
+		                          PP::type<integral_type>,
+		                          PP::type<arithmetic_type>));
 	}
 
 	template <typename T>
@@ -34,7 +34,7 @@ namespace PPreflection
 				  detail::arithmetic_type_strong_base<T>>>
 	{
 		static_assert(PP::concepts::non_void_fundamental<T> &&
-					  PP::concepts::different<T, decltype(nullptr)>);
+		              PP::concepts::different<T, decltype(nullptr)>);
 
 	public:
 		constexpr const arithmetic_type& promoted_type()

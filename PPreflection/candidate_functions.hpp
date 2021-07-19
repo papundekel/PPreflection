@@ -15,18 +15,17 @@ namespace PPreflection
 	{
 		using candidate_functions_container =
 			PP::small_optimized_vector<PP::reference_wrapper<const function&>,
-									   16>;
+		                               16>;
 
 		candidate_functions_container functions;
 
 	public:
-		explicit constexpr candidate_functions(
-			PP::concepts::view auto&& functions)
+		explicit inline candidate_functions(PP::concepts::view auto&& functions)
 			: functions(candidate_functions_container::create_copy_view(
-				  PP_FORWARD(functions)))
+				  PP_F(functions)))
 		{}
 
-		constexpr auto& trim_by_name(PP::string_view name)
+		inline auto& trim_by_name(PP::string_view name)
 		{
 			functions.remove(
 				[name](const function& f)
@@ -37,7 +36,7 @@ namespace PPreflection
 			return *this;
 		}
 
-		constexpr auto& trim_by_exact_argument_count(PP::size_t arg_count)
+		inline auto& trim_by_exact_argument_count(PP::size_t arg_count)
 		{
 			functions.remove(
 				[arg_count](const function& f)
@@ -50,7 +49,7 @@ namespace PPreflection
 
 		dynamic_variable invoke(PP::concepts::view auto&& arguments) const
 		{
-			return invoke_impl(PP_FORWARD(arguments));
+			return invoke_impl(PP_F(arguments));
 		}
 
 		dynamic_variable invoke(
@@ -73,11 +72,10 @@ namespace PPreflection
 		dynamic_variable invoke_impl(PP::concepts::view auto&& arguments) const
 		{
 			auto [f, error_code] =
-				overload_resolution(functions,
-									args_to_types(PP_FORWARD(arguments)));
+				overload_resolution(functions, args_to_types(PP_F(arguments)));
 
 			if (f)
-				return f->invoke(PP_FORWARD(arguments));
+				return f->invoke(PP_F(arguments));
 			else
 				return dynamic_variable::create_invalid(
 					dynamic_object::invalid_code::overload_resolution_error);

@@ -16,7 +16,7 @@ namespace PPreflector
 {
 	class visitor : public clang::RecursiveASTVisitor<visitor>
 	{
-		clang::ASTContext& context;
+		// clang::ASTContext& context;
 		global_namespace global;
 		std::map<const clang::NamespaceDecl*,
 		         PP::ref_wrap<non_global_namespace&>>

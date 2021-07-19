@@ -30,7 +30,7 @@ namespace PPreflection
 		}
 
 		constexpr void print_name_implementation(
-			PP::simple_ostream& out) const noexcept override final
+			PP::ostream& out) const noexcept override final
 		{
 			out.write("operator ");
 			const type& rt = return_type();

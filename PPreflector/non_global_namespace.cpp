@@ -59,7 +59,8 @@ void PPreflector::non_global_namespace::print_metadata_traits(
 void PPreflector::non_global_namespace::print_metadata_object(
 	llvm::raw_ostream& out) const
 {
-	out << printer_metadata(PPREFLECTOR_MEMBER_PRINT(print_name_own, *this))
+	out << printer_metadata_descriptor(
+			   PPREFLECTOR_MEMBER_PRINT(print_name_own, *this))
 		<< "basic_namespace<" << PPREFLECTOR_MEMBER_PRINT(print_name_own, *this)
 		<< ">{};\n";
 }

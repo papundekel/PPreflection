@@ -31,17 +31,17 @@ namespace PPreflection
 
 		static constexpr auto create(auto&& f)
 		{
-			constexpr auto result_type = PP_DECLTYPE(PP_FORWARD(f)());
+			constexpr auto result_type = PP_DECLTYPE(PP_F(f)());
 
 			if constexpr (PP::is_void(result_type))
 			{
-				PP_FORWARD(f)();
+				PP_F(f)();
 				return dynamic_variable(dynamic_object::create_void());
 			}
 			else if constexpr (PP::is_reference(result_type))
-				return dynamic_variable(dynamic_reference(PP_FORWARD(f)()));
+				return dynamic_variable(dynamic_reference(PP_F(f)()));
 			else
-				return dynamic_variable(dynamic_object(PP_FORWARD(f)));
+				return dynamic_variable(dynamic_object(PP_F(f)));
 		}
 		constexpr explicit operator bool() const noexcept
 		{
@@ -54,19 +54,19 @@ namespace PPreflection
 								  {
 									  return (bool)o;
 								  }),
-							  dynamic);
+			                  dynamic);
 		}
 		constexpr dynamic_object::invalid_code get_error_code() const noexcept
 		{
 			return std::visit(
-				PP::overloaded{ [](const dynamic_reference&)
-								{
-									return dynamic_object::invalid_code::none;
-								},
-								[](const dynamic_object& o)
-								{
-									return o.get_error_code();
-								} },
+				PP::overloaded{[](const dynamic_reference&)
+			                   {
+								   return dynamic_object::invalid_code::none;
+							   },
+			                   [](const dynamic_object& o)
+			                   {
+								   return o.get_error_code();
+							   }},
 				dynamic);
 		}
 
@@ -123,7 +123,7 @@ namespace PPreflection
 								  {
 									  return o.move();
 								  }),
-							  dynamic);
+			                  dynamic);
 		}
 
 		constexpr dynamic_object move_object() && noexcept
@@ -137,7 +137,7 @@ namespace PPreflection
 								  {
 									  return PP::move(o);
 								  }),
-							  dynamic);
+			                  dynamic);
 		}
 	};
 }
