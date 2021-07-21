@@ -1,4 +1,4 @@
-# PPreflection
+# Špecifikácia PPreflection
 
 C++ reflection knižnica.
 

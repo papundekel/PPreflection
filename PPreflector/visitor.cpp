@@ -228,8 +228,3 @@ bool PPreflector::visitor::is_reserved(const clang::NamedDecl& d)
 
 	return false;
 }
-
-// bool PPreflector::visitor::shouldTraversePostOrder() const
-//{
-//	return true;
-//}

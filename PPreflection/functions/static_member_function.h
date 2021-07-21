@@ -4,6 +4,9 @@
 
 namespace PPreflection
 {
-	class static_member_function : public maybe_static_member_function
-	{};
+///
+/// @brief Represents a static member function.
+///
+class static_member_function : public maybe_static_member_function
+{};
 }

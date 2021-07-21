@@ -32,6 +32,11 @@ namespace PPreflection
 					dynamic_cast<const unknown_bound_array_type&>(t));
 		}
 
+	public:
+		constexpr array_type_reference(const object_type& t) noexcept
+			: array_type_reference(create(t))
+		{}
+
 		constexpr PP::variant<const unknown_bound_array_type&,
 		                      const complete_object_type&>
 			cast_down(
@@ -51,11 +56,6 @@ namespace PPreflection
 								 }),
 			                 *this);
 		}
-
-	public:
-		constexpr array_type_reference(const object_type& t) noexcept
-			: array_type_reference(create(t))
-		{}
 
 		constexpr bool has_name(
 			PP::string_view name) const noexcept override final

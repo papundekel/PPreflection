@@ -1,13 +1,13 @@
 #include "null_type.hpp"
 
+#include "../class_or_namespace.hpp"
 #include "../convertor.hpp"
 #include "../descriptor.hpp"
 #include "../dynamic_object.hpp"
 #include "../functions/function.hpp"
 #include "../functions/member_function.hpp"
 #include "../overload_resolution.hpp"
-#include "../parent_descriptor_reference.hpp"
-#include "../parent_descriptor_reference_strong.hpp"
+#include "../parent_descriptor.hpp"
 #include "arithmetic_type.hpp"
 #include "arithmetic_type_strong.hpp"
 #include "class_type.hpp"
@@ -22,15 +22,15 @@
 
 namespace
 {
-	constexpr auto null = PPreflection::null_type{};
+constexpr auto null = PPreflection::null_type{};
 }
 
 PPreflection::dynamic_object PPreflection::null_type::create_instance()
 	const noexcept
 {
 	return dynamic_object(null,
-						  []
-						  {
+	                      []
+	                      {
 							  return nullptr;
 						  });
 }

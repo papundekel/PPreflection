@@ -10,34 +10,33 @@
 
 namespace PPreflection
 {
-	class complete_object_type;
-	class pointer_type;
+class complete_object_type;
+class pointer_type;
 
-	namespace detail
+namespace detail
+{
+template <typename Base>
+class array_type : public non_user_defined_type<Base>
+{
+	static_assert(PP::concepts::derived_from<Base, object_type>);
+
+public:
+	constexpr virtual cv_type<complete_object_type> remove_extent()
+		const noexcept = 0;
+	constexpr virtual const pointer_type& get_pointer_to_element()
+		const noexcept = 0;
+
+	constexpr PP::size_t alignment() const noexcept override final
 	{
-		template <typename Base>
-		class array_type : public non_user_defined_type<Base>
-		{
-			static_assert(PP::concepts::derived_from<Base, object_type>);
-
-		public:
-			constexpr virtual cv_type<complete_object_type> remove_extent()
-				const noexcept = 0;
-			constexpr virtual const pointer_type& get_pointer_to_element()
-				const noexcept = 0;
-
-			constexpr PP::size_t alignment() const noexcept override final
-			{
-				return remove_extent().type.alignment();
-			}
-
-			constexpr virtual convertor_object array_to_pointer_conversion()
-				const noexcept = 0;
-
-			constexpr standard_conversion_sequence
-			make_standard_conversion_sequence(
-				const non_array_object_type& target)
-				const noexcept override final;
-		};
+		return remove_extent().type.alignment();
 	}
+
+	constexpr virtual convertor_object array_to_pointer_conversion()
+		const noexcept = 0;
+
+	constexpr detail::standard_conversion_sequence
+	make_standard_conversion_sequence(
+		const non_array_object_type& target) const noexcept override final;
+};
+}
 }

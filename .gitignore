@@ -2,8 +2,5 @@
 /build/
 /CMakeSettings.json
 *.meta
-/metadata_backup
-/class_diagram.uxf
-cmake.sh
-build.sh
 install/
+doc/

@@ -11,6 +11,10 @@
 
 namespace PPreflector
 {
+	///
+	/// @brief An AST action implementation. This represents the plugin
+	/// execution.
+	///
 	class action : public clang::PluginASTAction
 	{
 		std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(

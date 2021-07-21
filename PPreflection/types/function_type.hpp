@@ -3,7 +3,7 @@
 
 #include "pointer_type.h"
 
-constexpr PPreflection::standard_conversion_sequence
+constexpr PPreflection::detail::standard_conversion_sequence
 PPreflection::function_type::make_standard_conversion_sequence(
 	const non_array_object_type& target) const noexcept
 {

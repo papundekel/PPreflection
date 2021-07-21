@@ -3,6 +3,10 @@
 
 namespace PPreflector
 {
+	///
+	/// @brief Represents a static member function.
+	///
+	///
 	class static_member_function : public static_function
 	{
 	public:

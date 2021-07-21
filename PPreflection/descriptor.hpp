@@ -4,7 +4,7 @@
 #include "PP/ostream.hpp"
 #include "PP/small_optimized_vector.hpp"
 
-#include "parent_descriptor_reference.h"
+#include "parent_descriptor.h"
 #include "reflect.h"
 
 constexpr void PPreflection::descriptor::print_name(

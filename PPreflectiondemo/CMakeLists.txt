@@ -6,8 +6,6 @@ add_executable(PPreflectiondemo
 "reactions.cpp"
 "visitor_reference.cpp"
 "visitor_reflection.cpp"
-"testik.cpp"
-#"testik_reflection.cpp"
 )
 target_compile_features(PPreflectiondemo PUBLIC cxx_std_20)
 set_target_properties(PPreflectiondemo PROPERTIES COMPILE_FLAGS "-ftemplate-backtrace-limit=0 -fconcepts-diagnostics-depth=5")

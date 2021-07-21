@@ -4,7 +4,10 @@
 
 namespace PPreflection
 {
-	class non_conversion_member_function
-		: public detail::named_function<member_function>
-	{};
+///
+/// @brief Represents a non-conversion member function.
+///
+class non_conversion_member_function
+	: public detail::named_function<member_function>
+{};
 }

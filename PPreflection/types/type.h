@@ -19,41 +19,50 @@
 
 namespace PP
 {
-	template <typename...>
-	class variant;
+template <typename...>
+class variant;
 }
 
 namespace PPreflection
 {
-	class reference_type;
-	class void_type;
-	class function_type;
-	class unknown_bound_array_type;
-	class known_bound_array_type;
-	class null_type;
-	class integral_type;
-	class arithmetic_type;
-	class pointer_type;
-	class pointer_to_member_type;
-	class non_union_class_type;
-	class union_type;
-	class enum_type;
+class reference_type;
+class void_type;
+class function_type;
+class unknown_bound_array_type;
+class known_bound_array_type;
+class null_type;
+class integral_type;
+class arithmetic_type;
+class pointer_type;
+class pointer_to_member_type;
+class non_union_class_type;
+class union_type;
+class enum_type;
 
-	class type;
-	class pointable_type;
-	class referencable_type;
-	class object_type;
-	class complete_object_type;
-	class non_array_object_type;
-	class user_defined_type;
-	class class_type;
+class type;
+class pointable_type;
+class referencable_type;
+class object_type;
+class complete_object_type;
+class non_array_object_type;
+class user_defined_type;
+class class_type;
 
-	class super_class_type;
+class super_class_type;
 
-	template <typename>
-	class cv_type;
+class function;
+class member_function;
 
-	constexpr inline auto type_classes =
+template <typename>
+class cv_type;
+
+namespace detail
+{
+class type_helper
+{
+	friend type;
+
+	static constexpr auto type_classes =
 		PP::type_tuple<reference_type,
 	                   void_type,
 	                   function_type,
@@ -78,13 +87,13 @@ namespace PPreflection
 	                   pointable_type,
 	                   super_class_type>;
 
-	PP_FUNCTOR(get_type_class_type, PP::concepts::type auto t)
+	static PP_FUNCTOR(get_type_class_type, PP::concepts::type auto t)
 	{
 		return type_classes[PP::value_t_static_cast(PP::type_size_t,
 		                                            get_type_class_value_t(t))];
 	});
 
-	constexpr inline auto common_type_class =
+	static constexpr auto common_type_class =
 		[](PP::concepts::type auto t, PP::concepts::type auto u)
 	{
 		constexpr auto T = PP_COPY_TYPE(t);
@@ -110,91 +119,120 @@ namespace PPreflection
 		}
 	};
 
-	class type : public descriptor
-	{
-		friend pointer_type;
-		friend reference_type;
+	static constexpr auto get_class =
+		PP::tuple_get(PP::partial_tag, PP::value_1, type_classes) |
+		PP::value_t_static_cast * PP::type_size_t | get_type_class_value_t;
 
-	public:
-		constexpr virtual void print_name_prefix(
-			PP::ostream& out) const noexcept = 0;
-		constexpr virtual void print_name_suffix(
-			PP::ostream& out) const noexcept = 0;
+	static constexpr auto reflect_helper(PP::concepts::type auto t) noexcept
+		-> const PP_APPLY_TRANSFORM(get_class, t) &;
 
-		constexpr void print_name_before_parent(
-			PP::ostream&) const noexcept override final
-		{}
-		constexpr void print_name_after_parent(
-			PP::ostream& out) const noexcept override final
-		{
-			print_name_prefix(out);
-			print_name_suffix(out);
-		}
+	static constexpr auto reflect_helper(
+		PP::concepts::tuple auto&& types) noexcept;
 
-		constexpr virtual PP::variant<const reference_type&,
-		                              const pointable_type&>
-			cast_down(PP::overload_tag<type> = {}) const noexcept = 0;
-
-		static constexpr void print_parameter_types(
-			PP::ostream& out,
-			PP::concepts::view auto&& parameter_types) noexcept
-		{
-			out.write("(");
-
-			if (auto [i, end] = PP::view_begin_end(PP_F(parameter_types));
-			    i != end)
-			{
-				i->print_name(out);
-				++i;
-
-				for (; i != end; ++i)
-				{
-					out.write(", ");
-					i->print_name(out);
-				}
-			}
-
-			out.write(")");
-		}
-
-	private:
-		static constexpr auto get_class =
-			PP::tuple_get(PP::partial_tag, PP::value_1, type_classes) |
-			PP::value_t_static_cast * PP::type_size_t | get_type_class_value_t;
-
-		static constexpr auto reflect_helper(PP::concepts::type auto t) noexcept
-			-> const PP_APPLY_TRANSFORM(get_class, t) &;
-		static constexpr auto reflect_helper(
-			PP::concepts::tuple auto&& types) noexcept;
-		static constexpr auto reflect_cv_helper(
-			PP::concepts::type auto t) noexcept
-			-> PPreflection::cv_type<
-				PP_GT(~PP_DECLTYPE(PPreflection::type::reflect_helper(t)))>;
-
-	public:
-		static PP_FUNCTOR(reflect, auto&& x) -> decltype(auto)
-		{
-			return reflect_helper(PP_F(x));
-		});
-		static PP_FUNCTOR(reflect_cv, PP::concepts::type auto t)
-		{
-			return reflect_cv_helper(t);
-		});
-
-		constexpr virtual bool operator==(const type& other) const noexcept = 0;
-
-		static constexpr bool compare(const auto& this_,
-		                              const type& other) noexcept
-		{
-			if (auto p = dynamic_cast<decltype(&this_)>(&other); p)
-				return this_ == *p;
-			else
-				return false;
-		}
-	};
+	static constexpr auto reflect_cv_helper(PP::concepts::type auto t) noexcept
+		-> PP_GT(PP::Template<cv_type>(~PP_DECLTYPE(reflect_helper(t))));
+};
 }
 
-constexpr auto PPreflection::type::reflect_helper(
+///
+/// @brief Representes all types.
+///
+class type : public descriptor
+{
+	friend function;
+	friend function_type;
+	friend known_bound_array_type;
+	friend member_function;
+	friend null_type;
+	friend pointer_to_member_type;
+	friend pointer_type;
+	friend reference_type;
+	friend unknown_bound_array_type;
+	friend user_defined_type;
+	friend void_type;
+	template <typename>
+	friend class arithmetic_type_strong;
+	template <typename>
+	friend class cv_type;
+
+public:
+	///
+	/// @brief Casts to a sum type of immediate descendants.
+	///
+	constexpr virtual PP::variant<const reference_type&, const pointable_type&>
+		cast_down(PP::overload_tag<type> = {}) const noexcept = 0;
+
+	///
+	/// @brief Reflects the type @p t as a proper type descriptor.
+	///
+	static PP_FUNCTOR(reflect, auto&& t) -> decltype(auto)
+	{
+		return detail::type_helper::reflect_helper(PP_F(t));
+	});
+
+	///
+	/// @brief Reflects the type t as a @ref cv_type.
+	///
+	static PP_FUNCTOR(reflect_cv, PP::concepts::type auto t)
+	{
+		return detail::type_helper::reflect_cv_helper(t);
+	});
+
+	///
+	/// @brief Compares two type descriptors.
+	///
+	constexpr virtual bool operator==(const type& other) const noexcept = 0;
+
+private:
+	constexpr void print_name_before_parent(
+		PP::ostream&) const noexcept override final
+	{}
+
+	constexpr void print_name_after_parent(
+		PP::ostream& out) const noexcept override final
+	{
+		print_name_prefix(out);
+		print_name_suffix(out);
+	}
+
+	constexpr virtual void print_name_prefix(
+		PP::ostream& out) const noexcept = 0;
+
+	constexpr virtual void print_name_suffix(
+		PP::ostream& out) const noexcept = 0;
+
+	static constexpr bool compare(const auto& this_, const type& other) noexcept
+	{
+		if (auto p = dynamic_cast<decltype(&this_)>(&other); p)
+			return this_ == *p;
+		else
+			return false;
+	}
+
+	static constexpr void print_parameter_types(
+		PP::ostream& out,
+		PP::concepts::view auto&& parameter_types) noexcept
+	{
+		out.write("(");
+
+		if (auto [i, end] = PP::view_begin_end(PP_F(parameter_types)); i != end)
+		{
+			i->print_name(out);
+			++i;
+
+			for (; i != end; ++i)
+			{
+				out.write(", ");
+				i->print_name(out);
+			}
+		}
+
+		out.write(")");
+	}
+};
+}
+
+constexpr auto PPreflection::detail::type_helper::reflect_helper(
 	PP::concepts::tuple auto&& types) noexcept
 {
 	constexpr auto common_class =

@@ -15,33 +15,33 @@
 
 namespace PPreflection::detail
 {
-	static constexpr auto get_alignment_impl(
-		const PPreflection::complete_object_type& t) noexcept
-	{
-		return t.alignment();
-	}
-	static constexpr auto get_alignment_impl(PP::concepts::type auto t) noexcept
-	{
-		return PP::alignment_of(t);
-	}
-	static constexpr auto get_alignment(const auto& t) noexcept
-	{
-		return std::align_val_t{get_alignment_impl(t)};
-	}
-	static constexpr auto get_size(
-		const PPreflection::complete_object_type& t) noexcept
-	{
-		return t.size();
-	}
-	static constexpr auto get_size(PP::concepts::type auto t) noexcept
-	{
-		return PP::size_of(t);
-	}
-	static constexpr bool is_small_type(const auto& t) noexcept
-	{
-		return get_alignment_impl(t) <= alignof(max_align_t) &&
-		       get_size(t) <= sizeof(void*);
-	}
+static constexpr auto get_alignment_impl(
+	const PPreflection::complete_object_type& t) noexcept
+{
+	return t.alignment();
+}
+static constexpr auto get_alignment_impl(PP::concepts::type auto t) noexcept
+{
+	return PP::alignment_of(t);
+}
+static constexpr auto get_alignment(const auto& t) noexcept
+{
+	return std::align_val_t{get_alignment_impl(t)};
+}
+static constexpr auto get_size(
+	const PPreflection::complete_object_type& t) noexcept
+{
+	return t.size();
+}
+static constexpr auto get_size(PP::concepts::type auto t) noexcept
+{
+	return PP::size_of(t);
+}
+static constexpr bool is_small_type(const auto& t) noexcept
+{
+	return get_alignment_impl(t) <= alignof(max_align_t) &&
+	       get_size(t) <= sizeof(void*);
+}
 }
 
 constexpr PPreflection::dynamic_object::deleter::deleter(

@@ -5,14 +5,14 @@
 #include "../initialization.h"
 #include "non_union_class_type.h"
 
-constexpr void PPreflection::class_type::get_member_function_overloads(
+constexpr void PPreflection::class_type::get_member_functions(
 	PP::string_view name,
 	PP::concepts::iterator auto i_out) const noexcept
 {
 	return get_descriptors(name, get_member_functions(), i_out);
 }
 
-constexpr void PPreflection::class_type::get_static_member_function_overloads(
+constexpr void PPreflection::class_type::get_static_member_functions(
 	PP::string_view name,
 	PP::concepts::iterator auto i_out) const noexcept
 {
@@ -44,9 +44,9 @@ constexpr void PPreflection::class_type::get_conversion_functions_inherited(
 			bc.get_conversion_functions_inherited(i_out);
 }
 
-constexpr PPreflection::standard_conversion_sequence
+constexpr PPreflection::detail::standard_conversion_sequence
 PPreflection::class_type::make_standard_conversion_sequence_impl(
 	const non_array_object_type&) const noexcept
 {
-	return standard_conversion_sequence::create_invalid();
+	return detail::standard_conversion_sequence::create_invalid();
 }

@@ -3,38 +3,49 @@
 
 #include "member_function.h"
 
+namespace PPreflection::detail
+{
+class conversion_function_olr;
+}
+
 namespace PPreflection
 {
-	class conversion_function : public member_function
+///
+/// @brief Represents a conversion function.
+///
+class conversion_function : public member_function
+{
+	friend detail::conversion_function_olr;
+
+public:
+	///
+	/// @brief Returns whether the function is declared as @p explicit.
+	///
+	constexpr virtual bool is_explicit() const noexcept = 0;
+
+	constexpr bool has_name(PP::string_view) const noexcept override final
 	{
-		friend class conversion_function_olr;
+		return true;
+	}
 
-	protected:
-		constexpr virtual dynamic_variable invoke_unsafe(
-			dynamic_reference caller) const = 0;
+	constexpr void print_name_implementation(
+		PP::ostream& out) const noexcept override final
+	{
+		out.write("operator ");
+		const type& rt = return_type();
+		rt.print_name(out);
+	}
 
-		dynamic_variable invoke_unsafe(
-			dynamic_reference caller,
-			PP::any_iterator<PP::iterator_category::ra, dynamic_reference>)
-			const override final
-		{
-			return invoke_unsafe(caller);
-		}
+private:
+	constexpr virtual dynamic_variable invoke_unsafe(
+		dynamic_reference caller) const = 0;
 
-	public:
-		constexpr virtual bool is_explicit() const noexcept = 0;
-
-		constexpr bool has_name(PP::string_view) const noexcept override final
-		{
-			return true;
-		}
-
-		constexpr void print_name_implementation(
-			PP::ostream& out) const noexcept override final
-		{
-			out.write("operator ");
-			const type& rt = return_type();
-			rt.print_name(out);
-		}
-	};
+	dynamic_variable invoke_unsafe(
+		dynamic_reference caller,
+		PP::any_iterator<PP::iterator_category::ra, dynamic_reference>)
+		const override final
+	{
+		return invoke_unsafe(caller);
+	}
+};
 }

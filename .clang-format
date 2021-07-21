@@ -9,7 +9,7 @@ ConstructorInitializerIndentWidth: 4
 AccessModifierOffset: -4
 AllowShortFunctionsOnASingleLine: None
 AllowShortLambdasOnASingleLine: None
-NamespaceIndentation: All
+NamespaceIndentation: None
 BreakBeforeBraces: Custom
 BraceWrapping:
   AfterClass: true

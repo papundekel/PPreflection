@@ -13,8 +13,6 @@
 #include "visitor_reference.hpp"
 #include "visitor_reflection.hpp"
 
-#include "testik.hpp"
-
 namespace
 {
 	auto generate_zoo(PP::size_t count)
@@ -78,9 +76,6 @@ namespace
 
 int main()
 {
-	// N::f(N::D());
-	// N::g();
-
 	PP::size_t count = 0;
 	std::cin >> count;
 
@@ -90,12 +85,12 @@ int main()
 
 	auto time = now();
 
-	// for (const auto& animal_ptr : zoo)
-	//{
-	//	animal_ptr->accept(v_reference);
-	//}
+	for (const auto& animal_ptr : zoo)
+	{
+		animal_ptr->accept(v_reference);
+	}
 
-	// print_duration(time);
+	print_duration(time);
 
 	zoo.back()->accept(v_reference);
 

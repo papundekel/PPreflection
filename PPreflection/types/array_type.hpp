@@ -5,7 +5,7 @@
 #include "pointer_type.h"
 
 template <typename Base>
-constexpr PPreflection::standard_conversion_sequence
+constexpr PPreflection::detail::standard_conversion_sequence
 PPreflection::detail::array_type<Base>::make_standard_conversion_sequence(
 	const non_array_object_type& target) const noexcept
 {

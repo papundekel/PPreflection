@@ -15,29 +15,6 @@ inline auto PPreflection::dynamic_reference::cast_unsafe(
 	return (PP_GT(t) &&)(*reinterpret(PP::add_pointer(!t)));
 }
 
-inline auto PPreflection::dynamic_reference::cast(
-	PP::concepts::type auto t) const -> PP_GT(t) &&
-{
-	return cast_unsafe(t);
-}
-
-inline auto* PPreflection::dynamic_reference::get_ptr(
-	PP::concepts::type auto t) const
-{
-	return reinterpret(PP::add_pointer(t));
-}
-
-inline auto& PPreflection::dynamic_reference::get_ref(
-	PP::concepts::type auto t) const&
-{
-	return cast(t + PP::add_lvalue_tag);
-}
-inline auto&& PPreflection::dynamic_reference::get_ref(
-	PP::concepts::type auto t) const&&
-{
-	return cast(t + PP::add_rvalue_tag);
-}
-
 constexpr PPreflection::dynamic_reference::dynamic_reference(
 	auto&& r) noexcept requires
 	PP::concepts::different_except_cvref<decltype(r), dynamic_reference> &&

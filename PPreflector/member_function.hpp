@@ -13,6 +13,11 @@ namespace PPreflector
 	llvm::raw_ostream& operator<<(llvm::raw_ostream& out,
 	                              clang::RefQualifierKind ref);
 
+	///
+	/// @brief Represents a member function.
+	///
+	/// @tparam MDecl The type of the AST method declaration.
+	///
 	template <typename MDecl>
 	requires PP::concepts::derived_from<MDecl, clang::CXXMethodDecl>
 	class member_function : public function<MDecl>

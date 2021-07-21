@@ -10,8 +10,8 @@
 #include "dynamic_variable.h"
 #include "functions/namespace_function.h"
 
-constexpr PPreflection::parent_descriptor_reference
-PPreflection::Namespace::get_parent(void*) const noexcept
+constexpr PPreflection::parent_descriptor PPreflection::Namespace::get_parent(
+	void*) const noexcept
 {
 	if (const auto& parent = get_parent(); &parent != this)
 		return parent;

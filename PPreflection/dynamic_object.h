@@ -16,11 +16,19 @@ namespace PPreflection
 	template <typename>
 	class cv_type;
 
+	///
+	/// @brief A weakly typed object. Can be in three states: @p valid, @p
+	/// invalid,
+	/// @p void. Contains an object only in the @p valid state.
+	///
 	class dynamic_object
 	{
 		friend class null_type;
 
 	public:
+		///
+		/// @brief An error code.
+		///
 		enum class invalid_code
 		{
 			none,
@@ -33,9 +41,6 @@ namespace PPreflection
 		};
 
 	private:
-		struct void_tag
-		{};
-
 		struct small_byte_array
 		{
 			alignas(std::max_align_t) char bytes[sizeof(void*)];
@@ -121,7 +126,16 @@ namespace PPreflection
 		PP::scoped<PP::movable<data, PP::default_releaser>, deleter> x;
 
 	public:
+		///
+		/// @brief Move constructor. Changes the ownership of the internal
+		/// object.
+		///
 		dynamic_object(dynamic_object&&) = default;
+
+		///
+		/// @brief Initializes the dynamic object with a no-argument call to @p
+		/// initializer. Deduces the type of the object from the return type.
+		///
 		explicit constexpr dynamic_object(
 			PP::concepts::invocable auto&& initializer);
 
@@ -136,34 +150,101 @@ namespace PPreflection
 		                         data data) noexcept;
 
 	public:
+		///
+		/// @brief Move assignment. Transfers the ownership of the internal
+		/// object. Destroys the owned object.
+		///
 		dynamic_object& operator=(dynamic_object&&) = default;
 
+		///
+		/// @brief Creates an invalid dynamic object with a certain error code.
+		///
+		/// @param code The error code.
+		///
 		static constexpr dynamic_object create_invalid(
 			invalid_code code) noexcept
 		{
 			return dynamic_object(code);
 		}
+
+		//////
+		/// @brief Create a void object
+		///
+		/// @return constexpr dynamic_object
+		///
+		///
 		static constexpr dynamic_object create_void() noexcept
 		{
 			return dynamic_object(invalid_code::none);
 		}
 
+		///
+		/// @brief Creates a dynamic object initialized with a constructor of @p
+		/// t with arguments @p args.
+		///
 		static constexpr dynamic_object create(PP::concepts::type auto t,
 		                                       auto&&... args);
+
+		///
+		/// @brief Creates a dynamic object initialized with a copy of @p arg.
+		///
 		static constexpr dynamic_object create_copy(auto&& arg);
+
+		///
+		/// @brief Creates a shallow copy of @p r. Unsafe for types not
+		/// trivially copyable.
+		///
 		static dynamic_object create_shallow_copy(dynamic_reference r) noexcept;
 
+		///
+		/// @brief Gets the @ref cv_type of this dynamic object.
+		///
 		constexpr cv_type<complete_object_type> get_cv_type() const noexcept;
 
+		///
+		/// @brief Gets the type of this dynamic object.
+		///
 		constexpr const complete_object_type& get_type() const noexcept;
 
+		///
+		/// @brief Creates an lvalue dynamic reference referencing this dynamic
+		/// object.
+		///
 		constexpr operator dynamic_reference() const;
+
+		///
+		/// @brief Creates an rvalue dynamic reference referencing this dynamic
+		/// object.
+		///
 		constexpr dynamic_reference move() const;
 
+		///
+		/// @brief Validity check.
+		///
+		/// @retval false iff the object is in the @p invalid state.
+		///
 		constexpr explicit operator bool() const noexcept;
+
+		///
+		/// @brief Gets the error code of the object.
+		///
+		/// @retval none iff the object is not in the @p invalid state.
+		///
 		constexpr invalid_code get_error_code() const noexcept;
+
+		///
+		/// @brief @p void state check.
+		///
+		/// @retval true iff the object is in the @p void state.
+		///
 		constexpr bool is_void() const noexcept;
 
+		///
+		/// @brief Shallowly casts this dynamic object to another type. Moves.
+		///
+		/// @param target_type The target type.
+		/// @return A new dynamic object.
+		///
 		constexpr dynamic_object cast(
 			const complete_object_type& target_type) && noexcept
 		{

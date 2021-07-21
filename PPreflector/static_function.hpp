@@ -9,6 +9,10 @@
 
 namespace PPreflector
 {
+	///
+	/// @brief Represents a function, which is not a non-static member function.
+	///
+	///
 	class static_function : public function<clang::FunctionDecl>
 	{
 	public:

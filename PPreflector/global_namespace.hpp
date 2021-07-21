@@ -3,6 +3,9 @@
 
 namespace PPreflector
 {
+	///
+	/// @brief Represents the global namespace.
+	///
 	class global_namespace : public Namespace
 	{
 	public:

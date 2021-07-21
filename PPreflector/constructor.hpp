@@ -9,6 +9,9 @@
 
 namespace PPreflector
 {
+	///
+	/// @brief Represents a constructor.
+	///
 	class constructor : public function<clang::CXXConstructorDecl>
 	{
 	public:
@@ -21,6 +24,11 @@ namespace PPreflector
 		void print_metadata_traits(llvm::raw_ostream&) const override final;
 		void print_metadata_object(llvm::raw_ostream&) const override final;
 
+		///
+		/// @brief Prints the metadata tag for this constructor.
+		///
+		/// @param out The stream to output to.
+		///
 		void print_id(llvm::raw_ostream& out) const;
 	};
 }

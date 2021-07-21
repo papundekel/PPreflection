@@ -14,4 +14,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 set_target_properties(PPreflection PROPERTIES COMPILE_FLAGS "-ftemplate-backtrace-limit=0 -fconcepts-diagnostics-depth=6")
 endif()
 
-target_include_directories(PPreflection PUBLIC "${CMAKE_CURRENT_LIST_DIR}/../PP")
+target_include_directories(PPreflection PUBLIC "${CMAKE_SOURCE_DIR}/PP")
+
+install(TARGETS PPreflection DESTINATION "PPreflection")
+install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" DESTINATION "PPreflection/include" FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h")

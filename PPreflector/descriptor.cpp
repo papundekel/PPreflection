@@ -2,9 +2,6 @@
 
 #include "printers.hpp"
 
-PPreflector::descriptor::~descriptor()
-{}
-
 const PPreflector::descriptor* PPreflector::descriptor::get_parent(void*) const
 {
 	return nullptr;

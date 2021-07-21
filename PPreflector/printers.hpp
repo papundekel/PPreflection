@@ -28,20 +28,23 @@ namespace PPreflector
 		return out;
 	}
 
-	template <typename F, typename T>
-	struct print_member_wrap
+	namespace detail
 	{
-		F printing_function;
-		const T& printer;
-
-		void operator()(llvm::raw_ostream& out) const
+		template <typename F, typename T>
+		struct print_member_wrap
 		{
-			printing_function(out, printer);
-		}
-	};
+			F printing_function;
+			const T& printer;
+
+			void operator()(llvm::raw_ostream& out) const
+			{
+				printing_function(out, printer);
+			}
+		};
+	}
 
 #define PPREFLECTOR_MEMBER_PRINT(function_name, object)                        \
-	(::PPreflector::print_member_wrap(                                         \
+	(::PPreflector::detail::print_member_wrap(                                 \
 		[](llvm::raw_ostream& out, auto& printer)                              \
 		{                                                                      \
 			printer.function_name(out);                                        \

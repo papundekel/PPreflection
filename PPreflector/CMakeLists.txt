@@ -15,7 +15,6 @@ add_llvm_library(PPreflector MODULE
 "constructor.cpp"
 "consumer.cpp"
 "conversion_function.cpp"
-#"default_constructor.cpp"
 "descriptor.cpp"
 "Enum.cpp"
 "enum_value.cpp"
@@ -33,4 +32,6 @@ PLUGIN_TOOL clang)
 
 target_compile_features(PPreflector PUBLIC cxx_std_20)
 set_target_properties(PPreflector PROPERTIES COMPILE_FLAGS "-ftemplate-backtrace-limit=0 -fconcepts-diagnostics-depth=5")
-target_include_directories(PPreflector PUBLIC "${CMAKE_CURRENT_LIST_DIR}/../PP")
+target_include_directories(PPreflector PUBLIC "${CMAKE_SOURCE_DIR}/PP")
+
+install(TARGETS PPreflector DESTINATION "PPreflection")

@@ -14,6 +14,10 @@
 
 namespace PPreflector
 {
+	///
+	/// @brief A basic implementation of an AST visitor. The visitor is
+	/// responsible for processing each node of an AST.
+	///
 	class visitor : public clang::RecursiveASTVisitor<visitor>
 	{
 		// clang::ASTContext& context;
@@ -24,14 +28,38 @@ namespace PPreflector
 		std::vector<PP::ref_wrap<const Class&>> classes;
 
 	public:
+		///
+		/// @brief Constructs a new visitor.
+		///
+		/// @param ci A reference to the compiler.
+		///
 		explicit visitor(clang::CompilerInstance& ci);
 
+		///
+		/// @brief Processes a declaration.
+		///
+		/// @param declaration A pointer to the declaration.
+		/// @return true Success.
+		/// @return false Failure.
+		///
 		bool VisitDecl(clang::Decl* declaration);
-		void print(llvm::raw_ostream& out) const;
-		void clear_temps();
-		void remove_unwanted();
 
-		// bool shouldTraversePostOrder() const;
+		///
+		/// @brief Prints the metadata.
+		///
+		/// @param out
+		///
+		void print(llvm::raw_ostream& out) const;
+
+		///
+		/// @brief Frees all temporary resources.
+		///
+		void clear_temps();
+
+		///
+		/// @brief Removes unwanted entities from the registry.
+		///
+		void remove_unwanted();
 
 	private:
 		Namespace* get_namespace_parent(

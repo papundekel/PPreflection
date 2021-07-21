@@ -10,10 +10,18 @@
 
 namespace PPreflector
 {
+	///
+	/// @brief Represents an enum value.
+	///
 	class enum_value
 		: public node_descriptor<clang::EnumConstantDecl, descriptor>
 	{
 	public:
+		///
+		/// @brief Constructs a new enum value descriptor.
+		///
+		/// @param decl A reference to the declaration of the enum value.
+		///
 		enum_value(const clang::EnumConstantDecl& decl);
 
 		void print_name_header(llvm::raw_ostream& out) const override final;

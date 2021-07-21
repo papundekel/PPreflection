@@ -13,6 +13,12 @@
 
 namespace PPreflector
 {
+	///
+	/// @brief Represents an entity, which has an associated AST node.
+	///
+	/// @tparam Node AST node type representing a declaration of this entity.
+	/// @tparam Descriptor The base descriptor class.
+	///
 	template <typename Node, typename Descriptor = descriptor>
 	requires PP::concepts::derived_from<Descriptor, descriptor>
 	class node_descriptor : public Descriptor
@@ -20,6 +26,12 @@ namespace PPreflector
 		const Node& node;
 
 	public:
+		///
+		/// @brief Constructs a new node descriptor.
+		///
+		/// @param node A reference to the AST node associated with this entity.
+		/// @param args Arguments for the Descriptor constructor.
+		///
 		explicit node_descriptor(const Node& node, auto&&... args)
 			: Descriptor(PP_F(args)...)
 			, node(node)
@@ -52,6 +64,11 @@ namespace PPreflector
 		}
 
 	protected:
+		///
+		/// @brief Gets the associated AST node.
+		///
+		/// @return A reference to the associated AST node.
+		///
 		const Node& get_node() const
 		{
 			return node;
