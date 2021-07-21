@@ -5,7 +5,6 @@
 
 #include "../print_cv.h"
 #include "../types/class_type.h"
-#include "../types/make_reference_type.h"
 #include "../types/reference_type.h"
 
 constexpr void PPreflection::member_function::print_name_after_parent(
@@ -29,5 +28,5 @@ constexpr void PPreflection::member_function::print_name_after_parent(
 
 	print_noexcept(out);
 
-	return_type().as_type().print_name_suffix(out);
+	get_return_type().as_type().print_name_suffix(out);
 }

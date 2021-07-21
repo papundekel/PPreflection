@@ -3,9 +3,7 @@
 #include "dynamic_named_descriptor.h"
 #include "user_defined_type.h"
 
-namespace PPreflection
-{
-namespace detail
+namespace PPreflection::detail
 {
 template <typename Base>
 class dynamic_user_defined_type : public dynamic_named_descriptor<Base>
@@ -26,5 +24,4 @@ public:
 		return parent;
 	}
 };
-}
 }

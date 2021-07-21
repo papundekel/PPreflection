@@ -168,8 +168,9 @@ PPreflection::dynamic_object::reference_cast_helper(
 	if (*this)
 	{
 		auto cv_type = get_cv_type();
-		return dynamic_reference(get_address(),
-		                         dynamic_reference_type(cv_type, *lvalue));
+		return dynamic_reference(
+			get_address(),
+			detail::dynamic_reference_type(cv_type, *lvalue));
 	}
 	else
 		throw 0;

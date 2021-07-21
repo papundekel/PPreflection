@@ -134,7 +134,7 @@ void PPreflector::visitor::print(llvm::raw_ostream& out) const
 		   "const PPreflection::non_union_class_type& "
 		   "PPreflection::reflect_polymorphic(std::type_index type)\n"
 		   "{\n"
-		   "\tstatic const auto map = type_info_map(PP::type_tuple<\n";
+		   "\tstatic const auto map = detail::type_info_map(PP::type_tuple<\n";
 
 	for_each_with_delimiters(
 		[&out](const Class& c)

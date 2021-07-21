@@ -7,7 +7,7 @@
 #include "non_user_defined_type.h"
 #include "parameter_type_olr_reference.h"
 #include "referencable_type.h"
-#include "return_type_reference.h"
+#include "return_type.h"
 
 namespace PPreflection::detail
 {
@@ -38,13 +38,12 @@ public:
 	///
 	/// @brief Gets the return type of the function type.
 	///
-	constexpr virtual return_type_reference return_type() const noexcept = 0;
+	constexpr virtual return_type get_return_type() const noexcept = 0;
 
 	///
 	/// @brief Gets a view of parameter types of the function type.
 	///
-	constexpr virtual PP::any_view<PP::iterator_category::ra,
-	                               parameter_type_reference>
+	constexpr virtual PP::any_view<PP::iterator_category::ra, parameter_type>
 	parameter_types() const noexcept = 0;
 
 	///
@@ -71,7 +70,7 @@ public:
 	///
 	constexpr bool operator==(const function_type& other) const noexcept
 	{
-		return return_type() == other.return_type() &&
+		return get_return_type() == other.get_return_type() &&
 		       PP::view_equal(parameter_types(), other.parameter_types()) &&
 		       is_noexcept() == other.is_noexcept() &&
 		       get_function_cv_qualifier() ==
@@ -94,7 +93,7 @@ private:
 	constexpr void print_name_prefix(
 		PP::ostream& out) const noexcept override final
 	{
-		const type& return_type_ = return_type();
+		const type& return_type_ = get_return_type();
 		return_type_.print_name_prefix(out);
 	}
 	constexpr void print_name_suffix(
@@ -115,14 +114,14 @@ private:
 		if (is_noexcept())
 			out.write(" noexcept");
 
-		const type& return_type_ = return_type();
+		const type& return_type_ = get_return_type();
 		return_type_.print_name_suffix(out);
 	}
 
 	static constexpr auto reflect_parameter_types(
 		PP::concepts::tuple auto&& types)
 	{
-		return PP::tuple_map_to_array(PP::type<parameter_type_reference>,
+		return PP::tuple_map_to_array(PP::type<parameter_type>,
 		                              type::reflect,
 		                              PP_F(types));
 	}
@@ -161,7 +160,7 @@ private:
 		const function_type& target) const noexcept
 	{
 		bool necessary_matches =
-			return_type() == target.return_type() &&
+			get_return_type() == target.get_return_type() &&
 			PP::view_equal(parameter_types(), target.parameter_types()) &&
 			get_function_cv_qualifier() == target.get_function_cv_qualifier() &&
 			get_function_ref_qualifier() == target.get_function_ref_qualifier();

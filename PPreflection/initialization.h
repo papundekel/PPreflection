@@ -22,7 +22,7 @@ class initialization
 	friend class viable_function;
 
 	static auto valid_return_type_for_conversion(
-		return_type_reference return_type,
+		return_type return_type,
 		const class_type& target_type) noexcept
 	{
 		return PP::visit(
@@ -30,25 +30,26 @@ class initialization
 				[&target_type](const non_array_object_type& t)
 				{
 					return PP::make_tuple(same_or_derived_from(t, target_type),
-			                              dynamic_reference_type(t));
+			                              detail::dynamic_reference_type(t));
 				},
 				[&target_type](const reference_type& rt)
 				{
 					return PP::make_tuple(
 						same_or_derived_from(rt.remove_reference().type,
 			                                 target_type),
-						dynamic_reference_type(rt));
+						detail::dynamic_reference_type(rt));
 				},
 				[&target_type](const void_type&)
 				{
-					return PP::make_tuple(false,
-			                              dynamic_reference_type(target_type));
+					return PP::make_tuple(
+						false,
+						detail::dynamic_reference_type(target_type));
 				}),
 			return_type);
 	}
 
 	static standard_conversion_sequence valid_return_type_for_conversion(
-		return_type_reference return_type,
+		return_type return_type,
 		const non_array_object_type& target_type_non_class) noexcept
 	{
 		return PP::visit(
@@ -90,7 +91,7 @@ class initialization
 
 	static standard_conversion_sequence valid_return_type_for_conversion(
 		PP::concepts::value auto lvalue,
-		return_type_reference return_type,
+		return_type return_type,
 		const reference_type& target_type) noexcept
 	{
 		return PP::visit(
@@ -231,11 +232,12 @@ class initialization
 				if (!cf.is_explicit())
 				{
 					if (auto [valid, return_reference_type] =
-					        valid_return_type_for_conversion(cf.return_type(),
-					                                         target_type);
+					        valid_return_type_for_conversion(
+								cf.get_return_type(),
+								target_type);
 					    valid)
 					{
-						if (cf.return_type().as_type() != target_type)
+						if (cf.get_return_type().as_type() != target_type)
 						{
 							auto sequence =
 								make_sequence(target_type,
@@ -275,7 +277,7 @@ class initialization
 		for (const conversion_function& cf : conversion_functions)
 		{
 			auto sequence =
-				valid_return_type_for_conversion(cf.return_type(),
+				valid_return_type_for_conversion(cf.get_return_type(),
 			                                     target_type_non_class);
 
 			if (!cf.is_explicit() && sequence.is_valid())
@@ -310,9 +312,10 @@ class initialization
 
 		for (const conversion_function& cf : conversion_functions)
 		{
-			auto sequence = valid_return_type_for_conversion(lvalue,
-			                                                 cf.return_type(),
-			                                                 target_type);
+			auto sequence =
+				valid_return_type_for_conversion(lvalue,
+			                                     cf.get_return_type(),
+			                                     target_type);
 
 			if (!cf.is_explicit() && sequence.is_valid())
 			{

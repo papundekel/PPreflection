@@ -13,7 +13,7 @@
 #include "../dynamic_variable.h"
 #include "../types/function_type.h"
 #include "../types/parameter_type_olr_reference.h"
-#include "../types/return_type_reference.h"
+#include "../types/return_type.h"
 
 namespace PPreflection::detail
 {
@@ -79,9 +79,9 @@ public:
 	///
 	/// @brief Gets the return type of the function.
 	///
-	constexpr return_type_reference return_type() const noexcept
+	constexpr return_type get_return_type() const noexcept
 	{
-		return get_function_type().return_type();
+		return get_function_type().get_return_type();
 	}
 
 	///

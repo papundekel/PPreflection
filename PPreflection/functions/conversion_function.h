@@ -32,7 +32,7 @@ public:
 		PP::ostream& out) const noexcept override final
 	{
 		out.write("operator ");
-		const type& rt = return_type();
+		const type& rt = get_return_type();
 		rt.print_name(out);
 	}
 

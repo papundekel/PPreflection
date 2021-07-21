@@ -7,13 +7,11 @@
 #include "dynamic_user_defined_type.h"
 #include "enum_type.h"
 
-namespace PPreflection
+namespace PPreflection::detail
 {
-class dynamic_enum_type final
-	: public detail::dynamic_user_defined_type<enum_type>
+class dynamic_enum_type final : public dynamic_user_defined_type<enum_type>
 {
-	class dynamic_enum_value final
-		: public detail::dynamic_named_descriptor<enum_value>
+	class dynamic_enum_value final : public dynamic_named_descriptor<enum_value>
 	{
 		dynamic_object value;
 		const enum_type& parent;
@@ -22,7 +20,7 @@ class dynamic_enum_type final
 		constexpr dynamic_enum_value(PP::string_view name,
 		                             dynamic_object&& value,
 		                             const enum_type& parent) noexcept
-			: detail::dynamic_named_descriptor<enum_value>(name)
+			: dynamic_named_descriptor<enum_value>(name)
 			, value(PP::move(value))
 			, parent(parent)
 		{}

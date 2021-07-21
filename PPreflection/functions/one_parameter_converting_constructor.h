@@ -1,5 +1,5 @@
 #pragma once
-#include "../types/parameter_type_reference.h"
+#include "../types/parameter_type.h"
 #include "constructor.h"
 
 namespace PPreflection
@@ -21,8 +21,7 @@ public:
 	///
 	/// @brief Gets the type of the parameter.
 	///
-	constexpr virtual parameter_type_reference get_parameter_type()
-		const noexcept = 0;
+	constexpr virtual parameter_type get_parameter_type() const noexcept = 0;
 
 	constexpr bool is_explicit() const noexcept override final
 	{
